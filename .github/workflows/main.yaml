@@ -1,4 +1,4 @@
-name: Deploy DevEx to Contabo
+name: Deploy xPlain to Contabo
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
               curl -X POST https://devex.pe/free/deployments \
                 -H "Content-Type: application/json" \
                 -d '{
-                  "service": "DevEx Consulting",
+                  "service": "xPlain Solutions",
                   "repository": "'"$REPOSITORY"'",
                   "branch": "'"$BRANCH"'",
                   "commit": "'"$COMMIT"'",
@@ -59,7 +59,7 @@ jobs:
 
             trap on_error ERR
 
-            cd /var/docker/devex
+            cd /var/docker/xplain
             git pull
 
             docker builder prune -f
@@ -67,12 +67,10 @@ jobs:
             docker image prune -f
             docker compose up -d --build
             
-            sleep 10
-            
             curl -X POST https://devex.pe/free/deployments \
               -H "Content-Type: application/json" \
               -d '{
-                "service": "DevEx Consulting",
+                "service": "xPlain Solutions",
                 "repository": "'"$REPOSITORY"'",
                 "branch": "'"$BRANCH"'",
                 "commit": "'"$COMMIT"'",
