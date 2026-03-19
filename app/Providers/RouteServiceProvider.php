@@ -33,17 +33,9 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-            // Rutas de la web
+            // Landing-only web routes
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
-
-            // Rutas de la web
-            Route::prefix('free')
-                ->group(base_path('routes/free.php'));
-
-            // Rutas de la web
-            Route::prefix('webhook')
-                ->group(base_path('routes/webhook.php'));
         });
     }
 }
