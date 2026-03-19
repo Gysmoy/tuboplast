@@ -1,0 +1,24 @@
+{
+  "lang": "Español",
+  "nav": {
+    "home": "Inicio",
+    "planes": "Planes",
+    "services": "Servicios",
+    "team": "Nosotros",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "login": "Iniciar sesión",
+    "lang": {
+      "es": "Español",
+      "en": "Inglés",
+      "pt": "Portugués",
+      "it": "Italiano"
+    }
+  },
+  "main": {
+    "hash": "#sode-world",
+    "title": "Software Developers World",
+    "summary": "Somos SoDe, especialistas en desarrollo de sitios web, aplicaciones móviles y soluciones de e-commerce. Creamos experiencias digitales que impulsan el éxito de tu negocio.",
+    "button": "Ver productos"
+  }
+}

@@ -1,0 +1,90 @@
+[
+    {
+        "id": "01",
+        "name": "Editoriales"
+    },
+    {
+        "id": "02",
+        "name": "Alimentos y Bebidas"
+    },
+    {
+        "id": "03",
+        "name": "Hoteles"
+    },
+    {
+        "id": "04",
+        "name": " Salud"
+    },
+    {
+        "id": "05",
+        "name": "AgroIndustria"
+    },
+    {
+        "id": "06",
+        "name": "Mineras"
+    },
+    {
+        "id": "07",
+        "name": "Hidrocarburos"
+    },
+    {
+        "id": "09",
+        "name": "Telecomunicaciones"
+    },
+    {
+        "id": "10",
+        "name": "Plasticos y Cauchos"
+    },
+    {
+        "id": "11",
+        "name": "Instituciones Financieras"
+    },
+    {
+        "id": "12",
+        "name": "Quimicas"
+    },
+    {
+        "id": "13",
+        "name": "Comercio"
+    },
+    {
+        "id": "14",
+        "name": "Educación"
+    },
+    {
+        "id": "15",
+        "name": "Industria"
+    },
+    {
+        "id": "16",
+        "name": "Construcción"
+    },
+    {
+        "id": "17",
+        "name": " Pesca"
+    },
+    {
+        "id": "18",
+        "name": "Energia y Agua"
+    },
+    {
+        "id": "19",
+        "name": "Textiles"
+    },
+    {
+        "id": "20",
+        "name": "Transporte y Aviación"
+    },
+    {
+        "id": "21",
+        "name": "Actividades Deportivas y de Esparcimiento"
+    },
+    {
+        "id": "22",
+        "name": "Estado"
+    },
+    {
+        "id": "26",
+        "name": "Actividades Profesionales"
+    }
+]

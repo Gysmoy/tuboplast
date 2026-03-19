@@ -1,0 +1,182 @@
+@charset "utf-8";
+
+:root {
+  --atom-size: 40px;
+  --atom-size-min: 30px;
+  --atom-size-max: 50px;
+  --sode-red: #fd4051;
+  --sode-red-hover: #fd4050cc;
+  --sode-skyblue: #038de8;
+  --sode-oceanblue: #282e38;
+
+  --atom-elipsis: 100px;
+  --atom-elipsis-negative: -100px;
+  --core-size: 200px;
+}
+
+#atom {
+  position: relative;
+  transition: 0.125s;
+}
+
+#atom img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  -webkit-filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
+}
+
+#atom a {
+  position: absolute;
+  z-index: 0;
+  padding: 0;
+  width: calc(var(--atom-size) - 10px);
+  height: calc(var(--atom-size) - 10px);
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+  border-radius: 50%;
+  transition: 0.125s;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  -webkit-filter: drop-shadow(0 0 10px #000000bb);
+  filter: drop-shadow(0 0 10px #000000bb);
+}
+#atom a img {
+  -webkit-filter: drop-shadow(0 0 10px #ffffff);
+  filter: drop-shadow(0 0 10px #ffffff);
+}
+
+#atom a:nth-child(2) {
+  top: calc(var(--atom-elipsis-negative) * 0.707);
+  left: calc(var(--atom-elipsis-negative) * 0.707);
+  animation-name: translate1;
+  -webkit-filter: drop-shadow(0 0 10px var(--sode-red));
+  filter: drop-shadow(0 0 10px var(--sode-red));
+}
+
+#atom a:nth-child(3) {
+  top: calc(var(--atom-elipsis-negative) * 0.707);
+  right: calc(var(--atom-elipsis-negative) * 0.707);
+  animation-name: translate2;
+  animation-delay: 0.5s;
+  -webkit-filter: drop-shadow(0 0 10px var(--sode-skyblue));
+  filter: drop-shadow(0 0 10px var(--sode-skyblue));
+}
+
+#atom a:nth-child(4) {
+  top: calc(var(--atom-elipsis-negative));
+  left: calc(5px + var(--atom-size));
+  animation-name: translate3;
+  animation-delay: 1s;
+}
+
+#atom a:nth-child(5) {
+  top: calc(5px + var(--atom-size));
+  left: calc(var(--atom-elipsis-negative));
+  animation-name: translate4;
+  animation-delay: 1.5s;
+}
+
+@keyframes translate1 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  25% {
+    z-index: 2;
+    width: var(--atom-size-max);
+    height: var(--atom-size-max);
+  }
+  50% {
+    transform: translate(
+      calc(calc(var(--atom-elipsis) * 0.707) + var(--core-size)),
+      calc(calc(var(--atom-elipsis) * 0.707) + var(--core-size))
+    );
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  75% {
+    z-index: 0;
+    width: var(--atom-size-min);
+    height: var(--atom-size-min);
+  }
+}
+
+@keyframes translate2 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  25% {
+    z-index: 2;
+    width: var(--atom-size-max);
+    height: var(--atom-size-max);
+  }
+  50% {
+    transform: translate(
+      calc(calc(var(--atom-elipsis-negative) * 0.707) - var(--core-size)),
+      calc(calc(var(--atom-elipsis) * 0.707) + var(--core-size))
+    );
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  75% {
+    z-index: 0;
+    width: var(--atom-size-min);
+    height: var(--atom-size-min);
+  }
+}
+
+@keyframes translate3 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  25% {
+    z-index: 2;
+    width: var(--atom-size-max);
+    height: var(--atom-size-max);
+  }
+  50% {
+    transform: translate(0, calc(calc(var(--atom-elipsis)) + var(--core-size)));
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  75% {
+    z-index: 0;
+    width: var(--atom-size-min);
+    height: var(--atom-size-min);
+  }
+}
+@keyframes translate4 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  25% {
+    z-index: 2;
+    width: var(--atom-size-max);
+    height: var(--atom-size-max);
+  }
+  50% {
+    transform: translate(calc(calc(var(--atom-elipsis)) + var(--core-size)), 0);
+    width: var(--atom-size);
+    height: var(--atom-size);
+  }
+  75% {
+    z-index: 0;
+    width: var(--atom-size-min);
+    height: var(--atom-size-min);
+  }
+}

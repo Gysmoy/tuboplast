@@ -1,0 +1,75 @@
+@font-face {
+    font-family: 'RightgroteskMedium';
+    src: url('/fonts/rightgroteskWidemedium.woff2') format('woff2'),
+         url('/fonts/rightgroteskWidemedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    
+}
+
+
+@font-face {
+    font-family: 'Poppins-SemiBold';
+    src: url('/fonts/PoppinsSemiBold.ttf') format('ttf');  
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('/fonts/montserrat-medium.woff2') format('woff2'),
+         url('/fonts/montserrat-medium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+@font-face {
+    font-family: 'Montserrat-Semibold';
+    src: url('/fonts/montserrat-semibold.woff2') format('woff2'),
+         url('/fonts/montserrat-semibold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('/fonts/montserrat-regular.woff2') format('woff2'),
+         url('/fonts/montserrat-regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+.fullscreen-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: -100;
+    opacity: 0.3;
+}
+
+.fullscreen-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .fullscreen-video {
+    width: 100%;
+    height: auto;
+  }
+}
+

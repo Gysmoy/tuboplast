@@ -1,0 +1,16 @@
+{
+  "resources/css/app.css": {
+    "file": "app.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/Landing.jsx": {
+    "file": "assets/Landing-Dmym86K8.js",
+    "name": "Landing",
+    "src": "resources/js/Landing.jsx",
+    "isEntry": true,
+    "css": [
+      "Landing.css"
+    ]
+  }
+}
