@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: devex/laravel-app
-    container_name: devex-app
+    image: xplain/laravel-app
+    container_name: xplain-app
     restart: unless-stopped
     tty: true
     environment:
@@ -56,8 +56,8 @@ services:
       - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
       - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
       - TINYMCE_KEY=${TINYMCE_KEY}
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     ports:
       - "8090:80"
     volumes:
@@ -65,22 +65,22 @@ services:
       - cache:/var/www/html/bootstrap/cache
       - ./docker-compose/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - app-network-devex
+      - app-network-xplain
 
-  db:
-    image: mysql:8.0
-    container_name: devex-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - dbdata:/var/lib/mysql
-    networks:
-      - app-network-devex
+  # db:
+  #   image: mysql:8.0
+  #   container_name: xplain-mysql
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_DATABASE: ${DB_DATABASE}
+  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+  #   volumes:
+  #     - dbdata:/var/lib/mysql
+  #   networks:
+  #     - app-network-xplain
 
 networks:
-  app-network-devex:
+  app-network-xplain:
     driver: bridge
 
 volumes:
