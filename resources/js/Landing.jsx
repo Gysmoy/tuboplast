@@ -321,7 +321,7 @@ const LandingScreen = ({ projects = [] }) => {
             Mira nuestro <span className="text-[#ff0a78]">trabajo</span>
           </h2>
           <p className="mt-2 text-sm text-slate-300 md:text-base">
-            Capturas de proyectos reales en formato 16:9 para una presentacion consistente y profesional.
+            Descubre nuestros casos de exito y como ayudamos a empresas a escalar con soluciones digitales a medida.
           </p>
 
           <div className="mt-6 flex items-center gap-3">
