@@ -41,61 +41,16 @@ const Contacts = ({ can }) => {
       }}
       columns={[
         {
-          dataField: 'business',
-          caption: 'Negocio',
-          sortOrder: 'asc',
-          width: '220px'
-        },
-        {
           dataField: 'name',
           caption: 'Nombre',
-          width: '220px'
+          sortOrder: 'asc',
+          width: '260px'
         },
         {
           dataField: 'email',
-          caption: 'Correo',
+          caption: 'Correo'
         },
         {
-          dataField: 'phone_prefix',
-          caption: 'Prefijo',
-          width: '80px'
-        },
-        {
-          dataField: 'phone',
-          caption: 'Teléfono',
-          width: '120px'
-        },
-        {
-          dataField: 'service',
-          caption: 'Servicio',
-          width: '150px'
-        },
-        {
-          dataField: 'source',
-          caption: 'Fuente',
-          width: '120px',
-          cellTemplate: (container, { data }) => {
-            const lookup = {
-              fb: 'Facebook',
-              ig: 'Instagram',
-              google: 'Google',
-              masterset: 'MasterSet',
-              ursa: 'Ursa',
-              'chatgpt.com': 'Chat GPT',
-              organic: 'Orgánico'
-            };
-            ReactAppend(container, <span>{lookup[data.source] || data.source}</span>);
-          }
-        },
-        {
-          dataField: 'created_at',
-          caption: 'Fecha creacion',
-          dataType: 'date',
-          cellTemplate: (container, { data }) => {
-            ReactAppend(container, <span>{moment(data.created_at).format('LL')}</span>)
-          }
-        },
-        (can('permissions', 'root', 'all', 'delete')) ? {
           caption: 'Acciones',
           cellTemplate: (container, { data }) => {
             container.attr('style', 'display: flex; gap: 4px; overflow: unset')
@@ -110,40 +65,23 @@ const Contacts = ({ can }) => {
           },
           allowFiltering: false,
           allowExporting: false
-        } : null
+        }
       ]} />
     <Modal modalRef={modalRef} title='Detalles del contacto' onClose={() => setDataLoaded(null)} hideFooter>
-      <div className='mb-2'>
-        <h6 className='mt-0 mb-1'>Nombre de la empresa</h6>
-        <p className='mb-0 text-muted'>{dataLoaded?.business || ''}</p>
-      </div>
       <div className='mb-2'>
         <h6 className='mt-0 mb-1'>Nombre del contacto</h6>
         <p className='mb-0 text-muted'>{dataLoaded?.name || ''}</p>
       </div>
       <div className='mb-2'>
-        <h6 className='mt-0 mb-1'>Correo electrónico</h6>
+        <h6 className='mt-0 mb-1'>Correo electronico</h6>
         <p className='mb-0 text-muted'>{dataLoaded?.email || ''}</p>
-      </div>
-      <div className='mb-2'>
-        <h6 className='mt-0 mb-1'>Teléfono/WhatsApp</h6>
-        <p className='mb-0 text-muted'>{dataLoaded?.phone_prefix || ''}{dataLoaded?.phone || ''}</p>
-      </div>
-      <div className='mb-2'>
-        <h6 className='mt-0 mb-1'>Tipo de servicio</h6>
-        <p className='mb-0 text-muted'>{dataLoaded?.service || ''}</p>
-      </div>
-      <div className='mb-2'>
-        <h6 className='mt-0 mb-1'>Fuente</h6>
-        <p className='mb-0 text-muted'>{dataLoaded?.source || ''}</p>
       </div>
       <div>
         <h6 className='mt-0 mb-1'>Mensaje</h6>
         <p className='mb-0 text-muted' style={{ whiteSpace: 'pre-wrap' }}>{dataLoaded?.message || ''}</p>
       </div>
     </Modal>
-  </>
-  )
+  </>)
 };
 
 CreateReactScript((el, properties) => {

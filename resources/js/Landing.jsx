@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Bot, Code2, Facebook, Instagram, LayoutTemplate, Mail, Phone, Workflow } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Bot, CheckCircle2, Code2, Facebook, Instagram, LayoutTemplate, Mail, Phone, Workflow, X } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -101,13 +101,21 @@ const impact = [
   },
 ];
 
-const LandingScreen = ({ projects = [] }) => {
+const LandingScreen = ({ projects = [], token = '' }) => {
   const rootRef = useRef(null);
   const workTrackRef = useRef(null);
   const workResumeTimeoutRef = useRef(null);
   const [workIndex, setWorkIndex] = useState(0);
   const [statIndex, setStatIndex] = useState(0);
   const [stopWorkAutoplay, setStopWorkAutoplay] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    email: '',
+    name: '',
+    message: '',
+  });
+  const [contactSending, setContactSending] = useState(false);
+  const [contactFeedback, setContactFeedback] = useState({ type: '', message: '' });
+  const [showThankYouModal, setShowThankYouModal] = useState(false);
 
   const workSlides = useMemo(() => {
     if (!Array.isArray(projects) || projects.length === 0) {
@@ -137,6 +145,51 @@ const LandingScreen = ({ projects = [] }) => {
       setStopWorkAutoplay(false);
     }, 6500);
   };
+  const onContactChange = (event) => {
+    const { name, value } = event.target;
+    setContactForm((previous) => ({ ...previous, [name]: value }));
+  };
+  const onContactSubmit = async (event) => {
+    event.preventDefault();
+    if (contactSending) return;
+
+    setContactSending(true);
+    setContactFeedback({ type: '', message: '' });
+
+    try {
+      const response = await fetch('/landing/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          ...contactForm,
+          _token: token,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result?.status !== 200) {
+        throw new Error(result?.message || 'No se pudo enviar tu mensaje.');
+      }
+
+      setContactForm({ email: '', name: '', message: '' });
+      setContactFeedback({
+        type: 'success',
+        message: result?.message || 'Gracias. Tu mensaje fue enviado correctamente.',
+      });
+      setShowThankYouModal(true);
+    } catch (error) {
+      setContactFeedback({
+        type: 'error',
+        message: error?.message || 'No se pudo enviar tu mensaje.',
+      });
+    } finally {
+      setContactSending(false);
+    }
+  };
 
   useEffect(() => {
     const previous = document.documentElement.style.scrollBehavior;
@@ -160,6 +213,26 @@ const LandingScreen = ({ projects = [] }) => {
     const statTimer = window.setInterval(nextStat, 6500);
     return () => window.clearInterval(statTimer);
   }, []);
+
+  useEffect(() => {
+    if (!showThankYouModal) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setShowThankYouModal(false);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [showThankYouModal]);
 
   useGSAP(
     () => {
@@ -483,45 +556,65 @@ const LandingScreen = ({ projects = [] }) => {
               <br />
               marca en <span className="text-[#ff0a78]">movimiento</span>
             </h2>
-            <form className="space-y-3">
+            <form className="space-y-3" onSubmit={onContactSubmit}>
               <div>
                 <label className="mb-1 block text-xs text-slate-300" htmlFor="email">
-                  correo
+                  Correo electrónico
                 </label>
                 <input
                   id="email"
+                  name="email"
                   className="w-full rounded-xl border border-white/60 bg-transparent px-4 py-3 text-sm outline-none ring-[#ff0a78] placeholder:text-white/45 focus:ring-2"
                   type="email"
                   placeholder="correo@empresa.com"
+                  value={contactForm.email}
+                  onChange={onContactChange}
+                  disabled={contactSending}
+                  required
                 />
               </div>
               <div>
                 <label className="mb-1 block text-xs text-slate-300" htmlFor="name">
-                  nombre
+                  Nombre completo
                 </label>
                 <input
                   id="name"
+                  name="name"
                   className="w-full rounded-xl border border-white/60 bg-transparent px-4 py-3 text-sm outline-none ring-[#ff0a78] placeholder:text-white/45 focus:ring-2"
                   type="text"
                   placeholder="nombre completo"
+                  value={contactForm.name}
+                  onChange={onContactChange}
+                  disabled={contactSending}
+                  required
                 />
               </div>
               <div>
                 <label className="mb-1 block text-xs text-slate-300" htmlFor="message">
-                  mensaje
+                  Mensaje
                 </label>
                 <textarea
                   id="message"
+                  name="message"
                   className="h-36 w-full rounded-xl border border-white/60 bg-transparent px-4 py-3 text-sm outline-none ring-[#ff0a78] placeholder:text-white/45 focus:ring-2"
                   placeholder="cuentanos sobre tu proyecto..."
+                  value={contactForm.message}
+                  onChange={onContactChange}
+                  disabled={contactSending}
+                  required
                 />
               </div>
+              {contactFeedback.type === 'error' && contactFeedback.message && (
+                <p className={`text-sm ${contactFeedback.type === 'success' ? 'text-emerald-300' : 'text-red-300'}`}>
+                  {contactFeedback.message}
+                </p>
+              )}
               <button
-                type="button"
-                onClick={scrollToContact}
+                type="submit"
+                disabled={contactSending}
                 className="w-full rounded-xl bg-[#ff0a78] py-3 text-lg font-bold shadow-[0_0_20px_rgba(255,10,120,0.35)] transition hover:bg-[#ff2d8f]"
               >
-                Empezar ahora
+                {contactSending ? 'Enviando...' : 'Empezar ahora'}
               </button>
             </form>
           </div>
@@ -589,6 +682,60 @@ const LandingScreen = ({ projects = [] }) => {
           </div>
         </footer>
       </div>
+
+      {showThankYouModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#03060f]/80 px-4 backdrop-blur-sm"
+          onClick={() => setShowThankYouModal(false)}
+          role="presentation"
+        >
+          <div
+            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/25 bg-[linear-gradient(160deg,rgba(255,255,255,0.15),rgba(7,12,22,0.92)_60%)] p-6 text-center shadow-[0_0_55px_rgba(255,10,120,0.2)]"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="thank-you-title"
+          >
+            <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#ff0a78]/60 to-transparent" />
+
+            <button
+              type="button"
+              onClick={() => setShowThankYouModal(false)}
+              className="absolute right-3 top-3 rounded-full border border-white/20 p-1 text-slate-300 transition hover:border-[#ff0a78] hover:text-white"
+              aria-label="Cerrar modal"
+            >
+              <X size={16} />
+            </button>
+
+            <p className="mx-auto w-fit rounded-full border border-[#ff0a78]/35 bg-[#ff0a78]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#ff6cab]">
+              Mensaje enviado
+            </p>
+
+            <div className="mx-auto mt-4 flex h-14 w-14 items-center justify-center rounded-full border border-[#ff0a78]/50 bg-[#ff0a78]/20 text-[#ff4fa5]">
+              <CheckCircle2 size={28} />
+            </div>
+
+            <p id="thank-you-title" className="mt-4 text-3xl font-black leading-tight">
+              Thank you
+            </p>
+
+            <p className="mt-2 text-sm leading-relaxed text-slate-200">
+              {contactFeedback.message || 'Gracias por escribirnos.'}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+              En breve un asesor se comunicara contigo para evaluar tu proyecto.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setShowThankYouModal(false)}
+              className="mt-6 w-full rounded-xl bg-[#ff0a78] py-3 text-base font-bold text-white shadow-[0_0_20px_rgba(255,10,120,0.35)] transition hover:bg-[#ff2d8f]"
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
