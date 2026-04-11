@@ -67,17 +67,17 @@ services:
     networks:
       - app-network-xplain
 
-  # db:
-  #   image: mysql:8.0
-  #   container_name: xplain-mysql
-  #   restart: unless-stopped
-  #   environment:
-  #     MYSQL_DATABASE: ${DB_DATABASE}
-  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-  #   volumes:
-  #     - dbdata:/var/lib/mysql
-  #   networks:
-  #     - app-network-xplain
+  db:
+    image: mysql:8.0
+    container_name: xplain-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - app-network-xplain
 
 networks:
   app-network-xplain:
