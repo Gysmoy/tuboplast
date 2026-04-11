@@ -1,16 +1,432 @@
 {
+  "_Adminto-i5zrIkXC.js": {
+    "file": "assets/Adminto-i5zrIkXC.js",
+    "name": "Adminto",
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js",
+      "_CreateReactScript-BHDOOvdB.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Components/Menu.jsx"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "_BasicRest-D1LuYaeU.js": {
+    "file": "assets/BasicRest-D1LuYaeU.js",
+    "name": "BasicRest",
+    "imports": [
+      "resources/js/Utils/ReactAppend.jsx",
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_Adminto-i5zrIkXC.js",
+      "_main-CD7tKkiy.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "_CreateReactScript-BHDOOvdB.js": {
+    "file": "assets/CreateReactScript-BHDOOvdB.js",
+    "name": "CreateReactScript",
+    "imports": [
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "_LaravelSession-CYcN0AKE.js": {
+    "file": "assets/LaravelSession-CYcN0AKE.js",
+    "name": "LaravelSession"
+  },
+  "_index-3eJeR5RX.js": {
+    "file": "assets/index-3eJeR5RX.js",
+    "name": "index",
+    "imports": [
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "_index-B0nLHjxg.js": {
+    "file": "assets/index-B0nLHjxg.js",
+    "name": "index",
+    "imports": [
+      "_index-RYns6xqu.js",
+      "_index-3eJeR5RX.js"
+    ]
+  },
+  "_index-RYns6xqu.js": {
+    "file": "assets/index-RYns6xqu.js",
+    "name": "index"
+  },
+  "_main-CD7tKkiy.js": {
+    "file": "assets/main-CD7tKkiy.js",
+    "name": "main",
+    "imports": [
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "_tippy-!~{00v}~.js": {
+    "file": "tippy.css",
+    "src": "_tippy-!~{00v}~.js"
+  },
   "resources/css/app.css": {
     "file": "app.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/js/Admin/Contacts.jsx": {
+    "file": "assets/Contacts-Blf6p0MC.js",
+    "name": "Contacts",
+    "src": "resources/js/Admin/Contacts.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_CreateReactScript-BHDOOvdB.js",
+      "_BasicRest-D1LuYaeU.js",
+      "_Adminto-i5zrIkXC.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js",
+      "resources/js/Components/Menu.jsx",
+      "_index-B0nLHjxg.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Admin/Home.jsx": {
+    "file": "assets/Home-CIE3juii.js",
+    "name": "Home",
+    "src": "resources/js/Admin/Home.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_CreateReactScript-BHDOOvdB.js",
+      "_Adminto-i5zrIkXC.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js",
+      "resources/js/Components/Menu.jsx",
+      "_index-B0nLHjxg.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Admin/Projects.jsx": {
+    "file": "assets/Projects-CREixWUJ.js",
+    "name": "Projects",
+    "src": "resources/js/Admin/Projects.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_CreateReactScript-BHDOOvdB.js",
+      "_BasicRest-D1LuYaeU.js",
+      "_Adminto-i5zrIkXC.js",
+      "_main-CD7tKkiy.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_LaravelSession-CYcN0AKE.js",
+      "resources/js/Components/Menu.jsx",
+      "_index-B0nLHjxg.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Components/Adminto.jsx": {
+    "file": "assets/Adminto-BCqhS4qI.js",
+    "name": "Adminto",
+    "src": "resources/js/Components/Adminto.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js",
+      "resources/js/Components/Menu.jsx",
+      "_index-B0nLHjxg.js",
+      "_index-3eJeR5RX.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Components/AdmintoContext.jsx": {
+    "file": "assets/AdmintoContext-svA8BjD1.js",
+    "name": "AdmintoContext",
+    "src": "resources/js/Components/AdmintoContext.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_index-B0nLHjxg.js",
+      "_index-3eJeR5RX.js"
+    ]
+  },
+  "resources/js/Components/DataGrid.jsx": {
+    "file": "assets/DataGrid-DAFs00V8.js",
+    "name": "DataGrid",
+    "src": "resources/js/Components/DataGrid.jsx",
+    "isEntry": true,
+    "imports": [
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Footer.jsx": {
+    "file": "assets/Footer-BYg4LlP3.js",
+    "name": "Footer",
+    "src": "resources/js/Components/Footer.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/CheckboxFormGroup.jsx": {
+    "file": "assets/CheckboxFormGroup-BYg4LlP3.js",
+    "name": "CheckboxFormGroup",
+    "src": "resources/js/Components/Form/CheckboxFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/InputFormGroup.jsx": {
+    "file": "assets/InputFormGroup-BYg4LlP3.js",
+    "name": "InputFormGroup",
+    "src": "resources/js/Components/Form/InputFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/PasswordFormGroup.jsx": {
+    "file": "assets/PasswordFormGroup-BYg4LlP3.js",
+    "name": "PasswordFormGroup",
+    "src": "resources/js/Components/Form/PasswordFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/QuillFormGroup.jsx": {
+    "file": "assets/QuillFormGroup-BYg4LlP3.js",
+    "name": "QuillFormGroup",
+    "src": "resources/js/Components/Form/QuillFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/SelectAPIFormGroup.jsx": {
+    "file": "assets/SelectAPIFormGroup-K3ESHLi8.js",
+    "name": "SelectAPIFormGroup",
+    "src": "resources/js/Components/Form/SelectAPIFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_main-CD7tKkiy.js"
+    ]
+  },
+  "resources/js/Components/Form/SelectFormGroup.jsx": {
+    "file": "assets/SelectFormGroup-BYg4LlP3.js",
+    "name": "SelectFormGroup",
+    "src": "resources/js/Components/Form/SelectFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/SwitchFormGroup.jsx": {
+    "file": "assets/SwitchFormGroup-BYg4LlP3.js",
+    "name": "SwitchFormGroup",
+    "src": "resources/js/Components/Form/SwitchFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/TextareaFormGroup.jsx": {
+    "file": "assets/TextareaFormGroup-BYg4LlP3.js",
+    "name": "TextareaFormGroup",
+    "src": "resources/js/Components/Form/TextareaFormGroup.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Form/TippyButton.jsx": {
+    "file": "assets/TippyButton-BZ2Aurum.js",
+    "name": "TippyButton",
+    "src": "resources/js/Components/Form/TippyButton.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Components/Menu.jsx": {
+    "file": "assets/Menu-BLbPMDGt.js",
+    "name": "Menu",
+    "src": "resources/js/Components/Menu.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js",
+      "_index-B0nLHjxg.js",
+      "_index-3eJeR5RX.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Components/MenuItem.jsx": {
+    "file": "assets/MenuItem-BYg4LlP3.js",
+    "name": "MenuItem",
+    "src": "resources/js/Components/MenuItem.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/MenuItemContainer.jsx": {
+    "file": "assets/MenuItemContainer-BYg4LlP3.js",
+    "name": "MenuItemContainer",
+    "src": "resources/js/Components/MenuItemContainer.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Modal.jsx": {
+    "file": "assets/Modal-BYg4LlP3.js",
+    "name": "Modal",
+    "src": "resources/js/Components/Modal.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/NavBar.jsx": {
+    "file": "assets/NavBar-B1-WQFgB.js",
+    "name": "NavBar",
+    "src": "resources/js/Components/NavBar.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ]
+  },
+  "resources/js/Components/Table.jsx": {
+    "file": "assets/Table-BYg4LlP3.js",
+    "name": "Table",
+    "src": "resources/js/Components/Table.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
   "resources/js/Landing.jsx": {
-    "file": "assets/Landing-sFPSeQcC.js",
+    "file": "assets/Landing-BybEwUQs.js",
     "name": "Landing",
     "src": "resources/js/Landing.jsx",
     "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_index-RYns6xqu.js",
+      "_CreateReactScript-BHDOOvdB.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
     "css": [
-      "Landing.css"
+      "tippy.css"
+    ]
+  },
+  "resources/js/Login.jsx": {
+    "file": "assets/Login-Dz_s4Vmy.js",
+    "name": "Login",
+    "src": "resources/js/Login.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_index-RYns6xqu.js",
+      "_CreateReactScript-BHDOOvdB.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Utils/CreateReactScript.jsx": {
+    "file": "assets/CreateReactScript-iv_O5B4r.js",
+    "name": "CreateReactScript",
+    "src": "resources/js/Utils/CreateReactScript.jsx",
+    "isEntry": true,
+    "imports": [
+      "_index-RYns6xqu.js",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
+    "css": [
+      "CreateReactScript.css",
+      "tippy.css"
+    ]
+  },
+  "resources/js/Utils/Number2Currency.jsx": {
+    "file": "assets/Number2Currency-l0sNRNKZ.js",
+    "name": "Number2Currency",
+    "src": "resources/js/Utils/Number2Currency.jsx",
+    "isEntry": true
+  },
+  "resources/js/Utils/ReactAppend.jsx": {
+    "file": "assets/ReactAppend-Cj9zdM7B.js",
+    "name": "ReactAppend",
+    "src": "resources/js/Utils/ReactAppend.jsx",
+    "isEntry": true,
+    "imports": [
+      "_index-3eJeR5RX.js",
+      "_index-RYns6xqu.js"
     ]
   }
 }

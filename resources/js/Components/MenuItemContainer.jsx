@@ -1,0 +1,43 @@
+import React from 'react'
+
+const MenuItemContainer = ({ title, icon, children }) => {
+
+  const refs = []
+  if (Array.isArray(children)) {
+    children.forEach(child => refs.push(child?.props?.href))
+  } else {
+    refs.push(children?.props?.href)
+  }
+  const isExpanded = refs.filter(Boolean).some(x => location.pathname.includes(x))
+
+  const id = `item-${crypto.randomUUID()}`
+  return (
+    // <li>
+    //   <a href={`#${id}`} data-bs-toggle="collapse" aria-expanded={isExpanded} >
+    //     <i className={icon}></i>
+    //     <span> {title} </span>
+    //     <span className="menu-arrow"></span>
+    //   </a>
+    //   <div className={`collapse ${isExpanded && 'show'}`} id={id}>
+    //     <ul className="nav-second-level">
+    //       {children}
+    //     </ul>
+    //   </div>
+    // </li>
+    <li className="side-nav-item">
+      <a data-bs-toggle="collapse" href="#sidebarContacts" aria-expanded="false"
+        aria-controls="sidebarContacts" className="side-nav-link">
+        <span className="menu-icon"><i className={icon}></i></span>
+        <span className="menu-text"> {title}</span>
+        <span className="menu-arrow"></span>
+      </a>
+      <div className="collapse" id="sidebarContacts">
+        <ul className="sub-menu">
+          {children}
+        </ul>
+      </div>
+    </li>
+  )
+}
+
+export default MenuItemContainer

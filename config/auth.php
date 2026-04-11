@@ -62,7 +62,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => Illuminate\Foundation\Auth\User::class,
+            'model' => App\Models\User::class,
         ],
 
         // 'users' => [
@@ -113,3 +113,4 @@ return [
     'password_timeout' => 10800,
 
 ];
+

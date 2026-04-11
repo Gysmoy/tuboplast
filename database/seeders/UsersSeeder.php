@@ -14,12 +14,12 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate([
-            'email' => 'root@devex.pe'
+            'email' => 'admin@xplain.pe'
         ],[
-            'name' => 'Usuario',
-            'lastname' => 'Root',
-            'email' => 'root@devex.pe',
+            'name' => 'Admin',
+            'lastname' => 'xPlain',
+            'email' => 'admin@xplain.pe',
             'password' => '4ccessme'
-        ])->assignRole('Root');
+        ])->assignRole('Admin');
     }
 }

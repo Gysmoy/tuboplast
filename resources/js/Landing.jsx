@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Bot, Code2, Facebook, Instagram, LayoutTemplate, Mail, Phone, Workflow } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -41,18 +41,24 @@ const services = [
   },
 ];
 
-const workSlides = [
+const fallbackWorkSlides = [
   {
     image: 'https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=1600&q=80',
     title: 'Sistema de gestion para energia renovable',
+    description: 'Plataforma para monitoreo y gestion operativa del sector energetico.',
+    link: null,
   },
   {
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80',
     title: 'Ecommerce de productos premium',
+    description: 'Canal digital para ventas con enfoque en conversion y experiencia de usuario.',
+    link: null,
   },
   {
     image: 'https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=1600&q=80',
     title: 'Portal de servicios con area privada',
+    description: 'Portal web con panel privado para clientes y gestion documental.',
+    link: null,
   },
 ];
 
@@ -95,11 +101,26 @@ const impact = [
   },
 ];
 
-const LandingScreen = () => {
+const LandingScreen = ({ projects = [] }) => {
   const rootRef = useRef(null);
   const workTrackRef = useRef(null);
+  const workResumeTimeoutRef = useRef(null);
   const [workIndex, setWorkIndex] = useState(0);
   const [statIndex, setStatIndex] = useState(0);
+  const [stopWorkAutoplay, setStopWorkAutoplay] = useState(false);
+
+  const workSlides = useMemo(() => {
+    if (!Array.isArray(projects) || projects.length === 0) {
+      return fallbackWorkSlides;
+    }
+
+    return projects.map((project) => ({
+      image: project.image,
+      title: project.name,
+      description: project.short_description,
+      link: project.link,
+    }));
+  }, [projects]);
 
   const nextWork = () => setWorkIndex((prev) => (prev + 1) % workSlides.length);
   const prevWork = () => setWorkIndex((prev) => (prev - 1 + workSlides.length) % workSlides.length);
@@ -107,6 +128,15 @@ const LandingScreen = () => {
   const nextStat = () => setStatIndex((prev) => (prev + 1) % statsSlides.length);
   const prevStat = () => setStatIndex((prev) => (prev - 1 + statsSlides.length) % statsSlides.length);
   const scrollToContact = () => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
+  const pauseWorkAutoplay = () => {
+    setStopWorkAutoplay(true);
+    if (workResumeTimeoutRef.current) {
+      window.clearTimeout(workResumeTimeoutRef.current);
+    }
+    workResumeTimeoutRef.current = window.setTimeout(() => {
+      setStopWorkAutoplay(false);
+    }, 6500);
+  };
 
   useEffect(() => {
     const previous = document.documentElement.style.scrollBehavior;
@@ -114,13 +144,17 @@ const LandingScreen = () => {
 
     return () => {
       document.documentElement.style.scrollBehavior = previous;
+      if (workResumeTimeoutRef.current) {
+        window.clearTimeout(workResumeTimeoutRef.current);
+      }
     };
   }, []);
 
   useEffect(() => {
+    if (stopWorkAutoplay) return;
     const workTimer = window.setInterval(nextWork, 5500);
     return () => window.clearInterval(workTimer);
-  }, []);
+  }, [workSlides.length, stopWorkAutoplay]);
 
   useEffect(() => {
     const statTimer = window.setInterval(nextStat, 6500);
@@ -226,12 +260,6 @@ const LandingScreen = () => {
             <a className="text-slate-300 transition-colors hover:text-white" href="#services">
               Proyectos
             </a>
-            {/* <a className="text-slate-300 transition-colors hover:text-white" href="#about">
-              Datos
-            </a> */}
-            {/* <a className="text-slate-300 transition-colors hover:text-white" href="#impacto">
-              Impacto
-            </a> */}
             <a className="text-slate-300 transition-colors hover:text-white" href="#contacto">
               Contacto
             </a>
@@ -299,20 +327,39 @@ const LandingScreen = () => {
           <div className="mt-6 flex items-center gap-3">
             <button
               type="button"
-              onClick={prevWork}
+              onClick={() => {
+                pauseWorkAutoplay();
+                prevWork();
+              }}
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-slate-300 transition hover:border-[#ff0a78] hover:text-white"
             >
               <ArrowLeft size={16} />
             </button>
 
-            <div className="relative w-full overflow-hidden rounded-2xl border border-white/15 bg-white/[0.04] p-2">
+            <div
+              className="relative w-full overflow-hidden rounded-2xl border border-white/15 bg-white/[0.04] p-2"
+              onPointerDown={pauseWorkAutoplay}
+            >
               <div ref={workTrackRef} className="flex will-change-transform">
                 {workSlides.map((slide) => (
-                  <article key={slide.image} className="w-full shrink-0">
+                  <article key={`${slide.image}-${slide.title}`} className="w-full shrink-0">
                     <div className="relative aspect-video overflow-hidden rounded-xl">
                       <img className="h-full w-full object-cover" src={slide.image} alt={slide.title} />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                      <p className="absolute bottom-4 left-4 text-lg font-bold md:text-xl">{slide.title}</p>
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <p className="text-lg font-bold md:text-xl">{slide.title}</p>
+                        {slide.description && <p className="mt-1 text-xs text-slate-200 md:text-sm">{slide.description}</p>}
+                        {slide.link && (
+                          <a
+                            href={slide.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-3 inline-block rounded-md bg-[#ff0a78] px-5 py-2 text-sm font-bold transition hover:bg-[#ff2d8f] md:text-base"
+                          >
+                            Ver proyecto
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </article>
                 ))}
@@ -321,7 +368,10 @@ const LandingScreen = () => {
 
             <button
               type="button"
-              onClick={nextWork}
+              onClick={() => {
+                pauseWorkAutoplay();
+                nextWork();
+              }}
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-slate-300 transition hover:border-[#ff0a78] hover:text-white"
             >
               <ArrowRight size={16} />
@@ -543,6 +593,6 @@ const LandingScreen = () => {
   );
 };
 
-CreateReactScript((el) => {
-  createRoot(el).render(<LandingScreen />);
+CreateReactScript((el, properties) => {
+  createRoot(el).render(<LandingScreen {...properties} />);
 });
