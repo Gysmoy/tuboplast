@@ -1,13 +1,13 @@
 {
-  "_Adminto-i5zrIkXC.js": {
-    "file": "assets/Adminto-i5zrIkXC.js",
+  "_Adminto-s6OEdxJa.js": {
+    "file": "assets/Adminto-s6OEdxJa.js",
     "name": "Adminto",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "_main-CD7tKkiy.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_CreateReactScript-BHDOOvdB.js",
+      "_CreateReactScript-W8faHfym.js",
       "_index-3eJeR5RX.js",
       "resources/js/Components/Menu.jsx"
     ],
@@ -15,22 +15,22 @@
       "tippy.css"
     ]
   },
-  "_BasicRest-D1LuYaeU.js": {
-    "file": "assets/BasicRest-D1LuYaeU.js",
+  "_BasicRest-BGVEugL8.js": {
+    "file": "assets/BasicRest-BGVEugL8.js",
     "name": "BasicRest",
     "imports": [
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_Adminto-i5zrIkXC.js",
+      "_Adminto-s6OEdxJa.js",
       "_main-CD7tKkiy.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
-  "_CreateReactScript-BHDOOvdB.js": {
-    "file": "assets/CreateReactScript-BHDOOvdB.js",
+  "_CreateReactScript-W8faHfym.js": {
+    "file": "assets/CreateReactScript-W8faHfym.js",
     "name": "CreateReactScript",
     "imports": [
       "resources/js/Utils/CreateReactScript.jsx",
@@ -64,6 +64,13 @@
     "file": "assets/index-RYns6xqu.js",
     "name": "index"
   },
+  "_index-jhwPeUo-.js": {
+    "file": "assets/index-jhwPeUo-.js",
+    "name": "index",
+    "imports": [
+      "_index-RYns6xqu.js"
+    ]
+  },
   "_main-CD7tKkiy.js": {
     "file": "assets/main-CD7tKkiy.js",
     "name": "main",
@@ -71,9 +78,9 @@
       "_index-RYns6xqu.js"
     ]
   },
-  "_tippy-!~{00v}~.js": {
+  "_tippy-!~{00A}~.js": {
     "file": "tippy.css",
-    "src": "_tippy-!~{00v}~.js"
+    "src": "_tippy-!~{00A}~.js"
   },
   "resources/css/app.css": {
     "file": "app.css",
@@ -81,7 +88,7 @@
     "isEntry": true
   },
   "resources/js/Admin/Contacts.jsx": {
-    "file": "assets/Contacts-Cz9qxjBY.js",
+    "file": "assets/Contacts-B1prsNIo.js",
     "name": "Contacts",
     "src": "resources/js/Admin/Contacts.jsx",
     "isEntry": true,
@@ -89,9 +96,9 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-BHDOOvdB.js",
-      "_BasicRest-D1LuYaeU.js",
-      "_Adminto-i5zrIkXC.js",
+      "_CreateReactScript-W8faHfym.js",
+      "_BasicRest-BGVEugL8.js",
+      "_Adminto-s6OEdxJa.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CD7tKkiy.js",
@@ -104,7 +111,7 @@
     ]
   },
   "resources/js/Admin/Home.jsx": {
-    "file": "assets/Home-CIE3juii.js",
+    "file": "assets/Home-BB0JXg20.js",
     "name": "Home",
     "src": "resources/js/Admin/Home.jsx",
     "isEntry": true,
@@ -112,8 +119,8 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-BHDOOvdB.js",
-      "_Adminto-i5zrIkXC.js",
+      "_CreateReactScript-W8faHfym.js",
+      "_Adminto-s6OEdxJa.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CD7tKkiy.js",
@@ -126,7 +133,7 @@
     ]
   },
   "resources/js/Admin/Projects.jsx": {
-    "file": "assets/Projects-CREixWUJ.js",
+    "file": "assets/Projects-Cmh1UrxK.js",
     "name": "Projects",
     "src": "resources/js/Admin/Projects.jsx",
     "isEntry": true,
@@ -134,9 +141,9 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-BHDOOvdB.js",
-      "_BasicRest-D1LuYaeU.js",
-      "_Adminto-i5zrIkXC.js",
+      "_CreateReactScript-W8faHfym.js",
+      "_BasicRest-BGVEugL8.js",
+      "_Adminto-s6OEdxJa.js",
       "_main-CD7tKkiy.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -360,8 +367,68 @@
       "_index-RYns6xqu.js"
     ]
   },
+  "resources/js/Components/Tailwind/Base.jsx": {
+    "file": "assets/Base-BYg4LlP3.js",
+    "name": "Base",
+    "src": "resources/js/Components/Tailwind/Base.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Tailwind/Footer.jsx": {
+    "file": "assets/Footer-jP-dy5WE.js",
+    "name": "Footer",
+    "src": "resources/js/Components/Tailwind/Footer.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Tailwind/Header.jsx": {
+    "file": "assets/Header-BYg4LlP3.js",
+    "name": "Header",
+    "src": "resources/js/Components/Tailwind/Header.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Components/Tailwind/TopBar.jsx": {
+    "file": "assets/TopBar-BYg4LlP3.js",
+    "name": "TopBar",
+    "src": "resources/js/Components/Tailwind/TopBar.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
+  },
+  "resources/js/Home.jsx": {
+    "file": "assets/Home-KaVnH9lH.js",
+    "name": "Home",
+    "src": "resources/js/Home.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_index-jhwPeUo-.js",
+      "_CreateReactScript-W8faHfym.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CD7tKkiy.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
   "resources/js/Landing.jsx": {
-    "file": "assets/Landing-BkCVIiIE.js",
+    "file": "assets/Landing-CYcTMjUr.js",
     "name": "Landing",
     "src": "resources/js/Landing.jsx",
     "isEntry": true,
@@ -369,7 +436,8 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-BHDOOvdB.js",
+      "_index-jhwPeUo-.js",
+      "_CreateReactScript-W8faHfym.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CD7tKkiy.js",
@@ -380,7 +448,7 @@
     ]
   },
   "resources/js/Login.jsx": {
-    "file": "assets/Login-Dz_s4Vmy.js",
+    "file": "assets/Login-C1tERhZA.js",
     "name": "Login",
     "src": "resources/js/Login.jsx",
     "isEntry": true,
@@ -388,7 +456,7 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-BHDOOvdB.js",
+      "_CreateReactScript-W8faHfym.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CD7tKkiy.js",
@@ -399,7 +467,7 @@
     ]
   },
   "resources/js/Utils/CreateReactScript.jsx": {
-    "file": "assets/CreateReactScript-iv_O5B4r.js",
+    "file": "assets/CreateReactScript-D0F6PWpH.js",
     "name": "CreateReactScript",
     "src": "resources/js/Utils/CreateReactScript.jsx",
     "isEntry": true,

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class LandingController extends BasicController
 {
-    public $reactView = 'Landing';
+    public $reactView = 'Home';
     public $reactRootView = 'public';
 
     public function setReactViewProperties(Request $request)

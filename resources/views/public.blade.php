@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -7,35 +7,31 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ env('APP_NAME', 'Ursa Repuestos') }}</title>
+    <title>{{ env('APP_NAME', 'Tuboplast') }}</title>
 
-    <meta name="title" content="Ursa Repuestos" />
-    <meta name="description"
-        content="Tienda especializada en repuestos para motos Benelli. Encuentra motor, transmisión, frenos, suspensión y accesorios originales y alternativos a precios justos. Envío rápido y garantía de calidad." />
-    <meta name="keywords"
-        content="repuestos para motos, repuestos Benelli, tienda repuestos Benelli, repuestos originales Benelli, repuestos alternativos moto, motor Benelli, transmisión Benelli, frenos Benelli, suspensión Benelli, accesorios Benelli, repuestos Benelli TNT, repuestos Benelli TRK 502, repuestos Benelli 302, partes para motos, comprar repuestos Benelli online, envío rápido repuestos moto" />
+    <meta name="title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
+    <meta name="description" content="Tuboplast ofrece tuberias, conexiones y accesorios de PVC para agua, desague y electricidad. Calidad certificada, asesoria tecnica y cobertura a nivel nacional." />
+    <meta name="keywords" content="tuboplast, tuberias pvc, conexiones pvc, accesorios pvc, tuberias para agua, tuberias para desague, tuberias para electricidad, soluciones hidraulicas, construccion, ferreteria industrial, catalogo tuboplast" />
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ url()->current() }}" />
 
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url()->current() }}" />
-    <meta property="og:title" content="Ursa Repuestos" />
-    <meta property="og:description"
-        content="Tienda especializada en repuestos para motos Benelli. Encuentra motor, transmisión, frenos, suspensión y accesorios originales y alternativos a precios justos. Envío rápido y garantía de calidad." />
+    <meta property="og:title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
+    <meta property="og:description" content="Tuberias y conexiones de PVC para proyectos residenciales e industriales. Calidad certificada, soporte tecnico y envios a nivel nacional." />
     <meta property="og:image" content="{{ asset('/assets/img/icons/og-image.jpg') }}" />
-    <meta property="og:image:alt" content="Ursa Repuestos - Especialistas en repuestos Benelli" />
-    <meta property="og:site_name" content="Ursa Repuestos" />
+    <meta property="og:image:alt" content="Tuboplast - Tuberias y conexiones de PVC" />
+    <meta property="og:site_name" content="Tuboplast" />
     <meta property="og:locale" content="es_ES" />
 
     {{-- Twitter / X --}}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="{{ url()->current() }}" />
-    <meta name="twitter:title" content="Ursa Repuestos" />
-    <meta name="twitter:description"
-        content="Tienda especializada en repuestos para motos Benelli. Encuentra motor, transmisión, frenos, suspensión y accesorios originales y alternativos a precios justos. Envío rápido y garantía de calidad." />
+    <meta name="twitter:title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
+    <meta name="twitter:description" content="Descubre el catalogo Tuboplast: tuberias, conexiones y accesorios de PVC para agua, desague y electricidad." />
     <meta name="twitter:image" content="{{ asset('/assets/img/icons/og-image.jpg') }}" />
-    <meta name="twitter:image:alt" content="Ursa Repuestos - Especialistas en repuestos Benelli" />
+    <meta name="twitter:image:alt" content="Tuboplast - Tuberias y conexiones de PVC" />
 
     {{-- WhatsApp --}}
     <meta property="og:image:width" content="1200" />
@@ -43,9 +39,8 @@
 
     {{-- Instagram --}}
     <meta name="instagram:card" content="summary_large_image" />
-    <meta name="instagram:title" content="Ursa Repuestos" />
-    <meta name="instagram:description"
-        content="Tienda especializada en repuestos para motos Benelli. Encuentra motor, transmisión, frenos, suspensión y accesorios originales y alternativos a precios justos. Envío rápido y garantía de calidad." />
+    <meta name="instagram:title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
+    <meta name="instagram:description" content="Calidad certificada en tuberias y conexiones de PVC para obras, industria y proyectos residenciales." />
     <meta name="instagram:image" content="{{ asset('/assets/img/icons/og-image.jpg') }}" />
 
 
@@ -53,7 +48,7 @@
     <link rel="icon" type="image/svg+xml" href="/assets/img/icons/icon.svg" />
     <link rel="shortcut icon" type="image/svg+xml" href="/assets/img/icons/icon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="Ursa" />
+    <meta name="apple-mobile-web-app-title" content="Tuboplast" />
     <link rel="manifest" href="/manifest.webmanifest">
 
     <link href="/lte/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
@@ -147,3 +142,4 @@
 </body>
 
 </html>
+
