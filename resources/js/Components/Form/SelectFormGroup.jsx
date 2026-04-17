@@ -8,13 +8,20 @@ const SelectFormGroup = ({ col, label, eRef, required = false, children, dropdow
   if (!eRef) eRef = useRef()
 
   useEffect(() => {
-    $(eRef.current).select2({
-      dropdownParent,
+    const $element = $(eRef.current)
+    const $dropdownParent = dropdownParent ? $(dropdownParent) : undefined
+    $element.select2({
+      dropdownParent: $dropdownParent,
       templateResult,
       templateSelection
     })
-    $(eRef.current).on('change', onChange)
-  }, [dropdownParent])
+    $element.on('change', onChange)
+
+    return () => {
+      $element.off('change', onChange)
+      if ($element.data('select2')) $element.select2('destroy')
+    }
+  }, [dropdownParent, onChange, templateResult, templateSelection])
 
   return <div className={`form-group ${col} mb-2`}>
     <label htmlFor='' className="form-label">

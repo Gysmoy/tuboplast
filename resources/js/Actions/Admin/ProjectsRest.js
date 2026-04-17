@@ -1,5 +1,12 @@
 import BasicRest from '../BasicRest'
-import { Cookies, Notify } from 'sode-extend-react'
+import { Cookies } from 'sode-extend-react'
+import { toast } from "sonner"
+
+const notify = ({ title, body, type }) => {
+  if (type === "success") return toast.success(title, { description: body })
+  if (type === "danger") return toast.error(title, { description: body })
+  return toast(title, { description: body })
+}
 
 class ProjectsRest extends BasicRest {
   path = 'projects'
@@ -31,7 +38,7 @@ class ProjectsRest extends BasicRest {
         throw new Error(result?.message || 'Ocurrio un error inesperado')
       }
 
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Correcto',
         body: result.message,
@@ -40,7 +47,7 @@ class ProjectsRest extends BasicRest {
 
       return result
     } catch (error) {
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Error',
         body: error.message,

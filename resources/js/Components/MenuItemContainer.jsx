@@ -1,37 +1,28 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 const MenuItemContainer = ({ title, icon, children }) => {
+  const childItems = React.Children.toArray(children)
+  const refs = childItems.map(child => child?.props?.href).filter(Boolean)
+  const isExpanded = refs.some((x) => location.pathname.startsWith(x))
+  const id = useMemo(() => {
+    const slug = (title ?? 'menu')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    return `sidebar-${slug}-${Math.random().toString(36).slice(2, 7)}`
+  }, [title])
 
-  const refs = []
-  if (Array.isArray(children)) {
-    children.forEach(child => refs.push(child?.props?.href))
-  } else {
-    refs.push(children?.props?.href)
-  }
-  const isExpanded = refs.filter(Boolean).some(x => location.pathname.includes(x))
-
-  const id = `item-${crypto.randomUUID()}`
   return (
-    // <li>
-    //   <a href={`#${id}`} data-bs-toggle="collapse" aria-expanded={isExpanded} >
-    //     <i className={icon}></i>
-    //     <span> {title} </span>
-    //     <span className="menu-arrow"></span>
-    //   </a>
-    //   <div className={`collapse ${isExpanded && 'show'}`} id={id}>
-    //     <ul className="nav-second-level">
-    //       {children}
-    //     </ul>
-    //   </div>
-    // </li>
     <li className="side-nav-item">
-      <a data-bs-toggle="collapse" href="#sidebarContacts" aria-expanded="false"
-        aria-controls="sidebarContacts" className="side-nav-link">
+      <a data-bs-toggle="collapse" href={`#${id}`} aria-expanded={isExpanded}
+        aria-controls={id} className="side-nav-link">
         <span className="menu-icon"><i className={icon}></i></span>
         <span className="menu-text"> {title}</span>
         <span className="menu-arrow"></span>
       </a>
-      <div className="collapse" id="sidebarContacts">
+      <div className={`collapse ${isExpanded ? 'show' : ''}`} id={id}>
         <ul className="sub-menu">
           {children}
         </ul>

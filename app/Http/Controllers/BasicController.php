@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Classes\dxResponse;
 use App\Models\dxDataGrid;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -122,6 +123,11 @@ class BasicController extends Controller
     $userJpa = null;
     $usdPrice = null;
     $eurPrice = null;
+
+    if (Auth::check()) {
+      $userJpa = User::find(Auth::id());
+      $userJpa->getAllPermissions();
+    }
 
     $properties = [
       'session' => $userJpa,

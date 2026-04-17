@@ -1,15 +1,15 @@
 import React from 'react'
-import Logout from '../actions/Logout'
+import Logout from '../Actions/Logout'
 import MenuItem from './MenuItem'
-import Tippy from '@tippyjs/react'
-import 'tippy.js/dist/tippy.css';
+import MenuItemContainer from './MenuItemContainer'
 import LaravelSession from '../Utils/LaravelSession'
-import { useAdminto } from './AdmintoContext'
 
 const Menu = ({ session, can, rhYearTotalBadge }) => {
   const mainRole = LaravelSession.roles?.[0] ?? { name: 'User' }
-
-  const { metrics } = useAdminto()
+  const avatarImage = LaravelSession.image || session?.image
+  const avatarUrl = avatarImage
+    ? `/storage/images/user/${avatarImage}`
+    : `https://ui-avatars.com/api/?name=${session.name}+${session.lastname}&color=FFFFFF&background=FFFFFF11`
 
   return (<div className="sidenav-menu">
     <a href="/" className="logo">
@@ -43,7 +43,7 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
         <div className="dropdown-center text-center">
           <a className="topbar-link dropdown-toggle text-reset drop-arrow-none px-2" data-bs-toggle="dropdown"
             type="button" aria-haspopup="false" aria-expanded="false">
-            <img src={`/storage/images/user/${LaravelSession.image}`}
+            <img src={avatarUrl}
               className="rounded-circle aspect-square"
               style={{
                 width: '46px',
@@ -51,11 +51,11 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
                 objectFit: 'cover',
                 objectPosition: 'center',
               }}
-              onError={e => e.target.src = `https://ui-avatars.com/api/?name=${LaravelSession.name}+${LaravelSession.lastname}&color=FFFFFF&background=FFFFFF11`}
-              alt={LaravelSession.fullname} />
+              onError={e => e.target.src = `https://ui-avatars.com/api/?name=${session.name}+${session.lastname}&color=FFFFFF&background=FFFFFF11`}
+              alt={session.fullname} />
             <span className="d-flex justify-content-center gap-1 sidenav-user-name my-2">
               <span>
-                <span className="mb-0 fw-semibold lh-base fs-15">{LaravelSession.name?.split(' ')[0]} {LaravelSession.lastname?.split(' ')[0]}</span>
+                <span className="mb-0 fw-semibold lh-base fs-15">{session.name?.split(' ')[0]} {session.lastname?.split(' ')[0]}</span>
                 <p className="my-0 fs-13 text-muted">{mainRole?.name}</p>
               </span>
 
@@ -69,9 +69,9 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
             </div>
 
 
-            <a href="javascript:void(0);" className="dropdown-item">
+            <a href="/account" className="dropdown-item">
               <i className="ri-account-circle-line me-1 fs-16 align-middle"></i>
-              <span className="align-middle">Mi cuenta</span>
+              <span className="align-middle">Mi cuenta y perfil</span>
             </a>
 
 
@@ -86,12 +86,6 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
               <span className="align-middle">Configuracion</span>
             </a>
 
-
-            <a href="javascript:void(0);" className="dropdown-item">
-              <i className="ri-question-line me-1 fs-16 align-middle"></i>
-              <span className="align-middle">Soporte</span>
-            </a>
-
             <div className="dropdown-divider"></div>
 
 
@@ -101,78 +95,34 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
             </a>
 
 
-            <a href="javascript:void(0);" className="dropdown-item active fw-semibold text-danger">
+            <a href="javascript:void(0);" className="dropdown-item active fw-semibold text-danger" onClick={Logout}>
               <i className="ri-logout-box-line me-1 fs-16 align-middle"></i>
               <span className="align-middle">Cerrar sesion</span>
             </a>
           </div>
         </div>
-        <div className='px-3'>
-          <div className="row g-0">
-            <div className="col-4">
-              <Tippy
-                content={
-                  <>
-                    Usando: {metrics?.cpu?.used?.toFixed(1)} Cores
-                    <br />
-                    Total: {metrics?.cpu?.total} Cores
-                  </>
-                }
-              >
-                <div className="d-flex flex-column align-items-center justify-content-center">
-                  <small className="text-muted d-block">CPU</small>
-                  <div className={`fw-bold fs-5 ${metrics?.cpu?.percent < 50 ? 'text-success' : metrics?.cpu?.percent <= 80 ? 'text-warning' : 'text-danger'}`}>
-                    {metrics?.cpu?.percent?.toFixed(1)}<span className="fs-7">%</span>
-                  </div>
-                </div>
-              </Tippy>
-            </div>
-
-            <div className="col-4">
-              <Tippy
-                content={
-                  <>
-                    Usando: {Math.round(metrics?.ram?.used / 1024)} GB
-                    <br />
-                    Total: {Math.round(metrics?.ram?.total / 1024)} GB
-                  </>
-                }
-              >
-                <div className="d-flex flex-column align-items-center justify-content-center">
-                  <small className="text-muted d-block">RAM</small>
-                  <div className={`fw-bold fs-5 ${metrics?.ram?.percent < 50 ? 'text-success' : metrics?.ram?.percent <= 80 ? 'text-warning' : 'text-danger'}`}>
-                    {metrics?.ram?.percent?.toFixed(1)}<span className="fs-7">%</span>
-                  </div>
-                </div>
-              </Tippy>
-            </div>
-
-            <div className="col-4">
-              <Tippy
-                content={
-                  <>
-                    Usando: {Math.round(metrics?.disk?.used / 1024 / 1024)} GB
-                    <br />
-                    Total: {Math.round(metrics?.disk?.total / 1024 / 1024)} GB
-                  </>
-                }
-              >
-                <div className="d-flex flex-column align-items-center justify-content-center">
-                  <small className="text-muted d-block">Disk</small>
-                  <div className={`fw-bold fs-5 ${metrics?.disk?.percent < 50 ? 'text-success' : metrics?.disk?.percent <= 80 ? 'text-warning' : 'text-danger'}`}>
-                    {metrics?.disk?.percent}<span className="fs-7">%</span>
-                  </div>
-                </div>
-              </Tippy>
-            </div>
-          </div>
-        </div>
       </div>
 
       <ul className="side-nav">
-        <MenuItem href="/home" icon='ti ti-home'>Inicio</MenuItem>
-        <MenuItem href="/contacts" icon='ti ti-user-plus'>Leads</MenuItem>
-        <MenuItem href="/projects" icon='ti ti-briefcase'>Proyectos</MenuItem>
+        <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
+        <MenuItem href="/admin/cotizaciones" icon='ti ti-receipt-2'>Cotizaciones</MenuItem>
+        <MenuItem href="/admin/club-experto" icon='ti ti-users-group'>Club experto</MenuItem>
+        <MenuItem href="/admin/mensajes" icon='ti ti-message-dots'>Mensajes</MenuItem>
+
+        <li className="side-nav-title mt-2">Catalogo</li>
+        <MenuItem href="/admin/items" icon='ti ti-package'>Items</MenuItem>
+        <MenuItem href="/admin/categorias" icon='ti ti-category'>Categorias</MenuItem>
+
+        <li className="side-nav-title mt-2">Landing</li>
+        <MenuItem href="/admin/distributors" icon='ti ti-truck-delivery'>Distribuidores</MenuItem>
+        <MenuItem href="/admin/branches" icon='ti ti-building-store'>Sucursales</MenuItem>
+
+        <li className="side-nav-title mt-2">Configuraciones</li>
+        <MenuItemContainer title='Seguridad' icon='ti ti-shield-lock'>
+          <MenuItem href="/admin/roles" icon='ti ti-key'>Roles</MenuItem>
+          <MenuItem href="/admin/users" icon='ti ti-users'>Usuarios</MenuItem>
+        </MenuItemContainer>
+        <MenuItem href="/account" icon='ti ti-user-circle'>Mi cuenta</MenuItem>
       </ul>
 
       <div className="clearfix"></div>

@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: xplain/laravel-app
-    container_name: xplain-app
+    image: tuboplast/laravel-app
+    container_name: tuboplast-app
     restart: unless-stopped
     tty: true
     environment:
@@ -56,20 +56,21 @@ services:
       - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
       - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
       - TINYMCE_KEY=${TINYMCE_KEY}
+      - GMAPS_API_KEY=${GMAPS_API_KEY}
     # depends_on:
     #   - db
     ports:
-      - "8090:80"
+      - "8110:80"
     volumes:
       - storage:/var/www/html/storage
       - cache:/var/www/html/bootstrap/cache
       - ./docker-compose/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - app-network-xplain
+      - app-network-tuboplast
 
   db:
     image: mysql:8.0
-    container_name: xplain-mysql
+    container_name: tuboplast-mysql
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -77,10 +78,10 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - app-network-xplain
+      - app-network-tuboplast
 
 networks:
-  app-network-xplain:
+  app-network-tuboplast:
     driver: bridge
 
 volumes:

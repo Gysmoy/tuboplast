@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from "react"
-import Logout from "../actions/Logout"
+import Logout from "../Actions/Logout"
 import LaravelSession from "../Utils/LaravelSession"
 import Global from "../Utils/Global"
 import Number2Currency from "../Utils/Number2Currency"
 
 const NavBar = ({ title = 'Panel' }) => {
+  const fullName = `${LaravelSession.name ?? ''} ${LaravelSession.lastname ?? ''}`.trim()
+  const avatarUrl = LaravelSession.image
+    ? `/storage/images/user/${LaravelSession.image}`
+    : `https://ui-avatars.com/api/?name=${LaravelSession.name}+${LaravelSession.lastname}&color=FFFFFF&background=FFFFFF11`
 
   useEffect(() => {
     document.title = `${title} | DevEx Consulting`
@@ -385,7 +389,7 @@ const NavBar = ({ title = 'Panel' }) => {
           <div className="dropdown">
             <a className="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown"
               data-bs-offset="0,25" type="button" aria-haspopup="false" aria-expanded="false">
-              <img src="assets/images/users/avatar-1.jpg" className="rounded-circle me-lg-2 d-flex"
+              <img src={avatarUrl} className="rounded-circle me-lg-2 d-flex"
                 style={{
                   backgroundColor: '#252630',
                   width: '32px',
@@ -394,7 +398,7 @@ const NavBar = ({ title = 'Panel' }) => {
                   objectPosition: 'center',
                 }}
                 onError={e => e.target.src = `https://ui-avatars.com/api/?name=${LaravelSession.name}+${LaravelSession.lastname}&color=FFFFFF&background=FFFFFF11`}
-                alt={LaravelSession.fullname} />
+                alt={fullName} />
               <span className="d-lg-flex flex-column gap-1 d-none">
                 <h5 className="my-0">{LaravelSession.name?.split(' ')[0]} {LaravelSession.lastname?.split(' ')[0]}</h5>
               </span>
@@ -407,9 +411,9 @@ const NavBar = ({ title = 'Panel' }) => {
               </div>
 
 
-              <a href="javascript:void(0);" className="dropdown-item">
+              <a href="/account" className="dropdown-item">
                 <i className="ri-account-circle-line me-1 fs-16 align-middle"></i>
-                <span className="align-middle">My Account</span>
+                <span className="align-middle">Mi cuenta y perfil</span>
               </a>
 
 
@@ -422,12 +426,6 @@ const NavBar = ({ title = 'Panel' }) => {
               <a href="javascript:void(0);" className="dropdown-item">
                 <i className="ri-settings-2-line me-1 fs-16 align-middle"></i>
                 <span className="align-middle">Settings</span>
-              </a>
-
-
-              <a href="javascript:void(0);" className="dropdown-item">
-                <i className="ri-question-line me-1 fs-16 align-middle"></i>
-                <span className="align-middle">Support</span>
               </a>
 
               <div className="dropdown-divider"></div>

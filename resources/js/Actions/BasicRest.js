@@ -1,4 +1,11 @@
-import { Cookies, Fetch, Notify } from "sode-extend-react"
+import { Cookies, Fetch } from "sode-extend-react"
+import { toast } from "sonner"
+
+const notify = ({ title, body, type }) => {
+  if (type === "success") return toast.success(title, { description: body })
+  if (type === "danger") return toast.error(title, { description: body })
+  return toast(title, { description: body })
+}
 
 class BasicRest {
   path = null
@@ -17,7 +24,7 @@ class BasicRest {
         );
       return result.data ?? true;
     } catch (error) {
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Error',
         body: error.message,
@@ -53,7 +60,7 @@ class BasicRest {
 
       if (!status) throw new Error(result?.message || 'Ocurrio un error inesperado')
 
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Correcto',
         body: result.message,
@@ -61,7 +68,7 @@ class BasicRest {
       })
       return result
     } catch (error) {
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Error',
         body: error.message,
@@ -79,7 +86,7 @@ class BasicRest {
       })
       if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrio un error inesperado')
 
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Correcto',
         body: result.message,
@@ -88,7 +95,7 @@ class BasicRest {
 
       return true
     } catch (error) {
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Error',
         body: error.message,
@@ -107,7 +114,7 @@ class BasicRest {
       })
       if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrio un error inesperado')
 
-      if (showNotification) Notify.add({
+      if (showNotification) notify({
         icon: '/assets/img/icon.svg',
         title: 'Correcto',
         body: result.message,
@@ -116,7 +123,7 @@ class BasicRest {
 
       return true
     } catch (error) {
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Error',
         body: error.message,
@@ -134,7 +141,7 @@ class BasicRest {
       })
       if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrio un error inesperado')
 
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Correcto',
         body: result.message,
@@ -143,7 +150,7 @@ class BasicRest {
 
       return true
     } catch (error) {
-      Notify.add({
+      notify({
         icon: '/assets/img/icon.svg',
         title: 'Error',
         body: error.message,

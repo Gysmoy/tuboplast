@@ -3,7 +3,7 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="es" data-layout-mode="detached" data-menu-color="dark">
+<html lang="es" data-layout-mode="detached" data-menu-color="light">
 
 <head>
     @viteReactRefresh
@@ -71,7 +71,7 @@
                         style="height: 40px;">
                 </a>
 
-                <p class="fw-semibold mb-4 text-center text-muted fs-15">Panel powered by DevEx Consulting</p>
+                <p class="fw-semibold mb-4 text-center text-muted fs-15">Panel powered by xPlain Solutions</p>
                 <div class="card overflow-hidden text-center p-xxl-4 p-3 mb-0">
                     @inertia
 
