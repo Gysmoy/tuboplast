@@ -43,7 +43,7 @@ const Header = ({ title }) => {
           </div>
 
           <div className="ml-auto flex items-center gap-6 text-[#003B7A]">
-            <button type="button" className="text-sm font-medium flex items-center gap-2">
+            <a href='/contact' className="text-sm font-medium flex items-center gap-2">
               <span className='flex items-center justify-center h-10 w-10 p-2 bg-silver rounded-lg text-primary'>
                 <i className="mdi mdi-headset text-xl"></i>
               </span>
@@ -51,8 +51,8 @@ const Header = ({ title }) => {
                 Antención<br />
                 al cliente
               </span>
-            </button>
-            <button type="button" className="text-sm font-medium flex items-center gap-2">
+            </a>
+            <a href='/login' className="text-sm font-medium flex items-center gap-2">
               <span className='flex items-center justify-center h-10 w-10 p-2 bg-silver rounded-lg text-primary'>
                 <i className="mdi mdi-account text-xl"></i>
               </span>
@@ -60,7 +60,7 @@ const Header = ({ title }) => {
                 Entre o<br />
                 Regístrese
               </span>
-            </button>
+            </a>
             <button type="button" className="text-sm font-medium flex items-center gap-2">
               <span className='flex items-center justify-center h-10 w-10 p-2 bg-silver rounded-lg text-primary'>
                 <i className="mdi mdi-cart text-xl"></i>
@@ -79,9 +79,8 @@ const Header = ({ title }) => {
               <a
                 key={item.label}
                 href={item.href}
-                className={`whitespace-nowrap border-b-4 transition hover:border-b-secondary ${
-                  isActivePath(item.href) ? 'border-b-secondary' : 'border-transparent'
-                }`}
+                className={`whitespace-nowrap border-b-4 transition hover:border-b-secondary ${isActivePath(item.href) ? 'border-b-secondary' : 'border-transparent'
+                  }`}
               >
                 {item.label}
               </a>
