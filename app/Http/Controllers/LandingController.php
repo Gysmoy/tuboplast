@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
-use App\Models\Project;
 use Illuminate\Http\Request;
 
 class LandingController extends BasicController
@@ -14,18 +13,6 @@ class LandingController extends BasicController
     public function setReactViewProperties(Request $request)
     {
         return [
-            'projects' => Project::query()
-                ->where('status', true)
-                ->latest('id')
-                ->get()
-                ->map(fn (Project $project) => [
-                    'id' => $project->id,
-                    'name' => $project->name,
-                    'short_description' => $project->short_description,
-                    'image' => '/api/projects/media/' . $project->image,
-                    'link' => $project->link,
-                ])
-                ->values(),
             'token' => csrf_token(),
         ];
     }

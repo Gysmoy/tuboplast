@@ -2,7 +2,7 @@
 
 const Footer = () => {
   return (
-    <footer className="border-t border-slate-200 bg-white">
+    <footer id="contacto" className="border-t border-slate-200 bg-white">
       <div className="mx-auto grid max-w-[1140px] gap-8 px-4 py-10 sm:px-6 md:grid-cols-5 lg:px-0">
         <div className="md:col-span-1">
           <p className="text-lg font-black text-[#003B7A]">

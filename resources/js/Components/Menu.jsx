@@ -105,13 +105,13 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
 
       <ul className="side-nav">
         <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
-        <MenuItem href="/admin/cotizaciones" icon='ti ti-receipt-2'>Cotizaciones</MenuItem>
-        <MenuItem href="/admin/club-experto" icon='ti ti-users-group'>Club experto</MenuItem>
-        <MenuItem href="/admin/mensajes" icon='ti ti-message-dots'>Mensajes</MenuItem>
+        <MenuItem href="/admin/quotes" icon='ti ti-receipt-2'>Cotizaciones</MenuItem>
+        <MenuItem href="/admin/expert-club" icon='ti ti-users-group'>Club experto</MenuItem>
+        <MenuItem href="/admin/messages" icon='ti ti-message-dots'>Mensajes</MenuItem>
 
         <li className="side-nav-title mt-2">Catalogo</li>
         <MenuItem href="/admin/items" icon='ti ti-package'>Items</MenuItem>
-        <MenuItem href="/admin/categorias" icon='ti ti-category'>Categorias</MenuItem>
+        <MenuItem href="/admin/categories" icon='ti ti-category'>Categorias</MenuItem>
 
         <li className="side-nav-title mt-2">Landing</li>
         <MenuItem href="/admin/distributors" icon='ti ti-truck-delivery'>Distribuidores</MenuItem>
@@ -122,7 +122,7 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
           <MenuItem href="/admin/roles" icon='ti ti-key'>Roles</MenuItem>
           <MenuItem href="/admin/users" icon='ti ti-users'>Usuarios</MenuItem>
         </MenuItemContainer>
-        <MenuItem href="/account" icon='ti ti-user-circle'>Mi cuenta</MenuItem>
+        <MenuItem href="/admin/account" icon='ti ti-user-circle'>Mi cuenta</MenuItem>
       </ul>
 
       <div className="clearfix"></div>

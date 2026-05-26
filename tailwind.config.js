@@ -16,11 +16,13 @@ export default {
     },
     extend: {
       colors: {
-        primary: '#003368',
+        primary: '#004991',
         secondary: '#F4E300',
         light: '#ffffff',
-        dark: '#0C111C',
-        muted: '#94A3B8',
+        silver: '#F1F5F9',
+        dark: '#1A1C1C',
+        darkmuted: '#424751',
+        muted: '#737782',
         container: '#111827',
         success: '#10B981',
       },

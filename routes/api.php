@@ -1,19 +1,19 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactController;
-use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\SucursalController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\UbigeoController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('landing', [LandingController::class, 'storeContact']);
-Route::get('projects/media/{uuid}', [ProjectController::class, 'media']);
+Route::get('categories/media/{uuid}', [CategoryController::class, 'media']);
 Route::get('ubigeo/inei', [UbigeoController::class, 'inei']);
 
 Route::middleware('auth')->group(function () {
@@ -21,11 +21,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('contacts/paginate', [ContactController::class, 'paginate']);
     Route::delete('contacts/{id}', [ContactController::class, 'delete']);
-
-    Route::post('projects/paginate', [ProjectController::class, 'paginate']);
-    Route::post('projects', [ProjectController::class, 'save']);
-    Route::get('projects/{id}', [ProjectController::class, 'get']);
-    Route::delete('projects/{id}', [ProjectController::class, 'delete']);
 
     Route::post('roles/paginate', [RoleController::class, 'paginate']);
     Route::post('roles', [RoleController::class, 'save']);
@@ -50,6 +45,12 @@ Route::middleware('auth')->group(function () {
     Route::post('sucursales', [SucursalController::class, 'save']);
     Route::get('sucursales/{id}', [SucursalController::class, 'get']);
     Route::delete('sucursales/{id}', [SucursalController::class, 'delete']);
+    
+    Route::post('categories/paginate', [CategoryController::class, 'paginate']);
+    Route::post('categories', [CategoryController::class, 'save']);
+    Route::get('categories/{id}', [CategoryController::class, 'get']);
+    Route::patch('categories/status', [CategoryController::class, 'status']);
+    Route::delete('categories/{id}', [CategoryController::class, 'delete']);
 
     Route::put('account/profile', [AccountController::class, 'updateProfile']);
     Route::patch('account/password', [AccountController::class, 'updatePassword']);
