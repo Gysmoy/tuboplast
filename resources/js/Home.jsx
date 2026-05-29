@@ -1,36 +1,24 @@
 import { useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import {
-  ArrowRight,
-  ChevronRight,
-  Factory,
-  Verified,
-  MessageCircle,
-  ShieldCheck,
-  ShoppingBag,
-  Wrench,
-} from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
+import Emphasis from './Utils/em';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const strengths = [
   {
-    icon: Verified,
     title: 'Línea Completa',
     description: 'Contamos con tuberías de ½ "hasta 24" ofreciendo una vida útil estimada de más de 50 años.',
   },
   {
-    icon: Verified,
     title: 'Durabilidad Extrema',
     description: 'Formulación química avanzada para resistir la corrosión y condiciones climáticas severas en todo el territorio nacional.',
   },
   {
-    icon: Verified,
     title: 'Soporte en Obra',
     description: 'Asesoría técnica especializada para el diseño e instalación de sistemas complejos.',
   },
@@ -38,67 +26,81 @@ const strengths = [
 
 const categories = [
   {
-    title: 'Agua',
+    title: 'Edificaciones',
     image:
-      'https://images.unsplash.com/photo-1581092786450-7ef25f140997?auto=format&fit=crop&w=900&q=80',
+      '/assets/img/categories/category-1.png',
   },
   {
-    title: 'Desague',
+    title: 'Infraestructura',
     image:
-      'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80',
+      '/assets/img/categories/category-2.png',
   },
   {
-    title: 'Electricidad',
+    title: 'Minería e Industria',
     image:
-      'https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=900&q=80',
+      '/assets/img/categories/category-3.png',
   },
   {
-    title: 'Conexiones',
+    title: 'Agrícola',
     image:
-      'https://images.unsplash.com/photo-1623067469448-8110f1f1f0f9?auto=format&fit=crop&w=900&q=80',
+      '/assets/img/categories/category-4.png',
   },
 ];
 
 const recommendations = [
   {
-    title: 'Tuberia Agua SP Clase 15 MTP 980.002 3/4 x 5m',
-    image:
-      'https://images.unsplash.com/photo-1570829460005-c840387bb1ca?auto=format&fit=crop&w=1000&q=80',
+    category: 'Tubería PVC-U',
+    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
+    image: '/assets/img/items/item-1.png',
     price: 'S/ 28.30',
+    pressure: '150 PSI',
+    diameter: '33mm',
   },
   {
-    title: 'Tuberia Agua SP Clase 15 MTP 398.002 3/4 x 5m',
-    image:
-      'https://images.unsplash.com/photo-1565715101849-4e4f80c12b79?auto=format&fit=crop&w=1000&q=80',
+    category: 'Tubería PVC-U',
+    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
+    image: '/assets/img/items/item-2.png',
     price: 'S/ 28.30',
+    pressure: '150 PSI',
+    diameter: '33mm',
   },
   {
-    title: 'Tuberia Agua SP Clase 15 MTP 398.002 3/4 x 5m',
-    image:
-      'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&w=1000&q=80',
+    category: 'Tubería PVC-U',
+    title: 'Tubería Agua SP Clase 15 MTP 398.002 3/4 x 5m',
+    image: '/assets/img/items/item-3.png',
     price: 'S/ 28.30',
+    pressure: '150 PSI',
+    diameter: '33mm',
   },
   {
-    title: 'Tuberia Agua SP Clase 15 MTP 980.002 3/4 x 5m',
-    image:
-      'https://images.unsplash.com/photo-1570829460005-c840387bb1ca?auto=format&fit=crop&w=1000&q=80',
+    category: 'Tubería PVC-U',
+    title: 'Tubería Agua SP Clase 15 MTP 980.002 3/4 x 5m',
+    image: '/assets/img/items/item-4.png',
     price: 'S/ 28.30',
+    pressure: '150 PSI',
+    diameter: '33mm',
   },
 ];
 
 const blogPosts = [
   {
-    title: 'Como instalar tuberias CPVC en proyecto de agua caliente sin errores',
+    category: 'Etiqueta',
+    title: 'Cómo instalar tuberías CPVC en proyectos de agua caliente sin errores',
+    description: 'Guía paso a paso para una instalación segura, duradera y certificada. Todo lo que el maestro profesional necesita saber...',
     image:
       'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1000&q=80',
   },
   {
-    title: 'Tuberia PVC-U y HDPE: cual elegir segun el tipo de proyecto?',
+    category: 'Productos',
+    title: 'Tubería PVC-U vs HDPE: ¿cuál elegir según el tipo de proyecto?',
+    description: 'Comparamos resistencia, costo y aplicación para que tomes la mejor decisión técnica en cada obra...',
     image:
       'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80',
   },
   {
-    title: 'Infraestructura hidrica en el Peru: retos del sector construccion en 2026',
+    category: 'Industria',
+    title: 'Infraestructura hídrica en el Perú: los retos del sector construcción en 2025',
+    description: 'Analizamos el panorama actual del sector, las normativas vigentes y cómo Tuboplast lidera la respuesta...',
     image:
       'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80',
   },
@@ -106,8 +108,6 @@ const blogPosts = [
 
 const HomeScreen = () => {
   const pageRef = useRef(null);
-
-  const containerClass = 'mx-auto w-full max-w-7xl px-4';
 
   return (
     <main ref={pageRef} className="min-h-screen">
@@ -124,7 +124,7 @@ const HomeScreen = () => {
             <span data-hero-line className="block h-1 w-16 bg-secondary" />
             <h1
               data-hero-title
-              className="text-7xl font-title leading-none tracking-tight text-[#003B7A]"
+              className="text-7xl font-title leading-none tracking-tight text-primary"
             >
               Expertos en Tuberias y Conexiones de PVC
             </h1>
@@ -136,14 +136,14 @@ const HomeScreen = () => {
               <a
                 href="#catalog"
                 data-hero-cta
-                className="rounded-full bg-[#003B7A] px-10 py-4 text-sm font-semibold text-white shadow-md transition "
+                className="rounded-full bg-primary px-10 py-4 text-sm font-semibold text-white shadow-md transition "
               >
-                Ver catalogo <ArrowRight size={14} className="ml-1 inline" />
+                Ver catalogo <i className="mdi mdi-arrow-right ml-1 align-middle text-sm"></i>
               </a>
               <button
                 data-hero-cta
                 type="button"
-                className="rounded-full bg-[#F7DD00] px-10 py-4 text-sm font-semibold text-[#003B7A] shadow-md transition "
+                className="rounded-full bg-[#F7DD00] px-10 py-4 text-sm font-semibold text-primary shadow-md transition "
               >
                 Solicitar cotizacion
               </button>
@@ -197,9 +197,8 @@ const HomeScreen = () => {
       </section>
 
       <section className="relative py-10">
-        <div className={`${containerClass} grid gap-14 md:grid-cols-3`}>
+        <div className={`mx-auto w-full max-w-site px-4 grid gap-14 md:grid-cols-3`}>
           {strengths.map((strength) => {
-            const Icon = strength.icon;
             return (
               <article
                 key={strength.title}
@@ -207,9 +206,9 @@ const HomeScreen = () => {
                 className={`rounded-2xl bg-white p-5 hover:shadow-lg border-l-4 border-transparent hover:border-secondary transition-colors space-y-4`}
               >
                 <div className="grid h-16 w-16 place-items-center rounded-xl bg-silver text-primary">
-                  <Icon size={32} fill='currentColor' color='white' />
+                  <i className='mdi mdi-check-decagram mdi-36px'></i>
                 </div>
-                <p className="text-xl font-semibold text-[#003B7A]">{strength.title}</p>
+                <p className="text-xl font-semibold text-primary">{strength.title}</p>
                 <p className="text-slate-500">{strength.description}</p>
               </article>
             );
@@ -217,46 +216,80 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      <section id="nosotros" className="pb-16">
-        <div
-          data-reveal
-          className={`${containerClass} grid overflow-hidden rounded-2xl bg-[#003B7A] px-6 py-8 sm:px-10 md:grid-cols-[1fr_1.1fr] md:items-stretch`}
-        >
-          <div className="pr-0 text-white md:pr-8">
-            <span className="inline-block h-1 w-10 bg-[#F7DD00]" />
-            <h2 className="mt-5 text-4xl font-semibold leading-tight sm:text-5xl md:text-6xl">
-              Tres decadas de <span className="text-[#F7DD00]">Excelencia</span> Industrial.
-            </h2>
-            <p className="mt-4 max-w-sm text-sm text-slate-200">
-              Lideres en soluciones para proyectos de infraestructura hidraulica, saneamiento e instalaciones tecnicas.
-            </p>
-            <button type="button" className="mt-8 rounded-full bg-white px-5 py-2 text-xs font-semibold text-[#003B7A]">
-              Experiencia Tuboplast
-            </button>
-          </div>
-          <div className="relative mt-8 md:mt-0">
+      <section id="nosotros" className="mx-auto my-20 w-full max-w-site px-4">
+        <div data-reveal className="relative min-h-[760px]">
+          <article className="relative flex w-3/5 flex-col rounded-[22px] bg-primary p-14 pr-32 text-white">
+            <div className='space-y-8'>
+              <span className="text-xs uppercase text-secondary border-b-2 border-white/20 pb-2">
+                Legado & Futuro
+              </span>
+
+              <h2 className="font-title text-7xl">
+                Seis <br />
+                décadas de <br />
+                <span className="text-secondary">Excelencia</span> <br />
+                Industrial.
+              </h2>
+
+              <div className="grid grid-cols-2 gap-8">
+                <p className="text-sm text-white/75">
+                  Tuboplast es el referente peruano. Tuboplast es la primera fábrica 100% peruana especializada en la fabricación de tuberías y conexiones de PVC y HDPE. No solo fabricamos tuberías; diseñamos la infraestructura del mañana con ingeniería de precisión y materiales de vanguardia.
+                </p>
+
+                <ul className="space-y-9 text-sm">
+                  <li className="grid grid-cols-5 gap-6">
+                    <span className="mt-2 h-1 w-full bg-secondary" />
+                    <div className="col-span-4">
+                      <b className="block uppercase text-white">Experiencia</b>
+                      <span className="block text-white/75">Más de 60 años liderando el mercado nacional.</span>
+                    </div>
+                  </li>
+                  <li className="grid grid-cols-5 gap-6">
+                    <span className="mt-2 h-1 w-full bg-white/25" />
+                    <div className="col-span-4">
+                      <b className="block uppercase text-white">Tecnología</b>
+                      <span className="block text-white/75">Moderno laboratorio de Control de Calidad</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-auto flex items-center gap-8 pt-14">
+              <button type="button" className="font-title inline-flex px-4 py-3 items-center gap-4 rounded-full bg-white text-base font-medium text-primary shadow-sm">
+                Especificaciones Técnicas
+                <i className="mdi mdi-arrow-right text-xl leading-none"></i>
+              </button>
+              <p className="text-sm uppercase text-white/45">
+                Partner Estratégico de <br /> Confianza
+              </p>
+            </div>
+          </article>
+
+          <div className="absolute right-0 -top-10 z-[1] h-[75%] w-[calc(40%+80px)]  rounded-[20px] shadow-[0_30px_90px_rgba(15,23,42,0.22)]">
             <img
               src="https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&w=1200&q=80"
               alt="Planta industrial"
-              className="h-full min-h-[290px] w-full rounded-2xl object-cover"
+              className="h-full w-full object-cover rounded-2xl"
             />
-            <div className="absolute -bottom-4 left-4 rounded-md bg-[#F7DD00] px-5 py-4 text-[#003B7A] shadow-lg">
-              <p className="text-5xl font-black leading-none">30+</p>
-              <p className="text-[10px] font-semibold uppercase">anos en el pais</p>
+            <div className="absolute left-10 -bottom-40 rounded-lg bg-secondary px-10 py-10 text-primary shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
+              <p className="font-title text-6xl font-black">30+</p>
+              <p className="text-sm font-medium uppercase">Años forjando <br /> el Perú</p>
             </div>
           </div>
+
         </div>
       </section>
 
-      <section id="catalog" className="pb-16">
-        <div className={containerClass}>
-          <div className="mb-7 flex items-center justify-between">
+      <section id="catalog" className="py-16 bg-light">
+        <div className={'mx-auto w-full max-w-site px-4'}>
+          <div className="mb-10 flex items-center justify-between">
             <div>
-              <p className="text-[34px] font-semibold leading-none text-[#003B7A]">Categorias Especializadas</p>
-              <span className="mt-2 block h-1 w-8 bg-[#F7DD00]" />
+              <p className="text-4xl font-title font-medium text-primary">Expertos en</p>
+              <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
-            <a className="text-xs font-semibold text-[#003B7A]" href="#">
-              Ver todo <ChevronRight size={12} className="inline" />
+            <a className="font-medium text-primary" href="#">
+              Ver todo <i className="mdi mdi-arrow-right align-middle text-sm ms-1"></i>
             </a>
           </div>
 
@@ -270,25 +303,25 @@ const HomeScreen = () => {
                 <img
                   src={category.image}
                   alt={category.title}
-                  className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#003B7A]/85 via-[#003B7A]/35 to-transparent" />
-                <p className="absolute bottom-4 left-3 text-xl font-medium text-white">{category.title}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/35 to-transparent" />
+                <p className="absolute bottom-10 left-8 right-8 text-3xl font-title font-medium text-white">{category.title}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="productos" className="pb-16">
-        <div className={containerClass}>
-          <div className="mb-7 flex items-center justify-between">
+      <section id="productos" className="py-16">
+        <div className={'mx-auto w-full max-w-site px-4'}>
+          <div className="mb-10 flex items-center justify-between">
             <div>
-              <p className="text-[34px] font-semibold leading-none text-[#003B7A]">Nuestras Recomendaciones</p>
-              <span className="mt-2 block h-1 w-8 bg-[#F7DD00]" />
+              <p className="text-4xl font-title font-medium text-primary">Nuestras Recomendaciones</p>
+              <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
-            <a className="text-xs font-semibold text-[#003B7A]" href="#">
-              Ver todo <ChevronRight size={12} className="inline" />
+            <a className="font-medium text-primary" href="#">
+              Ver todo <i className="mdi mdi-arrow-right align-middle text-sm ms-1"></i>
             </a>
           </div>
 
@@ -297,15 +330,28 @@ const HomeScreen = () => {
               <article
                 key={`${product.title}-${index}`}
                 data-reveal
-                className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg"
+                className="overflow-hidden rounded-xl bg-[#f9f9f9] shadow-md transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <img src={product.image} alt={product.title} className="h-40 w-full object-cover" />
-                <div className="p-3">
-                  <p className="text-xs leading-5 text-slate-600">{product.title}</p>
+                <img src={product.image} alt={product.title} className="aspect-[5/4] w-full object-cover" />
+                <div className="p-5 space-y-5">
+                  <div>
+                    <span className='block uppercase text-muted text-[10px] mb-2'>{product.category}</span>
+                    <p className="text-lg font-bold text-primary leading-tight">{product.title}</p>
+                  </div>
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div className='border border-silver rounded-lg p-2'>
+                      <span className='block uppercase text-muted text-[10px]'>Presión</span>
+                      <p className='text-xs text-primary font-bold'>{product.pressure}</p>
+                    </div>
+                    <div className='border border-silver rounded-lg p-2'>
+                      <span className='block uppercase text-muted text-[10px]'>Diámetro</span>
+                      <p className='text-xs text-primary font-bold'>{product.diameter}</p>
+                    </div>
+                  </div>
                   <div className="mt-3 flex items-center justify-between">
-                    <p className="text-xl font-bold text-[#003B7A]">{product.price}</p>
-                    <button type="button" className="grid h-8 w-8 place-items-center rounded bg-[#003B7A] text-white">
-                      <ShoppingBag size={14} />
+                    <p className="text-xl font-bold font-title text-primary">{product.price}</p>
+                    <button type="button" className="grid h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+                      <i className="mdi mdi-cart-plus text-xl"></i>
                     </button>
                   </div>
                 </div>
@@ -315,66 +361,73 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      <section id="novedades" className="pb-16">
+      <section id="novedades" className="py-10">
         <div
           data-reveal
-          className={`${containerClass} overflow-hidden rounded-2xl bg-[#F7DD00] px-4 sm:px-6 md:grid md:grid-cols-2 md:items-end md:px-12`}
+          className={`mx-auto w-full max-w-site rounded-2xl bg-[#F7DD00] md:grid md:grid-cols-2 md:items-end `}
         >
-          <div className="py-10">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#003B7A]">Exclusivo para maestros</p>
-            <h3 className="mt-3 text-5xl font-semibold leading-[1.05] text-[#003B7A]">Club Experto Tuboplast</h3>
-            <p className="mt-3 max-w-md text-sm text-[#003B7A]/80">
-              Unete a nuestra comunidad y accede a capacitaciones, ofertas y beneficios exclusivos para especialistas.
+          <div className="p-16 pb-10 space-y-5">
+            <span className='block h-1 bg-primary w-16'></span>
+            <p className="text-xs uppercase text-primary">Exclusivo para maestros</p>
+            <h3 className="text-7xl font-title text-primary">Club Experto Tuboplast</h3>
+            <p className="text-xl text-primary">
+              Únete a nuestra comunidad y accede a capacitaciones certificadas, descuentos exclusivos y soporte prioritario.
             </p>
-            <button type="button" className="mt-6 rounded-full bg-[#003B7A] px-5 py-2 text-xs font-semibold text-white">
-              Quiero inscribirme <ArrowRight size={12} className="inline" />
+            <button type="button" className="rounded-full bg-primary px-8 py-3.5 font-title font-medium text-white">
+              Registrarme ahora <i className="mdi mdi-arrow-right ms-2"></i>
             </button>
           </div>
           <div className="relative flex items-end justify-center">
             <img
-              src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=900&q=80"
+              src="/assets/img/landing/club-expert.png"
               alt="Club Experto"
-              className="h-[300px] w-full object-contain object-bottom md:h-[330px]"
+              className="h-full w-auto object-contain -mt-10"
             />
           </div>
         </div>
       </section>
 
-      <section id="blog" className="pb-16">
-        <div className={containerClass}>
-          <div className="mb-7 flex items-center justify-between">
+      <section id="blog" className="py-16">
+        <div className={'mx-auto w-full max-w-site px-4'}>
+          <div className="mb-10 flex items-center justify-between">
             <div>
-              <p className="text-[34px] font-semibold leading-none text-[#003B7A]">Nuestro blog</p>
-              <span className="mt-2 block h-1 w-8 bg-[#F7DD00]" />
+              <p className="text-4xl font-title font-medium text-primary">Nuestro blog</p>
+              <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
-            <a className="text-xs font-semibold text-[#003B7A]" href="#">
-              Ver todo <ChevronRight size={12} className="inline" />
+            <a className="font-medium text-primary" href="#">
+              Ver todo <i className="mdi mdi-arrow-right align-middle text-sm ms-1"></i>
             </a>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {blogPosts.map((post) => (
               <article key={post.title} data-reveal className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-                <img src={post.image} alt={post.title} className="h-36 w-full object-cover" />
-                <div className="p-3">
-                  <p className="text-xs leading-5 text-slate-600">{post.title}</p>
+                <img src={post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
+                <div className="px-4 py-6">
+                  <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>
+                  <p className="font-title text-xl text-primary font-medium leading-tight mb-2">{post.title}</p>
+                  <p className="text-sm text-muted line-clamp-2">{post.description}</p>
                 </div>
               </article>
             ))}
 
-            <article data-reveal className="rounded-xl bg-[#003B7A] p-5 text-white shadow-sm">
-              <p className="text-xl font-semibold leading-tight">SE EL PRIMERO EN SABER</p>
-              <p className="mt-2 text-xs text-slate-200">
-                Recibe noticias y promociones sobre tuberias, conexiones y novedades del sector.
-              </p>
-              <input
-                className="mt-5 h-9 w-full rounded-full border border-white/20 bg-white/10 px-3 text-xs outline-none"
-                placeholder="Correo electronico"
-                type="email"
-              />
-              <button type="button" className="mt-4 w-full rounded-full bg-[#F7DD00] py-2 text-xs font-semibold text-[#003B7A]">
-                Quiero suscribirme
-              </button>
+            <article data-reveal className="rounded-xl bg-primary p-5 text-white shadow-sm flex flex-col justify-center space-y-5">
+              <div className='space-y-4'>
+                <p className="text-2xl font-bold font-title">SÉ EL PRIMERO EN SABER</p>
+                <p className="text-sm">
+                  Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.
+                </p>
+              </div>
+              <div className='space-y-4'>
+                <input
+                  className=" w-full rounded-full border border-white/20 bg-white/10 py-4 px-6 text-xs outline-none"
+                  placeholder="Correo electronico"
+                  type="email"
+                />
+                <button type="button" className="mt-4 w-full rounded-full bg-[#F7DD00] p-4 text-xs font-bold font-title text-primary">
+                  Quiero suscribirme
+                </button>
+              </div>
             </article>
           </div>
         </div>
