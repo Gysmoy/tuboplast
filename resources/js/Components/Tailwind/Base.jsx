@@ -12,10 +12,10 @@ const Base = ({ title, children }) => {
         href="https://wa.me/51999999999"
         target="_blank"
         rel="noreferrer"
-        className="fixed bottom-5 right-5 z-40 grid h-12 w-12 place-items-center rounded-full bg-[#25D366] text-white shadow-xl"
+        className="fixed bottom-20 right-20 z-40 grid h-16 w-16 place-items-center rounded-full bg-[#25D366] ring-8 ring-[#25D366]/20 text-white shadow-xl"
         aria-label="WhatsApp"
       >
-        <i className="mdi mdi-whatsapp text-2xl"></i>
+        <i className="mdi mdi-whatsapp text-4xl"></i>
       </a>
       <Footer />
     </div>

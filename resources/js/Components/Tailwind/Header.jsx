@@ -1,4 +1,3 @@
-import { CircleUserRound, Search, ShoppingCart } from 'lucide-react';
 import { useEffect } from 'react';
 import Global from '../../Utils/Global';
 
@@ -39,7 +38,7 @@ const Header = ({ title }) => {
               placeholder="Busca el producto o categoría"
               className="h-10 w-full rounded-xl bg-silver px-4 py-3 pr-12 text-sm outline-none"
             />
-            <Search size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-primary" />
+            <i className="mdi mdi-magnify pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-primary text-base"></i>
           </div>
 
           <div className="ml-auto flex items-center gap-6 text-[#003B7A]">
