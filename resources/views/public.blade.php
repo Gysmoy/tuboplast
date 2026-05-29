@@ -10,8 +10,10 @@
     <title>{{ env('APP_NAME', 'Tuboplast') }}</title>
 
     <meta name="title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
-    <meta name="description" content="Tuboplast ofrece tuberias, conexiones y accesorios de PVC para agua, desague y electricidad. Calidad certificada, asesoria tecnica y cobertura a nivel nacional." />
-    <meta name="keywords" content="tuboplast, tuberias pvc, conexiones pvc, accesorios pvc, tuberias para agua, tuberias para desague, tuberias para electricidad, soluciones hidraulicas, construccion, ferreteria industrial, catalogo tuboplast" />
+    <meta name="description"
+        content="Tuboplast ofrece tuberias, conexiones y accesorios de PVC para agua, desague y electricidad. Calidad certificada, asesoria tecnica y cobertura a nivel nacional." />
+    <meta name="keywords"
+        content="tuboplast, tuberias pvc, conexiones pvc, accesorios pvc, tuberias para agua, tuberias para desague, tuberias para electricidad, soluciones hidraulicas, construccion, ferreteria industrial, catalogo tuboplast" />
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ url()->current() }}" />
 
@@ -19,7 +21,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url()->current() }}" />
     <meta property="og:title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
-    <meta property="og:description" content="Tuberias y conexiones de PVC para proyectos residenciales e industriales. Calidad certificada, soporte tecnico y envios a nivel nacional." />
+    <meta property="og:description"
+        content="Tuberias y conexiones de PVC para proyectos residenciales e industriales. Calidad certificada, soporte tecnico y envios a nivel nacional." />
     <meta property="og:image" content="{{ asset('/assets/img/icons/og-image.jpg') }}" />
     <meta property="og:image:alt" content="Tuboplast - Tuberias y conexiones de PVC" />
     <meta property="og:site_name" content="Tuboplast" />
@@ -29,7 +32,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="{{ url()->current() }}" />
     <meta name="twitter:title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
-    <meta name="twitter:description" content="Descubre el catalogo Tuboplast: tuberias, conexiones y accesorios de PVC para agua, desague y electricidad." />
+    <meta name="twitter:description"
+        content="Descubre el catalogo Tuboplast: tuberias, conexiones y accesorios de PVC para agua, desague y electricidad." />
     <meta name="twitter:image" content="{{ asset('/assets/img/icons/og-image.jpg') }}" />
     <meta name="twitter:image:alt" content="Tuboplast - Tuberias y conexiones de PVC" />
 
@@ -40,14 +44,15 @@
     {{-- Instagram --}}
     <meta name="instagram:card" content="summary_large_image" />
     <meta name="instagram:title" content="Tuboplast | Expertos en Tuberias y Conexiones de PVC" />
-    <meta name="instagram:description" content="Calidad certificada en tuberias y conexiones de PVC para obras, industria y proyectos residenciales." />
+    <meta name="instagram:description"
+        content="Calidad certificada en tuberias y conexiones de PVC para obras, industria y proyectos residenciales." />
     <meta name="instagram:image" content="{{ asset('/assets/img/icons/og-image.jpg') }}" />
 
 
     <link rel="icon" type="image/png" href="/assets/img/icons/icon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/assets/img/icons/icon.svg" />
-    <link rel="shortcut icon" type="image/svg+xml" href="/assets/img/icons/icon.svg" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg" />
+    <link rel="shortcut icon" type="image/svg+xml" href="/assets/img/icon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Tuboplast" />
     <link rel="manifest" href="/manifest.webmanifest">
 
@@ -55,8 +60,10 @@
     <link href="/lte/assets/css/mdi-icons.css" rel="stylesheet" type="text/css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet">
 
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
@@ -140,4 +147,3 @@
 </body>
 
 </html>
-
