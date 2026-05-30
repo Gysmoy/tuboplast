@@ -4,7 +4,7 @@ import MenuItem from './MenuItem'
 import MenuItemContainer from './MenuItemContainer'
 import LaravelSession from '../Utils/LaravelSession'
 
-const Menu = ({ session, can, rhYearTotalBadge }) => {
+const Menu = ({ session }) => {
   const mainRole = LaravelSession.roles?.[0] ?? { name: 'User' }
   const avatarImage = LaravelSession.image || session?.image
   const avatarUrl = avatarImage
@@ -14,12 +14,12 @@ const Menu = ({ session, can, rhYearTotalBadge }) => {
   return (<div className="sidenav-menu">
     <a href="/" className="logo">
       <span className="logo-light">
-        <span className="logo-lg"><img src="/assets/img/logo-white.svg" alt="logo" height={40} style={{ height: '36px' }} /></span>
+        <span className="logo-lg"><img src="/assets/img/logo-white.svg" alt="logo" style={{ height: '36px' }} /></span>
         <span className="logo-sm"><img src="/assets/img/icon-white.svg" alt="small logo" /></span>
       </span>
 
       <span className="logo-dark">
-        <span className="logo-lg"><img src="/assets/img/logo.svg" alt="dark logo" /></span>
+        <span className="logo-lg"><img src="/assets/img/logo.svg" alt="dark logo" style={{ height: '36px' }} /></span>
         <span className="logo-sm"><img src="/assets/img/icon.svg" alt="small logo" /></span>
       </span>
     </a>

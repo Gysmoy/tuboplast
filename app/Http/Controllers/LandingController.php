@@ -17,6 +17,13 @@ class LandingController extends BasicController
         ];
     }
 
+    public function catalogView(Request $request)
+    {
+        $this->reactView = 'Catalog';
+
+        return parent::reactView($request);
+    }
+
     public function storeContact(Request $request)
     {
         $validated = $request->validate([

@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import Base from './Components/Tailwind/Base';
+import ItemCard from './Components/Items/ItemCard';
 import CreateReactScript from './Utils/CreateReactScript';
 import Emphasis from './Utils/em';
 
@@ -327,35 +328,7 @@ const HomeScreen = () => {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {recommendations.map((product, index) => (
-              <article
-                key={`${product.title}-${index}`}
-                data-reveal
-                className="overflow-hidden rounded-xl bg-[#f9f9f9] shadow-md transition hover:-translate-y-1 hover:shadow-lg"
-              >
-                <img src={product.image} alt={product.title} className="aspect-[5/4] w-full object-cover" />
-                <div className="p-5 space-y-5">
-                  <div>
-                    <span className='block uppercase text-muted text-[10px] mb-2'>{product.category}</span>
-                    <p className="text-lg font-bold text-primary leading-tight">{product.title}</p>
-                  </div>
-                  <div className='grid grid-cols-2 gap-4'>
-                    <div className='border border-silver rounded-lg p-2'>
-                      <span className='block uppercase text-muted text-[10px]'>Presión</span>
-                      <p className='text-xs text-primary font-bold'>{product.pressure}</p>
-                    </div>
-                    <div className='border border-silver rounded-lg p-2'>
-                      <span className='block uppercase text-muted text-[10px]'>Diámetro</span>
-                      <p className='text-xs text-primary font-bold'>{product.diameter}</p>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between">
-                    <p className="text-xl font-bold font-title text-primary">{product.price}</p>
-                    <button type="button" className="grid h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
-                      <i className="mdi mdi-cart-plus text-xl"></i>
-                    </button>
-                  </div>
-                </div>
-              </article>
+              <ItemCard key={`${product.title}-${index}`} product={product} />
             ))}
           </div>
         </div>

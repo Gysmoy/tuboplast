@@ -13,6 +13,7 @@ use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'reactView'])->name('landing');
+Route::get('/catalog', [LandingController::class, 'catalogView'])->name('catalog');
 Route::get('/privacy-policy', [LandingController::class, 'reactView']);
 Route::post('/landing/contact', [LandingController::class, 'storeContact'])->name('landing.contact');
 
