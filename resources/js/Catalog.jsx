@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
@@ -83,6 +83,77 @@ const FilterGroup = ({ children, title }) => (
     <div className="space-y-3">{children}</div>
   </div>
 );
+
+const sortOptions = [
+  { label: 'Más populares', value: 'popular' },
+  { label: 'Precio: menor a mayor', value: 'price-asc' },
+  { label: 'Precio: mayor a menor', value: 'price-desc' },
+];
+
+const SortDropdown = ({ onChange, value }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const selectedOption = sortOptions.find((option) => option.value === value) ?? sortOptions[0];
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!dropdownRef.current?.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  return (
+    <div ref={dropdownRef} className="relative">
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        onClick={() => setIsOpen((current) => !current)}
+        className="flex min-w-[210px] items-center justify-between gap-4 rounded-xl border border-silver bg-white px-4 py-3 text-sm font-bold text-primary shadow-sm transition hover:border-primary hover:shadow-md"
+      >
+        {selectedOption.label}
+        <i className={`mdi mdi-chevron-down text-base text-muted transition ${isOpen ? 'rotate-180' : ''}`}></i>
+      </button>
+
+      {isOpen && (
+        <div
+          role="listbox"
+          aria-label="Ordenar productos"
+          className="absolute right-0 top-[calc(100%+8px)] z-20 w-64 rounded-xl border border-silver bg-white p-2 shadow-xl"
+        >
+          {sortOptions.map((option) => {
+            const isSelected = option.value === value;
+
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ${
+                  isSelected
+                    ? 'bg-silver font-bold text-primary'
+                    : 'text-darkmuted hover:bg-silver'
+                }`}
+              >
+                {option.label}
+                {isSelected && <i className="mdi mdi-check-bold text-primary"></i>}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const CatalogScreen = () => {
   const [selectedFilters, setSelectedFilters] = useState([
@@ -202,21 +273,10 @@ const CatalogScreen = () => {
               Mostrando <b className="text-primary">{visibleProducts.length} de 48</b> productos
             </p>
 
-            <label className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <span className="text-xs uppercase tracking-[0.08em] text-muted">Ordenar por:</span>
-              <span className="relative">
-                <select
-                  value={sort}
-                  onChange={(event) => setSort(event.target.value)}
-                  className="min-w-[190px] appearance-none border-b border-silver bg-white py-2 pl-3 pr-8 text-sm font-bold text-dark outline-none"
-                >
-                  <option value="popular">Más populares</option>
-                  <option value="price-asc">Precio: menor a mayor</option>
-                  <option value="price-desc">Precio: mayor a menor</option>
-                </select>
-                <i className="mdi mdi-chevron-down pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-muted"></i>
-              </span>
-            </label>
+              <SortDropdown value={sort} onChange={setSort} />
+            </div>
           </div>
 
           <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>

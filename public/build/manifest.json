@@ -21,8 +21,8 @@
       "_index-CXVQH7Lr.js"
     ]
   },
-  "_Base-BUzCrkGe.js": {
-    "file": "assets/Base-BUzCrkGe.js",
+  "_Base-DadGxYSp.js": {
+    "file": "assets/Base-DadGxYSp.js",
     "name": "Base",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
@@ -126,9 +126,9 @@
       "_index-RYns6xqu.js"
     ]
   },
-  "_tippy-!~{00L}~.js": {
+  "_tippy-!~{00M}~.js": {
     "file": "tippy.css",
-    "src": "_tippy-!~{00L}~.js"
+    "src": "_tippy-!~{00M}~.js"
   },
   "resources/css/app.css": {
     "file": "app.css",
@@ -352,7 +352,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-C7a5TVt2.js",
+    "file": "assets/Catalog-iEOmGcHz.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isEntry": true,
@@ -360,7 +360,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-BUzCrkGe.js",
+      "_Base-DadGxYSp.js",
       "_CreateReactScript-CRXFLeJ_.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -640,7 +640,7 @@
     ]
   },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-xBt2hiEU.js",
+    "file": "assets/Home-Dz8S4kJE.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isEntry": true,
@@ -649,7 +649,7 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-eH15wkkc.js",
-      "_Base-BUzCrkGe.js",
+      "_Base-DadGxYSp.js",
       "_CreateReactScript-CRXFLeJ_.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -689,6 +689,26 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
+      "_CreateReactScript-CRXFLeJ_.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CTcNYcbx.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/ProductDetail.jsx": {
+    "file": "assets/ProductDetail-Chiq1s5O.js",
+    "name": "ProductDetail",
+    "src": "resources/js/ProductDetail.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_Base-DadGxYSp.js",
       "_CreateReactScript-CRXFLeJ_.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",

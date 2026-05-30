@@ -1,11 +1,19 @@
 const ItemCard = ({ product }) => {
   const category = product.categoryLabel ?? product.category;
+  const detailUrl = product.detailUrl ?? '/item/tuberia-agua-sp-clase-15-ntp-399-002';
 
   return (
     <article
       data-reveal
-      className="flex h-full flex-col overflow-hidden rounded-xl bg-[#fafafa] shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg"
+      className="relative flex h-full flex-col overflow-hidden rounded-xl bg-[#fafafa] shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg"
     >
+      <a
+        href={detailUrl}
+        aria-label={`Ver detalle de ${product.title}`}
+        className="absolute inset-0 z-10 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      >
+        <span className="sr-only">Ver detalle de {product.title}</span>
+      </a>
       <img src={product.image} alt={product.title} className="aspect-[5/4] w-full object-cover" />
       <div className="flex flex-1 flex-col p-5">
         <div>
@@ -29,7 +37,7 @@ const ItemCard = ({ product }) => {
           <button
             type="button"
             aria-label={`Agregar ${product.title} a la cotización`}
-            className="grid h-11 w-11 place-items-center rounded-lg bg-primary text-white transition hover:bg-[#003b7a]"
+            className="relative z-20 grid h-11 w-11 place-items-center rounded-lg bg-primary text-white transition hover:bg-[#003b7a]"
           >
             <i className="mdi mdi-cart-plus text-xl"></i>
           </button>

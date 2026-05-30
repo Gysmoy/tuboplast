@@ -10,10 +10,12 @@ use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'reactView'])->name('landing');
 Route::get('/catalog', [LandingController::class, 'catalogView'])->name('catalog');
+Route::get('/item/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/privacy-policy', [LandingController::class, 'reactView']);
 Route::post('/landing/contact', [LandingController::class, 'storeContact'])->name('landing.contact');
 
