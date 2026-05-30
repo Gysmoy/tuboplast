@@ -112,14 +112,14 @@ const CatalogScreen = () => {
   };
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-site px-4 py-16">
-      <header className="mb-12">
+    <main className="space-y-16">
+      <header className="mx-auto w-full max-w-site px-4 pt-16">
         <h1 className="font-title text-4xl font-medium text-primary">Soluciones para Conducción de Agua</h1>
         <span className="mt-4 block h-1 w-12 bg-secondary" />
       </header>
 
       <section
-        className="grid gap-16"
+        className="mx-auto min-h-screen w-full max-w-site px-4 grid gap-16"
         style={{ gridTemplateColumns: '260px minmax(0, 1fr)' }}
       >
         <aside>
@@ -239,8 +239,8 @@ const CatalogScreen = () => {
         </div>
       </section>
 
-      <section className="relative left-1/2 mt-20 w-screen -translate-x-1/2 bg-primary py-14 text-white">
-        <div className="mx-auto grid w-full max-w-site grid-cols-2 gap-16 px-4">
+      <section className="relative w-full bg-primary text-white">
+        <div className="mx-auto grid w-full max-w-site grid-cols-2 gap-16 py-16 px-4">
           <article className="text-center">
             <i className="mdi mdi-check-decagram-outline text-4xl text-secondary"></i>
             <h2 className="mt-6 text-xl font-bold">Alta Resistencia</h2>
