@@ -1,6 +1,6 @@
 {
-  "_Adminto-BGV3Kxpe.js": {
-    "file": "assets/Adminto-BGV3Kxpe.js",
+  "_Adminto-n1Sqwmr9.js": {
+    "file": "assets/Adminto-n1Sqwmr9.js",
     "name": "Adminto",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
@@ -21,8 +21,8 @@
       "_index-CXVQH7Lr.js"
     ]
   },
-  "_Base-By8wRbTs.js": {
-    "file": "assets/Base-By8wRbTs.js",
+  "_Base-BZQ0OlMt.js": {
+    "file": "assets/Base-BZQ0OlMt.js",
     "name": "Base",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
@@ -30,8 +30,8 @@
       "_CreateReactScript-wJyxv5rq.js"
     ]
   },
-  "_BasicRest-D0sWNXZP.js": {
-    "file": "assets/BasicRest-D0sWNXZP.js",
+  "_BasicRest-Pd5w1w8G.js": {
+    "file": "assets/BasicRest-Pd5w1w8G.js",
     "name": "BasicRest",
     "imports": [
       "resources/js/Utils/ReactAppend.jsx",
@@ -65,33 +65,36 @@
       "_index-RYns6xqu.js"
     ]
   },
+  "_ItemCard-CCqcudV3.js": {
+    "file": "assets/ItemCard-CCqcudV3.js",
+    "name": "ItemCard",
+    "imports": [
+      "resources/js/Components/DataGrid.jsx"
+    ]
+  },
   "_LaravelSession-CYcN0AKE.js": {
     "file": "assets/LaravelSession-CYcN0AKE.js",
     "name": "LaravelSession"
   },
-  "_RolesRest-DUTaScAO.js": {
-    "file": "assets/RolesRest-DUTaScAO.js",
+  "_RolesRest-Bj8MMd2f.js": {
+    "file": "assets/RolesRest-Bj8MMd2f.js",
     "name": "RolesRest",
     "imports": [
-      "_BasicRest-D0sWNXZP.js"
+      "_BasicRest-Pd5w1w8G.js"
     ]
   },
-  "_SwitchFormGroup-DEPaUNXU.js": {
-    "file": "assets/SwitchFormGroup-DEPaUNXU.js",
+  "_SwitchFormGroup--CqLaSUK.js": {
+    "file": "assets/SwitchFormGroup--CqLaSUK.js",
     "name": "SwitchFormGroup",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
-      "_BasicRest-D0sWNXZP.js",
+      "_BasicRest-Pd5w1w8G.js",
       "_index-RYns6xqu.js"
     ]
   },
-  "_googleMaps-Zfh1LBS8.js": {
-    "file": "assets/googleMaps-Zfh1LBS8.js",
-    "name": "googleMaps",
-    "imports": [
-      "resources/js/Components/DataGrid.jsx",
-      "_index-RYns6xqu.js"
-    ]
+  "_googleMaps-DrvRtn5X.js": {
+    "file": "assets/googleMaps-DrvRtn5X.js",
+    "name": "googleMaps"
   },
   "_index-3eJeR5RX.js": {
     "file": "assets/index-3eJeR5RX.js",
@@ -126,9 +129,17 @@
       "_index-RYns6xqu.js"
     ]
   },
-  "_tippy-!~{00M}~.js": {
+  "_tippy-!~{00P}~.js": {
     "file": "tippy.css",
-    "src": "_tippy-!~{00M}~.js"
+    "src": "_tippy-!~{00P}~.js"
+  },
+  "_ubigeo-CaziOd__.js": {
+    "file": "assets/ubigeo-CaziOd__.js",
+    "name": "ubigeo",
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js"
+    ]
   },
   "resources/css/app.css": {
     "file": "app.css",
@@ -136,7 +147,7 @@
     "isEntry": true
   },
   "resources/js/Admin/Account.jsx": {
-    "file": "assets/Account-CBtWWcHt.js",
+    "file": "assets/Account-DEbjTaAp.js",
     "name": "Account",
     "src": "resources/js/Admin/Account.jsx",
     "isEntry": true,
@@ -145,7 +156,7 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-CXVQH7Lr.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_Adminto-n1Sqwmr9.js",
       "_CreateReactScript-wJyxv5rq.js",
       "_main-CTcNYcbx.js",
       "_LaravelSession-CYcN0AKE.js",
@@ -158,7 +169,7 @@
     ]
   },
   "resources/js/Admin/Categories.jsx": {
-    "file": "assets/Categories-D0zNMFgF.js",
+    "file": "assets/Categories-CiDGqeH0.js",
     "name": "Categories",
     "src": "resources/js/Admin/Categories.jsx",
     "isEntry": true,
@@ -167,10 +178,10 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_CreateReactScript-wJyxv5rq.js",
-      "_BasicRest-D0sWNXZP.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_BasicRest-Pd5w1w8G.js",
+      "_Adminto-n1Sqwmr9.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_SwitchFormGroup-DEPaUNXU.js",
+      "_SwitchFormGroup--CqLaSUK.js",
       "_main-CTcNYcbx.js",
       "_index-CXVQH7Lr.js",
       "_index-3eJeR5RX.js",
@@ -183,7 +194,7 @@
     ]
   },
   "resources/js/Admin/Contacts.jsx": {
-    "file": "assets/Contacts-Bs9ACPhO.js",
+    "file": "assets/Contacts-BEQsW-Ko.js",
     "name": "Contacts",
     "src": "resources/js/Admin/Contacts.jsx",
     "isEntry": true,
@@ -192,8 +203,8 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_CreateReactScript-wJyxv5rq.js",
-      "_BasicRest-D0sWNXZP.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_BasicRest-Pd5w1w8G.js",
+      "_Adminto-n1Sqwmr9.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CTcNYcbx.js",
@@ -206,7 +217,7 @@
     ]
   },
   "resources/js/Admin/Distribuidores.jsx": {
-    "file": "assets/Distribuidores-yTCn_a2A.js",
+    "file": "assets/Distribuidores-BS8SV-e_.js",
     "name": "Distribuidores",
     "src": "resources/js/Admin/Distribuidores.jsx",
     "isEntry": true,
@@ -215,11 +226,12 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_CreateReactScript-wJyxv5rq.js",
-      "_BasicRest-D0sWNXZP.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_BasicRest-Pd5w1w8G.js",
+      "_Adminto-n1Sqwmr9.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_googleMaps-Zfh1LBS8.js",
-      "_SwitchFormGroup-DEPaUNXU.js",
+      "_ubigeo-CaziOd__.js",
+      "_SwitchFormGroup--CqLaSUK.js",
+      "_googleMaps-DrvRtn5X.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CTcNYcbx.js",
@@ -232,7 +244,7 @@
     ]
   },
   "resources/js/Admin/Home.jsx": {
-    "file": "assets/Home-T5jNSx0u.js",
+    "file": "assets/Home-47PxNm5c.js",
     "name": "Home",
     "src": "resources/js/Admin/Home.jsx",
     "isEntry": true,
@@ -241,7 +253,7 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_CreateReactScript-wJyxv5rq.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_Adminto-n1Sqwmr9.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CTcNYcbx.js",
@@ -253,8 +265,31 @@
       "tippy.css"
     ]
   },
+  "resources/js/Admin/Messages.jsx": {
+    "file": "assets/Messages-C-I8xKxC.js",
+    "name": "Messages",
+    "src": "resources/js/Admin/Messages.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_CreateReactScript-wJyxv5rq.js",
+      "_BasicRest-Pd5w1w8G.js",
+      "_Adminto-n1Sqwmr9.js",
+      "_main-CTcNYcbx.js",
+      "_index-CXVQH7Lr.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_LaravelSession-CYcN0AKE.js",
+      "_AdmintoContext-BT2pJdim.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
   "resources/js/Admin/Profile.jsx": {
-    "file": "assets/Profile-kd9L9kLc.js",
+    "file": "assets/Profile-CHTWRzjV.js",
     "name": "Profile",
     "src": "resources/js/Admin/Profile.jsx",
     "isEntry": true,
@@ -262,7 +297,7 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_Adminto-n1Sqwmr9.js",
       "_CreateReactScript-wJyxv5rq.js",
       "_index-3eJeR5RX.js",
       "_main-CTcNYcbx.js",
@@ -276,7 +311,7 @@
     ]
   },
   "resources/js/Admin/Roles.jsx": {
-    "file": "assets/Roles-CR12eY7V.js",
+    "file": "assets/Roles-C75EfqBR.js",
     "name": "Roles",
     "src": "resources/js/Admin/Roles.jsx",
     "isEntry": true,
@@ -285,10 +320,10 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_CreateReactScript-wJyxv5rq.js",
-      "_BasicRest-D0sWNXZP.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_BasicRest-Pd5w1w8G.js",
+      "_Adminto-n1Sqwmr9.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_RolesRest-DUTaScAO.js",
+      "_RolesRest-Bj8MMd2f.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CTcNYcbx.js",
@@ -301,7 +336,7 @@
     ]
   },
   "resources/js/Admin/Sucursales.jsx": {
-    "file": "assets/Sucursales-DN9Z002v.js",
+    "file": "assets/Sucursales-DB-QXBY6.js",
     "name": "Sucursales",
     "src": "resources/js/Admin/Sucursales.jsx",
     "isEntry": true,
@@ -310,11 +345,12 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_CreateReactScript-wJyxv5rq.js",
-      "_BasicRest-D0sWNXZP.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_BasicRest-Pd5w1w8G.js",
+      "_Adminto-n1Sqwmr9.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_googleMaps-Zfh1LBS8.js",
-      "_SwitchFormGroup-DEPaUNXU.js",
+      "_ubigeo-CaziOd__.js",
+      "_SwitchFormGroup--CqLaSUK.js",
+      "_googleMaps-DrvRtn5X.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CTcNYcbx.js",
@@ -327,7 +363,7 @@
     ]
   },
   "resources/js/Admin/Users.jsx": {
-    "file": "assets/Users-DcAJktPP.js",
+    "file": "assets/Users-Bc2Vs80_.js",
     "name": "Users",
     "src": "resources/js/Admin/Users.jsx",
     "isEntry": true,
@@ -336,10 +372,10 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_CreateReactScript-wJyxv5rq.js",
-      "_BasicRest-D0sWNXZP.js",
-      "_Adminto-BGV3Kxpe.js",
+      "_BasicRest-Pd5w1w8G.js",
+      "_Adminto-n1Sqwmr9.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_RolesRest-DUTaScAO.js",
+      "_RolesRest-Bj8MMd2f.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-CTcNYcbx.js",
@@ -352,7 +388,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-BSQYwF9z.js",
+    "file": "assets/Catalog-saY9n_-0.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isEntry": true,
@@ -360,7 +396,8 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-By8wRbTs.js",
+      "_ItemCard-CCqcudV3.js",
+      "_Base-BZQ0OlMt.js",
       "_CreateReactScript-wJyxv5rq.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -639,8 +676,50 @@
       "_index-RYns6xqu.js"
     ]
   },
+  "resources/js/Contact.jsx": {
+    "file": "assets/Contact-ZjM0BFPc.js",
+    "name": "Contact",
+    "src": "resources/js/Contact.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_Base-BZQ0OlMt.js",
+      "_CreateReactScript-wJyxv5rq.js",
+      "_googleMaps-DrvRtn5X.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CTcNYcbx.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
+  "resources/js/Distributors.jsx": {
+    "file": "assets/Distributors-BplFpiyG.js",
+    "name": "Distributors",
+    "src": "resources/js/Distributors.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_Base-BZQ0OlMt.js",
+      "_CreateReactScript-wJyxv5rq.js",
+      "_googleMaps-DrvRtn5X.js",
+      "_index-3eJeR5RX.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CTcNYcbx.js",
+      "_LaravelSession-CYcN0AKE.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-CIBMbLys.js",
+    "file": "assets/Home-TZOlR7js.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isEntry": true,
@@ -649,7 +728,8 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-eH15wkkc.js",
-      "_Base-By8wRbTs.js",
+      "_Base-BZQ0OlMt.js",
+      "_ItemCard-CCqcudV3.js",
       "_CreateReactScript-wJyxv5rq.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -700,7 +780,7 @@
     ]
   },
   "resources/js/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-CnqRaZNW.js",
+    "file": "assets/ProductDetail-D_16Tv9k.js",
     "name": "ProductDetail",
     "src": "resources/js/ProductDetail.jsx",
     "isEntry": true,
@@ -708,7 +788,8 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-By8wRbTs.js",
+      "_ItemCard-CCqcudV3.js",
+      "_Base-BZQ0OlMt.js",
       "_CreateReactScript-wJyxv5rq.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",

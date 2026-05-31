@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Classes\dxResponse;
 use App\Models\dxDataGrid;
+use App\Models\Message;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -123,14 +124,23 @@ class BasicController extends Controller
     $userJpa = null;
     $usdPrice = null;
     $eurPrice = null;
+    $unreadMessagesCount = 0;
 
     if (Auth::check()) {
       $userJpa = User::find(Auth::id());
       $userJpa->getAllPermissions();
+
+      if (Schema::hasTable('messages')) {
+        $unreadMessagesCount = Message::query()
+          ->whereNotNull('status')
+          ->where('seen', false)
+          ->count();
+      }
     }
 
     $properties = [
       'session' => $userJpa,
+      'unreadMessagesCount' => $unreadMessagesCount,
       'global' => [
         'PUBLIC_RSA_KEY' => self::$publicRsaKey,
         'APP_NAME' => env('APP_NAME', 'Ursa'),

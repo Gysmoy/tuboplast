@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-const DataGrid = ({ gridRef: dataGridRef, rest, columns, toolBar, masterDetail, filterValue = [], height = 'calc(100dvh - 235px)' }) => {
+const DataGrid = ({ gridRef: dataGridRef, rest, columns, toolBar, masterDetail, filterValue = [], height = 'calc(100dvh - 235px)', onRowPrepared }) => {
   useEffect(() => {
     DevExpress.localization.locale(navigator.language);
     $(dataGridRef.current).dxDataGrid({
@@ -97,6 +97,7 @@ const DataGrid = ({ gridRef: dataGridRef, rest, columns, toolBar, masterDetail, 
       },
       columns,
       masterDetail,
+      onRowPrepared,
       onContentReady: (...props) => {
         tippy('.tippy-here', { arrow: true, animation: 'scale' })
       }

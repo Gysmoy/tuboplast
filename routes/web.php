@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\RoleController;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'reactView'])->name('landing');
 Route::get('/catalog', [LandingController::class, 'catalogView'])->name('catalog');
+Route::get('/distributors', [LandingController::class, 'distributorsView'])->name('distributors');
+Route::get('/contact', [LandingController::class, 'contactView'])->name('contact');
 Route::get('/item/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/privacy-policy', [LandingController::class, 'reactView']);
 Route::post('/landing/contact', [LandingController::class, 'storeContact'])->name('landing.contact');
@@ -32,15 +35,16 @@ Route::middleware('auth')->group(function () {
 
     Route::redirect('/home', '/admin/home');
     Route::redirect('/contacts', '/admin/contacts');
+    Route::redirect('/messages', '/admin/messages');
     Route::redirect('/roles', '/admin/roles');
     Route::redirect('/users', '/admin/users');
-    Route::redirect('/distributors', '/admin/distributors');
     Route::redirect('/branches', '/admin/branches');
     Route::redirect('/categories', '/admin/categories');
     Route::get('/account', [AccountController::class, 'reactView'])->name('account');
 
     Route::get('/admin/home', [HomeController::class, 'reactView'])->name('admin.home');
     Route::get('/admin/contacts', [ContactController::class, 'reactView'])->name('admin.contacts');
+    Route::get('/admin/messages', [MessageController::class, 'reactView'])->name('admin.messages');
     Route::get('/admin/account', [AccountController::class, 'reactView'])->name('admin.account');
     Route::get('/admin/roles', [RoleController::class, 'reactView'])->name('admin.roles');
     Route::get('/admin/users', [UserController::class, 'reactView'])->name('admin.users');

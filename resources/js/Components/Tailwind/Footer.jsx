@@ -37,15 +37,15 @@ const Footer = () => {
             <div className="space-y-3 text-xs leading-relaxed text-muted">
               <p className="flex items-start gap-1.5">
                 <i className="mdi mdi-phone shrink-0 text-secondary"></i>
-                +51 1 234 5678
+                (01) 326-1146
               </p>
               <p className="flex items-start gap-1.5">
                 <i className="mdi mdi-email shrink-0 text-secondary"></i>
-                ventas@tuboplast.pe
+                informes@tuboplastperu.com
               </p>
               <p className="flex items-start gap-1.5">
                 <i className="mdi mdi-map-marker shrink-0 text-secondary"></i>
-                Av. Industrial 456, Lima, Perú
+                Calle María Curie 313, Ate, Lima
               </p>
             </div>
           </div>
@@ -77,27 +77,22 @@ const Footer = () => {
           <p className="text-xs text-muted">{new Date().getFullYear()} Tuboplast. Todos los derechos reservados. </p>
           <ul className="flex gap-1.5">
             <li>
-              <a href="#" aria-label="Facebook" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.facebook.com/Tuboplastsa/" aria-label="Facebook" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
                 <i className="mdi mdi-facebook"></i>
               </a>
             </li>
             <li>
-              <a href="#" aria-label="YouTube" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.youtube.com/channel/UC7d_iyo3bTd9M6h1Il6gfuw" aria-label="YouTube" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
                 <i className="mdi mdi-youtube"></i>
               </a>
             </li>
             <li>
-              <a href="#" aria-label="Instagram" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.instagram.com/tuboplast.peru/" aria-label="Instagram" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
                 <i className="mdi mdi-instagram"></i>
               </a>
             </li>
             <li>
-              <a href="#" aria-label="Twitter" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
-                <i className="mdi mdi-twitter"></i>
-              </a>
-            </li>
-            <li>
-              <a href="#" aria-label="LinkedIn" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.linkedin.com/company/tuboplast-sa/" aria-label="LinkedIn" className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white transition hover:bg-[#003b7a]" target="_blank" rel="noopener noreferrer">
                 <i className="mdi mdi-linkedin"></i>
               </a>
             </li>

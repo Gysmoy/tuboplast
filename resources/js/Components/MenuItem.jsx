@@ -8,7 +8,7 @@ const MenuItem = ({ href, icon, badge = null, children }) => {
         <span className="menu-icon"><i className={icon}></i></span>
         <span className="menu-text">{children}</span>
         {
-          badge && <span className="badge bg-primary rounded-pill">{badge}</span>
+          badge > 0 && <span className="badge bg-primary rounded-pill">{badge}</span>
         }
       </a>
     </li>

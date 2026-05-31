@@ -1,15 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Logout from '../Actions/Logout'
 import MenuItem from './MenuItem'
 import MenuItemContainer from './MenuItemContainer'
 import LaravelSession from '../Utils/LaravelSession'
 
-const Menu = ({ session }) => {
+const Menu = ({ session, unreadMessagesCount = 0 }) => {
+  const [messagesBadge, setMessagesBadge] = useState(Number(unreadMessagesCount) || 0)
   const mainRole = LaravelSession.roles?.[0] ?? { name: 'User' }
   const avatarImage = LaravelSession.image || session?.image
   const avatarUrl = avatarImage
     ? `/storage/images/user/${avatarImage}`
     : `https://ui-avatars.com/api/?name=${session.name}+${session.lastname}&color=FFFFFF&background=FFFFFF11`
+
+  useEffect(() => {
+    setMessagesBadge(Number(unreadMessagesCount) || 0)
+  }, [unreadMessagesCount])
+
+  useEffect(() => {
+    const decreaseMessagesBadge = () => {
+      setMessagesBadge((current) => Math.max(0, current - 1))
+    }
+
+    window.addEventListener('messages:seen', decreaseMessagesBadge)
+    return () => window.removeEventListener('messages:seen', decreaseMessagesBadge)
+  }, [])
 
   return (<div className="sidenav-menu">
     <a href="/" className="logo">
@@ -107,7 +121,7 @@ const Menu = ({ session }) => {
         <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
         <MenuItem href="/admin/quotes" icon='ti ti-receipt-2'>Cotizaciones</MenuItem>
         <MenuItem href="/admin/expert-club" icon='ti ti-users-group'>Club experto</MenuItem>
-        <MenuItem href="/admin/messages" icon='ti ti-message-dots'>Mensajes</MenuItem>
+        <MenuItem href="/admin/messages" icon='ti ti-message-dots' badge={messagesBadge}>Mensajes</MenuItem>
 
         <li className="side-nav-title mt-2">Catalogo</li>
         <MenuItem href="/admin/items" icon='ti ti-package'>Items</MenuItem>

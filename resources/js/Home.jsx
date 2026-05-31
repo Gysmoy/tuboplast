@@ -135,7 +135,7 @@ const HomeScreen = () => {
 
             <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center">
               <a
-                href="#catalog"
+                href="/catalog"
                 data-hero-cta
                 className="rounded-full bg-primary px-6 py-3.5 text-center text-sm font-semibold text-white shadow-md transition sm:px-10 sm:py-4"
               >

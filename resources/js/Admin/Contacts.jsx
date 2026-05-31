@@ -76,6 +76,14 @@ const Contacts = ({ can }) => {
         <h6 className='mt-0 mb-1'>Correo electronico</h6>
         <p className='mb-0 text-muted'>{dataLoaded?.email || ''}</p>
       </div>
+      <div className='mb-2'>
+        <h6 className='mt-0 mb-1'>Empresa</h6>
+        <p className='mb-0 text-muted'>{dataLoaded?.business || '-'}</p>
+      </div>
+      <div className='mb-2'>
+        <h6 className='mt-0 mb-1'>Motivo de consulta</h6>
+        <p className='mb-0 text-muted'>{dataLoaded?.service || '-'}</p>
+      </div>
       <div>
         <h6 className='mt-0 mb-1'>Mensaje</h6>
         <p className='mb-0 text-muted' style={{ whiteSpace: 'pre-wrap' }}>{dataLoaded?.message || ''}</p>
