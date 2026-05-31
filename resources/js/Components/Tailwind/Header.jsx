@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Global from '../../Utils/Global';
 
 const navItems = [
@@ -42,6 +42,8 @@ const HeaderAction = ({ children, href, icon, onClick }) => {
 const Header = ({ title }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const menuButtonRef = useRef(null);
+  const mobileMenuRef = useRef(null);
   const quoteItemCount = 0;
   const currentPath =
     typeof window === 'undefined' ? '/' : window.location.pathname.replace(/\/$/, '') || '/';
@@ -79,6 +81,22 @@ const Header = ({ title }) => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isMenuOpen, isQuoteOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+
+    const handleOutsideClick = (event) => {
+      if (
+        !mobileMenuRef.current?.contains(event.target)
+        && !menuButtonRef.current?.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isMenuOpen]);
 
   return (
     <>
@@ -130,6 +148,7 @@ const Header = ({ title }) => {
               </button>
 
               <button
+                ref={menuButtonRef}
                 type="button"
                 onClick={() => setIsMenuOpen((current) => !current)}
                 aria-label={isMenuOpen ? 'Cerrar menú principal' : 'Abrir menú principal'}
@@ -170,6 +189,7 @@ const Header = ({ title }) => {
         </div>
 
         <div
+          ref={mobileMenuRef}
           id="mobile-navigation"
           className={`border-t border-slate-200 bg-white lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`}
         >

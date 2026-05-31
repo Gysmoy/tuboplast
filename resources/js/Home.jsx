@@ -120,37 +120,37 @@ const HomeScreen = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/82 to-white/70" />
 
-        <div className={`mx-auto w-full max-w-site px-4 relative grid gap-10 pb-24 pt-16 lg:grid-cols-[1fr_390px] lg:items-center lg:pb-32 lg:pt-20`}>
-          <div className="max-w-2xl space-y-8">
+        <div className="relative mx-auto grid w-full max-w-site gap-8 px-4 pb-12 pt-10 sm:gap-10 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:pb-32 lg:pt-20">
+          <div className="max-w-2xl space-y-5 sm:space-y-7 lg:space-y-8">
             <span data-hero-line className="block h-1 w-16 bg-secondary" />
             <h1
               data-hero-title
-              className="text-7xl font-title leading-none tracking-tight text-primary"
+              className="font-title text-4xl leading-none tracking-tight text-primary sm:text-5xl md:text-6xl lg:text-7xl"
             >
               Expertos en Tuberias y Conexiones de PVC
             </h1>
-            <p data-hero-copy className="mt-5 max-w-lg leading-tight  text-darkmuted text-xl">
+            <p data-hero-copy className="max-w-lg text-base leading-relaxed text-darkmuted sm:text-lg lg:text-xl lg:leading-tight">
               Más de 60 años fabricando sistemas de conducción confiables para los sectores de Edificaciones, Infraestructura, Minería e Industria y Agricola en todo el Perú.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center">
               <a
                 href="#catalog"
                 data-hero-cta
-                className="rounded-full bg-primary px-10 py-4 text-sm font-semibold text-white shadow-md transition "
+                className="rounded-full bg-primary px-6 py-3.5 text-center text-sm font-semibold text-white shadow-md transition sm:px-10 sm:py-4"
               >
                 Ver catalogo <i className="mdi mdi-arrow-right ml-1 align-middle text-sm"></i>
               </a>
               <button
                 data-hero-cta
                 type="button"
-                className="rounded-full bg-[#F7DD00] px-10 py-4 text-sm font-semibold text-primary shadow-md transition "
+                className="rounded-full bg-[#F7DD00] px-6 py-3.5 text-sm font-semibold text-primary shadow-md transition sm:px-10 sm:py-4"
               >
                 Solicitar cotizacion
               </button>
             </div>
 
-            <div className="flex gap-10">
+            <div className="flex gap-8 sm:gap-10">
               <div data-hero-stat>
                 <p className="text-3xl font-title font-light text-primary">60+</p>
                 <p className="text-xs text-muted uppercase">Anos de trayectoria</p>
@@ -165,7 +165,7 @@ const HomeScreen = () => {
           <article
             data-hero-card
             data-float-card
-            className="rounded-3xl bg-white p-8 shadow-xl lg:ml-auto space-y-6"
+            className="space-y-6 rounded-3xl bg-white p-5 shadow-xl sm:max-w-xl sm:p-8 lg:ml-auto lg:max-w-none"
           >
             <span className="inline-block bg-[#F7DD00] px-2 py-1 text-[10px] font-bold uppercase text-primary">
               destacado
@@ -197,8 +197,8 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      <section className="relative py-10">
-        <div className={`mx-auto w-full max-w-site px-4 grid gap-14 md:grid-cols-3`}>
+      <section className="relative py-8 sm:py-10">
+        <div className="mx-auto grid w-full max-w-site gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:gap-14">
           {strengths.map((strength) => {
             return (
               <article
@@ -217,22 +217,22 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      <section id="nosotros" className="mx-auto my-20 w-full max-w-site px-4">
-        <div data-reveal className="relative min-h-[760px]">
-          <article className="relative flex w-3/5 flex-col rounded-[22px] bg-primary p-14 pr-32 text-white">
-            <div className='space-y-8'>
+      <section id="nosotros" className="mx-auto my-12 w-full max-w-site px-4 sm:my-16 lg:my-20">
+        <div data-reveal className="relative lg:min-h-[760px]">
+          <article className="relative flex w-full flex-col rounded-[22px] bg-primary p-6 text-white sm:p-8 lg:w-3/5 lg:p-14 lg:pr-32">
+            <div className="space-y-6 sm:space-y-8">
               <span className="text-xs uppercase text-secondary border-b-2 border-white/20 pb-2">
                 Legado & Futuro
               </span>
 
-              <h2 className="font-title text-7xl">
+              <h2 className="font-title text-4xl sm:text-5xl lg:text-7xl">
                 Seis <br />
                 décadas de <br />
                 <span className="text-secondary">Excelencia</span> <br />
                 Industrial.
               </h2>
 
-              <div className="grid grid-cols-2 gap-8">
+              <div className="grid gap-8 lg:grid-cols-2">
                 <p className="text-sm text-white/75">
                   Tuboplast es el referente peruano. Tuboplast es la primera fábrica 100% peruana especializada en la fabricación de tuberías y conexiones de PVC y HDPE. No solo fabricamos tuberías; diseñamos la infraestructura del mañana con ingeniería de precisión y materiales de vanguardia.
                 </p>
@@ -256,8 +256,8 @@ const HomeScreen = () => {
               </div>
             </div>
 
-            <div className="mt-auto flex items-center gap-8 pt-14">
-              <button type="button" className="font-title inline-flex px-4 py-3 items-center gap-4 rounded-full bg-white text-base font-medium text-primary shadow-sm">
+            <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8 lg:mt-auto lg:pt-14">
+              <button type="button" className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-3 font-title text-sm font-medium text-primary shadow-sm sm:gap-4 sm:text-base">
                 Especificaciones Técnicas
                 <i className="mdi mdi-arrow-right text-xl leading-none"></i>
               </button>
@@ -267,14 +267,14 @@ const HomeScreen = () => {
             </div>
           </article>
 
-          <div className="absolute right-0 -top-10 z-[1] h-[75%] w-[calc(40%+80px)]  rounded-[20px] shadow-[0_30px_90px_rgba(15,23,42,0.22)]">
+          <div className="relative z-[1] mt-6 aspect-[4/3] w-full rounded-[20px] shadow-[0_30px_90px_rgba(15,23,42,0.22)] sm:aspect-video lg:absolute lg:right-0 lg:-top-10 lg:mt-0 lg:h-[75%] lg:w-[calc(40%+80px)] lg:aspect-auto">
             <img
               src="https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&w=1200&q=80"
               alt="Planta industrial"
               className="h-full w-full object-cover rounded-2xl"
             />
-            <div className="absolute left-10 -bottom-40 rounded-lg bg-secondary px-10 py-10 text-primary shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
-              <p className="font-title text-6xl font-black">30+</p>
+            <div className="absolute bottom-4 left-4 rounded-lg bg-secondary px-5 py-4 text-primary shadow-[0_24px_60px_rgba(0,0,0,0.18)] sm:bottom-6 sm:left-6 sm:px-8 sm:py-6 lg:-bottom-40 lg:left-10 lg:px-10 lg:py-10">
+              <p className="font-title text-4xl font-black sm:text-5xl lg:text-6xl">30+</p>
               <p className="text-sm font-medium uppercase">Años forjando <br /> el Perú</p>
             </div>
           </div>
@@ -282,11 +282,11 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      <section id="catalog" className="py-16 bg-light">
+      <section id="catalog" className="bg-light py-12 sm:py-16">
         <div className={'mx-auto w-full max-w-site px-4'}>
-          <div className="mb-10 flex items-center justify-between">
+          <div className="mb-8 flex items-end justify-between gap-4 sm:mb-10">
             <div>
-              <p className="text-4xl font-title font-medium text-primary">Expertos en</p>
+              <p className="font-title text-3xl font-medium text-primary sm:text-4xl">Expertos en</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
             <a className="font-medium text-primary" href="#">
@@ -294,7 +294,7 @@ const HomeScreen = () => {
             </a>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {categories.map((category) => (
               <article
                 key={category.title}
@@ -304,21 +304,21 @@ const HomeScreen = () => {
                 <img
                   src={category.image}
                   alt={category.title}
-                  className="aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-105 lg:aspect-[3/4]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/35 to-transparent" />
-                <p className="absolute bottom-10 left-8 right-8 text-3xl font-title font-medium text-white">{category.title}</p>
+                <p className="absolute bottom-5 left-4 right-4 font-title text-xl font-medium leading-tight text-white sm:bottom-7 sm:left-6 sm:right-6 sm:text-2xl lg:bottom-10 lg:left-8 lg:right-8 lg:text-3xl">{category.title}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="productos" className="py-16">
+      <section id="productos" className="py-12 sm:py-16">
         <div className={'mx-auto w-full max-w-site px-4'}>
-          <div className="mb-10 flex items-center justify-between">
+          <div className="mb-8 flex items-end justify-between gap-4 sm:mb-10">
             <div>
-              <p className="text-4xl font-title font-medium text-primary">Nuestras Recomendaciones</p>
+              <p className="font-title text-3xl font-medium leading-tight text-primary sm:text-4xl">Nuestras Recomendaciones</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
             <a className="font-medium text-primary" href="#">
@@ -334,16 +334,16 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      <section id="novedades" className="py-10">
+      <section id="novedades" className="px-4 py-8 sm:py-10 lg:px-0">
         <div
           data-reveal
-          className={`mx-auto w-full max-w-site rounded-2xl bg-[#F7DD00] md:grid md:grid-cols-2 md:items-end `}
+          className="mx-auto w-full max-w-site rounded-2xl bg-[#F7DD00] md:grid md:grid-cols-2 md:items-end"
         >
-          <div className="p-16 pb-10 space-y-5">
-            <span className='block h-1 bg-primary w-16'></span>
+          <div className="space-y-5 p-6 pb-2 sm:p-10 sm:pb-4 md:p-12 md:pb-10 lg:p-16 lg:pb-10">
+            <span className="block h-1 w-16 bg-primary"></span>
             <p className="text-xs uppercase text-primary">Exclusivo para maestros</p>
-            <h3 className="text-7xl font-title text-primary">Club Experto Tuboplast</h3>
-            <p className="text-xl text-primary">
+            <h3 className="font-title text-4xl leading-tight text-primary sm:text-5xl lg:text-7xl lg:leading-normal">Club Experto Tuboplast</h3>
+            <p className="text-base text-primary sm:text-lg lg:text-xl">
               Únete a nuestra comunidad y accede a capacitaciones certificadas, descuentos exclusivos y soporte prioritario.
             </p>
             <button type="button" className="rounded-full bg-primary px-8 py-3.5 font-title font-medium text-white">
@@ -354,17 +354,17 @@ const HomeScreen = () => {
             <img
               src="/assets/img/landing/club-expert.png"
               alt="Club Experto"
-              className="h-full w-auto object-contain -mt-10"
+              className="mx-auto -mt-2 h-auto max-h-[360px] w-auto object-contain sm:max-h-[440px] md:-mt-10 md:h-full md:max-h-none"
             />
           </div>
         </div>
       </section>
 
-      <section id="blog" className="py-16">
+      <section id="blog" className="py-12 sm:py-16">
         <div className={'mx-auto w-full max-w-site px-4'}>
-          <div className="mb-10 flex items-center justify-between">
+          <div className="mb-8 flex items-end justify-between gap-4 sm:mb-10">
             <div>
-              <p className="text-4xl font-title font-medium text-primary">Nuestro blog</p>
+              <p className="font-title text-3xl font-medium text-primary sm:text-4xl">Nuestro blog</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
             <a className="font-medium text-primary" href="#">

@@ -107,13 +107,13 @@ const SortDropdown = ({ onChange, value }) => {
   }, []);
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative w-full sm:w-auto">
       <button
         type="button"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         onClick={() => setIsOpen((current) => !current)}
-        className="flex min-w-[210px] items-center justify-between gap-4 rounded-xl border border-silver bg-white px-4 py-3 text-sm font-bold text-primary shadow-sm transition hover:border-primary hover:shadow-md"
+        className="flex w-full items-center justify-between gap-4 rounded-xl border border-silver bg-white px-4 py-3 text-sm font-bold text-primary shadow-sm transition hover:border-primary hover:shadow-md sm:min-w-[210px]"
       >
         {selectedOption.label}
         <i className={`mdi mdi-chevron-down text-base text-muted transition ${isOpen ? 'rotate-180' : ''}`}></i>
@@ -123,7 +123,7 @@ const SortDropdown = ({ onChange, value }) => {
         <div
           role="listbox"
           aria-label="Ordenar productos"
-          className="absolute right-0 top-[calc(100%+8px)] z-20 w-64 rounded-xl border border-silver bg-white p-2 shadow-xl"
+          className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 rounded-xl border border-silver bg-white p-2 shadow-xl sm:left-auto sm:w-64"
         >
           {sortOptions.map((option) => {
             const isSelected = option.value === value;
@@ -163,6 +163,7 @@ const CatalogScreen = () => {
   ]);
   const [application, setApplication] = useState('Edificación');
   const [sort, setSort] = useState('popular');
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const visibleProducts = useMemo(() => {
     if (sort === 'price-asc') {
@@ -183,103 +184,117 @@ const CatalogScreen = () => {
   };
 
   return (
-    <main className="space-y-16">
-      <header className="mx-auto w-full max-w-site px-4 pt-16">
-        <h1 className="font-title text-4xl font-medium text-primary">Soluciones para Conducción de Agua</h1>
+    <main className="space-y-10 sm:space-y-12 lg:space-y-16">
+      <header className="mx-auto w-full max-w-site px-4 pt-10 sm:pt-12 lg:pt-16">
+        <h1 className="font-title text-3xl font-medium leading-tight text-primary sm:text-4xl">Soluciones para Conducción de Agua</h1>
         <span className="mt-4 block h-1 w-12 bg-secondary" />
       </header>
 
-      <section
-        className="mx-auto min-h-screen w-full max-w-site px-4 grid gap-16"
-        style={{ gridTemplateColumns: '260px minmax(0, 1fr)' }}
-      >
+      <section className="mx-auto grid min-h-screen w-full max-w-site gap-8 px-4 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-12 xl:gap-16">
         <aside>
-          <div className="sticky top-40">
-            <p className="flex items-center gap-2 text-xl font-bold text-primary">
-              <i className="mdi mdi-filter-variant text-2xl"></i>
-              Filtrar Por
-            </p>
+          <div className="lg:sticky lg:top-40">
+            <button
+              type="button"
+              aria-controls="catalog-filters"
+              aria-expanded={isFiltersOpen}
+              onClick={() => setIsFiltersOpen((current) => !current)}
+              className="flex w-full items-center justify-between rounded-xl border border-silver bg-white px-4 py-3 text-left text-primary shadow-sm transition hover:border-primary lg:pointer-events-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
+            >
+              <span className="flex items-center gap-2 text-lg font-bold lg:text-xl">
+                <i className="mdi mdi-filter-variant text-2xl"></i>
+                Filtrar Por
+              </span>
+              <span className="flex items-center gap-2 text-xs font-bold lg:hidden">
+                {selectedFilters.length} activos
+                <i className={`mdi mdi-chevron-down text-lg transition ${isFiltersOpen ? 'rotate-180' : ''}`}></i>
+              </span>
+            </button>
 
-            <div className="mt-8 space-y-8">
-              <FilterGroup title="Material">
-                {materialOptions.map((label) => (
-                  <FilterCheckbox
-                    key={label}
-                    label={label}
-                    checked={selectedFilters.includes(label)}
-                    onChange={() => toggleFilter(label)}
-                  />
-                ))}
-              </FilterGroup>
-
-              <FilterGroup title="Aplicación / Uso">
-                <div className="flex flex-wrap gap-2">
-                  {['Edificación', 'Minería', 'Infraestructura'].map((label) => (
-                    <button
+            <div
+              id="catalog-filters"
+              className={`${isFiltersOpen ? 'block' : 'hidden'} mt-5 rounded-xl border border-silver bg-white p-5 shadow-sm lg:mt-8 lg:block lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none`}
+            >
+              <div className="space-y-8">
+                <FilterGroup title="Material">
+                  {materialOptions.map((label) => (
+                    <FilterCheckbox
                       key={label}
-                      type="button"
-                      onClick={() => setApplication(label)}
-                      className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
-                        application === label
-                          ? 'bg-primary text-white'
-                          : 'bg-silver text-darkmuted hover:bg-slate-200'
-                      }`}
-                    >
-                      {label}
-                    </button>
+                      label={label}
+                      checked={selectedFilters.includes(label)}
+                      onChange={() => toggleFilter(label)}
+                    />
                   ))}
+                </FilterGroup>
+
+                <FilterGroup title="Aplicación / Uso">
+                  <div className="flex flex-wrap gap-2">
+                    {['Edificación', 'Minería', 'Infraestructura'].map((label) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => setApplication(label)}
+                        className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
+                          application === label
+                            ? 'bg-primary text-white'
+                            : 'bg-silver text-darkmuted hover:bg-slate-200'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </FilterGroup>
+
+                <FilterGroup title="Diámetro nominal (pulg)">
+                  {diameterOptions.map((label) => (
+                    <FilterCheckbox
+                      key={label}
+                      label={label}
+                      checked={selectedFilters.includes(label)}
+                      onChange={() => toggleFilter(label)}
+                    />
+                  ))}
+                </FilterGroup>
+
+                <FilterGroup title="Clase / Presión (PSI)">
+                  {pressureOptions.map((label) => (
+                    <FilterCheckbox
+                      key={label}
+                      label={label}
+                      checked={selectedFilters.includes(label)}
+                      onChange={() => toggleFilter(label)}
+                    />
+                  ))}
+                </FilterGroup>
+
+                <div className="rounded-lg bg-[#f0f0f0] p-4">
+                  <p className="text-sm font-bold text-primary">Asesoría Técnica</p>
+                  <p className="mt-3 text-xs leading-snug text-darkmuted">
+                    ¿Necesita ayuda con los cálculos de presión para su proyecto?
+                  </p>
+                  <a href="/contact" className="mt-5 inline-flex items-center text-xs font-bold uppercase tracking-[0.08em] text-primary">
+                    Contactar ingeniero
+                    <i className="mdi mdi-arrow-right ml-1 text-sm"></i>
+                  </a>
                 </div>
-              </FilterGroup>
-
-              <FilterGroup title="Diámetro nominal (pulg)">
-                {diameterOptions.map((label) => (
-                  <FilterCheckbox
-                    key={label}
-                    label={label}
-                    checked={selectedFilters.includes(label)}
-                    onChange={() => toggleFilter(label)}
-                  />
-                ))}
-              </FilterGroup>
-
-              <FilterGroup title="Clase / Presión (PSI)">
-                {pressureOptions.map((label) => (
-                  <FilterCheckbox
-                    key={label}
-                    label={label}
-                    checked={selectedFilters.includes(label)}
-                    onChange={() => toggleFilter(label)}
-                  />
-                ))}
-              </FilterGroup>
-
-              <div className="rounded-lg bg-[#f0f0f0] p-4">
-                <p className="text-sm font-bold text-primary">Asesoría Técnica</p>
-                <p className="mt-3 text-xs leading-snug text-darkmuted">
-                  ¿Necesita ayuda con los cálculos de presión para su proyecto?
-                </p>
-                <a href="/contact" className="mt-5 inline-flex items-center text-xs font-bold uppercase tracking-[0.08em] text-primary">
-                  Contactar ingeniero
-                  <i className="mdi mdi-arrow-right ml-1 text-sm"></i>
-                </a>
               </div>
             </div>
           </div>
         </aside>
 
         <div>
-          <div className="mb-8 flex items-center justify-between gap-5">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
             <p className="text-sm text-darkmuted">
               Mostrando <b className="text-primary">{visibleProducts.length} de 48</b> productos
             </p>
 
-            <div className="flex items-center gap-4">
-              <span className="text-xs uppercase tracking-[0.08em] text-muted">Ordenar por:</span>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
+              <span className="text-[10px] uppercase tracking-[0.08em] text-muted sm:text-xs">Ordenar por:</span>
               <SortDropdown value={sort} onChange={setSort} />
             </div>
           </div>
 
-          <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
+          <div className="grid gap-5 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
             {visibleProducts.map((product) => (
               <ItemCard key={product.id} product={product} />
             ))}
@@ -300,13 +315,13 @@ const CatalogScreen = () => {
       </section>
 
       <section className="relative w-full bg-primary text-white">
-        <div className="mx-auto grid w-full max-w-site grid-cols-2 gap-16 py-16 px-4">
+        <div className="mx-auto grid w-full max-w-site gap-10 px-4 py-12 sm:grid-cols-2 sm:gap-12 sm:py-16 lg:gap-16">
           <article className="text-center">
             <i className="mdi mdi-check-decagram-outline text-4xl text-secondary"></i>
             <h2 className="mt-6 text-xl font-bold">Alta Resistencia</h2>
             <p className="mx-auto mt-4 max-w-md text-sm text-white/60">
               Materiales vírgenes que aseguran resistencia a
-              <br />
+              <br className="hidden lg:block" />
               la corrosión y agentes químicos.
             </p>
           </article>
@@ -316,7 +331,7 @@ const CatalogScreen = () => {
             <h2 className="mt-6 text-xl font-bold">Fácil Instalación</h2>
             <p className="mx-auto mt-4 max-w-md text-sm text-white/60">
               Sistemas de unión flexible y cementado diseñados
-              <br />
+              <br className="hidden lg:block" />
               para optimizar tiempos en obra.
             </p>
           </article>
