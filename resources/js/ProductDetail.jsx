@@ -115,7 +115,7 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
 
   return (
     <main>
-      <section className="mx-auto w-full max-w-[1560px] px-4 pb-16 pt-8 lg:pb-20 lg:pt-10">
+      <section className="mx-auto w-full max-w-site px-4 pb-16 pt-8 lg:pb-20 lg:pt-10">
         <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,732px)_minmax(0,658px)] lg:justify-between lg:gap-12">
           <ProductGallery product={product} />
 
