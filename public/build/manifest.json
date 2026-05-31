@@ -21,8 +21,8 @@
       "_index-CXVQH7Lr.js"
     ]
   },
-  "_Base-DadGxYSp.js": {
-    "file": "assets/Base-DadGxYSp.js",
+  "_Base-D8SQGLa9.js": {
+    "file": "assets/Base-D8SQGLa9.js",
     "name": "Base",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
@@ -352,7 +352,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-iEOmGcHz.js",
+    "file": "assets/Catalog-5b22f_kY.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isEntry": true,
@@ -360,7 +360,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-DadGxYSp.js",
+      "_Base-D8SQGLa9.js",
       "_CreateReactScript-CRXFLeJ_.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -640,7 +640,7 @@
     ]
   },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-Dz8S4kJE.js",
+    "file": "assets/Home-DZ4Cco9g.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isEntry": true,
@@ -649,7 +649,7 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-eH15wkkc.js",
-      "_Base-DadGxYSp.js",
+      "_Base-D8SQGLa9.js",
       "_CreateReactScript-CRXFLeJ_.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -700,7 +700,7 @@
     ]
   },
   "resources/js/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-BQyg3maL.js",
+    "file": "assets/ProductDetail-BKA_ifu_.js",
     "name": "ProductDetail",
     "src": "resources/js/ProductDetail.jsx",
     "isEntry": true,
@@ -708,7 +708,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-DadGxYSp.js",
+      "_Base-D8SQGLa9.js",
       "_CreateReactScript-CRXFLeJ_.js",
       "_index-3eJeR5RX.js",
       "resources/js/Utils/CreateReactScript.jsx",
