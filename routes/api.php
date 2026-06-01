@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\ClubController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\RoleController;
@@ -25,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::post('messages/paginate', [MessageController::class, 'paginate']);
     Route::patch('messages/seen', [MessageController::class, 'seen']);
     Route::delete('messages/{id}', [MessageController::class, 'delete']);
+    Route::post('club/paginate', [ClubController::class, 'paginate']);
+    Route::patch('club/seen', [ClubController::class, 'seen']);
+    Route::delete('club/{id}', [ClubController::class, 'delete']);
 
     Route::post('roles/paginate', [RoleController::class, 'paginate']);
     Route::post('roles', [RoleController::class, 'save']);

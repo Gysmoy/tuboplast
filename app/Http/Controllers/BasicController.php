@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Classes\dxResponse;
 use App\Models\dxDataGrid;
+use App\Models\ClubExpert;
 use App\Models\Message;
 use App\Models\User;
 use Exception;
@@ -125,6 +126,7 @@ class BasicController extends Controller
     $usdPrice = null;
     $eurPrice = null;
     $unreadMessagesCount = 0;
+    $unreadClubCount = 0;
 
     if (Auth::check()) {
       $userJpa = User::find(Auth::id());
@@ -134,13 +136,26 @@ class BasicController extends Controller
         $unreadMessagesCount = Message::query()
           ->whereNotNull('status')
           ->where('seen', false)
+          ->where(function ($query) {
+            $query
+              ->whereNull('source')
+              ->orWhere('source', '!=', 'club');
+          })
           ->count();
+
+        if (Schema::hasTable('club_experts')) {
+          $unreadClubCount = ClubExpert::query()
+            ->whereNotNull('status')
+            ->where('seen', false)
+            ->count();
+        }
       }
     }
 
     $properties = [
       'session' => $userJpa,
       'unreadMessagesCount' => $unreadMessagesCount,
+      'unreadClubCount' => $unreadClubCount,
       'global' => [
         'PUBLIC_RSA_KEY' => self::$publicRsaKey,
         'APP_NAME' => env('APP_NAME', 'Ursa'),

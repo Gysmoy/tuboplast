@@ -7,7 +7,7 @@ import { AdmintoProvider } from './AdmintoContext'
 moment.tz.setDefault('UTC');
 
 const Adminto = ({ ...properties }) => {
-  const { session, children, title, can, unreadMessagesCount } = properties
+  const { session, children, title, can, unreadMessagesCount, unreadClubCount } = properties
 
   useEffect(() => {
     const app = new App
@@ -19,7 +19,12 @@ const Adminto = ({ ...properties }) => {
 
   return (<AdmintoProvider {...properties}>
     <div className="wrapper">
-      <Menu session={session} can={can} unreadMessagesCount={unreadMessagesCount} />
+      <Menu
+        session={session}
+        can={can}
+        unreadMessagesCount={unreadMessagesCount}
+        unreadClubCount={unreadClubCount}
+      />
       <NavBar session={session} title={title} can={can} />
       <div className="modal fade" id="searchModal" tabIndex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-lg">

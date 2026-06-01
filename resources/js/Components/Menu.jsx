@@ -4,8 +4,9 @@ import MenuItem from './MenuItem'
 import MenuItemContainer from './MenuItemContainer'
 import LaravelSession from '../Utils/LaravelSession'
 
-const Menu = ({ session, unreadMessagesCount = 0 }) => {
+const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0 }) => {
   const [messagesBadge, setMessagesBadge] = useState(Number(unreadMessagesCount) || 0)
+  const [clubBadge, setClubBadge] = useState(Number(unreadClubCount) || 0)
   const mainRole = LaravelSession.roles?.[0] ?? { name: 'User' }
   const avatarImage = LaravelSession.image || session?.image
   const avatarUrl = avatarImage
@@ -17,12 +18,25 @@ const Menu = ({ session, unreadMessagesCount = 0 }) => {
   }, [unreadMessagesCount])
 
   useEffect(() => {
+    setClubBadge(Number(unreadClubCount) || 0)
+  }, [unreadClubCount])
+
+  useEffect(() => {
     const decreaseMessagesBadge = () => {
       setMessagesBadge((current) => Math.max(0, current - 1))
     }
 
     window.addEventListener('messages:seen', decreaseMessagesBadge)
     return () => window.removeEventListener('messages:seen', decreaseMessagesBadge)
+  }, [])
+
+  useEffect(() => {
+    const decreaseClubBadge = () => {
+      setClubBadge((current) => Math.max(0, current - 1))
+    }
+
+    window.addEventListener('club:seen', decreaseClubBadge)
+    return () => window.removeEventListener('club:seen', decreaseClubBadge)
   }, [])
 
   return (<div className="sidenav-menu">
@@ -120,7 +134,7 @@ const Menu = ({ session, unreadMessagesCount = 0 }) => {
       <ul className="side-nav">
         <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
         <MenuItem href="/admin/quotes" icon='ti ti-receipt-2'>Cotizaciones</MenuItem>
-        <MenuItem href="/admin/expert-club" icon='ti ti-users-group'>Club experto</MenuItem>
+        <MenuItem href="/admin/club" icon='ti ti-users-group' badge={clubBadge}>Club experto</MenuItem>
         <MenuItem href="/admin/messages" icon='ti ti-message-dots' badge={messagesBadge}>Mensajes</MenuItem>
 
         <li className="side-nav-title mt-2">Catalogo</li>

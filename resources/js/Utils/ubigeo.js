@@ -1,3 +1,18 @@
+export const fetchUbigeoRows = async () => {
+  const response = await fetch('/api/ubigeo/inei', {
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+  const result = await response.json()
+
+  if (!response.ok || result.status !== 200) {
+    throw new Error(result.message || 'No se pudo cargar el ubigeo')
+  }
+
+  return result.data || []
+}
+
 export const getDepartments = (rows) => {
   return Array.from(new Set((rows || []).map(x => x.department))).filter(Boolean).sort((a, b) => a.localeCompare(b))
 }
@@ -13,4 +28,3 @@ export const getDistricts = (rows, department, province) => {
     .filter(x => x.department === department && x.province === province)
     .sort((a, b) => String(a.district).localeCompare(String(b.district)))
 }
-

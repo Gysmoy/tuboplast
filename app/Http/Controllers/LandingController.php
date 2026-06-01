@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Distribuidor;
+use App\Models\ClubExpert;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Validation\ValidationException;
 
 class LandingController extends BasicController
 {
@@ -59,6 +62,13 @@ class LandingController extends BasicController
         return parent::reactView($request);
     }
 
+    public function clubView(Request $request)
+    {
+        $this->reactView = 'Club';
+
+        return parent::reactView($request);
+    }
+
     public function storeContact(Request $request)
     {
         $validated = $request->validate([
@@ -88,6 +98,69 @@ class LandingController extends BasicController
             'status' => 200,
             'message' => 'Gracias. Tu mensaje fue enviado correctamente.',
         ]);
+    }
+
+    public function storeClub(Request $request)
+    {
+        $validated = $request->validate([
+            'accepted' => 'accepted',
+            'department' => 'required|string|max:120',
+            'district' => 'required|string|max:120',
+            'dni' => 'required|string|min:8|max:12',
+            'email' => 'required|email|max:180',
+            'name' => 'required|string|max:120',
+            'province' => 'required|string|max:120',
+            'specialty' => 'required|string|max:120',
+            'ubigeo' => 'required|string|max:12',
+        ]);
+
+        if (!$this->hasValidUbigeo($validated)) {
+            throw ValidationException::withMessages([
+                'district' => 'Selecciona una ubicación válida.',
+            ]);
+        }
+
+        ClubExpert::create([
+            'name' => $validated['name'],
+            'dni' => $validated['dni'],
+            'email' => $validated['email'],
+            'specialty' => $validated['specialty'],
+            'department' => $validated['department'],
+            'province' => $validated['province'],
+            'district' => $validated['district'],
+            'ubigeo' => $validated['ubigeo'],
+            'accepted_terms' => true,
+            ...$this->detectClientTracking($request),
+            'seen' => false,
+            'status' => true,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Gracias. Tu solicitud fue registrada correctamente.',
+        ]);
+    }
+
+    private function hasValidUbigeo(array $data): bool
+    {
+        $path = storage_path('app/utils/ubigeo-inei.json');
+        if (!File::exists($path)) return false;
+
+        $rows = json_decode(File::get($path), true);
+        if (!is_array($rows)) return false;
+
+        foreach ($rows as $row) {
+            if (
+                ($row['code'] ?? null) === $data['ubigeo']
+                && ($row['department'] ?? null) === $data['department']
+                && ($row['province'] ?? null) === $data['province']
+                && ($row['district'] ?? null) === $data['district']
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function detectClientTracking(Request $request): array

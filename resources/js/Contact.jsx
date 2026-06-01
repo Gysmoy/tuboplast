@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import Base from './Components/Tailwind/Base';
+import ThankYouModal from './Components/Tailwind/ThankYouModal';
 import CreateReactScript from './Utils/CreateReactScript';
 import Global from './Utils/Global';
 import { loadGoogleMapsApi } from './Utils/googleMaps';
@@ -283,6 +284,7 @@ const ContactForm = () => {
   });
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const [isSending, setIsSending] = useState(false);
+  const [isThankYouOpen, setIsThankYouOpen] = useState(false);
 
   const updateField = (event) => {
     const { name, value } = event.target;
@@ -314,7 +316,8 @@ const ContactForm = () => {
       }
 
       setForm({ business: '', email: '', message: '', name: '', service: '' });
-      setFeedback({ type: 'success', message: result.message });
+      setFeedback({ type: '', message: '' });
+      setIsThankYouOpen(true);
     } catch (error) {
       setFeedback({ type: 'error', message: error.message });
     } finally {
@@ -323,10 +326,11 @@ const ContactForm = () => {
   };
 
   return (
-    <form
-      onSubmit={submitForm}
-      className="rounded-2xl bg-white p-5 shadow-md ring-1 ring-slate-200/70 sm:p-7 lg:p-8"
-    >
+    <>
+      <form
+        onSubmit={submitForm}
+        className="rounded-2xl bg-white p-5 shadow-md ring-1 ring-slate-200/70 sm:p-7 lg:p-8"
+      >
       <div className="grid gap-x-6 gap-y-5 md:grid-cols-2">
         <Field
           label="Nombre completo"
@@ -391,7 +395,15 @@ const ContactForm = () => {
           <i className="mdi mdi-arrow-right text-lg"></i>
         </button>
       </div>
-    </form>
+      </form>
+      <ThankYouModal
+        description="Nuestro equipo técnico revisará tu consulta y se comunicará contigo pronto."
+        eyebrow="Solicitud enviada"
+        isOpen={isThankYouOpen}
+        onClose={() => setIsThankYouOpen(false)}
+        title="Gracias por contactarnos"
+      />
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 import Global from './Utils/Global';
 import { loadGoogleMapsApi } from './Utils/googleMaps';
+import { fetchUbigeoRows, getDepartments, getDistricts, getProvinces } from './Utils/ubigeo';
 
 const DEFAULT_CENTER = { lat: -12.104889, lng: -77.036412 };
 
@@ -90,6 +91,7 @@ const directionsUrl = (distributor) => {
 
 const Dropdown = ({
   compact = false,
+  disabled = false,
   id,
   label,
   onChange,
@@ -147,10 +149,11 @@ const Dropdown = ({
         aria-controls={`${id}-options`}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        disabled={disabled}
         onClick={() => setIsOpen((current) => !current)}
         className={`flex w-full items-center justify-between gap-3 border-b border-slate-300 bg-transparent text-left text-sm outline-none transition hover:border-primary ${
           compact ? 'py-2 text-muted' : 'mt-2 px-3 py-3 text-darkmuted'
-        }`}
+        } disabled:cursor-not-allowed disabled:opacity-50`}
       >
         <span className="truncate">{selectedOption?.label ?? placeholder}</span>
         <i className={`mdi mdi-chevron-down shrink-0 text-base transition ${isOpen ? 'rotate-180' : ''}`}></i>
@@ -462,27 +465,47 @@ const DistributorsScreen = ({ distributors = [] }) => {
   }, [distributors]);
   const [departmentDraft, setDepartmentDraft] = useState('');
   const [provinceDraft, setProvinceDraft] = useState('');
+  const [districtDraft, setDistrictDraft] = useState('');
   const [department, setDepartment] = useState('');
   const [province, setProvince] = useState('');
+  const [district, setDistrict] = useState('');
   const [sort, setSort] = useState('featured');
   const [selectedId, setSelectedId] = useState(normalizedDistributors[0]?.id ?? null);
+  const [ubigeoRows, setUbigeoRows] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchUbigeoRows()
+      .then((rows) => {
+        if (!cancelled) setUbigeoRows(rows);
+      })
+      .catch(() => {
+        if (!cancelled) setUbigeoRows([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const departments = useMemo(
-    () => [...new Set(normalizedDistributors.map((distributor) => distributor.department))].sort(),
-    [normalizedDistributors],
+    () => getDepartments(ubigeoRows),
+    [ubigeoRows],
   );
   const provinces = useMemo(
-    () => [...new Set(
-      normalizedDistributors
-        .filter((distributor) => !departmentDraft || distributor.department === departmentDraft)
-        .map((distributor) => distributor.province),
-    )].sort(),
-    [departmentDraft, normalizedDistributors],
+    () => getProvinces(ubigeoRows, departmentDraft),
+    [departmentDraft, ubigeoRows],
+  );
+  const districts = useMemo(
+    () => getDistricts(ubigeoRows, departmentDraft, provinceDraft).map((item) => item.district),
+    [departmentDraft, provinceDraft, ubigeoRows],
   );
   const filteredDistributors = useMemo(() => {
     const filtered = normalizedDistributors.filter((distributor) => (
       (!department || distributor.department === department)
       && (!province || distributor.province === province)
+      && (!district || distributor.district === district)
     ));
 
     return [...filtered].sort((a, b) => (
@@ -490,7 +513,7 @@ const DistributorsScreen = ({ distributors = [] }) => {
         ? a.name.localeCompare(b.name)
         : Number(b.highlighted) - Number(a.highlighted)
     ));
-  }, [department, normalizedDistributors, province, sort]);
+  }, [department, district, normalizedDistributors, province, sort]);
 
   useEffect(() => {
     if (!filteredDistributors.some((distributor) => distributor.id === selectedId)) {
@@ -501,6 +524,7 @@ const DistributorsScreen = ({ distributors = [] }) => {
   const search = () => {
     setDepartment(departmentDraft);
     setProvince(provinceDraft);
+    setDistrict(districtDraft);
   };
 
   const selectDistributorFromCard = (id) => {
@@ -530,7 +554,7 @@ const DistributorsScreen = ({ distributors = [] }) => {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
             <Dropdown
               id="department-dropdown"
               label="Departamento"
@@ -540,16 +564,31 @@ const DistributorsScreen = ({ distributors = [] }) => {
               onChange={(nextValue) => {
                   setDepartmentDraft(nextValue);
                   setProvinceDraft('');
+                  setDistrictDraft('');
               }}
             />
 
             <Dropdown
+              disabled={!departmentDraft}
               id="province-dropdown"
               label="Provincia"
               placeholder="Todas las regiones"
               value={provinceDraft}
               options={provinces.map((option) => ({ label: option, value: option }))}
-              onChange={setProvinceDraft}
+              onChange={(nextValue) => {
+                setProvinceDraft(nextValue);
+                setDistrictDraft('');
+              }}
+            />
+
+            <Dropdown
+              disabled={!provinceDraft}
+              id="district-dropdown"
+              label="Distrito"
+              placeholder="Todos los distritos"
+              value={districtDraft}
+              options={districts.map((option) => ({ label: option, value: option }))}
+              onChange={setDistrictDraft}
             />
 
             <button

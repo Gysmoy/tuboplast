@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\ClubController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\AccountController;
@@ -18,9 +19,11 @@ Route::get('/', [LandingController::class, 'reactView'])->name('landing');
 Route::get('/catalog', [LandingController::class, 'catalogView'])->name('catalog');
 Route::get('/distributors', [LandingController::class, 'distributorsView'])->name('distributors');
 Route::get('/contact', [LandingController::class, 'contactView'])->name('contact');
+Route::get('/club', [LandingController::class, 'clubView'])->name('club');
 Route::get('/item/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/privacy-policy', [LandingController::class, 'reactView']);
 Route::post('/landing/contact', [LandingController::class, 'storeContact'])->name('landing.contact');
+Route::post('/landing/club', [LandingController::class, 'storeClub'])->name('landing.club');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginView'])->name('Login.jsx');
@@ -44,6 +47,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/home', [HomeController::class, 'reactView'])->name('admin.home');
     Route::get('/admin/contacts', [ContactController::class, 'reactView'])->name('admin.contacts');
+    Route::get('/admin/club', [ClubController::class, 'reactView'])->name('admin.club');
     Route::get('/admin/messages', [MessageController::class, 'reactView'])->name('admin.messages');
     Route::get('/admin/account', [AccountController::class, 'reactView'])->name('admin.account');
     Route::get('/admin/roles', [RoleController::class, 'reactView'])->name('admin.roles');

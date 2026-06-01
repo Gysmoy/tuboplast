@@ -2,22 +2,17 @@ import { Fetch } from "sode-extend-react"
 import { toast } from "sonner"
 import BasicRest from "../BasicRest"
 
-class MessagesRest extends BasicRest {
-  path = 'messages'
-
-  constructor(path = 'messages') {
-    super()
-    this.path = path
-  }
+class ClubRest extends BasicRest {
+  path = 'club'
 
   seen = async (id) => {
     try {
-      const { status, result } = await Fetch(`/api/${this.path}/seen`, {
+      const { status, result } = await Fetch('/api/club/seen', {
         method: 'PATCH',
         body: JSON.stringify({ id })
       })
 
-      if (!status) throw new Error(result?.message || 'No se pudo marcar el mensaje como leído')
+      if (!status) throw new Error(result?.message || 'No se pudo marcar la solicitud como leída')
 
       return true
     } catch (error) {
@@ -27,4 +22,4 @@ class MessagesRest extends BasicRest {
   }
 }
 
-export default MessagesRest
+export default ClubRest
