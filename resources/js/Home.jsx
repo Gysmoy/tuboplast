@@ -289,7 +289,7 @@ const HomeScreen = () => {
               <p className="font-title text-3xl font-medium text-primary sm:text-4xl">Expertos en</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
-            <a className="font-medium text-primary" href="#">
+            <a className="font-medium text-primary" href="/blog">
               Ver todo <i className="mdi mdi-arrow-right align-middle text-sm ms-1"></i>
             </a>
           </div>

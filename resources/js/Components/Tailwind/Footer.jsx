@@ -25,10 +25,14 @@ const Footer = () => {
           <div className="space-y-3">
             <p className="text-sm font-bold text-primary">Empresa</p>
             <div className="space-y-3 text-xs text-muted">
-              <p>Nosotros</p>
+              <a href="/about" className="block transition hover:text-primary">
+                Nosotros
+              </a>
               <p>Distribuidores</p>
               <p>Club experto</p>
-              <p>Blog</p>
+              <a href="/blog" className="block transition hover:text-primary">
+                Blog
+              </a>
             </div>
           </div>
 

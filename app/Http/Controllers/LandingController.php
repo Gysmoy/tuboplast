@@ -55,6 +55,27 @@ class LandingController extends BasicController
         return parent::reactView($request);
     }
 
+    public function aboutView(Request $request)
+    {
+        $this->reactView = 'AboutFamilia';
+
+        return parent::reactView($request);
+    }
+
+    public function aboutFamiliaView(Request $request)
+    {
+        $this->reactView = 'AboutFamilia';
+
+        return parent::reactView($request);
+    }
+
+    public function aboutPoliticaView(Request $request)
+    {
+        $this->reactView = 'AboutPolitica';
+
+        return parent::reactView($request);
+    }
+
     public function contactView(Request $request)
     {
         $this->reactView = 'Contact';
@@ -65,6 +86,13 @@ class LandingController extends BasicController
     public function clubView(Request $request)
     {
         $this->reactView = 'Club';
+
+        return parent::reactView($request);
+    }
+
+    public function blogView(Request $request)
+    {
+        $this->reactView = 'Blog';
 
         return parent::reactView($request);
     }
