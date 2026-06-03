@@ -1,0 +1,1 @@
+import{j as s}from"./DataGrid-DAFs00V8.js";import{r as t}from"./index-RYns6xqu.js";import{T as i}from"./index-CXVQH7Lr.js";const a=t.createContext(),p=({children:o,session:r})=>{const[e,n]=t.useState(r);return s.jsxs(a.Provider,{value:{session:e,setSession:n},children:[o,s.jsx(i,{})]})};export{p as A};
