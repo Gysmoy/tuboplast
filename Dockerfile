@@ -34,6 +34,7 @@ COPY . /var/www/html
 
 # 8. Install PHP dependencies
 # Note: We assume frontend assets (public/build) are already committed/exist
+RUN git config --global --add safe.directory /var/www/html
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 RUN chmod -R 777 /var/www/html/storage
