@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Distribuidor;
 use App\Models\ClubExpert;
+use App\Models\AboutPage;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Illuminate\Validation\ValidationException;
 
 class LandingController extends BasicController
@@ -16,8 +19,24 @@ class LandingController extends BasicController
 
     public function setReactViewProperties(Request $request)
     {
+        $about = AboutPage::current();
+        $aboutData = $about->toArray();
+        $aboutData['family_image_url'] = $about->family_image ? route('about.media', ['path' => $about->family_image]) : null;
+        $aboutData['policy_image_url'] = $about->policy_image ? route('about.media', ['path' => $about->policy_image]) : null;
+        $aboutData['certifications'] = array_map(function ($item) {
+            return [
+                'title' => $item['title'] ?? '',
+                'description' => $item['description'] ?? '',
+                'image_path' => $item['image_path'] ?? null,
+                'image_url' => !empty($item['image_path']) ? route('about.media', ['path' => $item['image_path']]) : null,
+                'file_path' => $item['file_path'] ?? null,
+                'file_url' => !empty($item['file_path']) ? route('about.media', ['path' => $item['file_path']]) : null,
+            ];
+        }, is_array($aboutData['certifications'] ?? null) ? $aboutData['certifications'] : []);
+
         $properties = [
             'token' => csrf_token(),
+            'about' => $aboutData,
         ];
 
         if ($this->reactView === 'Distributors') {
@@ -60,6 +79,25 @@ class LandingController extends BasicController
         $this->reactView = 'AboutFamilia';
 
         return parent::reactView($request);
+    }
+
+    public function aboutMedia(Request $request, string $path)
+    {
+        $path = ltrim($path, '/');
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        $absolute = storage_path('app/public/' . $path);
+        $mime = File::mimeType($absolute) ?: 'application/octet-stream';
+        $content = Storage::disk('public')->get($path);
+
+        return response($content, 200, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => str_starts_with($mime, 'image/')
+                ? 'inline'
+                : 'inline; filename="' . basename($path) . '"',
+        ]);
     }
 
     public function aboutFamiliaView(Request $request)

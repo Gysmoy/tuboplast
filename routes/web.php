@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProductController;
@@ -21,6 +22,7 @@ Route::get('/distributors', [LandingController::class, 'distributorsView'])->nam
 Route::get('/about', [LandingController::class, 'aboutView'])->name('about');
 Route::get('/about/familia', [LandingController::class, 'aboutFamiliaView'])->name('about.familia');
 Route::get('/about/politica', [LandingController::class, 'aboutPoliticaView'])->name('about.politica');
+Route::get('/about/media/{path}', [LandingController::class, 'aboutMedia'])->where('path', '.*')->name('about.media');
 Route::get('/nosotros-familia', [LandingController::class, 'aboutFamiliaView'])->name('about.familia.alias');
 Route::get('/nosotros-politica', [LandingController::class, 'aboutPoliticaView'])->name('about.politica.alias');
 Route::get('/blog', [LandingController::class, 'blogView'])->name('blog');
@@ -49,6 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::redirect('/users', '/admin/users');
     Route::redirect('/branches', '/admin/branches');
     Route::redirect('/categories', '/admin/categories');
+    Route::redirect('/about-page', '/admin/about');
+    Route::redirect('/nosotros', '/admin/about');
     Route::get('/account', [AccountController::class, 'reactView'])->name('account');
 
     Route::get('/admin/home', [HomeController::class, 'reactView'])->name('admin.home');
@@ -61,7 +65,9 @@ Route::middleware('auth')->group(function () {
     Route::redirect('/admin/distribuidores', '/admin/distributors');
     Route::redirect('/admin/sucursales', '/admin/branches');
     Route::redirect('/admin/categorias', '/admin/categories');
+    Route::redirect('/admin/nosotros', '/admin/about');
     Route::get('/admin/distributors', [DistribuidorController::class, 'reactView'])->name('admin.distributors');
     Route::get('/admin/branches', [SucursalController::class, 'reactView'])->name('admin.branches');
     Route::get('/admin/categories', [CategoryController::class, 'reactView'])->name('admin.categories');
+    Route::get('/admin/about', [AboutController::class, 'reactView'])->name('admin.about');
 });

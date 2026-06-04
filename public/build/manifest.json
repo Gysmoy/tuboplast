@@ -1,63 +1,56 @@
 {
-  "_AboutNav-BV9iByM7.js": {
-    "file": "assets/AboutNav-BV9iByM7.js",
+  "_AboutNav-ufQp2vke.js": {
+    "file": "assets/AboutNav-ufQp2vke.js",
     "name": "AboutNav",
     "imports": [
       "resources/js/Components/DataGrid.jsx"
     ]
   },
-  "_Adminto-vwWWiD47.js": {
-    "file": "assets/Adminto-vwWWiD47.js",
+  "_Adminto-BNuvrDu5.js": {
+    "file": "assets/Adminto-BNuvrDu5.js",
     "name": "Adminto",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_CreateReactScript-Cfus7gPF.js",
+      "_AdmintoContext-DenQ2f_j.js"
     ]
   },
-  "_AdmintoContext-BT2pJdim.js": {
-    "file": "assets/AdmintoContext-BT2pJdim.js",
+  "_AdmintoContext-DenQ2f_j.js": {
+    "file": "assets/AdmintoContext-DenQ2f_j.js",
     "name": "AdmintoContext",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_index-CXVQH7Lr.js"
+      "_index-C53OKbh3.js"
     ]
   },
-  "_Base-CXbIHYkl.js": {
-    "file": "assets/Base-CXbIHYkl.js",
+  "_Base-BcVkNr_n.js": {
+    "file": "assets/Base-BcVkNr_n.js",
     "name": "Base",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-DIphOex-.js"
+      "_CreateReactScript-Cfus7gPF.js"
     ]
   },
-  "_BasicRest-C40GGQoP.js": {
-    "file": "assets/BasicRest-C40GGQoP.js",
+  "_BasicRest-CNJjcCOq.js": {
+    "file": "assets/BasicRest-CNJjcCOq.js",
     "name": "BasicRest",
     "imports": [
-      "resources/js/Utils/ReactAppend.jsx",
-      "resources/js/Components/DataGrid.jsx",
-      "_index-RYns6xqu.js",
-      "_index-3eJeR5RX.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js"
-    ],
-    "css": [
-      "tippy.css"
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js"
     ]
   },
-  "_CreateReactScript-DIphOex-.js": {
-    "file": "assets/CreateReactScript-DIphOex-.js",
+  "_CreateReactScript-Cfus7gPF.js": {
+    "file": "assets/CreateReactScript-Cfus7gPF.js",
     "name": "CreateReactScript",
     "imports": [
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -83,11 +76,11 @@
     "file": "assets/LaravelSession-CYcN0AKE.js",
     "name": "LaravelSession"
   },
-  "_RolesRest-CI8AuRtm.js": {
-    "file": "assets/RolesRest-CI8AuRtm.js",
+  "_RolesRest-Dme4U2Oc.js": {
+    "file": "assets/RolesRest-Dme4U2Oc.js",
     "name": "RolesRest",
     "imports": [
-      "_BasicRest-C40GGQoP.js"
+      "_BasicRest-CNJjcCOq.js"
     ]
   },
   "_SelectFormGroup-CMeIN8EL.js": {
@@ -98,12 +91,12 @@
       "_index-RYns6xqu.js"
     ]
   },
-  "_SwitchFormGroup-DIqwtc1w.js": {
-    "file": "assets/SwitchFormGroup-DIqwtc1w.js",
+  "_SwitchFormGroup-nDQyyzQw.js": {
+    "file": "assets/SwitchFormGroup-nDQyyzQw.js",
     "name": "SwitchFormGroup",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
-      "_BasicRest-C40GGQoP.js",
+      "_TippyButton-B-6qG5mu.js",
       "_index-RYns6xqu.js"
     ]
   },
@@ -115,38 +108,51 @@
       "_index-RYns6xqu.js"
     ]
   },
+  "_TippyButton-B-6qG5mu.js": {
+    "file": "assets/TippyButton-B-6qG5mu.js",
+    "name": "TippyButton",
+    "imports": [
+      "resources/js/Utils/ReactAppend.jsx",
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_index-DJSEUtJE.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
   "_googleMaps-DrvRtn5X.js": {
     "file": "assets/googleMaps-DrvRtn5X.js",
     "name": "googleMaps"
   },
-  "_index-3eJeR5RX.js": {
-    "file": "assets/index-3eJeR5RX.js",
+  "_index-C53OKbh3.js": {
+    "file": "assets/index-C53OKbh3.js",
+    "name": "index",
+    "imports": [
+      "_index-RYns6xqu.js",
+      "_index-DJSEUtJE.js"
+    ]
+  },
+  "_index-DJSEUtJE.js": {
+    "file": "assets/index-DJSEUtJE.js",
     "name": "index",
     "imports": [
       "_index-RYns6xqu.js"
     ]
   },
-  "_index-CXVQH7Lr.js": {
-    "file": "assets/index-CXVQH7Lr.js",
+  "_index-DuIWL2A8.js": {
+    "file": "assets/index-DuIWL2A8.js",
     "name": "index",
     "imports": [
-      "_index-RYns6xqu.js",
-      "_index-3eJeR5RX.js"
+      "_index-RYns6xqu.js"
     ]
   },
   "_index-RYns6xqu.js": {
     "file": "assets/index-RYns6xqu.js",
     "name": "index"
   },
-  "_index-eH15wkkc.js": {
-    "file": "assets/index-eH15wkkc.js",
-    "name": "index",
-    "imports": [
-      "_index-RYns6xqu.js"
-    ]
-  },
-  "_main-Bm1o1Y2P.js": {
-    "file": "assets/main-Bm1o1Y2P.js",
+  "_main-DtrbM76B.js": {
+    "file": "assets/main-DtrbM76B.js",
     "name": "main",
     "imports": [
       "_index-RYns6xqu.js"
@@ -165,42 +171,21 @@
     "src": "resources/css/app.css",
     "isEntry": true
   },
-  "resources/js/About.jsx": {
-    "file": "assets/About-DHOgA6nO.js",
-    "name": "About",
-    "src": "resources/js/About.jsx",
-    "isEntry": true,
-    "imports": [
-      "resources/js/Components/DataGrid.jsx",
-      "resources/js/Utils/ReactAppend.jsx",
-      "_Base-CXbIHYkl.js",
-      "_AboutNav-BV9iByM7.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_index-RYns6xqu.js",
-      "_index-3eJeR5RX.js",
-      "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
-      "_LaravelSession-CYcN0AKE.js"
-    ],
-    "css": [
-      "tippy.css"
-    ]
-  },
   "resources/js/AboutFamilia.jsx": {
-    "file": "assets/AboutFamilia-B9IewjDU.js",
+    "file": "assets/AboutFamilia-BqWi4kfS.js",
     "name": "AboutFamilia",
     "src": "resources/js/AboutFamilia.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-CXbIHYkl.js",
-      "_AboutNav-BV9iByM7.js",
-      "_CreateReactScript-DIphOex-.js",
+      "_Base-BcVkNr_n.js",
+      "_AboutNav-ufQp2vke.js",
+      "_CreateReactScript-Cfus7gPF.js",
       "_index-RYns6xqu.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -208,28 +193,51 @@
     ]
   },
   "resources/js/AboutPolitica.jsx": {
-    "file": "assets/AboutPolitica-B6gcwogW.js",
+    "file": "assets/AboutPolitica-WMsC4AYp.js",
     "name": "AboutPolitica",
     "src": "resources/js/AboutPolitica.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-CXbIHYkl.js",
-      "_AboutNav-BV9iByM7.js",
-      "_CreateReactScript-DIphOex-.js",
+      "_Base-BcVkNr_n.js",
+      "_AboutNav-ufQp2vke.js",
+      "_CreateReactScript-Cfus7gPF.js",
       "_index-RYns6xqu.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
+  "resources/js/Admin/About.jsx": {
+    "file": "assets/About-BSmdS7tH.js",
+    "name": "About",
+    "src": "resources/js/Admin/About.jsx",
+    "isEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_index-RYns6xqu.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_Adminto-BNuvrDu5.js",
+      "_BasicRest-CNJjcCOq.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
+      "_index-DJSEUtJE.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_LaravelSession-CYcN0AKE.js",
+      "_AdmintoContext-DenQ2f_j.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
   "resources/js/Admin/Account.jsx": {
-    "file": "assets/Account-Cc0tT4Nb.js",
+    "file": "assets/Account-CyDf1y-m.js",
     "name": "Account",
     "src": "resources/js/Admin/Account.jsx",
     "isEntry": true,
@@ -237,13 +245,13 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_index-CXVQH7Lr.js",
-      "_Adminto-vwWWiD47.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_main-Bm1o1Y2P.js",
+      "_index-C53OKbh3.js",
+      "_Adminto-BNuvrDu5.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-3eJeR5RX.js",
-      "_AdmintoContext-BT2pJdim.js",
+      "_index-DJSEUtJE.js",
+      "_AdmintoContext-DenQ2f_j.js",
       "resources/js/Utils/CreateReactScript.jsx"
     ],
     "css": [
@@ -251,7 +259,7 @@
     ]
   },
   "resources/js/Admin/Categories.jsx": {
-    "file": "assets/Categories-Cdpc6Mqy.js",
+    "file": "assets/Categories-CG8MavEP.js",
     "name": "Categories",
     "src": "resources/js/Admin/Categories.jsx",
     "isEntry": true,
@@ -259,24 +267,25 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_BasicRest-C40GGQoP.js",
-      "_Adminto-vwWWiD47.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_Adminto-BNuvrDu5.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_SwitchFormGroup-DIqwtc1w.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
-      "_index-3eJeR5RX.js",
+      "_SwitchFormGroup-nDQyyzQw.js",
+      "_BasicRest-CNJjcCOq.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_LaravelSession-CYcN0AKE.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Club.jsx": {
-    "file": "assets/Club--hFFkg2N.js",
+    "file": "assets/Club-BRGs3YIj.js",
     "name": "Club",
     "src": "resources/js/Admin/Club.jsx",
     "isEntry": true,
@@ -284,22 +293,23 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_BasicRest-C40GGQoP.js",
-      "_Adminto-vwWWiD47.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
-      "_index-3eJeR5RX.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_Adminto-BNuvrDu5.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
+      "_BasicRest-CNJjcCOq.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_LaravelSession-CYcN0AKE.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Contacts.jsx": {
-    "file": "assets/Contacts-BsM2BAC_.js",
+    "file": "assets/Contacts-zGjDhHkH.js",
     "name": "Contacts",
     "src": "resources/js/Admin/Contacts.jsx",
     "isEntry": true,
@@ -307,22 +317,23 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_BasicRest-C40GGQoP.js",
-      "_Adminto-vwWWiD47.js",
-      "_index-3eJeR5RX.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_Adminto-BNuvrDu5.js",
+      "_BasicRest-CNJjcCOq.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-CXVQH7Lr.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_index-C53OKbh3.js",
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Distribuidores.jsx": {
-    "file": "assets/Distribuidores-BPk1tdgb.js",
+    "file": "assets/Distribuidores-0-mg7mT7.js",
     "name": "Distribuidores",
     "src": "resources/js/Admin/Distribuidores.jsx",
     "isEntry": true,
@@ -330,27 +341,28 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_BasicRest-C40GGQoP.js",
-      "_Adminto-vwWWiD47.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_Adminto-BNuvrDu5.js",
       "_InputFormGroup-eEHa1vyU.js",
       "_SelectFormGroup-CMeIN8EL.js",
-      "_SwitchFormGroup-DIqwtc1w.js",
+      "_SwitchFormGroup-nDQyyzQw.js",
+      "_BasicRest-CNJjcCOq.js",
       "_ubigeo-DdaSjaYO.js",
       "_googleMaps-DrvRtn5X.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-CXVQH7Lr.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_index-C53OKbh3.js",
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Home.jsx": {
-    "file": "assets/Home-B3vAY8Mi.js",
+    "file": "assets/Home-DmRT56ls.js",
     "name": "Home",
     "src": "resources/js/Admin/Home.jsx",
     "isEntry": true,
@@ -358,21 +370,21 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_Adminto-vwWWiD47.js",
-      "_index-3eJeR5RX.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_Adminto-BNuvrDu5.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-CXVQH7Lr.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_index-C53OKbh3.js",
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/MessageInbox.jsx": {
-    "file": "assets/MessageInbox-Bg34GDNR.js",
+    "file": "assets/MessageInbox-C3Gv97Tr.js",
     "name": "MessageInbox",
     "src": "resources/js/Admin/MessageInbox.jsx",
     "isEntry": true,
@@ -380,14 +392,14 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_index-3eJeR5RX.js"
+      "_index-DJSEUtJE.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Messages.jsx": {
-    "file": "assets/Messages-CotAX5yd.js",
+    "file": "assets/Messages-CKjZ8TBY.js",
     "name": "Messages",
     "src": "resources/js/Admin/Messages.jsx",
     "isEntry": true,
@@ -395,22 +407,23 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_Adminto-vwWWiD47.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
-      "_BasicRest-C40GGQoP.js",
-      "_index-3eJeR5RX.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_Adminto-BNuvrDu5.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
+      "_BasicRest-CNJjcCOq.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "_LaravelSession-CYcN0AKE.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Profile.jsx": {
-    "file": "assets/Profile-BAHftfiU.js",
+    "file": "assets/Profile-hqSA0cob.js",
     "name": "Profile",
     "src": "resources/js/Admin/Profile.jsx",
     "isEntry": true,
@@ -418,13 +431,13 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_Adminto-vwWWiD47.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_index-3eJeR5RX.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
+      "_Adminto-BNuvrDu5.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_index-DJSEUtJE.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_AdmintoContext-BT2pJdim.js",
+      "_AdmintoContext-DenQ2f_j.js",
       "resources/js/Utils/CreateReactScript.jsx"
     ],
     "css": [
@@ -432,7 +445,7 @@
     ]
   },
   "resources/js/Admin/Roles.jsx": {
-    "file": "assets/Roles-DZPSUF4A.js",
+    "file": "assets/Roles-Dj3Kyq_Z.js",
     "name": "Roles",
     "src": "resources/js/Admin/Roles.jsx",
     "isEntry": true,
@@ -440,24 +453,25 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_BasicRest-C40GGQoP.js",
-      "_Adminto-vwWWiD47.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_Adminto-BNuvrDu5.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_RolesRest-CI8AuRtm.js",
-      "_index-3eJeR5RX.js",
+      "_RolesRest-Dme4U2Oc.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-CXVQH7Lr.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_index-C53OKbh3.js",
+      "_AdmintoContext-DenQ2f_j.js",
+      "_BasicRest-CNJjcCOq.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Sucursales.jsx": {
-    "file": "assets/Sucursales-z7RTfan0.js",
+    "file": "assets/Sucursales-CuioG02w.js",
     "name": "Sucursales",
     "src": "resources/js/Admin/Sucursales.jsx",
     "isEntry": true,
@@ -465,27 +479,28 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_BasicRest-C40GGQoP.js",
-      "_Adminto-vwWWiD47.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_Adminto-BNuvrDu5.js",
       "_InputFormGroup-eEHa1vyU.js",
       "_SelectFormGroup-CMeIN8EL.js",
-      "_SwitchFormGroup-DIqwtc1w.js",
+      "_SwitchFormGroup-nDQyyzQw.js",
+      "_BasicRest-CNJjcCOq.js",
       "_ubigeo-DdaSjaYO.js",
       "_googleMaps-DrvRtn5X.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-CXVQH7Lr.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_index-C53OKbh3.js",
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Users.jsx": {
-    "file": "assets/Users-fiKTjxUw.js",
+    "file": "assets/Users-xvknhE_s.js",
     "name": "Users",
     "src": "resources/js/Admin/Users.jsx",
     "isEntry": true,
@@ -493,36 +508,37 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-DIphOex-.js",
-      "_BasicRest-C40GGQoP.js",
-      "_Adminto-vwWWiD47.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_TippyButton-B-6qG5mu.js",
+      "_Adminto-BNuvrDu5.js",
       "_InputFormGroup-eEHa1vyU.js",
-      "_RolesRest-CI8AuRtm.js",
-      "_index-3eJeR5RX.js",
+      "_BasicRest-CNJjcCOq.js",
+      "_RolesRest-Dme4U2Oc.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-CXVQH7Lr.js",
-      "_AdmintoContext-BT2pJdim.js"
+      "_index-C53OKbh3.js",
+      "_AdmintoContext-DenQ2f_j.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Blog.jsx": {
-    "file": "assets/Blog-DbGsT5DP.js",
+    "file": "assets/Blog-DJuK7hze.js",
     "name": "Blog",
     "src": "resources/js/Blog.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-CXbIHYkl.js",
-      "_CreateReactScript-DIphOex-.js",
+      "_Base-BcVkNr_n.js",
+      "_CreateReactScript-Cfus7gPF.js",
       "_index-RYns6xqu.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -530,7 +546,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-KqRAS3T9.js",
+    "file": "assets/Catalog-B-GgA-nJ.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isEntry": true,
@@ -539,11 +555,11 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_ItemCard-CCqcudV3.js",
-      "_Base-CXbIHYkl.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_index-3eJeR5RX.js",
+      "_Base-BcVkNr_n.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -551,7 +567,7 @@
     ]
   },
   "resources/js/Club.jsx": {
-    "file": "assets/Club-DGUW6tgr.js",
+    "file": "assets/Club-uMBGaiMe.js",
     "name": "Club",
     "src": "resources/js/Club.jsx",
     "isEntry": true,
@@ -559,13 +575,13 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-CXbIHYkl.js",
+      "_Base-BcVkNr_n.js",
       "_ThankYouModal-CE6N9d-q.js",
-      "_CreateReactScript-DIphOex-.js",
+      "_CreateReactScript-Cfus7gPF.js",
       "_ubigeo-DdaSjaYO.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -573,30 +589,30 @@
     ]
   },
   "resources/js/Components/Adminto.jsx": {
-    "file": "assets/Adminto-Dr61mgBM.js",
+    "file": "assets/Adminto--cu9P9kT.js",
     "name": "Adminto",
     "src": "resources/js/Components/Adminto.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_AdmintoContext-BT2pJdim.js",
-      "_index-3eJeR5RX.js"
+      "_AdmintoContext-DenQ2f_j.js",
+      "_index-DJSEUtJE.js"
     ]
   },
   "resources/js/Components/AdmintoContext.jsx": {
-    "file": "assets/AdmintoContext-wNz3f1r5.js",
+    "file": "assets/AdmintoContext-DnHCzV57.js",
     "name": "AdmintoContext",
     "src": "resources/js/Components/AdmintoContext.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_index-CXVQH7Lr.js",
-      "_index-3eJeR5RX.js"
+      "_index-C53OKbh3.js",
+      "_index-DJSEUtJE.js"
     ]
   },
   "resources/js/Components/DataGrid.jsx": {
@@ -669,14 +685,14 @@
     ]
   },
   "resources/js/Components/Form/SelectAPIFormGroup.jsx": {
-    "file": "assets/SelectAPIFormGroup-ByjpUzOp.js",
+    "file": "assets/SelectAPIFormGroup-BxuzQlqt.js",
     "name": "SelectAPIFormGroup",
     "src": "resources/js/Components/Form/SelectAPIFormGroup.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_main-Bm1o1Y2P.js"
+      "_main-DtrbM76B.js"
     ]
   },
   "resources/js/Components/Form/SelectFormGroup.jsx": {
@@ -733,17 +749,17 @@
     ]
   },
   "resources/js/Components/Menu.jsx": {
-    "file": "assets/Menu-1T6V3ivd.js",
+    "file": "assets/Menu-BygJfBAv.js",
     "name": "Menu",
     "src": "resources/js/Components/Menu.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-3eJeR5RX.js"
+      "_index-DJSEUtJE.js"
     ]
   },
   "resources/js/Components/MenuItem.jsx": {
@@ -777,17 +793,17 @@
     ]
   },
   "resources/js/Components/NavBar.jsx": {
-    "file": "assets/NavBar-1T6V3ivd.js",
+    "file": "assets/NavBar-BygJfBAv.js",
     "name": "NavBar",
     "src": "resources/js/Components/NavBar.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_main-Bm1o1Y2P.js",
-      "_index-CXVQH7Lr.js",
+      "_main-DtrbM76B.js",
+      "_index-C53OKbh3.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_index-3eJeR5RX.js"
+      "_index-DJSEUtJE.js"
     ]
   },
   "resources/js/Components/Table.jsx": {
@@ -861,7 +877,7 @@
     ]
   },
   "resources/js/Contact.jsx": {
-    "file": "assets/Contact-C3xpOEkg.js",
+    "file": "assets/Contact-CVEofeQX.js",
     "name": "Contact",
     "src": "resources/js/Contact.jsx",
     "isEntry": true,
@@ -869,13 +885,13 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-CXbIHYkl.js",
+      "_Base-BcVkNr_n.js",
       "_ThankYouModal-CE6N9d-q.js",
-      "_CreateReactScript-DIphOex-.js",
+      "_CreateReactScript-Cfus7gPF.js",
       "_googleMaps-DrvRtn5X.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -883,7 +899,7 @@
     ]
   },
   "resources/js/Distributors.jsx": {
-    "file": "assets/Distributors-BLlcE4Uj.js",
+    "file": "assets/Distributors-C1v6g1Zm.js",
     "name": "Distributors",
     "src": "resources/js/Distributors.jsx",
     "isEntry": true,
@@ -891,13 +907,13 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-CXbIHYkl.js",
-      "_CreateReactScript-DIphOex-.js",
+      "_Base-BcVkNr_n.js",
+      "_CreateReactScript-Cfus7gPF.js",
       "_googleMaps-DrvRtn5X.js",
       "_ubigeo-DdaSjaYO.js",
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -905,7 +921,7 @@
     ]
   },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-DHxpO3YE.js",
+    "file": "assets/Home-DXpdFrfp.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isEntry": true,
@@ -913,13 +929,13 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_index-eH15wkkc.js",
-      "_Base-CXbIHYkl.js",
+      "_index-DuIWL2A8.js",
+      "_Base-BcVkNr_n.js",
       "_ItemCard-CCqcudV3.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_index-3eJeR5RX.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -927,7 +943,7 @@
     ]
   },
   "resources/js/Landing.jsx": {
-    "file": "assets/Landing-BSokLT2c.js",
+    "file": "assets/Landing-DGlzUkbT.js",
     "name": "Landing",
     "src": "resources/js/Landing.jsx",
     "isEntry": true,
@@ -935,11 +951,11 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_index-eH15wkkc.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_index-3eJeR5RX.js",
+      "_index-DuIWL2A8.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -947,7 +963,7 @@
     ]
   },
   "resources/js/Login.jsx": {
-    "file": "assets/Login-CLy7G_nk.js",
+    "file": "assets/Login-DqBCk7yp.js",
     "name": "Login",
     "src": "resources/js/Login.jsx",
     "isEntry": true,
@@ -955,10 +971,10 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_index-3eJeR5RX.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -966,7 +982,7 @@
     ]
   },
   "resources/js/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-BnZ5Tb6K.js",
+    "file": "assets/ProductDetail-BhKsYQL6.js",
     "name": "ProductDetail",
     "src": "resources/js/ProductDetail.jsx",
     "isEntry": true,
@@ -975,11 +991,11 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "_ItemCard-CCqcudV3.js",
-      "_Base-CXbIHYkl.js",
-      "_CreateReactScript-DIphOex-.js",
-      "_index-3eJeR5RX.js",
+      "_Base-BcVkNr_n.js",
+      "_CreateReactScript-Cfus7gPF.js",
+      "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -987,13 +1003,13 @@
     ]
   },
   "resources/js/Utils/CreateReactScript.jsx": {
-    "file": "assets/CreateReactScript-BmSkeucs.js",
+    "file": "assets/CreateReactScript-BMEOpGVm.js",
     "name": "CreateReactScript",
     "src": "resources/js/Utils/CreateReactScript.jsx",
     "isEntry": true,
     "imports": [
       "_index-RYns6xqu.js",
-      "_main-Bm1o1Y2P.js",
+      "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
     ],
     "css": [
@@ -1018,12 +1034,12 @@
     "isEntry": true
   },
   "resources/js/Utils/ReactAppend.jsx": {
-    "file": "assets/ReactAppend-Cj9zdM7B.js",
+    "file": "assets/ReactAppend-C-ij3Ic7.js",
     "name": "ReactAppend",
     "src": "resources/js/Utils/ReactAppend.jsx",
     "isEntry": true,
     "imports": [
-      "_index-3eJeR5RX.js",
+      "_index-DJSEUtJE.js",
       "_index-RYns6xqu.js"
     ]
   },

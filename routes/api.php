@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\UbigeoController;
@@ -59,6 +60,9 @@ Route::middleware('auth')->group(function () {
     Route::get('categories/{id}', [CategoryController::class, 'get']);
     Route::patch('categories/status', [CategoryController::class, 'status']);
     Route::delete('categories/{id}', [CategoryController::class, 'delete']);
+
+    Route::post('about', [AboutController::class, 'save']);
+    Route::get('about/{id}', [AboutController::class, 'get']);
 
     Route::put('account/profile', [AccountController::class, 'updateProfile']);
     Route::patch('account/password', [AccountController::class, 'updatePassword']);
