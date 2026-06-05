@@ -145,6 +145,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0 }) => {
         <MenuItem href="/admin/distributors" icon='ti ti-truck-delivery'>Distribuidores</MenuItem>
         <MenuItem href="/admin/branches" icon='ti ti-building-store'>Sucursales</MenuItem>
         <MenuItem href="/admin/about" icon='ti ti-user-star'>Nosotros</MenuItem>
+        <MenuItem href="/admin/blog" icon='ti ti-news'>Blog</MenuItem>
 
         <li className="side-nav-title mt-2">Configuraciones</li>
         <MenuItemContainer title='Seguridad' icon='ti ti-shield-lock'>

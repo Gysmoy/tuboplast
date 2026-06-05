@@ -83,7 +83,7 @@ const recommendations = [
   },
 ];
 
-const blogPosts = [
+const defaultBlogPosts = [
   {
     category: 'Etiqueta',
     title: 'Cómo instalar tuberías CPVC en proyectos de agua caliente sin errores',
@@ -107,8 +107,16 @@ const blogPosts = [
   },
 ];
 
-const HomeScreen = () => {
+const HomeScreen = ({ blog = {} }) => {
   const pageRef = useRef(null);
+  const blogPosts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts.slice(0, 3) : defaultBlogPosts;
+  const newsletter = {
+    eyebrow: blog.newsletter_eyebrow || 'Newsletter',
+    title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
+    description: blog.newsletter_description || 'Tips de instalaciÃ³n, nuevos productos y actualizaciones exclusivas para profesionales.',
+    placeholder: blog.newsletter_placeholder || 'Correo electronico',
+    buttonLabel: blog.newsletter_button_label || 'Quiero suscribirme',
+  };
 
   return (
     <main ref={pageRef} className="min-h-screen">
@@ -375,7 +383,7 @@ const HomeScreen = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {blogPosts.map((post) => (
               <article key={post.title} data-reveal className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-                <img src={post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
+                <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
                 <div className="px-4 py-6">
                   <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>
                   <p className="font-title text-xl text-primary font-medium leading-tight mb-2">{post.title}</p>
@@ -385,20 +393,19 @@ const HomeScreen = () => {
             ))}
 
             <article data-reveal className="rounded-xl bg-primary p-5 text-white shadow-sm flex flex-col justify-center space-y-5">
-              <div className='space-y-4'>
-                <p className="text-2xl font-bold font-title">SÉ EL PRIMERO EN SABER</p>
-                <p className="text-sm">
-                  Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.
-                </p>
+                            <div className='space-y-4'>
+                <p className="text-xs uppercase tracking-[0.18em] text-primary/70">{newsletter.eyebrow}</p>
+                <p className="text-2xl font-bold font-title">{newsletter.title}</p>
+                <p className="text-sm">{newsletter.description}</p>
               </div>
               <div className='space-y-4'>
                 <input
                   className=" w-full rounded-full border border-white/20 bg-white/10 py-4 px-6 text-xs outline-none"
-                  placeholder="Correo electronico"
+                  placeholder={newsletter.placeholder}
                   type="email"
                 />
                 <button type="button" className="mt-4 w-full rounded-full bg-[#F7DD00] p-4 text-xs font-bold font-title text-primary">
-                  Quiero suscribirme
+                  {newsletter.buttonLabel}
                 </button>
               </div>
             </article>
@@ -409,8 +416,8 @@ const HomeScreen = () => {
   );
 };
 
-CreateReactScript((el) => {
+CreateReactScript((el, properties) => {
   createRoot(el).render(<Base title="Inicio">
-    <HomeScreen />
+    <HomeScreen {...properties} />
   </Base>);
 });

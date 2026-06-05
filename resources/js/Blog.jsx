@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
-const posts = [
+const defaultPosts = [
   {
     category: 'Productos',
     title: 'Tuberia PVC-U vs HDPE: cual elegir segun el tipo de proyecto?',
@@ -47,7 +47,7 @@ const posts = [
   },
 ];
 
-const mostRead = [
+const defaultMostRead = [
   {
     number: '01',
     title: 'Manual de instalacion de valvulas mariposa',
@@ -65,12 +65,27 @@ const mostRead = [
   },
 ];
 
-const BlogScreen = () => {
+const BlogScreen = ({ blog = {} }) => {
+  const posts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts : defaultPosts
+  const mostRead = Array.isArray(blog.most_read) && blog.most_read.length ? blog.most_read : defaultMostRead
+  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/landing/bg-main.png')
+  const heroBadge = blog.hero_badge || 'Blog Tuboplast'
+  const heroTitle = blog.hero_title || 'Construyendo el futuro'
+  const heroDescription = blog.hero_description || 'Explora las ultimas innovaciones tecnicas, proyectos emblematicos y consejos de ingenieria para el mercado peruano.'
+  const sectionTitle = blog.section_title || 'Ultimas actualizaciones'
+  const newsletter = {
+    eyebrow: blog.newsletter_eyebrow || 'Newsletter',
+    title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
+    description: blog.newsletter_description || 'Tips de instalacion, nuevos productos y actualizaciones exclusivas para profesionales.',
+    placeholder: blog.newsletter_placeholder || 'Correo electronico',
+    buttonLabel: blog.newsletter_button_label || 'Suscribirme ahora',
+  }
+
   return (
     <main className="bg-white">
       <section className="relative overflow-hidden">
         <img
-          src="/assets/img/landing/bg-main.png"
+          src={heroImage}
           alt="Obra en construccion"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
@@ -82,13 +97,12 @@ const BlogScreen = () => {
             <span className="block h-1 w-12 bg-secondary" />
             <div className="space-y-4">
               <h1 className="max-w-lg font-title text-5xl leading-[0.95] tracking-tight text-primary sm:text-6xl lg:text-[4.7rem]">
-                Blog Tuboplast:
+                {heroBadge}:
                 <br />
-                Construyendo el futuro
+                {heroTitle}
               </h1>
               <p className="max-w-lg text-base leading-relaxed text-darkmuted sm:text-lg">
-                Explora las ultimas innovaciones tecnicas, proyectos emblematicos y consejos de ingenieria para el
-                mercado peruano.
+                {heroDescription}
               </p>
             </div>
           </div>
@@ -97,7 +111,7 @@ const BlogScreen = () => {
 
       <section className="mx-auto w-full max-w-site px-4 py-12 sm:py-16 lg:py-20">
         <div className="mb-8 sm:mb-10">
-          <h2 className="font-title text-3xl font-medium text-primary sm:text-4xl">Ultimas actualizaciones</h2>
+          <h2 className="font-title text-3xl font-medium text-primary sm:text-4xl">{sectionTitle}</h2>
           <span className="mt-3 block h-1 w-10 bg-secondary" />
         </div>
 
@@ -108,7 +122,7 @@ const BlogScreen = () => {
                 key={`${post.title}-${index}`}
                 className="overflow-hidden rounded-2xl bg-white shadow-[0_4px_18px_rgba(15,23,42,0.12)] ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <img src={post.image} alt={post.title} className="aspect-[4/3] w-full object-cover" />
+                <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[4/3] w-full object-cover" />
                 <div className="space-y-4 p-5">
                   <span className="inline-flex rounded-full border border-[#cdddf3] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
                     {post.category}
@@ -145,23 +159,23 @@ const BlogScreen = () => {
             <article className="overflow-hidden rounded-2xl bg-primary text-white shadow-[0_10px_30px_rgba(0,59,122,0.22)]">
               <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6">
                 <h3 className="max-w-[12ch] font-title text-2xl leading-tight">
-                  SE EL PRIMERO EN SABER
+                  {newsletter.title}
                 </h3>
                 <p className="mt-4 text-sm leading-relaxed text-white/80">
-                  Tips de instalacion, nuevos productos y actualizaciones exclusivas para profesionales.
+                  {newsletter.description}
                 </p>
 
                 <div className="mt-6 space-y-3">
                   <input
                     className="w-full rounded-full border border-white/15 bg-white/10 px-5 py-3.5 text-sm outline-none placeholder:text-white/55"
-                    placeholder="Correo electronico"
+                    placeholder={newsletter.placeholder}
                     type="email"
                   />
                   <button
                     type="button"
                     className="w-full rounded-full bg-secondary px-5 py-3.5 text-sm font-bold text-primary transition hover:bg-[#f0d200]"
                   >
-                    Suscribirme ahora
+                    {newsletter.buttonLabel}
                   </button>
                 </div>
               </div>
@@ -208,10 +222,10 @@ const BlogScreen = () => {
   );
 };
 
-CreateReactScript((el) => {
+CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title="Blog">
-      <BlogScreen />
+      <BlogScreen {...properties} />
     </Base>,
   );
 });
