@@ -4,8 +4,6 @@ import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
-const formatPrice = (amount) => `S/ ${Number(amount).toFixed(2)}`;
-
 const ProductGallery = ({ product }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const selectedImage = product.gallery[selectedIndex] ?? product.image;
@@ -170,12 +168,9 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
               </div>
 
               <div className="text-right">
-                <p className="text-xs text-muted">
-                  Precio Unitario {formatPrice(product.unitPrice)}
-                </p>
-                <p className="mt-1 font-title text-4xl font-medium text-primary lg:text-[52px]">
-                  {formatPrice(product.unitPrice * quantity)}
-                  <span className="ml-2 font-sans text-xs text-muted">Inc. IGV</span>
+                <p className="text-xs text-muted">Cotización disponible solo a solicitud</p>
+                <p className="mt-1 font-title text-3xl font-medium text-primary lg:text-[44px]">
+                  Solicita tu precio
                 </p>
               </div>
             </div>
@@ -233,10 +228,7 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {relatedProducts.map((relatedProduct, index) => (
-              <ItemCard
-                key={`${relatedProduct.title}-${index}`}
-                product={relatedProduct}
-              />
+              <ItemCard key={`${relatedProduct.title}-${index}`} product={relatedProduct} />
             ))}
           </div>
         </section>

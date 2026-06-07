@@ -65,8 +65,8 @@
       "_index-RYns6xqu.js"
     ]
   },
-  "_ItemCard-CCqcudV3.js": {
-    "file": "assets/ItemCard-CCqcudV3.js",
+  "_ItemCard-CMM0qWMh.js": {
+    "file": "assets/ItemCard-CMM0qWMh.js",
     "name": "ItemCard",
     "imports": [
       "resources/js/Components/DataGrid.jsx"
@@ -569,7 +569,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-B-GgA-nJ.js",
+    "file": "assets/Catalog-RHNVqrxb.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isEntry": true,
@@ -577,7 +577,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_ItemCard-CCqcudV3.js",
+      "_ItemCard-CMM0qWMh.js",
       "_Base-BcVkNr_n.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-DJSEUtJE.js",
@@ -944,7 +944,7 @@
     ]
   },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-B3mK4oZQ.js",
+    "file": "assets/Home-aciGNIrL.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isEntry": true,
@@ -954,7 +954,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "_index-DuIWL2A8.js",
       "_Base-BcVkNr_n.js",
-      "_ItemCard-CCqcudV3.js",
+      "_ItemCard-CMM0qWMh.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1005,7 +1005,7 @@
     ]
   },
   "resources/js/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-BhKsYQL6.js",
+    "file": "assets/ProductDetail-qp3_VTtQ.js",
     "name": "ProductDetail",
     "src": "resources/js/ProductDetail.jsx",
     "isEntry": true,
@@ -1013,7 +1013,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_ItemCard-CCqcudV3.js",
+      "_ItemCard-CMM0qWMh.js",
       "_Base-BcVkNr_n.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-DJSEUtJE.js",

@@ -1,4 +1,4 @@
-const ItemCard = ({ product }) => {
+const ItemCard = ({ product, showPrice = false }) => {
   const category = product.categoryLabel ?? product.category;
   const detailUrl = product.detailUrl ?? '/item/tuberia-agua-sp-clase-15-ntp-399-002';
 
@@ -33,7 +33,15 @@ const ItemCard = ({ product }) => {
         </div>
 
         <div className="mt-auto flex items-center justify-between border-t border-silver pt-5">
-          <p className="font-title text-2xl font-bold text-primary">{product.price}</p>
+          <div className="min-h-[32px]">
+            {showPrice ? (
+              <p className="font-title text-2xl font-bold text-primary">{product.price}</p>
+            ) : (
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-muted">
+                Solicitar cotización
+              </p>
+            )}
+          </div>
           <button
             type="button"
             aria-label={`Agregar ${product.title} a la cotización`}
