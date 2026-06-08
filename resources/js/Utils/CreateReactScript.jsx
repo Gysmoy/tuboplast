@@ -6,9 +6,18 @@ import 'tippy.js/dist/tippy.css'
 import LaravelSession from './LaravelSession';
 
 const CreateReactScript = (render) => {
+  const pages = import.meta.glob('../**/*.jsx')
 
   createInertiaApp({
-    resolve: name => `/${name}.jsx`,
+    resolve: async (name) => {
+      const page = pages[`../${name}.jsx`]
+
+      if (!page) {
+        throw new Error(`No se encontro la pagina React: ${name}`)
+      }
+
+      return page()
+    },
     setup: ({ el, props }) => {
       const properties = props.initialPage.props
       if (properties?.global) {

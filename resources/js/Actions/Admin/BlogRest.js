@@ -39,9 +39,19 @@ class BlogRest extends BasicRest {
       formData.append('hero_image_existing', blog.hero_image || '')
 
       ;(blog.posts ?? []).forEach((item, index) => {
+        formData.append(`posts[${index}][slug]`, item.slug ?? '')
         formData.append(`posts[${index}][category]`, item.category ?? '')
         formData.append(`posts[${index}][title]`, item.title ?? '')
         formData.append(`posts[${index}][description]`, item.description ?? '')
+        formData.append(`posts[${index}][eyebrow]`, item.eyebrow ?? '')
+        formData.append(`posts[${index}][author]`, item.author ?? '')
+        formData.append(`posts[${index}][role]`, item.role ?? '')
+        formData.append(`posts[${index}][published]`, item.published ?? '')
+        formData.append(`posts[${index}][read_time]`, item.read_time ?? '')
+        formData.append(`posts[${index}][lead]`, item.lead ?? '')
+        formData.append(`posts[${index}][content_html]`, item.content_html ?? '')
+        formData.append(`posts[${index}][highlight_label]`, item.highlight_label ?? '')
+        formData.append(`posts[${index}][highlight]`, item.highlight ?? '')
         formData.append(`posts[${index}][image_path]`, item.image_path ?? '')
 
         if (item.image_file instanceof File) {

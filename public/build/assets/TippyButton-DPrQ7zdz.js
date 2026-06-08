@@ -1,0 +1,1 @@
+import{j as t}from"./DataGrid-DAFs00V8.js";import"./index-RYns6xqu.js";import{i as m}from"./tippy-react.esm-CgiMgDJd.js";/* empty css              */import"./index-DJSEUtJE.js";const j=({title:r,className:o,onClick:i,children:e,eRef:n,...p})=>t.jsx(m,{content:r,arrow:!0,children:t.jsx("button",{ref:n,className:o,onClick:i,...p,children:e})});export{j as default};

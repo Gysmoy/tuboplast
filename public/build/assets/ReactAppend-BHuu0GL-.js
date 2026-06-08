@@ -1,0 +1,1 @@
+import{c as r}from"./ReactAppend-C-ij3Ic7.js";import"./index-DJSEUtJE.js";import"./index-RYns6xqu.js";const d=(o,e)=>{const t=document.createElement("div");o.append(t),r(t).render(e)};export{d as default};

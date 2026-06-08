@@ -37,9 +37,19 @@ class BlogController extends BasicController
             'newsletter_placeholder' => 'nullable|string|max:120',
             'newsletter_button_label' => 'nullable|string|max:120',
             'posts' => 'nullable|array',
+            'posts.*.slug' => 'nullable|string|max:255',
             'posts.*.category' => 'nullable|string|max:120',
             'posts.*.title' => 'nullable|string|max:255',
             'posts.*.description' => 'nullable|string|max:2000',
+            'posts.*.eyebrow' => 'nullable|string|max:120',
+            'posts.*.author' => 'nullable|string|max:120',
+            'posts.*.role' => 'nullable|string|max:120',
+            'posts.*.published' => 'nullable|string|max:120',
+            'posts.*.read_time' => 'nullable|string|max:120',
+            'posts.*.lead' => 'nullable|string|max:2000',
+            'posts.*.content_html' => 'nullable|string',
+            'posts.*.highlight_label' => 'nullable|string|max:120',
+            'posts.*.highlight' => 'nullable|string|max:2000',
             'posts.*.image_file' => 'nullable|image|max:4096',
             'posts.*.image_path' => 'nullable|string|max:255',
             'most_read' => 'nullable|array',
@@ -80,6 +90,8 @@ class BlogController extends BasicController
         foreach ($posts as $index => $post) {
             $existing = $currentPosts[$index] ?? [];
             $imagePath = $post['image_path'] ?? ($existing['image_path'] ?? null);
+            $slugBase = $post['slug'] ?? ($existing['slug'] ?? ($post['title'] ?? ($existing['title'] ?? 'post')));
+            $slug = $this->blogPostSlug($slugBase, $index);
 
             if ($request->hasFile("posts.$index.image_file")) {
                 $this->deletePublicFile($existing['image_path'] ?? null);
@@ -87,9 +99,19 @@ class BlogController extends BasicController
             }
 
             $payload['posts'][] = [
+                'slug' => $slug,
                 'category' => $post['category'] ?? ($existing['category'] ?? ''),
                 'title' => $post['title'] ?? ($existing['title'] ?? ''),
                 'description' => $post['description'] ?? ($existing['description'] ?? ''),
+                'eyebrow' => $post['eyebrow'] ?? ($existing['eyebrow'] ?? ''),
+                'author' => $post['author'] ?? ($existing['author'] ?? ''),
+                'role' => $post['role'] ?? ($existing['role'] ?? ''),
+                'published' => $post['published'] ?? ($existing['published'] ?? ''),
+                'read_time' => $post['read_time'] ?? ($existing['read_time'] ?? ''),
+                'lead' => $post['lead'] ?? ($existing['lead'] ?? ''),
+                'content_html' => $post['content_html'] ?? ($existing['content_html'] ?? ''),
+                'highlight_label' => $post['highlight_label'] ?? ($existing['highlight_label'] ?? ''),
+                'highlight' => $post['highlight'] ?? ($existing['highlight'] ?? ''),
                 'image_path' => $imagePath,
             ];
         }
@@ -142,10 +164,22 @@ class BlogController extends BasicController
             ];
 
             $imagePath = $item['image_path'] ?? null;
+            $slug = $this->blogPostSlug($item['slug'] ?? ($item['title'] ?? 'post'), $index);
             return [
+                'slug' => $slug,
+                'detail_url' => route('blog.post', ['slug' => $slug]),
                 'category' => $item['category'] ?? '',
                 'title' => $item['title'] ?? '',
                 'description' => $item['description'] ?? '',
+                'eyebrow' => $item['eyebrow'] ?? '',
+                'author' => $item['author'] ?? '',
+                'role' => $item['role'] ?? '',
+                'published' => $item['published'] ?? '',
+                'read_time' => $item['read_time'] ?? '',
+                'lead' => $item['lead'] ?? '',
+                'content_html' => $item['content_html'] ?? '',
+                'highlight_label' => $item['highlight_label'] ?? '',
+                'highlight' => $item['highlight'] ?? '',
                 'image_path' => $imagePath,
                 'image_url' => $imagePath ? route('blog.media', ['path' => $imagePath]) : null,
                 'image_fallback' => $fallbacks[$index] ?? '/assets/img/categories/category-1.png',
@@ -161,6 +195,17 @@ class BlogController extends BasicController
         }, is_array($data['most_read'] ?? null) ? $data['most_read'] : []);
 
         return $data;
+    }
+
+    private function blogPostSlug(string $value, int $index): string
+    {
+        $base = trim(Str::slug($value) ?: 'post', '-');
+
+        if (preg_match('/-\d+$/', $base)) {
+            return $base;
+        }
+
+        return $base . '-' . ($index + 1);
     }
 
     private function storePublicFile($file, string $directory): string

@@ -1,0 +1,1 @@
+import{j as t}from"./DataGrid-DAFs00V8.js";import"./index-RYns6xqu.js";const s=()=>t.jsxs("div",{className:"bg-primary text-white p-2 px-4 text-center text-xs",children:["Entrega para todo el ",t.jsx("b",{children:"Perú"})]});export{s as default};

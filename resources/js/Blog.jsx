@@ -1,9 +1,11 @@
 import { createRoot } from 'react-dom/client';
+import { useEffect, useMemo, useState } from 'react';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
 const defaultPosts = [
   {
+    slug: 'tuberia-pvc-u-vs-hdpe-cual-elegir-segun-el-tipo-de-proyecto-1',
     category: 'Productos',
     title: 'Tuberia PVC-U vs HDPE: cual elegir segun el tipo de proyecto?',
     description:
@@ -11,6 +13,7 @@ const defaultPosts = [
     image: '/assets/img/categories/category-1.png',
   },
   {
+    slug: 'como-instalar-tuberias-cpvc-en-proyectos-de-agua-caliente-sin-errores-2',
     category: 'Etiqueta',
     title: 'Como instalar tuberias CPVC en proyectos de agua caliente sin errores',
     description:
@@ -18,6 +21,7 @@ const defaultPosts = [
     image: '/assets/img/categories/category-2.png',
   },
   {
+    slug: 'infraestructura-hidrica-en-el-peru-los-retos-del-sector-construccion-en-2025-3',
     category: 'Industria',
     title: 'Infraestructura hidrica en el Peru: los retos del sector construccion en 2025',
     description:
@@ -25,6 +29,7 @@ const defaultPosts = [
     image: '/assets/img/categories/category-3.png',
   },
   {
+    slug: 'tuberia-pvc-u-vs-hdpe-cual-elegir-segun-el-tipo-de-proyecto-4',
     category: 'Productos',
     title: 'Tuberia PVC-U vs HDPE: cual elegir segun el tipo de proyecto?',
     description:
@@ -32,6 +37,7 @@ const defaultPosts = [
     image: '/assets/img/categories/category-1.png',
   },
   {
+    slug: 'como-instalar-tuberias-cpvc-en-proyectos-de-agua-caliente-sin-errores-5',
     category: 'Etiqueta',
     title: 'Como instalar tuberias CPVC en proyectos de agua caliente sin errores',
     description:
@@ -39,6 +45,7 @@ const defaultPosts = [
     image: '/assets/img/categories/category-2.png',
   },
   {
+    slug: 'infraestructura-hidrica-en-el-peru-los-retos-del-sector-construccion-en-2025-6',
     category: 'Industria',
     title: 'Infraestructura hidrica en el Peru: los retos del sector construccion en 2025',
     description:
@@ -46,6 +53,21 @@ const defaultPosts = [
     image: '/assets/img/categories/category-3.png',
   },
 ];
+
+const slugify = (value, index) => {
+  const base = String(value || 'post')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  if (!base) {
+    return `post-${index + 1}`;
+  }
+
+  return base.endsWith(`-${index + 1}`) ? base : `${base}-${index + 1}`;
+};
 
 const defaultMostRead = [
   {
@@ -79,6 +101,43 @@ const BlogScreen = ({ blog = {} }) => {
     description: blog.newsletter_description || 'Tips de instalacion, nuevos productos y actualizaciones exclusivas para profesionales.',
     placeholder: blog.newsletter_placeholder || 'Correo electronico',
     buttonLabel: blog.newsletter_button_label || 'Suscribirme ahora',
+  }
+  const postsPerPage = 9
+  const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage))
+
+  const readPageFromUrl = () => {
+    if (typeof window === 'undefined') return 1
+    const params = new URLSearchParams(window.location.search)
+    const raw = Number.parseInt(params.get('page') || '1', 10)
+    if (!Number.isFinite(raw) || raw < 1) return 1
+    return Math.min(raw, totalPages)
+  }
+
+  const [currentPage, setCurrentPage] = useState(readPageFromUrl)
+
+  useEffect(() => {
+    const nextPage = readPageFromUrl()
+    setCurrentPage(nextPage)
+  }, [totalPages])
+
+  const paginatedPosts = useMemo(() => {
+    const start = (currentPage - 1) * postsPerPage
+    return posts.slice(start, start + postsPerPage)
+  }, [currentPage, posts])
+
+  const goToPage = (page) => {
+    const nextPage = Math.min(Math.max(page, 1), totalPages)
+    setCurrentPage(nextPage)
+
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      if (nextPage === 1) {
+        url.searchParams.delete('page')
+      } else {
+        url.searchParams.set('page', String(nextPage))
+      }
+      window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`)
+    }
   }
 
   return (
@@ -117,10 +176,13 @@ const BlogScreen = ({ blog = {} }) => {
 
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_290px] md:items-start">
           <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-            {posts.map((post, index) => (
-              <article
-                key={`${post.title}-${index}`}
-                className="overflow-hidden rounded-2xl bg-white shadow-[0_4px_18px_rgba(15,23,42,0.12)] ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg"
+            {paginatedPosts.map((post, index) => {
+              const absoluteIndex = (currentPage - 1) * postsPerPage + index
+              return (
+              <a
+                href={post.detail_url || `/blog/${post.slug || slugify(post.title, absoluteIndex)}`}
+                key={`${post.title}-${absoluteIndex}`}
+                className="group overflow-hidden rounded-2xl bg-white shadow-[0_4px_18px_rgba(15,23,42,0.12)] ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg"
               >
                 <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[4/3] w-full object-cover" />
                 <div className="space-y-4 p-5">
@@ -129,9 +191,13 @@ const BlogScreen = ({ blog = {} }) => {
                   </span>
                   <h3 className="font-title text-2xl leading-tight text-primary">{post.title}</h3>
                   <p className="text-sm leading-relaxed text-muted line-clamp-3">{post.description}</p>
+                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition group-hover:gap-3">
+                    Leer articulo
+                    <i className="mdi mdi-arrow-right text-base"></i>
+                  </span>
                 </div>
-              </article>
-            ))}
+              </a>
+            )})}
           </div>
 
           <aside className="space-y-6 md:sticky md:top-6 md:pl-2">
@@ -183,40 +249,44 @@ const BlogScreen = ({ blog = {} }) => {
           </aside>
         </div>
 
-        <div className="mt-10 flex items-center justify-center gap-2 text-sm text-primary">
-          <button
-            type="button"
-            className="grid h-9 w-9 place-items-center rounded-full border border-transparent transition hover:border-slate-300 hover:bg-slate-50"
-            aria-label="Pagina anterior"
-          >
-            <i className="mdi mdi-chevron-left text-xl"></i>
-          </button>
-          <button
-            type="button"
-            className="min-w-9 rounded-full border-b-2 border-primary px-3 py-1 font-medium text-primary"
-          >
-            1
-          </button>
-          <button
-            type="button"
-            className="min-w-9 rounded-full px-3 py-1 text-muted transition hover:text-primary"
-          >
-            2
-          </button>
-          <button
-            type="button"
-            className="min-w-9 rounded-full px-3 py-1 text-muted transition hover:text-primary"
-          >
-            3
-          </button>
-          <button
-            type="button"
-            className="grid h-9 w-9 place-items-center rounded-full border border-transparent transition hover:border-slate-300 hover:bg-slate-50"
-            aria-label="Pagina siguiente"
-          >
-            <i className="mdi mdi-chevron-right text-xl"></i>
-          </button>
-        </div>
+        {totalPages > 1 ? (
+          <div className="mt-10 flex items-center justify-center gap-2 text-sm text-primary">
+            <button
+              type="button"
+              className="grid h-9 w-9 place-items-center rounded-full border border-transparent transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Pagina anterior"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage <= 1}
+            >
+              <i className="mdi mdi-chevron-left text-xl"></i>
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+              <button
+                key={`page-${page}`}
+                type="button"
+                onClick={() => goToPage(page)}
+                className={`min-w-9 rounded-full px-3 py-1 font-medium transition ${
+                  currentPage === page
+                    ? 'border-b-2 border-primary text-primary'
+                    : 'text-muted hover:text-primary'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              className="grid h-9 w-9 place-items-center rounded-full border border-transparent transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Pagina siguiente"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+            >
+              <i className="mdi mdi-chevron-right text-xl"></i>
+            </button>
+          </div>
+        ) : null}
       </section>
     </main>
   );

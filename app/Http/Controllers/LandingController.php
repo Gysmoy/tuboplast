@@ -10,6 +10,7 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,7 @@ class LandingController extends BasicController
 {
     public $reactView = 'Home';
     public $reactRootView = 'public';
+    public ?string $blogSlug = null;
 
     public function setReactViewProperties(Request $request)
     {
@@ -28,6 +30,17 @@ class LandingController extends BasicController
             'about' => $aboutData,
             'blog' => $blogData,
         ];
+
+        if ($this->reactView === 'BlogPost') {
+            $post = $this->resolveBlogPost($blogData['posts'] ?? [], $this->blogSlug);
+
+            if (!$post) {
+                abort(404);
+            }
+
+            $properties['post'] = $post;
+            $properties['postSlug'] = $this->blogSlug;
+        }
 
         if ($this->reactView === 'Distributors') {
             $properties['distributors'] = Distribuidor::query()
@@ -140,6 +153,14 @@ class LandingController extends BasicController
     public function blogView(Request $request)
     {
         $this->reactView = 'Blog';
+
+        return parent::reactView($request);
+    }
+
+    public function blogPostView(Request $request, string $slug)
+    {
+        $this->reactView = 'BlogPost';
+        $this->blogSlug = $slug;
 
         return parent::reactView($request);
     }
@@ -328,11 +349,23 @@ class LandingController extends BasicController
         $posts = is_array($blogData['posts'] ?? null) ? $blogData['posts'] : [];
         $blogData['posts'] = array_map(function ($item, $index) use ($fallbacks) {
             $imagePath = $item['image_path'] ?? null;
+            $slug = $this->blogPostSlug($item['slug'] ?? ($item['title'] ?? 'post'), $index);
 
             return [
+                'slug' => $slug,
+                'detail_url' => route('blog.post', ['slug' => $slug]),
                 'category' => $item['category'] ?? '',
                 'title' => $item['title'] ?? '',
                 'description' => $item['description'] ?? '',
+                'eyebrow' => $item['eyebrow'] ?? '',
+                'author' => $item['author'] ?? '',
+                'role' => $item['role'] ?? '',
+                'published' => $item['published'] ?? '',
+                'read_time' => $item['read_time'] ?? '',
+                'lead' => $item['lead'] ?? '',
+                'content_html' => $item['content_html'] ?? '',
+                'highlight_label' => $item['highlight_label'] ?? '',
+                'highlight' => $item['highlight'] ?? '',
                 'image_path' => $imagePath,
                 'image_url' => $imagePath ? route('blog.media', ['path' => $imagePath]) : null,
                 'image_fallback' => $fallbacks[$index] ?? '/assets/img/categories/category-1.png',
@@ -348,5 +381,36 @@ class LandingController extends BasicController
         }, is_array($blogData['most_read'] ?? null) ? $blogData['most_read'] : []);
 
         return $blogData;
+    }
+
+    private function blogPostSlug(string $value, int $index): string
+    {
+        $base = trim(Str::slug($value) ?: 'post', '-');
+
+        if (preg_match('/-\d+$/', $base)) {
+            return $base;
+        }
+
+        return $base . '-' . ($index + 1);
+    }
+
+    private function resolveBlogPost(array $posts, ?string $slug): ?array
+    {
+        if (!$slug) {
+            return null;
+        }
+
+        foreach ($posts as $index => $post) {
+            $candidate = $this->blogPostSlug((string) ($post['slug'] ?? ($post['title'] ?? 'post')), $index);
+
+            if ($candidate === $slug) {
+                return $post + [
+                    'slug' => $candidate,
+                    'detail_url' => route('blog.post', ['slug' => $candidate]),
+                ];
+            }
+        }
+
+        return null;
     }
 }

@@ -28,6 +28,7 @@ Route::get('/blog/media/{path}', [LandingController::class, 'blogMedia'])->where
 Route::get('/nosotros-familia', [LandingController::class, 'aboutFamiliaView'])->name('about.familia.alias');
 Route::get('/nosotros-politica', [LandingController::class, 'aboutPoliticaView'])->name('about.politica.alias');
 Route::get('/blog', [LandingController::class, 'blogView'])->name('blog');
+Route::get('/blog/{slug}', [LandingController::class, 'blogPostView'])->where('slug', '[A-Za-z0-9\-]+')->name('blog.post');
 Route::get('/contact', [LandingController::class, 'contactView'])->name('contact');
 Route::get('/club', [LandingController::class, 'clubView'])->name('club');
 Route::get('/item/{slug}', [ProductController::class, 'show'])->name('products.show');

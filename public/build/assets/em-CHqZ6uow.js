@@ -1,0 +1,1 @@
+import{j as s}from"./DataGrid-DAFs00V8.js";import o from"./HtmlContent-CL8j4roL.js";import"./index-RYns6xqu.js";const m=({children:t})=>(console.log(t),s.jsx(o,{html:String(t).replace(/\*(.*?)\*/g,'<span class="text-secondary">$1</span>')}));export{m as default};

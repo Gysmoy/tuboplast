@@ -1,8 +1,9 @@
 import { createRoot } from 'react-dom/client'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import CreateReactScript from '../Utils/CreateReactScript.jsx'
 import Adminto from '../Components/Adminto.jsx'
 import BlogRest from '../Actions/Admin/BlogRest.js'
+import QuillFormGroup from '../Components/Form/QuillFormGroup.jsx'
 
 const blogRest = new BlogRest()
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024
@@ -11,6 +12,15 @@ const createPost = (fallback = '/assets/img/categories/category-1.png') => ({
   category: '',
   title: '',
   description: '',
+  eyebrow: '',
+  author: '',
+  role: '',
+  published: '',
+  read_time: '',
+  lead: '',
+  content_html: '',
+  highlight_label: '',
+  highlight: '',
   image_path: '',
   image_file: null,
   image_preview: '',
@@ -33,8 +43,7 @@ const normalizePosts = (items) => {
     '/assets/img/categories/category-3.png',
   ]
 
-  const list = Array.isArray(items) ? items.slice(0, 6) : []
-  while (list.length < 6) list.push(createPost(fallbacks[list.length] ?? fallbacks[0]))
+  const list = Array.isArray(items) ? items.slice() : []
 
   return list.map((item, index) => ({
     ...createPost(fallbacks[index] ?? fallbacks[0]),
@@ -78,11 +87,21 @@ const Blog = ({ blog: initialBlog = {} }) => {
   const [form, setForm] = useState(initialForm)
   const [saving, setSaving] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
+  const [expandedPosts, setExpandedPosts] = useState({})
+  const postsPerPage = 5
+  const [currentPostPage, setCurrentPostPage] = useState(1)
   const [alert, setAlert] = useState(null)
+  const contentRefs = useRef([])
 
   useEffect(() => {
     setForm(initialForm)
   }, [initialForm])
+
+  const totalPostPages = Math.max(1, Math.ceil((form.posts?.length ?? 0) / postsPerPage))
+
+  useEffect(() => {
+    setCurrentPostPage((current) => Math.min(Math.max(current, 1), totalPostPages))
+  }, [totalPostPages])
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }))
@@ -116,6 +135,72 @@ const Blog = ({ blog: initialBlog = {} }) => {
       next[index] = { ...next[index], [field]: value }
       return { ...current, most_read: next }
     })
+  }
+
+  const addPost = () => {
+    setForm((current) => {
+      const nextPosts = [createPost(), ...(current.posts ?? [])]
+      return { ...current, posts: nextPosts }
+    })
+    setExpandedPosts((current) => {
+      const next = {}
+      Object.entries(current).forEach(([key, value]) => {
+        next[Number(key) + 1] = value
+      })
+      return next
+    })
+    setCurrentPostPage(1)
+  }
+
+  const removePost = (index) => {
+    setForm((current) => {
+      const nextPosts = [...(current.posts ?? [])]
+      if (nextPosts.length <= 1) return current
+      nextPosts.splice(index, 1)
+
+      return { ...current, posts: nextPosts }
+    })
+
+    setExpandedPosts((current) => {
+      const next = {}
+      Object.entries(current).forEach(([key, value]) => {
+        const postIndex = Number(key)
+        if (postIndex < index) {
+          next[postIndex] = value
+        } else if (postIndex > index) {
+          next[postIndex - 1] = value
+        }
+      })
+
+      return next
+    })
+
+    const nextLength = Math.max(1, (form.posts?.length ?? 1) - 1)
+    setCurrentPostPage((current) => Math.min(current, Math.max(1, Math.ceil(nextLength / postsPerPage))))
+  }
+
+  const paginatedPosts = useMemo(() => {
+    const start = (currentPostPage - 1) * postsPerPage
+    return (form.posts ?? []).slice(start, start + postsPerPage)
+  }, [currentPostPage, form.posts])
+
+  const goToPostPage = (page) => {
+    setCurrentPostPage(Math.min(Math.max(page, 1), totalPostPages))
+  }
+
+  const getContentRef = (index, initialValue = '') => {
+    if (!contentRefs.current[index]) {
+      contentRefs.current[index] = { current: { value: initialValue } }
+    }
+
+    return contentRefs.current[index]
+  }
+
+  const togglePost = (index) => {
+    setExpandedPosts((current) => ({
+      ...current,
+      [index]: !current[index],
+    }))
   }
 
   const onHeroImageChange = (event) => {
@@ -306,48 +391,167 @@ const Blog = ({ blog: initialBlog = {} }) => {
               <div className='d-flex align-items-center justify-content-between gap-3 mb-3'>
                 <div>
                   <h5 className='mb-1'>Articulos del blog</h5>
-                  <p className='text-muted mb-0'>Se mantienen 6 tarjetas para que la home y la pagina blog tengan coherencia.</p>
+                  <p className='text-muted mb-0'>Puedes agregar o quitar articulos segun necesites. La pagina publica se adapta automaticamente.</p>
                 </div>
+                <button type='button' className='btn btn-outline-primary' onClick={addPost}>
+                  Agregar articulo
+                </button>
               </div>
 
               <div className='row g-3'>
-                {form.posts.map((item, index) => (
-                  <div className='col-12 col-lg-6' key={`blog-post-${index}`}>
-                    <div className='border rounded-3 p-3 h-100'>
-                      <div className='d-flex align-items-center justify-content-between mb-3'>
-                        <div className='fw-semibold'>Articulo {index + 1}</div>
-                        <span className='badge bg-light text-dark'>{item.category || 'Sin categoria'}</span>
-                      </div>
-                      <div className='mb-3'>
-                        <div className='rounded border bg-light p-2'>
-                          <img
-                            src={item.image_preview || item.image_url || item.image_fallback || '/assets/img/landing/bg-main.png'}
-                            alt={item.title || `Articulo ${index + 1}`}
-                            className='w-100 rounded'
-                            style={{ aspectRatio: '16/10', objectFit: 'cover' }}
-                          />
+                {paginatedPosts.map((item, pageIndex) => {
+                  const index = (currentPostPage - 1) * postsPerPage + pageIndex
+                  return (
+                  <div className='col-12' key={`blog-post-${index}`}>
+                    <div className={`border rounded-3 h-100 ${expandedPosts[index] ? 'border-primary' : ''}`}>
+                      <div className='d-flex align-items-stretch'>
+                        <button
+                          type='button'
+                          className='d-flex flex-grow-1 align-items-center justify-content-between gap-3 border-0 bg-transparent p-3 text-start'
+                          onClick={() => togglePost(index)}
+                          aria-expanded={!!expandedPosts[index]}
+                          aria-controls={`blog-post-panel-${index}`}
+                        >
+                          <div>
+                            <div className='fw-semibold'>Articulo {index + 1}</div>
+                            <div className='text-muted small'>
+                              {item.title || 'Sin titulo'} · {item.category || 'Sin categoria'}
+                            </div>
+                          </div>
+                          <div className='d-flex align-items-center gap-2'>
+                            <span className='badge bg-light text-dark'>{item.category || 'Sin categoria'}</span>
+                            <i className={`ti ti-chevron-${expandedPosts[index] ? 'up' : 'down'}`}></i>
+                          </div>
+                        </button>
+                        <div className='d-flex align-items-center pe-3'>
+                          <button
+                            type='button'
+                            className='btn btn-sm btn-outline-danger'
+                            onClick={() => removePost(index)}
+                            disabled={form.posts.length <= 1}
+                          >
+                            Quitar
+                          </button>
                         </div>
                       </div>
-                      <div className='mb-3'>
-                        <label className='form-label'>Imagen</label>
-                        <input type='file' className='form-control' accept='image/*' onChange={(event) => onPostImageChange(index, event)} />
-                      </div>
-                      <div className='mb-3'>
-                        <label className='form-label'>Categoria</label>
-                        <input className='form-control' value={item.category || ''} onChange={(event) => updatePost(index, 'category', event.target.value)} />
-                      </div>
-                      <div className='mb-3'>
-                        <label className='form-label'>Titulo</label>
-                        <input className='form-control' value={item.title || ''} onChange={(event) => updatePost(index, 'title', event.target.value)} />
-                      </div>
-                      <div>
-                        <label className='form-label'>Descripcion</label>
-                        <textarea className='form-control' rows='4' value={item.description || ''} onChange={(event) => updatePost(index, 'description', event.target.value)} />
+
+                      <div id={`blog-post-panel-${index}`} className={`${expandedPosts[index] ? 'border-top' : 'd-none'}`}>
+                        <div className='p-3'>
+                          <div className='mb-3'>
+                            <div className='rounded border bg-light p-2'>
+                              <img
+                                src={item.image_preview || item.image_url || item.image_fallback || '/assets/img/landing/bg-main.png'}
+                                alt={item.title || `Articulo ${index + 1}`}
+                                className='w-100 rounded'
+                                style={{ aspectRatio: '16/7', maxHeight: '180px', objectFit: 'cover', objectPosition: 'center' }}
+                              />
+                            </div>
+                          </div>
+                          <div className='mb-3'>
+                            <label className='form-label'>Imagen</label>
+                            <input type='file' className='form-control' accept='image/*' onChange={(event) => onPostImageChange(index, event)} />
+                          </div>
+                          <div className='mb-3'>
+                            <label className='form-label'>Categoria</label>
+                            <input className='form-control' value={item.category || ''} onChange={(event) => updatePost(index, 'category', event.target.value)} />
+                          </div>
+                          <div className='mb-3'>
+                            <label className='form-label'>Titulo</label>
+                            <input className='form-control' value={item.title || ''} onChange={(event) => updatePost(index, 'title', event.target.value)} />
+                          </div>
+                          <div>
+                            <label className='form-label'>Descripcion</label>
+                            <textarea className='form-control' rows='4' value={item.description || ''} onChange={(event) => updatePost(index, 'description', event.target.value)} />
+                          </div>
+                          <div className='row g-3 mt-1'>
+                            <div className='col-md-4'>
+                              <label className='form-label'>Etiqueta superior</label>
+                              <input className='form-control' value={item.eyebrow || ''} onChange={(event) => updatePost(index, 'eyebrow', event.target.value)} />
+                            </div>
+                            <div className='col-md-8'>
+                              <label className='form-label'>Autor</label>
+                              <input className='form-control' value={item.author || ''} onChange={(event) => updatePost(index, 'author', event.target.value)} />
+                            </div>
+                            <div className='col-md-6'>
+                              <label className='form-label'>Cargo o rol</label>
+                              <input className='form-control' value={item.role || ''} onChange={(event) => updatePost(index, 'role', event.target.value)} />
+                            </div>
+                            <div className='col-md-3'>
+                              <label className='form-label'>Publicado</label>
+                              <input className='form-control' value={item.published || ''} onChange={(event) => updatePost(index, 'published', event.target.value)} />
+                            </div>
+                            <div className='col-md-3'>
+                              <label className='form-label'>Lectura</label>
+                              <input className='form-control' value={item.read_time || ''} onChange={(event) => updatePost(index, 'read_time', event.target.value)} />
+                            </div>
+                            <div className='col-12'>
+                              <label className='form-label'>Intro o lead</label>
+                              <textarea className='form-control' rows='5' value={item.lead || ''} onChange={(event) => updatePost(index, 'lead', event.target.value)} />
+                            </div>
+                          </div>
+                          <div className='mt-3'>
+                            <QuillFormGroup
+                              col='col-12'
+                              label='Contenido completo'
+                              value={item.content_html || ''}
+                              eRef={getContentRef(index, item.content_html || '')}
+                              onChange={(html) => updatePost(index, 'content_html', html)}
+                            />
+                            <small className='text-muted d-block mt-2'>
+                              Usa <b>## Subtitulo</b> o <b>### Subtitulo</b> para los titulos azules. Para listas, escribe cada linea con <b>-</b> al inicio. Para resaltar texto, usa <b>**negrita**</b> o <b>*cursiva*</b>.
+                            </small>
+                          </div>
+                          <div className='mt-4 border-top pt-3'>
+                            <div className='row g-3'>
+                              <div className='col-md-4'>
+                                <label className='form-label'>Titulo de la nota</label>
+                                <input className='form-control' value={item.highlight_label || ''} onChange={(event) => updatePost(index, 'highlight_label', event.target.value)} />
+                              </div>
+                              <div className='col-12'>
+                                <label className='form-label'>Contenido de la nota tecnica</label>
+                                <textarea className='form-control' rows='5' value={item.highlight || ''} onChange={(event) => updatePost(index, 'highlight', event.target.value)} />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
+
+              {totalPostPages > 1 ? (
+                <div className='mt-4 d-flex flex-wrap align-items-center justify-content-center gap-2'>
+                  <button
+                    type='button'
+                    className='btn btn-sm btn-light'
+                    onClick={() => goToPostPage(currentPostPage - 1)}
+                    disabled={currentPostPage <= 1}
+                  >
+                    Anterior
+                  </button>
+
+                  {Array.from({ length: totalPostPages }, (_, index) => index + 1).map((page) => (
+                    <button
+                      key={`admin-post-page-${page}`}
+                      type='button'
+                      className={`btn btn-sm ${currentPostPage === page ? 'btn-primary' : 'btn-outline-primary'}`}
+                      onClick={() => goToPostPage(page)}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  <button
+                    type='button'
+                    className='btn btn-sm btn-light'
+                    onClick={() => goToPostPage(currentPostPage + 1)}
+                    disabled={currentPostPage >= totalPostPages}
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
