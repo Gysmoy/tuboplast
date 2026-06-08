@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
+import { addQuoteItem, downloadTechnicalSheet } from './Utils/quoteStorage';
 
-const ProductGallery = ({ product }) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+gsap.registerPlugin(useGSAP);
+
+const ProductGallery = ({ product, selectedIndex, onSelectImage }) => {
   const selectedImage = product.gallery[selectedIndex] ?? product.image;
 
   return (
@@ -24,18 +28,14 @@ const ProductGallery = ({ product }) => {
             key={`${image}-${index}`}
             type="button"
             aria-label={`Ver imagen ${index + 1} de ${product.title}`}
-            onClick={() => setSelectedIndex(index)}
+            onClick={() => onSelectImage(index)}
             className={`overflow-hidden rounded-lg border-2 bg-light transition ${
               selectedIndex === index
                 ? 'border-secondary'
                 : 'border-transparent hover:border-silver'
             }`}
           >
-            <img
-              src={image}
-              alt=""
-              className="aspect-[5/4] w-full object-cover"
-            />
+            <img src={image} alt="" className="aspect-[5/4] w-full object-cover" />
           </button>
         ))}
       </div>
@@ -65,7 +65,7 @@ const TechnicalSpecifications = ({ groups }) => (
   <section className="mt-24">
     <div>
       <h2 className="font-title text-3xl font-medium text-primary">
-        Especificaciones técnicas
+        Especificaciones tecnicas
       </h2>
       <span className="mt-4 block h-1 w-12 bg-secondary" />
     </div>
@@ -74,9 +74,7 @@ const TechnicalSpecifications = ({ groups }) => (
       {groups.map((group, index) => (
         <article
           key={group.title}
-          className={`px-6 first:pl-0 ${
-            index > 0 ? 'border-l border-slate-300' : ''
-          }`}
+          className={`px-6 first:pl-0 ${index > 0 ? 'border-l border-slate-300' : ''}`}
         >
           <h3 className="text-xs font-bold uppercase tracking-[0.08em] text-primary">
             {group.title}
@@ -109,13 +107,105 @@ const TechnicalSpecifications = ({ groups }) => (
 );
 
 const ProductDetailScreen = ({ product, relatedProducts }) => {
+  const pageRef = useRef(null);
+  const addButtonRef = useRef(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [quantity, setQuantity] = useState(2);
+  const { contextSafe } = useGSAP(() => {}, { scope: pageRef });
+
+  const triggerAddAnimation = contextSafe(() => {
+    const sourceButton = addButtonRef.current;
+    const quoteButton = document.querySelector('[data-quote-button]');
+    const quoteBadge = document.querySelector('[data-quote-badge]');
+    const selectedImage = product.gallery[selectedIndex] ?? product.image;
+
+    if (!sourceButton || !quoteButton) {
+      return;
+    }
+
+    const sourceRect = sourceButton.getBoundingClientRect();
+    const targetRect = quoteButton.getBoundingClientRect();
+    const flyingImage = document.createElement('img');
+    const targetCenterX = targetRect.left + targetRect.width / 2;
+    const targetCenterY = targetRect.top + targetRect.height / 2;
+    const sourceCenterX = sourceRect.left + sourceRect.width / 2;
+    const sourceCenterY = sourceRect.top + sourceRect.height / 2;
+
+    flyingImage.src = selectedImage;
+    flyingImage.alt = product.title;
+
+    Object.assign(flyingImage.style, {
+      position: 'fixed',
+      left: `${sourceRect.left + sourceRect.width / 2 - 34}px`,
+      top: `${sourceRect.top + sourceRect.height / 2 - 34}px`,
+      width: '68px',
+      height: '68px',
+      margin: '0',
+      zIndex: '9999',
+      pointerEvents: 'none',
+      borderRadius: '1rem',
+      boxShadow: '0 25px 60px rgba(4, 24, 48, 0.25)',
+      transformOrigin: 'center center',
+      objectFit: 'cover',
+    });
+
+    document.body.appendChild(flyingImage);
+
+    const timeline = gsap.timeline({
+      defaults: { ease: 'power2.out' },
+      onComplete: () => {
+        flyingImage.remove();
+      },
+    });
+
+    timeline
+      .set(flyingImage, { opacity: 1, scale: 0.85, rotate: 0 })
+      .to(flyingImage, { duration: 0.12, scale: 1 })
+      .to(
+        flyingImage,
+        {
+          duration: 0.8,
+          x: targetCenterX - sourceCenterX,
+          y: targetCenterY - sourceCenterY,
+          scale: 0.2,
+          opacity: 0.35,
+          rotate: 10,
+          ease: 'power3.inOut',
+        },
+        '>-0.02',
+      )
+      .to(quoteButton, { duration: 0.18, scale: 1.08, ease: 'back.out(3)' }, '-=0.25')
+      .to(quoteButton, { duration: 0.16, scale: 1, ease: 'power2.out' }, '>-0.03')
+      .to(sourceButton, { duration: 0.12, scale: 0.98, ease: 'power2.out' }, '-=0.4')
+      .to(sourceButton, { duration: 0.15, scale: 1, ease: 'power2.out' }, '>-0.02');
+
+    if (quoteBadge) {
+      gsap.fromTo(
+        quoteBadge,
+        { scale: 1 },
+        { scale: 1.2, duration: 0.14, yoyo: true, repeat: 1, ease: 'power1.out' },
+      );
+    }
+  });
+
+  const handleAddToQuote = () => {
+    addQuoteItem(product, quantity);
+    triggerAddAnimation();
+  };
+
+  const handleDownloadSheet = () => {
+    downloadTechnicalSheet(product, quantity);
+  };
 
   return (
-    <main>
+    <main ref={pageRef}>
       <section className="mx-auto w-full max-w-site px-4 pb-16 pt-8 lg:pb-20 lg:pt-10">
         <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,732px)_minmax(0,658px)] lg:justify-between lg:gap-12">
-          <ProductGallery product={product} />
+          <ProductGallery
+            product={product}
+            selectedIndex={selectedIndex}
+            onSelectImage={setSelectedIndex}
+          />
 
           <article>
             <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
@@ -141,49 +231,43 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
 
             <SummaryGrid items={product.summary} />
 
-            <div className="mt-8 flex items-end justify-between gap-6">
-              <div>
-                <span className="block text-[10px] uppercase tracking-[0.12em] text-muted">
-                  Cantidad
-                </span>
-                <div className="mt-2 flex w-32 items-center justify-between border-b border-slate-300 pb-2 text-primary">
-                  <button
-                    type="button"
-                    aria-label="Reducir cantidad"
-                    onClick={() => setQuantity((current) => Math.max(1, current - 1))}
-                    className="grid h-7 w-7 place-items-center text-xl transition hover:bg-silver"
-                  >
-                    -
-                  </button>
-                  <span className="text-base">{quantity}</span>
-                  <button
-                    type="button"
-                    aria-label="Aumentar cantidad"
-                    onClick={() => setQuantity((current) => current + 1)}
-                    className="grid h-7 w-7 place-items-center text-xl transition hover:bg-silver"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div className="text-right">
-                <p className="text-xs text-muted">Cotización disponible solo a solicitud</p>
-                <p className="mt-1 font-title text-3xl font-medium text-primary lg:text-[44px]">
-                  Solicita tu precio
-                </p>
+            <div className="mt-8">
+              <span className="block text-[10px] uppercase tracking-[0.12em] text-muted">
+                Cantidad
+              </span>
+              <div className="mt-2 flex w-32 items-center justify-between border-b border-slate-300 pb-2 text-primary">
+                <button
+                  type="button"
+                  aria-label="Reducir cantidad"
+                  onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                  className="grid h-7 w-7 place-items-center text-xl transition hover:bg-silver"
+                >
+                  -
+                </button>
+                <span className="text-base">{quantity}</span>
+                <button
+                  type="button"
+                  aria-label="Aumentar cantidad"
+                  onClick={() => setQuantity((current) => current + 1)}
+                  className="grid h-7 w-7 place-items-center text-xl transition hover:bg-silver"
+                >
+                  +
+                </button>
               </div>
             </div>
 
             <div className="mt-9 space-y-3">
               <button
+                ref={addButtonRef}
                 type="button"
+                onClick={handleAddToQuote}
                 className="w-full rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-[#003b7a]"
               >
                 Agregar a cotización
               </button>
               <button
                 type="button"
+                onClick={handleDownloadSheet}
                 className="w-full rounded-full border border-slate-300 px-6 py-3.5 text-sm font-bold text-primary transition hover:bg-silver"
               >
                 Descargar ficha técnica
@@ -196,13 +280,13 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-sm font-bold text-primary">Garantía Tuboplast</p>
+                  <p className="text-sm font-bold text-primary">Garantia Tuboplast</p>
                   <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] font-bold uppercase text-primary">
                     Premium
                   </span>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-darkmuted">
-                  Respaldo directo de fábrica por 50 años contra defectos de fabricación
+                  Respaldo directo de fabrica por 50 anos contra defectos de fabricacion
                   en condiciones normales de uso.
                 </p>
               </div>

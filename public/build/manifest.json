@@ -28,13 +28,14 @@
       "_index-C53OKbh3.js"
     ]
   },
-  "_Base-BcVkNr_n.js": {
-    "file": "assets/Base-BcVkNr_n.js",
+  "_Base-_fBLVC0q.js": {
+    "file": "assets/Base-_fBLVC0q.js",
     "name": "Base",
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-Cfus7gPF.js"
+      "_CreateReactScript-Cfus7gPF.js",
+      "resources/js/Components/Items/ItemCard.jsx"
     ]
   },
   "_BasicRest-CNJjcCOq.js": {
@@ -65,11 +66,14 @@
       "_index-RYns6xqu.js"
     ]
   },
-  "_ItemCard-CMM0qWMh.js": {
-    "file": "assets/ItemCard-CMM0qWMh.js",
+  "_ItemCard-CiaGAOtf.js": {
+    "file": "assets/ItemCard-CiaGAOtf.js",
     "name": "ItemCard",
     "imports": [
-      "resources/js/Components/DataGrid.jsx"
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "_index-SFc2wnMY.js",
+      "_Base-_fBLVC0q.js"
     ]
   },
   "_LaravelSession-CYcN0AKE.js": {
@@ -82,6 +86,10 @@
     "imports": [
       "_BasicRest-CNJjcCOq.js"
     ]
+  },
+  "_ScrollTrigger-CezCZ8EY.js": {
+    "file": "assets/ScrollTrigger-CezCZ8EY.js",
+    "name": "ScrollTrigger"
   },
   "_SelectFormGroup-CMeIN8EL.js": {
     "file": "assets/SelectFormGroup-CMeIN8EL.js",
@@ -133,6 +141,14 @@
       "_index-DJSEUtJE.js"
     ]
   },
+  "_index-CD7kv5lB.js": {
+    "file": "assets/index-CD7kv5lB.js",
+    "name": "index",
+    "imports": [
+      "_index-RYns6xqu.js",
+      "_index-SFc2wnMY.js"
+    ]
+  },
   "_index-DJSEUtJE.js": {
     "file": "assets/index-DJSEUtJE.js",
     "name": "index",
@@ -140,15 +156,12 @@
       "_index-RYns6xqu.js"
     ]
   },
-  "_index-DuIWL2A8.js": {
-    "file": "assets/index-DuIWL2A8.js",
-    "name": "index",
-    "imports": [
-      "_index-RYns6xqu.js"
-    ]
-  },
   "_index-RYns6xqu.js": {
     "file": "assets/index-RYns6xqu.js",
+    "name": "index"
+  },
+  "_index-SFc2wnMY.js": {
+    "file": "assets/index-SFc2wnMY.js",
     "name": "index"
   },
   "_main-DtrbM76B.js": {
@@ -166,24 +179,48 @@
     "file": "assets/ubigeo-DdaSjaYO.js",
     "name": "ubigeo"
   },
+  "node_modules/canvg/lib/index.es.js": {
+    "file": "assets/index.es-uP9EDyfb.js",
+    "name": "index.es",
+    "src": "node_modules/canvg/lib/index.es.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_index-RYns6xqu.js",
+      "resources/js/Components/Items/ItemCard.jsx",
+      "resources/js/Components/DataGrid.jsx"
+    ]
+  },
+  "node_modules/dompurify/dist/purify.es.mjs": {
+    "file": "assets/purify.es-V6uLfjnH.js",
+    "name": "purify.es",
+    "src": "node_modules/dompurify/dist/purify.es.mjs",
+    "isDynamicEntry": true
+  },
+  "node_modules/html2canvas/dist/html2canvas.esm.js": {
+    "file": "assets/html2canvas.esm-CBrSDip1.js",
+    "name": "html2canvas.esm",
+    "src": "node_modules/html2canvas/dist/html2canvas.esm.js",
+    "isDynamicEntry": true
+  },
   "resources/css/app.css": {
     "file": "app.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/AboutFamilia.jsx": {
-    "file": "assets/AboutFamilia-BqWi4kfS.js",
+    "file": "assets/AboutFamilia-BjjLWH1G.js",
     "name": "AboutFamilia",
     "src": "resources/js/AboutFamilia.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-BcVkNr_n.js",
+      "_Base-_fBLVC0q.js",
       "_AboutNav-ufQp2vke.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -193,18 +230,19 @@
     ]
   },
   "resources/js/AboutPolitica.jsx": {
-    "file": "assets/AboutPolitica-WMsC4AYp.js",
+    "file": "assets/AboutPolitica-BuHGJb-_.js",
     "name": "AboutPolitica",
     "src": "resources/js/AboutPolitica.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-BcVkNr_n.js",
+      "_Base-_fBLVC0q.js",
       "_AboutNav-ufQp2vke.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -549,17 +587,18 @@
     ]
   },
   "resources/js/Blog.jsx": {
-    "file": "assets/Blog-Bgze89bY.js",
+    "file": "assets/Blog-2EHY0dbn.js",
     "name": "Blog",
     "src": "resources/js/Blog.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-BcVkNr_n.js",
+      "_Base-_fBLVC0q.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -569,7 +608,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-RHNVqrxb.js",
+    "file": "assets/Catalog-Dz__3WGM.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isEntry": true,
@@ -577,10 +616,12 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_ItemCard-CMM0qWMh.js",
-      "_Base-BcVkNr_n.js",
+      "_ItemCard-CiaGAOtf.js",
+      "_Base-_fBLVC0q.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-DJSEUtJE.js",
+      "_index-SFc2wnMY.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -590,7 +631,7 @@
     ]
   },
   "resources/js/Club.jsx": {
-    "file": "assets/Club-uMBGaiMe.js",
+    "file": "assets/Club-CD05nkLf.js",
     "name": "Club",
     "src": "resources/js/Club.jsx",
     "isEntry": true,
@@ -598,11 +639,12 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-BcVkNr_n.js",
+      "_Base-_fBLVC0q.js",
       "_ThankYouModal-CE6N9d-q.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_ubigeo-DdaSjaYO.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -762,13 +804,18 @@
     ]
   },
   "resources/js/Components/Items/ItemCard.jsx": {
-    "file": "assets/ItemCard-BYg4LlP3.js",
+    "file": "assets/ItemCard-Ck6bHXA9.js",
     "name": "ItemCard",
     "src": "resources/js/Components/Items/ItemCard.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js"
+    ],
+    "dynamicImports": [
+      "node_modules/html2canvas/dist/html2canvas.esm.js",
+      "node_modules/dompurify/dist/purify.es.mjs",
+      "node_modules/canvg/lib/index.es.js"
     ]
   },
   "resources/js/Components/Menu.jsx": {
@@ -850,13 +897,14 @@
     ]
   },
   "resources/js/Components/Tailwind/Base.jsx": {
-    "file": "assets/Base-BYg4LlP3.js",
+    "file": "assets/Base-CAipk_kq.js",
     "name": "Base",
     "src": "resources/js/Components/Tailwind/Base.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
-      "_index-RYns6xqu.js"
+      "_index-RYns6xqu.js",
+      "resources/js/Components/Items/ItemCard.jsx"
     ]
   },
   "resources/js/Components/Tailwind/Footer.jsx": {
@@ -870,13 +918,14 @@
     ]
   },
   "resources/js/Components/Tailwind/Header.jsx": {
-    "file": "assets/Header-BYg4LlP3.js",
+    "file": "assets/Header-CAipk_kq.js",
     "name": "Header",
     "src": "resources/js/Components/Tailwind/Header.jsx",
     "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
-      "_index-RYns6xqu.js"
+      "_index-RYns6xqu.js",
+      "resources/js/Components/Items/ItemCard.jsx"
     ]
   },
   "resources/js/Components/Tailwind/ThankYouModal.jsx": {
@@ -900,7 +949,7 @@
     ]
   },
   "resources/js/Contact.jsx": {
-    "file": "assets/Contact-CVEofeQX.js",
+    "file": "assets/Contact-B1PtROnA.js",
     "name": "Contact",
     "src": "resources/js/Contact.jsx",
     "isEntry": true,
@@ -908,11 +957,12 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-BcVkNr_n.js",
+      "_Base-_fBLVC0q.js",
       "_ThankYouModal-CE6N9d-q.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_googleMaps-DrvRtn5X.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -922,7 +972,7 @@
     ]
   },
   "resources/js/Distributors.jsx": {
-    "file": "assets/Distributors-C1v6g1Zm.js",
+    "file": "assets/Distributors-Bzd-Rh9u.js",
     "name": "Distributors",
     "src": "resources/js/Distributors.jsx",
     "isEntry": true,
@@ -930,11 +980,12 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_Base-BcVkNr_n.js",
+      "_Base-_fBLVC0q.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_googleMaps-DrvRtn5X.js",
       "_ubigeo-DdaSjaYO.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -944,7 +995,7 @@
     ]
   },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-aciGNIrL.js",
+    "file": "assets/Home-CxjHR8I6.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isEntry": true,
@@ -952,11 +1003,14 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_index-DuIWL2A8.js",
-      "_Base-BcVkNr_n.js",
-      "_ItemCard-CMM0qWMh.js",
+      "_index-SFc2wnMY.js",
+      "_ScrollTrigger-CezCZ8EY.js",
+      "_index-CD7kv5lB.js",
+      "_Base-_fBLVC0q.js",
+      "_ItemCard-CiaGAOtf.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"
@@ -966,7 +1020,7 @@
     ]
   },
   "resources/js/Landing.jsx": {
-    "file": "assets/Landing-DGlzUkbT.js",
+    "file": "assets/Landing-BnsnQfT3.js",
     "name": "Landing",
     "src": "resources/js/Landing.jsx",
     "isEntry": true,
@@ -974,7 +1028,9 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_index-DuIWL2A8.js",
+      "_index-SFc2wnMY.js",
+      "_index-CD7kv5lB.js",
+      "_ScrollTrigger-CezCZ8EY.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-DJSEUtJE.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1005,7 +1061,7 @@
     ]
   },
   "resources/js/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-qp3_VTtQ.js",
+    "file": "assets/ProductDetail-CJLhWTzE.js",
     "name": "ProductDetail",
     "src": "resources/js/ProductDetail.jsx",
     "isEntry": true,
@@ -1013,10 +1069,13 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_ItemCard-CMM0qWMh.js",
-      "_Base-BcVkNr_n.js",
+      "_index-SFc2wnMY.js",
+      "_index-CD7kv5lB.js",
+      "_ItemCard-CiaGAOtf.js",
+      "_Base-_fBLVC0q.js",
       "_CreateReactScript-Cfus7gPF.js",
       "_index-DJSEUtJE.js",
+      "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Utils/CreateReactScript.jsx",
       "_main-DtrbM76B.js",
       "_LaravelSession-CYcN0AKE.js"

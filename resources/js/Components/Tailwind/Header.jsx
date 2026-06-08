@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import Global from '../../Utils/Global';
+import {
+  clearQuoteItems,
+  readQuoteItems,
+  removeQuoteItem,
+  subscribeToQuoteChanges,
+  subscribeToQuotePanelOpen,
+} from '../../Utils/quoteStorage';
 
 const navItems = [
   { label: 'Inicio', href: '/' },
@@ -42,9 +49,10 @@ const HeaderAction = ({ children, href, icon, onClick }) => {
 const Header = ({ title }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const [quoteItems, setQuoteItems] = useState(() => readQuoteItems());
   const menuButtonRef = useRef(null);
   const mobileMenuRef = useRef(null);
-  const quoteItemCount = 0;
+  const quoteItemCount = quoteItems.reduce((total, item) => total + (Number(item.quantity) || 0), 0);
   const currentPath =
     typeof window === 'undefined' ? '/' : window.location.pathname.replace(/\/$/, '') || '/';
 
@@ -98,6 +106,10 @@ const Header = ({ title }) => {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [isMenuOpen]);
 
+  useEffect(() => subscribeToQuoteChanges(setQuoteItems), []);
+
+  useEffect(() => subscribeToQuotePanelOpen(openQuote), []);
+
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white shadow-sm">
@@ -129,6 +141,7 @@ const Header = ({ title }) => {
               <button
                 type="button"
                 onClick={openQuote}
+                data-quote-button
                 aria-label={`Abrir mi cotización. ${quoteItemCount} productos agregados`}
                 aria-controls="quote-offcanvas"
                 aria-expanded={isQuoteOpen}
@@ -136,7 +149,10 @@ const Header = ({ title }) => {
               >
                 <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-silver text-primary transition group-hover:bg-slate-200">
                   <i className="mdi mdi-cart-outline text-xl"></i>
-                  <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-secondary px-1 text-[10px] font-bold text-primary">
+                  <span
+                    data-quote-badge
+                    className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-secondary px-1 text-[10px] font-bold text-primary"
+                  >
                     {quoteItemCount}
                   </span>
                 </span>
@@ -284,23 +300,59 @@ const Header = ({ title }) => {
             </div>
           </div>
 
-          <div className="flex flex-1 flex-col items-center justify-center px-7 py-10 text-center">
-            <span className="grid h-20 w-20 place-items-center rounded-full bg-silver text-primary">
-              <i className="mdi mdi-cart-outline text-4xl"></i>
-            </span>
-            <h3 className="mt-6 font-title text-xl font-bold text-primary">
-              Tu cotización está vacía
-            </h3>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted">
-              Agrega los productos que necesita tu proyecto y envíanos la solicitud para recibir asesoría personalizada.
-            </p>
-            <a
-              href="/catalog"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary transition hover:text-[#003b7a]"
-            >
-              Explorar productos
-              <i className="mdi mdi-arrow-right"></i>
-            </a>
+          <div className="flex flex-1 flex-col px-5 py-6 sm:px-6">
+            {quoteItems.length ? (
+              <div className="flex-1 space-y-3 overflow-y-auto pr-1">
+                {quoteItems.map((item) => (
+                  <article
+                    key={item.quoteKey}
+                    className="flex items-center gap-4 rounded-xl border border-slate-200 p-3"
+                  >
+                    <div className="h-16 w-16 overflow-hidden rounded-lg bg-silver">
+                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-primary">{item.title}</p>
+                      <p className="mt-1 text-xs text-muted">
+                        Cantidad: <span className="font-bold text-darkmuted">{item.quantity}</span>
+                      </p>
+                      {item.priceLabel && (
+                        <p className="mt-1 text-xs text-muted">
+                          Precio: <span className="font-bold text-darkmuted">{item.priceLabel}</span>
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeQuoteItem(item.quoteKey)}
+                      aria-label={`Eliminar ${item.title} de la cotización`}
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-silver text-muted transition hover:bg-red-50 hover:text-red-600"
+                    >
+                      <i className="mdi mdi-trash-can-outline text-lg"></i>
+                    </button>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-1 flex-col items-center justify-center px-2 py-10 text-center">
+                <span className="grid h-20 w-20 place-items-center rounded-full bg-silver text-primary">
+                  <i className="mdi mdi-cart-outline text-4xl"></i>
+                </span>
+                <h3 className="mt-6 font-title text-xl font-bold text-primary">
+                  Tu cotización está vacía
+                </h3>
+                <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted">
+                  Agrega los productos que necesita tu proyecto y envíanos la solicitud para recibir asesoría personalizada.
+                </p>
+                <a
+                  href="/catalog"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary transition hover:text-[#003b7a]"
+                >
+                  Explorar productos
+                  <i className="mdi mdi-arrow-right"></i>
+                </a>
+              </div>
+            )}
           </div>
 
           <div className="border-t border-slate-200 bg-white px-5 py-5 sm:px-6">
@@ -310,8 +362,10 @@ const Header = ({ title }) => {
             </p>
             <button
               type="button"
-              disabled
-              className="w-full cursor-not-allowed rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-white opacity-45"
+              disabled={!quoteItems.length}
+              className={`w-full rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-white transition ${
+                quoteItems.length ? 'hover:bg-[#003b7a]' : 'cursor-not-allowed opacity-45'
+              }`}
             >
               Generar cotización
             </button>
@@ -321,6 +375,15 @@ const Header = ({ title }) => {
             >
               ¿Necesitas ayuda? Habla con un asesor
             </a>
+            {quoteItems.length > 0 && (
+              <button
+                type="button"
+                onClick={clearQuoteItems}
+                className="mt-4 block w-full text-center text-xs font-bold text-muted transition hover:text-primary"
+              >
+                Vaciar cotización
+              </button>
+            )}
           </div>
         </aside>
       </div>
