@@ -5,41 +5,67 @@ import CreateReactScript from './Utils/CreateReactScript'
 
 const defaultAbout = {
   policy_eyebrow: 'Excelencia Industrial',
-  policy_title: 'Politica del Sistema de Gestion Integrado',
-  policy_description: 'En TUBOPLAST nos dedicamos a la fabricacion de tuberias, accesorios de PVC y polietileno, y estamos comprometidos con la satisfaccion de nuestros clientes para lo cual ponemos a su disposicion nuestros recursos humanos y materiales, ofrecemos un excelente trato personalizado; garantizamos y aseguramos que todo producto brindado cumpla con los requisitos acordados con el cliente.',
+  policy_title: 'Política del Sistema de Gestión Integrado',
+  policy_scope_eyebrow: 'Familia e historia',
+  policy_scope_title: 'Alcance',
+  policy_scope_paragraph_1:
+    'Fabricación, comercialización, capacitación en obra, atención al cliente, asistencia técnica, almacenamiento, distribución y despacho de tubos y conexiones de PVC-U (policloruro de vinilo no plastificado) para instalaciones de canalizaciones eléctricas, abastecimiento de agua, fluidos a presión, desagüe y sistemas de drenaje y alcantarillado.',
+  policy_scope_paragraph_2:
+    'Fabricación, comercialización, atención al cliente, asistencia técnica, almacenamiento, distribución y despacho de tubos y conexiones de polietileno. Procesos realizados en el local industrial ubicado en calle María Curie 313 - Urbanización Industrial Santa Rosa, Distrito de Ate. Lima - Perú.',
+  policy_description:
+    'En TUBOPLAST nos dedicamos a la fabricación de tuberías, accesorios de PVC y polietileno, y estamos comprometidos con la satisfacción de nuestros clientes para lo cual ponemos a su disposición nuestros recursos humanos y materiales, ofrecemos un excelente trato personalizado; garantizamos y aseguramos que todo producto brindado cumpla con los requisitos acordados con el cliente.',
   policy_bullets: [
-    'Fomentar y ejecutar acciones para garantizar que las operaciones se realicen aplicando estandares de seguridad apropiados, para el control y mitigacion de los riesgos.',
+    'Fomentar y ejecutar acciones para garantizar que sus operaciones se realicen aplicando estándares de seguridad apropiados, para el control y mitigación de los riesgos.',
     'Controlar y mitigar nuestros aspectos ambientales significativos.',
-    'Mejorar continuamente nuestros procesos, desempeno ambiental y nuestro sistema de gestion integrado.',
+    'Mejorar continuamente nuestros procesos, desempeño ambiental y nuestro sistema de gestión integrado.',
     'Sensibilizar, capacitar y entrenar a nuestros colaboradores, a fin de desarrollar una cultura preventiva y promover el cumplimiento de las normas, reglamentos y procedimientos.',
-    'Prevenir la contaminacion ambiental.',
-    'Cumplir con la legislacion vigente y otros requisitos relacionados a la fabricacion de tuberias y accesorios de PVC, respecto a la seguridad, salud ocupacional y ambiental.',
+    'Prevenir la contaminación ambiental.',
+    'Cumplir con la legislación vigente y otros requisitos relacionados a la fabricación de tuberías y accesorios de PVC, respecto a la seguridad, salud ocupacional y ambiental.',
   ],
   certifications: [
     {
       title: 'ISO 9001',
-      description: 'Gestion de calidad y mejora continua en procesos industriales.',
+      description:
+        'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo invent.',
+      image_fallback: '/assets/img/about/certificates/iso-9001.svg',
     },
     {
       title: 'ISO 14001',
-      description: 'Compromiso con la gestion ambiental y el uso responsable de recursos.',
+      description:
+        'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore.',
+      image_fallback: '/assets/img/about/certificates/iso-14001.svg',
     },
     {
       title: 'ISO 45001',
-      description: 'Seguridad y salud en el trabajo como prioridad operacional.',
+      description:
+        'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas.',
+      image_fallback: '/assets/img/about/certificates/iso-45001.svg',
     },
   ],
 }
 
 const AboutPoliticaScreen = ({ about = defaultAbout }) => {
-  const policyBullets = Array.isArray(about.policy_bullets) && about.policy_bullets.length ? about.policy_bullets : defaultAbout.policy_bullets
-  const certifications = Array.isArray(about.certifications) && about.certifications.length ? about.certifications : defaultAbout.certifications
+  const policyBullets = defaultAbout.policy_bullets
+  const certificationsSource = Array.isArray(about.certifications) && about.certifications.length ? about.certifications : defaultAbout.certifications
+  const certifications = defaultAbout.certifications.map((fallback, index) => {
+    const current = certificationsSource[index] || {}
+
+    return {
+      ...current,
+      title: fallback.title,
+      description: fallback.description,
+      image_fallback: fallback.image_fallback,
+    }
+  })
   const policyImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '/assets/img/landing/club-expert.png')
+  const policyScopeEyebrow = defaultAbout.policy_scope_eyebrow
+  const policyScopeTitle = defaultAbout.policy_scope_title
+  const policyScopeParagraph1 = defaultAbout.policy_scope_paragraph_1
+  const policyScopeParagraph2 = defaultAbout.policy_scope_paragraph_2
+  const policyStatement = defaultAbout.policy_description
 
   return (
     <main className='bg-white'>
-      <AboutNav />
-
       <section className='relative overflow-hidden'>
         <img
           src='/assets/img/landing/bg-main.png'
@@ -49,12 +75,14 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
         <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30' />
 
         <div className='relative mx-auto w-full max-w-site px-4 py-20 sm:py-24 lg:py-28'>
-          <div className='max-w-3xl space-y-6'>
-            <p className='text-xs font-bold uppercase tracking-[0.28em] text-primary'>
-              {about.policy_eyebrow || defaultAbout.policy_eyebrow}
+          <AboutNav variant='overlay' />
+
+          <div className='mt-8 max-w-3xl space-y-6 sm:mt-10 lg:mt-12'>
+            <p className='text-xs font-bold uppercase tracking-[0.32em] text-primary sm:text-base'>
+              {defaultAbout.policy_eyebrow}
             </p>
             <h1 className='max-w-3xl font-title text-5xl leading-[0.95] tracking-tight text-primary sm:text-6xl lg:text-[4.4rem]'>
-              {about.policy_title || defaultAbout.policy_title}
+              {defaultAbout.policy_title}
             </h1>
             <div className='flex items-center gap-4 text-sm text-darkmuted'>
               <span className='h-1 w-10 bg-secondary' />
@@ -74,12 +102,13 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
 
           <div className='space-y-6'>
             <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>
-              {about.policy_eyebrow || defaultAbout.policy_eyebrow}
+              {policyScopeEyebrow}
             </p>
-            <h2 className='font-title text-4xl leading-tight text-primary sm:text-5xl'>Alcance</h2>
-            <p className='text-sm leading-relaxed text-darkmuted'>
-              {about.policy_description || defaultAbout.policy_description}
-            </p>
+            <h2 className='font-title text-4xl leading-tight text-primary sm:text-5xl'>{policyScopeTitle}</h2>
+            <div className='space-y-4 text-sm leading-relaxed text-darkmuted'>
+              <p>{policyScopeParagraph1}</p>
+              <p>{policyScopeParagraph2}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -88,11 +117,11 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
         <div className='mx-auto grid w-full max-w-site gap-10 px-4 lg:grid-cols-[0.95fr_1.05fr] lg:items-start'>
           <div className='space-y-5'>
             <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>
-              {about.policy_eyebrow || defaultAbout.policy_eyebrow}
+              {policyScopeEyebrow}
             </p>
-            <h2 className='font-title text-4xl leading-tight text-primary sm:text-5xl'>Nuestra politica</h2>
+            <h2 className='font-title text-4xl leading-tight text-primary sm:text-5xl'>Nuestra política</h2>
             <p className='text-sm leading-relaxed text-darkmuted'>
-              {about.policy_description || defaultAbout.policy_description}
+              {policyStatement}
             </p>
           </div>
 
@@ -111,7 +140,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
         <div className='mb-8'>
           <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>Archivos</p>
           <h2 className='mt-3 font-title text-4xl leading-tight text-primary sm:text-5xl'>
-            Certificaciones de los Sistemas de Gestion
+            Certificaciones de los Sistemas de Gestión
           </h2>
         </div>
 
@@ -119,9 +148,9 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
           {certifications.map((cert) => (
             <article key={cert.title} className='overflow-hidden rounded-2xl bg-light p-4 shadow-sm ring-1 ring-black/5'>
               <div className='flex h-52 items-center justify-center rounded-xl bg-white p-4'>
-                {cert.image_url ? (
+                {cert.image_url || cert.image_path || cert.image_fallback ? (
                   <img
-                    src={cert.image_url}
+                    src={cert.image_url || (cert.image_path ? `/about/media/${cert.image_path}` : cert.image_fallback)}
                     alt={cert.title}
                     className='h-full w-full rounded-lg object-contain'
                   />
@@ -159,7 +188,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
 
 CreateReactScript((el, properties) => {
   createRoot(el).render(
-    <Base title='Nosotros - Politica'>
+    <Base title='Nosotros - Política'>
       <AboutPoliticaScreen about={properties.about} />
     </Base>,
   )

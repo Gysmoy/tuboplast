@@ -151,16 +151,16 @@ const BlogScreen = ({ blog = {} }) => {
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/92 to-white/35" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/50" />
 
-        <div className="relative mx-auto flex min-h-[560px] w-full max-w-site items-end px-4 py-14 sm:min-h-[640px] sm:py-20 lg:min-h-[700px] lg:py-24">
-          <div className="max-w-xl space-y-6 pb-10 sm:pb-16 lg:pb-20">
+        <div className="relative mx-auto flex min-h-[420px] w-full max-w-site items-center px-4 py-10 sm:min-h-[560px] sm:py-16 lg:min-h-[700px] lg:items-end lg:py-24">
+          <div className="max-w-xl space-y-5 pb-2 sm:space-y-6 sm:pb-10 lg:pb-20">
             <span className="block h-1 w-12 bg-secondary" />
             <div className="space-y-4">
-              <h1 className="max-w-lg font-title text-5xl leading-[0.95] tracking-tight text-primary sm:text-6xl lg:text-[4.7rem]">
+              <h1 className="max-w-lg font-title text-[2.7rem] leading-[0.95] tracking-tight text-primary sm:text-6xl lg:text-[4.7rem]">
                 {heroBadge}:
                 <br />
                 {heroTitle}
               </h1>
-              <p className="max-w-lg text-base leading-relaxed text-darkmuted sm:text-lg">
+              <p className="max-w-lg text-[0.98rem] leading-relaxed text-darkmuted sm:text-lg">
                 {heroDescription}
               </p>
             </div>
@@ -175,7 +175,7 @@ const BlogScreen = ({ blog = {} }) => {
         </div>
 
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_290px] md:items-start">
-          <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {paginatedPosts.map((post, index) => {
               const absoluteIndex = (currentPage - 1) * postsPerPage + index
               return (
@@ -184,12 +184,16 @@ const BlogScreen = ({ blog = {} }) => {
                 key={`${post.title}-${absoluteIndex}`}
                 className="group overflow-hidden rounded-2xl bg-white shadow-[0_4px_18px_rgba(15,23,42,0.12)] ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[4/3] w-full object-cover" />
+                <img
+                  src={post.image_url || post.image_fallback || post.image}
+                  alt={post.title}
+                  className="aspect-[16/10] w-full object-cover sm:aspect-[4/3]"
+                />
                 <div className="space-y-4 p-5">
                   <span className="inline-flex rounded-full border border-[#cdddf3] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
                     {post.category}
                   </span>
-                  <h3 className="font-title text-2xl leading-tight text-primary">{post.title}</h3>
+                  <h3 className="font-title text-[1.2rem] leading-tight text-primary sm:text-2xl">{post.title}</h3>
                   <p className="text-sm leading-relaxed text-muted line-clamp-3">{post.description}</p>
                   <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition group-hover:gap-3">
                     Leer articulo
@@ -200,22 +204,22 @@ const BlogScreen = ({ blog = {} }) => {
             )})}
           </div>
 
-          <aside className="space-y-6 md:sticky md:top-6 md:pl-2">
+          <aside className="space-y-8 md:sticky md:top-6 md:pl-2">
             <div>
               <div className="mb-4 flex items-center gap-3">
                 <span className="h-0.5 w-6 bg-secondary" />
-                <p className="font-title text-xl font-medium text-primary">Mas leidos</p>
+                <p className="font-title text-2xl font-medium uppercase text-primary">Más leídos</p>
               </div>
 
-              <div className="divide-y divide-slate-200 rounded-2xl bg-white">
+              <div className="divide-y divide-slate-200 rounded-2xl bg-white px-2 sm:px-0">
                 {mostRead.map((item) => (
-                  <article key={item.number} className="flex gap-4 py-4 first:pt-0 last:pb-0">
-                    <span className="min-w-12 font-title text-3xl font-medium leading-none text-[#d9e2ee]">
+                  <article key={item.number} className="flex gap-4 py-5 first:pt-0 last:pb-0">
+                    <span className="min-w-14 font-title text-4xl font-medium leading-none text-[#d9e2ee] sm:text-5xl">
                       {item.number}
                     </span>
                     <div className="space-y-1 pr-2">
-                      <h4 className="text-sm leading-snug font-medium text-primary">{item.title}</h4>
-                      <p className="text-[10px] uppercase tracking-[0.12em] text-muted">{item.category}</p>
+                      <h4 className="text-base leading-snug font-medium text-primary sm:text-lg">{item.title}</h4>
+                      <p className="text-xs uppercase tracking-[0.12em] text-muted">{item.category}</p>
                     </div>
                   </article>
                 ))}
@@ -223,11 +227,11 @@ const BlogScreen = ({ blog = {} }) => {
             </div>
 
             <article className="overflow-hidden rounded-2xl bg-primary text-white shadow-[0_10px_30px_rgba(0,59,122,0.22)]">
-              <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6">
-                <h3 className="max-w-[12ch] font-title text-2xl leading-tight">
+              <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6 sm:px-6 sm:py-7">
+                <h3 className="max-w-[12ch] font-title text-2xl leading-tight sm:text-[2.2rem]">
                   {newsletter.title}
                 </h3>
-                <p className="mt-4 text-sm leading-relaxed text-white/80">
+                <p className="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
                   {newsletter.description}
                 </p>
 
