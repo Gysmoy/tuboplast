@@ -195,12 +195,12 @@ const HomeScreen = ({ blog = {} }) => {
                 <span className='text-darkmuted'>NTP 399.002</span>
               </div>
             </div>
-            <button
-              type="button"
-              className="w-full rounded-full border border-silver hover:bg-silver transition-colors p-4 font-bold font-title text-primary"
+            <a
+              href="/catalog"
+              className="block w-full rounded-full border border-silver p-4 font-bold font-title text-primary transition-colors hover:bg-silver"
             >
               Especificaciones Tecnicas
-            </button>
+            </a>
           </article>
         </div>
       </section>
@@ -265,10 +265,10 @@ const HomeScreen = ({ blog = {} }) => {
             </div>
 
             <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8 lg:mt-auto lg:pt-14">
-              <button type="button" className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-3 font-title text-sm font-medium text-primary shadow-sm sm:gap-4 sm:text-base">
+              <a href="/family" className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-3 font-title text-sm font-medium text-primary shadow-sm sm:gap-4 sm:text-base">
                 Especificaciones Técnicas
                 <i className="mdi mdi-arrow-right text-xl leading-none"></i>
-              </button>
+              </a>
               <p className="text-sm uppercase text-white/45">
                 Partner Estratégico de <br /> Confianza
               </p>
@@ -297,7 +297,7 @@ const HomeScreen = ({ blog = {} }) => {
               <p className="font-title text-3xl font-medium text-primary sm:text-4xl">Expertos en</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
-            <a className="font-medium text-primary" href="/blog">
+            <a className="font-medium text-primary" href="/catalog">
               Ver todo <i className="mdi mdi-arrow-right align-middle text-sm ms-1"></i>
             </a>
           </div>
@@ -329,7 +329,7 @@ const HomeScreen = ({ blog = {} }) => {
               <p className="font-title text-3xl font-medium leading-tight text-primary sm:text-4xl">Nuestras Recomendaciones</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
-            <a className="font-medium text-primary" href="#">
+            <a className="font-medium text-primary" href="/catalog">
               Ver todo <i className="mdi mdi-arrow-right align-middle text-sm ms-1"></i>
             </a>
           </div>
@@ -354,9 +354,9 @@ const HomeScreen = ({ blog = {} }) => {
             <p className="text-base text-primary sm:text-lg lg:text-xl">
               Únete a nuestra comunidad y accede a capacitaciones certificadas, descuentos exclusivos y soporte prioritario.
             </p>
-            <button type="button" className="rounded-full bg-primary px-8 py-3.5 font-title font-medium text-white">
+            <a href="/club#registro-club" className="inline-flex rounded-full bg-primary px-8 py-3.5 font-title font-medium text-white">
               Registrarme ahora <i className="mdi mdi-arrow-right ms-2"></i>
-            </button>
+            </a>
           </div>
           <div className="relative flex items-end justify-center">
             <img
@@ -375,7 +375,7 @@ const HomeScreen = ({ blog = {} }) => {
               <p className="font-title text-3xl font-medium text-primary sm:text-4xl">Nuestro blog</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
-            <a className="font-medium text-primary" href="#">
+            <a className="font-medium text-primary" href="/blog">
               Ver todo <i className="mdi mdi-arrow-right align-middle text-sm ms-1"></i>
             </a>
           </div>
