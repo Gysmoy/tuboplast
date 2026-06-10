@@ -66,6 +66,12 @@ class AboutController extends BasicController
             'family_values.*' => 'nullable|string|max:120',
             'policy_eyebrow' => 'nullable|string|max:120',
             'policy_title' => 'nullable|string|max:255',
+            'policy_scope_eyebrow' => 'nullable|string|max:120',
+            'policy_scope_title' => 'nullable|string|max:255',
+            'policy_scope_paragraph_1' => 'nullable|string|max:4000',
+            'policy_scope_paragraph_2' => 'nullable|string|max:4000',
+            'policy_commitment_text' => 'nullable|string|max:1000',
+            'policy_certifications_title' => 'nullable|string|max:255',
             'policy_description' => 'nullable|string|max:4000',
             'policy_bullets' => 'nullable|array',
             'policy_bullets.*' => 'nullable|string|max:1000',
@@ -76,6 +82,7 @@ class AboutController extends BasicController
             'certifications.*.file_file' => 'nullable|file|mimes:pdf|max:51200',
             'certifications.*.image_path' => 'nullable|string|max:255',
             'certifications.*.file_path' => 'nullable|string|max:255',
+            'certifications.*.file_delete' => 'nullable|boolean',
             'status' => 'nullable',
         ]);
 
@@ -102,6 +109,12 @@ class AboutController extends BasicController
             'family_values' => array_values(array_filter($validated['family_values'] ?? [], fn ($item) => filled($item))),
             'policy_eyebrow' => $validated['policy_eyebrow'] ?? null,
             'policy_title' => $validated['policy_title'] ?? null,
+            'policy_scope_eyebrow' => $validated['policy_scope_eyebrow'] ?? null,
+            'policy_scope_title' => $validated['policy_scope_title'] ?? null,
+            'policy_scope_paragraph_1' => $validated['policy_scope_paragraph_1'] ?? null,
+            'policy_scope_paragraph_2' => $validated['policy_scope_paragraph_2'] ?? null,
+            'policy_commitment_text' => $validated['policy_commitment_text'] ?? null,
+            'policy_certifications_title' => $validated['policy_certifications_title'] ?? null,
             'policy_description' => $validated['policy_description'] ?? null,
             'policy_bullets' => array_values(array_filter($validated['policy_bullets'] ?? [], fn ($item) => filled($item))),
             'certifications' => [],
@@ -130,6 +143,7 @@ class AboutController extends BasicController
             $existing = $currentCertifications[$index] ?? [];
             $imagePath = $certification['image_path'] ?? ($existing['image_path'] ?? null);
             $filePath = $certification['file_path'] ?? ($existing['file_path'] ?? null);
+            $deletePdf = filter_var($certification['file_delete'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
             if ($request->hasFile("certifications.$index.image_file")) {
                 $this->deletePublicFile($existing['image_path'] ?? null);
@@ -139,6 +153,9 @@ class AboutController extends BasicController
             if ($request->hasFile("certifications.$index.file_file")) {
                 $this->deletePublicFile($existing['file_path'] ?? null);
                 $filePath = $this->storePublicFile($request->file("certifications.$index.file_file"), 'about/certifications/files');
+            } elseif ($deletePdf) {
+                $this->deletePublicFile($existing['file_path'] ?? null);
+                $filePath = null;
             }
 
             $normalizedCertifications[] = [

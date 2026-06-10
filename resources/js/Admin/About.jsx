@@ -14,6 +14,7 @@ const createCertification = () => ({
   description: '',
   image_path: '',
   file_path: '',
+  file_delete: false,
   image_file: null,
   file_file: null,
   image_preview: '',
@@ -29,6 +30,7 @@ const normalizeCertifications = (items) => {
     ...item,
     image_preview: item?.image_url || (item?.image_path ? `${PUBLIC_STORAGE}${item.image_path}` : ''),
     file_label: item?.file_path ? item.file_path.split('/').pop() : '',
+    file_delete: false,
   }))
 }
 
@@ -162,6 +164,14 @@ const About = ({ about: initialAbout = {} }) => {
 
     updateCertification(index, 'file_file', file)
     updateCertification(index, 'file_label', file.name)
+    updateCertification(index, 'file_delete', false)
+  }
+
+  const clearCertificationPdf = (index) => {
+    updateCertification(index, 'file_path', '')
+    updateCertification(index, 'file_file', null)
+    updateCertification(index, 'file_label', '')
+    updateCertification(index, 'file_delete', true)
   }
 
   const save = async () => {
@@ -219,7 +229,7 @@ const About = ({ about: initialAbout = {} }) => {
               </p>
             </div>
             <div className='d-flex gap-2'>
-              <a href='/about' target='_blank' rel='noreferrer' className='btn btn-soft-primary'>
+              <a href='/family' target='_blank' rel='noreferrer' className='btn btn-soft-primary'>
                 Ver pagina publica
               </a>
               <button type='button' className='btn btn-primary' onClick={save} disabled={saving}>
@@ -457,9 +467,33 @@ const About = ({ about: initialAbout = {} }) => {
                     <label className='form-label'>Titulo</label>
                     <input className='form-control' value={form.policy_title || ''} onChange={(event) => updateField('policy_title', event.target.value)} />
                   </div>
+                  <div className='col-md-4'>
+                    <label className='form-label'>Etiqueta de alcance</label>
+                    <input className='form-control' value={form.policy_scope_eyebrow || ''} onChange={(event) => updateField('policy_scope_eyebrow', event.target.value)} />
+                  </div>
+                  <div className='col-md-8'>
+                    <label className='form-label'>Titulo de alcance</label>
+                    <input className='form-control' value={form.policy_scope_title || ''} onChange={(event) => updateField('policy_scope_title', event.target.value)} />
+                  </div>
+                  <div className='col-12'>
+                    <label className='form-label'>Parrafo de alcance 1</label>
+                    <textarea className='form-control' rows='3' value={form.policy_scope_paragraph_1 || ''} onChange={(event) => updateField('policy_scope_paragraph_1', event.target.value)} />
+                  </div>
+                  <div className='col-12'>
+                    <label className='form-label'>Parrafo de alcance 2</label>
+                    <textarea className='form-control' rows='3' value={form.policy_scope_paragraph_2 || ''} onChange={(event) => updateField('policy_scope_paragraph_2', event.target.value)} />
+                  </div>
+                  <div className='col-12'>
+                    <label className='form-label'>Texto de compromiso</label>
+                    <input className='form-control' value={form.policy_commitment_text || ''} onChange={(event) => updateField('policy_commitment_text', event.target.value)} />
+                  </div>
                   <div className='col-12'>
                     <label className='form-label'>Descripcion</label>
                     <textarea className='form-control' rows='4' value={form.policy_description || ''} onChange={(event) => updateField('policy_description', event.target.value)} />
+                  </div>
+                  <div className='col-12'>
+                    <label className='form-label'>Titulo de certificaciones</label>
+                    <input className='form-control' value={form.policy_certifications_title || ''} onChange={(event) => updateField('policy_certifications_title', event.target.value)} />
                   </div>
                 </div>
 
@@ -516,6 +550,16 @@ const About = ({ about: initialAbout = {} }) => {
                       <label className='form-label'>PDF del certificado</label>
                       <input type='file' className='form-control mb-2' accept='application/pdf' onChange={(event) => onCertificationPdfChange(index, event)} />
                       <small className='text-muted d-block mb-2'>Tamaño máximo: 50 MB.</small>
+                      <div className='mb-2'>
+                        <button
+                          type='button'
+                          className='btn btn-outline-danger btn-sm'
+                          onClick={() => clearCertificationPdf(index)}
+                          disabled={!item.file_path && !item.file_file}
+                        >
+                          Eliminar PDF
+                        </button>
+                      </div>
                       {item.file_path ? (
                         <a href={`/storage/${item.file_path}`} target='_blank' rel='noreferrer' className='small text-primary text-decoration-underline'>
                           {item.file_label || 'Ver PDF actual'}

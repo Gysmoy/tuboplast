@@ -12,7 +12,7 @@ const navItems = [
   { label: 'Inicio', href: '/' },
   { label: 'Productos', href: '/catalog' },
   { label: 'Distribuidores', href: '/distributors' },
-  { label: 'Nosotros', href: '/about' },
+  { label: 'Nosotros', href: '/family' },
   { label: 'Club experto', href: '/club' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contacto', href: '/contact' },

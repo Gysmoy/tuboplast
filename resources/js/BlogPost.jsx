@@ -333,17 +333,17 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
       </section>
 
       <section className="mx-auto w-full max-w-site px-4 py-10 sm:py-12 lg:py-14">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-          <article className="min-w-0">
-            <div className="overflow-hidden rounded-[28px] bg-slate-100 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-              <img
-                src={heroImage}
-                alt={selectedPost.title || 'Blog'}
-                className="h-[280px] w-full object-cover sm:h-[360px] lg:h-[420px]"
-              />
-            </div>
+        <div className="space-y-8">
+          <div className="overflow-hidden rounded-[28px] bg-slate-100 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+            <img
+              src={heroImage}
+              alt={selectedPost.title || 'Blog'}
+              className="h-[280px] w-full object-cover sm:h-[380px] lg:h-[470px]"
+            />
+          </div>
 
-            <div className="grid gap-8 py-8 md:grid-cols-[minmax(0,1fr)_290px] md:items-start">
+          <article className="min-w-0">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
               <div className="space-y-8">
                 <div className={contentWrapperClasses}>
                   {lead ? <p>{lead}</p> : null}

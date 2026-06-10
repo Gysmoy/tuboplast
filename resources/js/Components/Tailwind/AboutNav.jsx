@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 
 const tabs = [
-  { label: 'Familia e Historia', href: '/about' },
-  { label: 'Política de SGI', href: '/about/politica' },
+  { label: 'Familia e Historia', href: '/family' },
+  { label: 'Política de SGI', href: '/politica-sgi' },
 ]
 
 const normalizePath = (path) => {
-  if (path === '/about/familia' || path === '/nosotros-familia') return '/about'
-  if (path === '/about/politica' || path === '/nosotros-politica') return '/about/politica'
+  if (path === '/family' || path === '/about' || path === '/about/familia' || path === '/nosotros-familia') return '/family'
+  if (path === '/politica-sgi' || path === '/about/politica' || path === '/nosotros-politica') return '/politica-sgi'
   return path
 }
 
 const AboutNav = ({ variant = 'default' }) => {
   const currentPath =
-    typeof window === 'undefined' ? '/about' : window.location.pathname.replace(/\/$/, '') || '/about'
+    typeof window === 'undefined' ? '/family' : window.location.pathname.replace(/\/$/, '') || '/family'
 
   const normalizedPath = normalizePath(currentPath)
   const [isOpen, setIsOpen] = useState(false)
@@ -59,7 +59,7 @@ const AboutNav = ({ variant = 'default' }) => {
 
           <div
             id='about-tabs-menu'
-            className={`absolute left-0 top-full z-20 mt-1 w-full origin-top overflow-hidden rounded-b-xl rounded-t-none border border-[#cdddf0] border-t-0 bg-[#0456a7] shadow-[0_18px_35px_rgba(2,44,92,0.18)] transition-[max-height,opacity,transform] duration-200 ease-out ${
+            className={`absolute left-0 top-full z-20 mt-1 w-full origin-top overflow-hidden rounded-b-xl rounded-t-none border border-[#cdddf0] border-t-0 bg-white shadow-[0_18px_35px_rgba(2,44,92,0.18)] transition-[max-height,opacity,transform] duration-200 ease-out ${
               isOpen
                 ? 'max-h-40 translate-y-0 opacity-100'
                 : 'pointer-events-none max-h-0 -translate-y-1 opacity-0'
@@ -73,7 +73,7 @@ const AboutNav = ({ variant = 'default' }) => {
                   key={tab.label}
                   href={tab.href}
                   className={`block px-4 py-3 text-sm font-medium transition sm:px-5 sm:py-3.5 sm:text-[0.95rem] ${
-                    isActive ? 'bg-white text-primary' : 'text-white hover:bg-white/10'
+                    isActive ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-slate-50'
                   }`}
                   onClick={() => setIsOpen(false)}
                 >

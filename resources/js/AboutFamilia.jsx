@@ -6,21 +6,19 @@ import CreateReactScript from './Utils/CreateReactScript'
 const defaultAbout = {
   family_eyebrow: 'Familia e historia',
   family_title: 'Somos Tuboplast',
-  family_lead: 'La primera fábrica 100% peruana con más de 60 años en la industria de la construcción, fabricando tuberías y conexiones de PVC y HDPE con todas las líneas completas desde 1/2" hasta 24".',
-  family_paragraph_1: 'No solo fabricamos tuberías; diseñamos la infraestructura del mañana con ingeniería de precisión y materiales de vanguardia.',
-  family_paragraph_2: 'Nuestra presencia en el mercado se sostiene en la confianza, la cercanía y la capacidad de acompañamiento técnico en cada proyecto.',
+  family_lead: 'La primera fabrica 100% peruana con mas de 60 anos en la industria de la construccion, fabricando tuberias y conexiones de PVC y HDPE con todas las lineas completas desde 1/2" hasta 24".',
+  family_paragraph_1: 'No solo fabricamos tuberias; disenamos la infraestructura del manana con ingenieria de precision y materiales de vanguardia.',
+  family_paragraph_2: '',
   family_metric_value: '30+',
-  family_metric_label: 'AÑOS FORJANDO EL PERÚ',
+  family_metric_label: 'ANOS FORJANDO EL PERU',
   family_aside_1_title: 'Infraestructura',
-  family_aside_1_text: 'Capacidad de producción optimizada para megaproyectos.',
+  family_aside_1_text: 'Capacidad de produccion optimizada para megaproyectos.',
   family_aside_2_title: 'I+D+i',
-  family_aside_2_text: 'Laboratorio de pruebas mecánicas de última generación.',
-  mission_eyebrow: 'Propósito',
-  mission_title: 'Misión',
-  mission_text: 'Ofrecer los mejores productos y servicios con altos estándares de calidad, con el objetivo de generar valor a nuestros clientes a través del compromiso de nuestros colaboradores.',
-  vision_eyebrow: 'Propósito',
-  vision_title: 'Visión',
-  vision_text: 'Ser una empresa de nivel mundial, contribuyendo a mejorar la calidad de vida de las personas y fortaleciendo los 51 años de experiencia ganados en el mercado de soluciones conductivas para los servicios básicos.',
+  family_aside_2_text: 'Laboratorio de pruebas mecanicas de ultima generacion.',
+  mission_title: 'Mision',
+  mission_text: 'Ofrecer los mejores productos y servicios con altos estandares de calidad, con el objetivo de generar valor a nuestros clientes a traves del compromiso de nuestros colaboradores.',
+  vision_title: 'Vision',
+  vision_text: 'Ser una empresa de nivel mundial, contribuyendo a mejorar la calidad de vida de las personas y fortaleciendo los 51 anos de experiencia ganados en el mercado de soluciones conductivas para los servicios basicos.',
   family_values: ['Integridad', 'Respeto', 'Responsabilidad', 'Puntualidad', 'Compromiso', 'Confianza', 'Perseverancia'],
 }
 
@@ -43,16 +41,16 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
 
           <div className='mt-8 max-w-[22rem] space-y-5 sm:mt-10 sm:max-w-3xl sm:space-y-6 lg:mt-12'>
             <p className='text-[0.78rem] font-bold uppercase tracking-[0.32em] text-primary sm:text-base'>
-              Trayectoria & Ingeniería
+              Trayectoria & Ingenieria
             </p>
             <h1 className='max-w-3xl font-title text-[2.9rem] leading-[0.98] tracking-tight text-primary sm:text-6xl lg:text-[4.8rem]'>
               60 años de calidad
               <br />
-              e innovación industrial
+              e innovacion industrial
             </h1>
             <div className='flex items-start gap-4 text-[1.05rem] leading-snug text-darkmuted sm:items-center sm:text-sm'>
               <span className='h-1 w-10 bg-secondary' />
-              <p className='max-w-[15rem] sm:max-w-none'>Líderes en soluciones para edificaciones, infraestructura, minería, agricultura y más.</p>
+              <p className='max-w-[15rem] sm:max-w-none'>Lideres en soluciones para edificaciones, infraestructura, mineria, agricultura y mas.</p>
             </div>
           </div>
         </div>
@@ -80,11 +78,16 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
                 {about.family_title || defaultAbout.family_title}
               </h2>
               <p className='max-w-none text-[1.02rem] leading-relaxed text-darkmuted sm:max-w-2xl'>
-                La primera fábrica 100% peruana con más de 60 años en la industria de la construcción, fabricando tuberías y conexiones de PVC y HDPE con todas las líneas completas desde 1/2" hasta 24".
+                {about.family_lead || defaultAbout.family_lead}
               </p>
               <p className='max-w-none text-[1.02rem] leading-relaxed text-darkmuted sm:max-w-2xl'>
-                No solo fabricamos tuberías; diseñamos la infraestructura del mañana con ingeniería de precisión y materiales de vanguardia.
+                {about.family_paragraph_1 || defaultAbout.family_paragraph_1}
               </p>
+              {about.family_paragraph_2 ? (
+                <p className='max-w-none text-[1.02rem] leading-relaxed text-darkmuted sm:max-w-2xl'>
+                  {about.family_paragraph_2}
+                </p>
+              ) : null}
             </div>
 
             <div className='grid gap-6 border-t border-slate-200 pt-6 sm:grid-cols-2'>
@@ -108,7 +111,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
       <section className='bg-[#f6f7f9] py-12 sm:py-16'>
         <div className='mx-auto w-full max-w-site px-4'>
           <div className='grid gap-4 lg:grid-cols-3'>
-            <article className='rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-7'>
+            <article className='rounded-2xl border-l-4 border-transparent bg-white p-6 shadow-sm ring-1 ring-black/5 transition-[border-color,box-shadow] hover:border-secondary hover:shadow-lg sm:p-7'>
               <div className='grid h-14 w-14 place-items-center rounded-xl bg-silver text-primary'>
                 <i className='mdi mdi-bullseye-arrow text-3xl'></i>
               </div>
@@ -116,7 +119,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
               <p className='mt-4 text-[1rem] leading-relaxed text-darkmuted sm:text-sm'>{about.mission_text || defaultAbout.mission_text}</p>
             </article>
 
-            <article className='rounded-2xl border-l-2 border-secondary bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-7'>
+            <article className='rounded-2xl border-l-4 border-transparent bg-white p-6 shadow-sm ring-1 ring-black/5 transition-[border-color,box-shadow] hover:border-secondary hover:shadow-lg sm:p-7'>
               <div className='grid h-14 w-14 place-items-center rounded-xl bg-silver text-primary'>
                 <i className='mdi mdi-eye-outline text-3xl'></i>
               </div>
@@ -124,7 +127,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
               <p className='mt-4 text-[1rem] leading-relaxed text-darkmuted sm:text-sm'>{about.vision_text || defaultAbout.vision_text}</p>
             </article>
 
-            <article className='rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-7'>
+            <article className='rounded-2xl border-l-4 border-transparent bg-white p-6 shadow-sm ring-1 ring-black/5 transition-[border-color,box-shadow] hover:border-secondary hover:shadow-lg sm:p-7'>
               <div className='grid h-14 w-14 place-items-center rounded-xl bg-silver text-primary'>
                 <i className='mdi mdi-account-group text-3xl'></i>
               </div>

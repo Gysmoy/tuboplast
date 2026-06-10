@@ -90,7 +90,7 @@ const defaultMostRead = [
 const BlogScreen = ({ blog = {} }) => {
   const posts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts : defaultPosts
   const mostRead = Array.isArray(blog.most_read) && blog.most_read.length ? blog.most_read : defaultMostRead
-  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/landing/bg-main.png')
+  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/sliders/main-slider.png')
   const heroBadge = blog.hero_badge || 'Blog Tuboplast'
   const heroTitle = blog.hero_title || 'Construyendo el futuro'
   const heroDescription = blog.hero_description || 'Explora las ultimas innovaciones tecnicas, proyectos emblematicos y consejos de ingenieria para el mercado peruano.'
@@ -204,7 +204,7 @@ const BlogScreen = ({ blog = {} }) => {
             )})}
           </div>
 
-          <aside className="space-y-8 md:sticky md:top-6 md:pl-2">
+          <aside className="space-y-8 md:pl-2">
             <div>
               <div className="mb-4 flex items-center gap-3">
                 <span className="h-0.5 w-6 bg-secondary" />

@@ -37,6 +37,12 @@ class AboutRest extends BasicRest {
         'vision_text',
         'policy_eyebrow',
         'policy_title',
+        'policy_scope_eyebrow',
+        'policy_scope_title',
+        'policy_scope_paragraph_1',
+        'policy_scope_paragraph_2',
+        'policy_commitment_text',
+        'policy_certifications_title',
         'policy_description',
       ]
 
@@ -67,6 +73,7 @@ class AboutRest extends BasicRest {
         formData.append(`certifications[${index}][description]`, item.description ?? '')
         formData.append(`certifications[${index}][image_path]`, item.image_path ?? '')
         formData.append(`certifications[${index}][file_path]`, item.file_path ?? '')
+        formData.append(`certifications[${index}][file_delete]`, item.file_delete ? '1' : '0')
 
         if (item.image_file instanceof File) {
           formData.append(`certifications[${index}][image_file]`, item.image_file)
