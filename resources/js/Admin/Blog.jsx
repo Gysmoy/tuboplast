@@ -7,6 +7,7 @@ import QuillFormGroup from '../Components/Form/QuillFormGroup.jsx'
 
 const blogRest = new BlogRest()
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024
+const IMAGE_FALLBACK = '/assets/img/landing/bg-main.png'
 
 const createPost = (fallback = '/assets/img/categories/category-1.png') => ({
   category: '',
@@ -64,6 +65,59 @@ const normalizeMostRead = (items) => {
 }
 
 const getHeroPreview = (blog) => blog?.hero_image_url || (blog?.hero_image ? `/storage/${blog.hero_image}` : '')
+
+// ----------------------------------------------------------------- UI helpers
+const SectionCard = ({ title, subtitle, icon, actions, children, col = 'col-12' }) => (
+  <div className={col}>
+    <div className='card border-0 shadow-sm h-100'>
+      <div className='card-body'>
+        {(title || actions) && (
+          <div className='d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-3'>
+            <div className='d-flex align-items-center gap-2'>
+              {icon && (
+                <span className='d-inline-flex align-items-center justify-content-center rounded-2 bg-primary-subtle text-primary' style={{ width: 38, height: 38 }}>
+                  <i className={`mdi ${icon} fs-20`}></i>
+                </span>
+              )}
+              <div>
+                <h5 className='mb-0'>{title}</h5>
+                {subtitle && <small className='text-muted'>{subtitle}</small>}
+              </div>
+            </div>
+            {actions}
+          </div>
+        )}
+        {children}
+      </div>
+    </div>
+  </div>
+)
+
+const FormField = ({ label, value, onChange, col = 'col-12', type = 'text', placeholder = '', textarea = false, rows = 3 }) => (
+  <div className={col}>
+    <label className='form-label small fw-semibold'>{label}</label>
+    {textarea ? (
+      <textarea className='form-control' rows={rows} value={value || ''} placeholder={placeholder} onChange={onChange} />
+    ) : (
+      <input type={type} className='form-control' value={value || ''} placeholder={placeholder} onChange={onChange} />
+    )}
+  </div>
+)
+
+const MediaUploader = ({ preview, onChange, hint, aspect = '16/10' }) => (
+  <div className='row g-3 align-items-center'>
+    <div className='col-lg-7'>
+      <div className='rounded-3 overflow-hidden border bg-light'>
+        <img src={preview || IMAGE_FALLBACK} alt='Vista previa' className='w-100 d-block' style={{ aspectRatio: aspect, objectFit: 'cover' }} />
+      </div>
+    </div>
+    <div className='col-lg-5'>
+      <label className='form-label small fw-semibold'>Cambiar imagen</label>
+      <input type='file' className='form-control' accept='image/*' onChange={onChange} />
+      <small className='text-muted d-block mt-2'>{hint}</small>
+    </div>
+  </div>
+)
 
 const Blog = ({ blog: initialBlog = {} }) => {
   const initialForm = useMemo(() => ({
@@ -143,7 +197,7 @@ const Blog = ({ blog: initialBlog = {} }) => {
       return { ...current, posts: nextPosts }
     })
     setExpandedPosts((current) => {
-      const next = {}
+      const next = { 0: true }
       Object.entries(current).forEach(([key, value]) => {
         next[Number(key) + 1] = value
       })
@@ -272,390 +326,262 @@ const Blog = ({ blog: initialBlog = {} }) => {
     setSaving(false)
   }
 
+  const tabs = [
+    { key: 'hero', label: 'Portada', icon: 'mdi-image-multiple-outline' },
+    { key: 'posts', label: 'Artículos', icon: 'mdi-newspaper-variant-outline' },
+    { key: 'sidebar', label: 'Lateral', icon: 'mdi-view-sequential-outline' },
+    { key: 'newsletter', label: 'Newsletter', icon: 'mdi-email-fast-outline' },
+  ]
+
   return (
     <div className='row g-3'>
-      <div className='col-12'>
-        <div className='card border-0 shadow-sm'>
-          <div className='card-body d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center'>
-            <div>
-              <h4 className='mb-1'>Modulo Blog</h4>
-              <p className='text-muted mb-0'>
-                Edita portada, articulos, mas leidos y el bloque de suscripcion del blog publico.
-              </p>
-            </div>
-            <div className='d-flex gap-2'>
-              <a href='/blog' target='_blank' rel='noreferrer' className='btn btn-soft-primary'>
-                Ver pagina publica
-              </a>
-              <button type='button' className='btn btn-primary' onClick={save} disabled={saving}>
-                {saving ? 'Guardando...' : 'Guardar cambios'}
-              </button>
-            </div>
-          </div>
-          {alert?.message ? (
-            <div className='card-footer border-0 pt-0'>
-              <div className={`alert alert-${alert.type || 'danger'} mb-0`} role='alert'>
-                {alert.message}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
+      {/* Toolbar */}
       <div className='col-12'>
         <div className='card border-0 shadow-sm'>
           <div className='card-body'>
             <div className='d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center'>
-              <div>
-                <h5 className='mb-1'>Organizacion del modulo</h5>
-                <p className='text-muted mb-0'>
-                  Divide el contenido en cuatro bloques para editarlo con mas claridad.
-                </p>
+              <div className='d-flex align-items-center gap-2'>
+                <span className='d-inline-flex align-items-center justify-content-center rounded-2 bg-primary text-white' style={{ width: 44, height: 44 }}>
+                  <i className='mdi mdi-post-outline fs-22'></i>
+                </span>
+                <div>
+                  <h4 className='mb-0'>Módulo Blog</h4>
+                  <small className='text-muted'>Portada, artículos, más leídos y suscripción del blog público.</small>
+                </div>
               </div>
-              <div className='btn-group flex-wrap' role='tablist' aria-label='Secciones del blog'>
-                <button type='button' className={`btn ${activeSection === 'hero' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setActiveSection('hero')}>
-                  Portada
-                </button>
-                <button type='button' className={`btn ${activeSection === 'posts' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setActiveSection('posts')}>
-                  Articulos
-                </button>
-                <button type='button' className={`btn ${activeSection === 'sidebar' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setActiveSection('sidebar')}>
-                  Lateral
-                </button>
-                <button type='button' className={`btn ${activeSection === 'newsletter' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setActiveSection('newsletter')}>
-                  Newsletter
+              <div className='d-flex gap-2'>
+                <a href='/blog' target='_blank' rel='noreferrer' className='btn btn-soft-primary'>
+                  <i className='mdi mdi-open-in-new me-1'></i>Ver blog
+                </a>
+                <button type='button' className='btn btn-primary' onClick={save} disabled={saving}>
+                  <i className='mdi mdi-content-save me-1'></i>{saving ? 'Guardando...' : 'Guardar cambios'}
                 </button>
               </div>
             </div>
+
+            <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mt-3 border-top pt-3'>
+              <ul className='nav nav-pills flex-wrap gap-2 mb-0'>
+                {tabs.map((tab) => (
+                  <li className='nav-item' key={tab.key}>
+                    <button
+                      type='button'
+                      className={`nav-link ${activeSection === tab.key ? 'active' : ''}`}
+                      onClick={() => setActiveSection(tab.key)}
+                    >
+                      <i className={`mdi ${tab.icon} me-1`}></i>{tab.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <small className='text-muted'>{(form.posts?.length ?? 0)} artículo(s) publicados</small>
+            </div>
+
+            {alert?.message ? (
+              <div className={`alert alert-${alert.type || 'danger'} mb-0 mt-3`} role='alert'>
+                {alert.message}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
 
       {activeSection === 'hero' ? (
-        <div className='col-12'>
-          <div className='card border-0 shadow-sm'>
-            <div className='card-body'>
-              <h5 className='mb-3'>Portada del blog</h5>
-              <div className='row g-3 align-items-start'>
-                <div className='col-lg-7'>
-                  <div className='rounded-3 border bg-light p-3'>
-                    <img
-                      src={form.hero_image_preview || '/assets/img/landing/bg-main.png'}
-                      alt='Portada del blog'
-                      className='w-100 rounded-3 object-fit-cover'
-                      style={{ aspectRatio: '16/10', objectFit: 'cover' }}
-                    />
-                  </div>
-                </div>
-                <div className='col-lg-5'>
-                  <label className='form-label'>Cambiar imagen</label>
-                  <input type='file' className='form-control' accept='image/*' onChange={onHeroImageChange} />
-                  <input type='hidden' value={form.hero_image || ''} readOnly />
-                  <small className='text-muted d-block mt-2'>
-                    Sube una imagen horizontal. Tamano maximo: 4 MB.
-                  </small>
-                </div>
-              </div>
-            </div>
-          </div>
+        <>
+          <SectionCard title='Imagen de portada' subtitle='Cabecera del blog público' icon='mdi-image-outline'>
+            <MediaUploader preview={form.hero_image_preview} onChange={onHeroImageChange} hint='Imagen horizontal. Tamaño máximo: 4 MB.' />
+          </SectionCard>
 
-          <div className='card border-0 shadow-sm mt-3'>
-            <div className='card-body'>
-              <div className='row g-3'>
-                <div className='col-md-4'>
-                  <label className='form-label'>Etiqueta</label>
-                  <input className='form-control' value={form.hero_badge || ''} onChange={(event) => updateField('hero_badge', event.target.value)} />
-                </div>
-                <div className='col-md-8'>
-                  <label className='form-label'>Titulo</label>
-                  <input className='form-control' value={form.hero_title || ''} onChange={(event) => updateField('hero_title', event.target.value)} />
-                </div>
-                <div className='col-12'>
-                  <label className='form-label'>Descripcion</label>
-                  <textarea className='form-control' rows='4' value={form.hero_description || ''} onChange={(event) => updateField('hero_description', event.target.value)} />
-                </div>
-                <div className='col-md-6'>
-                  <label className='form-label'>Titulo de seccion</label>
-                  <input className='form-control' value={form.section_title || ''} onChange={(event) => updateField('section_title', event.target.value)} />
-                </div>
-              </div>
+          <SectionCard title='Encabezado del blog' subtitle='Texto principal de la portada' icon='mdi-format-title'>
+            <div className='row g-3'>
+              <FormField col='col-md-4' label='Etiqueta' value={form.hero_badge} onChange={(e) => updateField('hero_badge', e.target.value)} />
+              <FormField col='col-md-8' label='Título' value={form.hero_title} onChange={(e) => updateField('hero_title', e.target.value)} />
+              <FormField col='col-12' label='Descripción' textarea value={form.hero_description} onChange={(e) => updateField('hero_description', e.target.value)} />
+              <FormField col='col-md-6' label='Título de la sección de artículos' value={form.section_title} onChange={(e) => updateField('section_title', e.target.value)} />
             </div>
-          </div>
-        </div>
+          </SectionCard>
+        </>
       ) : null}
 
       {activeSection === 'posts' ? (
-        <div className='col-12'>
-          <div className='card border-0 shadow-sm'>
-            <div className='card-body'>
-              <div className='d-flex align-items-center justify-content-between gap-3 mb-3'>
-                <div>
-                  <h5 className='mb-1'>Articulos del blog</h5>
-                  <p className='text-muted mb-0'>Puedes agregar o quitar articulos segun necesites. La pagina publica se adapta automaticamente.</p>
-                </div>
-                <button type='button' className='btn btn-outline-primary' onClick={addPost}>
-                  Agregar articulo
-                </button>
-              </div>
+        <SectionCard
+          title='Artículos del blog'
+          subtitle='Agrega, edita o quita artículos. La página pública se adapta automáticamente.'
+          icon='mdi-newspaper-variant-multiple-outline'
+          actions={(
+            <button type='button' className='btn btn-primary btn-sm' onClick={addPost}>
+              <i className='mdi mdi-plus me-1'></i>Agregar artículo
+            </button>
+          )}
+        >
+          <div className='d-flex flex-column gap-3'>
+            {paginatedPosts.map((item, pageIndex) => {
+              const index = (currentPostPage - 1) * postsPerPage + pageIndex
+              const open = !!expandedPosts[index]
+              return (
+                <div className={`border rounded-3 overflow-hidden ${open ? 'border-primary' : ''}`} key={`blog-post-${index}`}>
+                  <div className='d-flex align-items-center gap-2 p-2'>
+                    <button
+                      type='button'
+                      className='d-flex flex-grow-1 align-items-center gap-3 border-0 bg-transparent p-1 text-start'
+                      onClick={() => togglePost(index)}
+                      aria-expanded={open}
+                      aria-controls={`blog-post-panel-${index}`}
+                    >
+                      <span className='rounded-2 overflow-hidden bg-light flex-shrink-0' style={{ width: 56, height: 42 }}>
+                        <img
+                          src={item.image_preview || item.image_url || item.image_fallback || IMAGE_FALLBACK}
+                          alt={item.title || `Artículo ${index + 1}`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      </span>
+                      <span className='min-w-0'>
+                        <span className='d-block fw-semibold text-truncate'>{item.title || `Artículo ${index + 1}`}</span>
+                        <span className='d-block text-muted small'>{item.category || 'Sin categoría'}</span>
+                      </span>
+                    </button>
+                    <button
+                      type='button'
+                      className='btn btn-sm btn-soft-danger'
+                      title='Quitar artículo'
+                      onClick={() => removePost(index)}
+                      disabled={form.posts.length <= 1}
+                    >
+                      <i className='mdi mdi-trash-can'></i>
+                    </button>
+                    <button type='button' className='btn btn-sm btn-soft-secondary' onClick={() => togglePost(index)} aria-label='Expandir'>
+                      <i className={`mdi mdi-chevron-${open ? 'up' : 'down'}`}></i>
+                    </button>
+                  </div>
 
-              <div className='row g-3'>
-                {paginatedPosts.map((item, pageIndex) => {
-                  const index = (currentPostPage - 1) * postsPerPage + pageIndex
-                  return (
-                  <div className='col-12' key={`blog-post-${index}`}>
-                    <div className={`border rounded-3 h-100 ${expandedPosts[index] ? 'border-primary' : ''}`}>
-                      <div className='d-flex align-items-stretch'>
-                        <button
-                          type='button'
-                          className='d-flex flex-grow-1 align-items-center justify-content-between gap-3 border-0 bg-transparent p-3 text-start'
-                          onClick={() => togglePost(index)}
-                          aria-expanded={!!expandedPosts[index]}
-                          aria-controls={`blog-post-panel-${index}`}
-                        >
-                          <div>
-                            <div className='fw-semibold'>Articulo {index + 1}</div>
-                            <div className='text-muted small'>
-                              {item.title || 'Sin titulo'} · {item.category || 'Sin categoria'}
-                            </div>
+                  <div id={`blog-post-panel-${index}`} className={open ? 'border-top' : 'd-none'}>
+                    <div className='p-3'>
+                      <div className='row g-3'>
+                        <div className='col-md-5'>
+                          <div className='rounded border bg-light p-2'>
+                            <img
+                              src={item.image_preview || item.image_url || item.image_fallback || IMAGE_FALLBACK}
+                              alt={item.title || `Artículo ${index + 1}`}
+                              className='w-100 rounded'
+                              style={{ aspectRatio: '16/9', objectFit: 'cover' }}
+                            />
                           </div>
-                          <div className='d-flex align-items-center gap-2'>
-                            <span className='badge bg-light text-dark'>{item.category || 'Sin categoria'}</span>
-                            <i className={`ti ti-chevron-${expandedPosts[index] ? 'up' : 'down'}`}></i>
+                          <label className='form-label small fw-semibold mt-2'>Imagen del artículo</label>
+                          <input type='file' className='form-control form-control-sm' accept='image/*' onChange={(event) => onPostImageChange(index, event)} />
+                        </div>
+                        <div className='col-md-7'>
+                          <div className='row g-3'>
+                            <FormField col='col-sm-5' label='Categoría' value={item.category} onChange={(e) => updatePost(index, 'category', e.target.value)} />
+                            <FormField col='col-sm-7' label='Etiqueta superior' value={item.eyebrow} onChange={(e) => updatePost(index, 'eyebrow', e.target.value)} />
+                            <FormField col='col-12' label='Título' value={item.title} onChange={(e) => updatePost(index, 'title', e.target.value)} />
+                            <FormField col='col-12' label='Descripción (resumen en la tarjeta)' textarea rows={3} value={item.description} onChange={(e) => updatePost(index, 'description', e.target.value)} />
                           </div>
-                        </button>
-                        <div className='d-flex align-items-center pe-3'>
-                          <button
-                            type='button'
-                            className='btn btn-sm btn-outline-danger'
-                            onClick={() => removePost(index)}
-                            disabled={form.posts.length <= 1}
-                          >
-                            Quitar
-                          </button>
                         </div>
                       </div>
 
-                      <div id={`blog-post-panel-${index}`} className={`${expandedPosts[index] ? 'border-top' : 'd-none'}`}>
-                        <div className='p-3'>
-                          <div className='mb-3'>
-                            <div className='rounded border bg-light p-2'>
-                              <img
-                                src={item.image_preview || item.image_url || item.image_fallback || '/assets/img/landing/bg-main.png'}
-                                alt={item.title || `Articulo ${index + 1}`}
-                                className='w-100 rounded'
-                                style={{ aspectRatio: '16/7', maxHeight: '180px', objectFit: 'cover', objectPosition: 'center' }}
-                              />
-                            </div>
-                          </div>
-                          <div className='mb-3'>
-                            <label className='form-label'>Imagen</label>
-                            <input type='file' className='form-control' accept='image/*' onChange={(event) => onPostImageChange(index, event)} />
-                          </div>
-                          <div className='mb-3'>
-                            <label className='form-label'>Categoria</label>
-                            <input className='form-control' value={item.category || ''} onChange={(event) => updatePost(index, 'category', event.target.value)} />
-                          </div>
-                          <div className='mb-3'>
-                            <label className='form-label'>Titulo</label>
-                            <input className='form-control' value={item.title || ''} onChange={(event) => updatePost(index, 'title', event.target.value)} />
-                          </div>
-                          <div>
-                            <label className='form-label'>Descripcion</label>
-                            <textarea className='form-control' rows='4' value={item.description || ''} onChange={(event) => updatePost(index, 'description', event.target.value)} />
-                          </div>
-                          <div className='row g-3 mt-1'>
-                            <div className='col-md-4'>
-                              <label className='form-label'>Etiqueta superior</label>
-                              <input className='form-control' value={item.eyebrow || ''} onChange={(event) => updatePost(index, 'eyebrow', event.target.value)} />
-                            </div>
-                            <div className='col-md-8'>
-                              <label className='form-label'>Autor</label>
-                              <input className='form-control' value={item.author || ''} onChange={(event) => updatePost(index, 'author', event.target.value)} />
-                            </div>
-                            <div className='col-md-6'>
-                              <label className='form-label'>Cargo o rol</label>
-                              <input className='form-control' value={item.role || ''} onChange={(event) => updatePost(index, 'role', event.target.value)} />
-                            </div>
-                            <div className='col-md-3'>
-                              <label className='form-label'>Publicado</label>
-                              <input className='form-control' value={item.published || ''} onChange={(event) => updatePost(index, 'published', event.target.value)} />
-                            </div>
-                            <div className='col-md-3'>
-                              <label className='form-label'>Lectura</label>
-                              <input className='form-control' value={item.read_time || ''} onChange={(event) => updatePost(index, 'read_time', event.target.value)} />
-                            </div>
-                            <div className='col-12'>
-                              <label className='form-label'>Intro o lead</label>
-                              <textarea className='form-control' rows='5' value={item.lead || ''} onChange={(event) => updatePost(index, 'lead', event.target.value)} />
-                            </div>
-                          </div>
-                          <div className='mt-3'>
-                            <QuillFormGroup
-                              col='col-12'
-                              label='Contenido completo'
-                              value={item.content_html || ''}
-                              eRef={getContentRef(index, item.content_html || '')}
-                              onChange={(html) => updatePost(index, 'content_html', html)}
-                            />
-                            <small className='text-muted d-block mt-2'>
-                              Usa <b>## Subtitulo</b> o <b>### Subtitulo</b> para los titulos azules. Para listas, escribe cada linea con <b>-</b> al inicio. Para resaltar texto, usa <b>**negrita**</b> o <b>*cursiva*</b>.
-                            </small>
-                          </div>
-                          <div className='mt-4 border-top pt-3'>
-                            <div className='row g-3'>
-                              <div className='col-md-4'>
-                                <label className='form-label'>Titulo de la nota</label>
-                                <input className='form-control' value={item.highlight_label || ''} onChange={(event) => updatePost(index, 'highlight_label', event.target.value)} />
-                              </div>
-                              <div className='col-12'>
-                                <label className='form-label'>Contenido de la nota tecnica</label>
-                                <textarea className='form-control' rows='5' value={item.highlight || ''} onChange={(event) => updatePost(index, 'highlight', event.target.value)} />
-                              </div>
-                            </div>
-                          </div>
+                      <div className='row g-3 mt-1'>
+                        <FormField col='col-md-5' label='Autor' value={item.author} onChange={(e) => updatePost(index, 'author', e.target.value)} />
+                        <FormField col='col-md-3' label='Cargo o rol' value={item.role} onChange={(e) => updatePost(index, 'role', e.target.value)} />
+                        <FormField col='col-md-2' label='Publicado' value={item.published} onChange={(e) => updatePost(index, 'published', e.target.value)} />
+                        <FormField col='col-md-2' label='Lectura' value={item.read_time} onChange={(e) => updatePost(index, 'read_time', e.target.value)} />
+                        <FormField col='col-12' label='Intro o lead' textarea rows={3} value={item.lead} onChange={(e) => updatePost(index, 'lead', e.target.value)} />
+                      </div>
+
+                      <div className='mt-3'>
+                        <QuillFormGroup
+                          col='col-12'
+                          label='Contenido completo'
+                          value={item.content_html || ''}
+                          eRef={getContentRef(index, item.content_html || '')}
+                          onChange={(html) => updatePost(index, 'content_html', html)}
+                        />
+                        <small className='text-muted d-block mt-2'>
+                          Usa <b>## Subtítulo</b> o <b>### Subtítulo</b> para los títulos azules. Para listas, cada línea con <b>-</b>. Para resaltar, <b>**negrita**</b> o <b>*cursiva*</b>.
+                        </small>
+                      </div>
+
+                      <div className='mt-3 rounded-3 bg-light p-3'>
+                        <div className='row g-3'>
+                          <FormField col='col-md-4' label='Título de la nota técnica' value={item.highlight_label} onChange={(e) => updatePost(index, 'highlight_label', e.target.value)} />
+                          <FormField col='col-md-8' label='Contenido de la nota técnica' textarea rows={3} value={item.highlight} onChange={(e) => updatePost(index, 'highlight', e.target.value)} />
                         </div>
                       </div>
                     </div>
                   </div>
-                )})}
-              </div>
-
-              {totalPostPages > 1 ? (
-                <div className='mt-4 d-flex flex-wrap align-items-center justify-content-center gap-2'>
-                  <button
-                    type='button'
-                    className='btn btn-sm btn-light'
-                    onClick={() => goToPostPage(currentPostPage - 1)}
-                    disabled={currentPostPage <= 1}
-                  >
-                    Anterior
-                  </button>
-
-                  {Array.from({ length: totalPostPages }, (_, index) => index + 1).map((page) => (
-                    <button
-                      key={`admin-post-page-${page}`}
-                      type='button'
-                      className={`btn btn-sm ${currentPostPage === page ? 'btn-primary' : 'btn-outline-primary'}`}
-                      onClick={() => goToPostPage(page)}
-                    >
-                      {page}
-                    </button>
-                  ))}
-
-                  <button
-                    type='button'
-                    className='btn btn-sm btn-light'
-                    onClick={() => goToPostPage(currentPostPage + 1)}
-                    disabled={currentPostPage >= totalPostPages}
-                  >
-                    Siguiente
-                  </button>
                 </div>
-              ) : null}
-            </div>
+              )
+            })}
           </div>
-        </div>
+
+          {totalPostPages > 1 ? (
+            <div className='mt-4 d-flex flex-wrap align-items-center justify-content-center gap-2'>
+              <button type='button' className='btn btn-sm btn-light' onClick={() => goToPostPage(currentPostPage - 1)} disabled={currentPostPage <= 1}>
+                Anterior
+              </button>
+              {Array.from({ length: totalPostPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={`admin-post-page-${page}`}
+                  type='button'
+                  className={`btn btn-sm ${currentPostPage === page ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => goToPostPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+              <button type='button' className='btn btn-sm btn-light' onClick={() => goToPostPage(currentPostPage + 1)} disabled={currentPostPage >= totalPostPages}>
+                Siguiente
+              </button>
+            </div>
+          ) : null}
+        </SectionCard>
       ) : null}
 
       {activeSection === 'sidebar' ? (
         <>
-          <div className='col-12 col-xl-5'>
-            <div className='card border-0 shadow-sm h-100'>
-              <div className='card-body'>
-                <div className='d-flex align-items-center justify-content-between gap-3 mb-3'>
-                  <div>
-                    <h5 className='mb-1'>Mas leidos</h5>
-                    <p className='text-muted mb-0'>Edita el ranking que aparece en la barra lateral.</p>
-                  </div>
-                </div>
-
-                <div className='d-flex flex-column gap-3'>
+          <SectionCard col='col-12 col-xl-7' title='Más leídos' subtitle='Ranking que aparece en la barra lateral del blog' icon='mdi-trophy-outline'>
+            <div className='table-responsive'>
+              <table className='table table-sm align-middle mb-0'>
+                <thead>
+                  <tr className='text-muted' style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    <th style={{ width: 70 }}>N°</th>
+                    <th>Título</th>
+                    <th style={{ width: '32%' }}>Categoría</th>
+                  </tr>
+                </thead>
+                <tbody>
                   {form.most_read.map((item, index) => (
-                    <div key={`most-read-${index}`} className='border rounded-3 p-3'>
-                      <div className='fw-semibold mb-3'>Elemento {index + 1}</div>
-                      <div className='row g-3'>
-                        <div className='col-md-3'>
-                          <label className='form-label'>Numero</label>
-                          <input className='form-control' value={item.number || ''} onChange={(event) => updateMostRead(index, 'number', event.target.value)} />
-                        </div>
-                        <div className='col-md-9'>
-                          <label className='form-label'>Titulo</label>
-                          <input className='form-control' value={item.title || ''} onChange={(event) => updateMostRead(index, 'title', event.target.value)} />
-                        </div>
-                        <div className='col-12'>
-                          <label className='form-label'>Categoria</label>
-                          <input className='form-control' value={item.category || ''} onChange={(event) => updateMostRead(index, 'category', event.target.value)} />
-                        </div>
-                      </div>
-                    </div>
+                    <tr key={`most-read-${index}`}>
+                      <td>
+                        <input className='form-control form-control-sm text-center' value={item.number || ''} onChange={(e) => updateMostRead(index, 'number', e.target.value)} />
+                      </td>
+                      <td>
+                        <input className='form-control form-control-sm' value={item.title || ''} onChange={(e) => updateMostRead(index, 'title', e.target.value)} />
+                      </td>
+                      <td>
+                        <input className='form-control form-control-sm' value={item.category || ''} onChange={(e) => updateMostRead(index, 'category', e.target.value)} />
+                      </td>
+                    </tr>
                   ))}
-                </div>
-              </div>
+                </tbody>
+              </table>
             </div>
-          </div>
+          </SectionCard>
 
-          <div className='col-12 col-xl-7'>
-            <div className='card border-0 shadow-sm h-100'>
-              <div className='card-body'>
-                <h5 className='mb-3'>Imagen y portada lateral</h5>
-                <div className='row g-3 align-items-start'>
-                  <div className='col-lg-7'>
-                    <div className='rounded-3 border bg-light p-3'>
-                      <img
-                        src={form.hero_image_preview || '/assets/img/landing/bg-main.png'}
-                        alt='Portada del blog'
-                        className='w-100 rounded-3 object-fit-cover'
-                        style={{ aspectRatio: '16/10', objectFit: 'cover' }}
-                      />
-                    </div>
-                  </div>
-                  <div className='col-lg-5'>
-                    <p className='text-muted mb-2'>
-                      La portada lateral usa la misma imagen del hero para mantener una identidad visual consistente.
-                    </p>
-                    <label className='form-label'>Cambiar imagen principal</label>
-                    <input type='file' className='form-control' accept='image/*' onChange={onHeroImageChange} />
-                    <small className='text-muted d-block mt-2'>
-                      Tamano maximo: 4 MB.
-                    </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SectionCard col='col-12 col-xl-5' title='Portada lateral' subtitle='Usa la misma imagen del hero' icon='mdi-image-frame'>
+            <MediaUploader preview={form.hero_image_preview} onChange={onHeroImageChange} hint='Comparte imagen con la portada. Tamaño máximo: 4 MB.' />
+          </SectionCard>
         </>
       ) : null}
 
       {activeSection === 'newsletter' ? (
-        <div className='col-12'>
-          <div className='card border-0 shadow-sm'>
-            <div className='card-body'>
-              <h5 className='mb-3'>Bloque de newsletter</h5>
-              <div className='row g-3'>
-                <div className='col-md-4'>
-                  <label className='form-label'>Etiqueta</label>
-                  <input className='form-control' value={form.newsletter_eyebrow || ''} onChange={(event) => updateField('newsletter_eyebrow', event.target.value)} />
-                </div>
-                <div className='col-md-8'>
-                  <label className='form-label'>Titulo</label>
-                  <input className='form-control' value={form.newsletter_title || ''} onChange={(event) => updateField('newsletter_title', event.target.value)} />
-                </div>
-                <div className='col-12'>
-                  <label className='form-label'>Descripcion</label>
-                  <textarea className='form-control' rows='3' value={form.newsletter_description || ''} onChange={(event) => updateField('newsletter_description', event.target.value)} />
-                </div>
-                <div className='col-md-6'>
-                  <label className='form-label'>Placeholder del correo</label>
-                  <input className='form-control' value={form.newsletter_placeholder || ''} onChange={(event) => updateField('newsletter_placeholder', event.target.value)} />
-                </div>
-                <div className='col-md-6'>
-                  <label className='form-label'>Texto del boton</label>
-                  <input className='form-control' value={form.newsletter_button_label || ''} onChange={(event) => updateField('newsletter_button_label', event.target.value)} />
-                </div>
-              </div>
-            </div>
+        <SectionCard title='Bloque de newsletter' subtitle='Tarjeta de suscripción en la barra lateral' icon='mdi-email-fast-outline'>
+          <div className='row g-3'>
+            <FormField col='col-md-4' label='Etiqueta' value={form.newsletter_eyebrow} onChange={(e) => updateField('newsletter_eyebrow', e.target.value)} />
+            <FormField col='col-md-8' label='Título' value={form.newsletter_title} onChange={(e) => updateField('newsletter_title', e.target.value)} />
+            <FormField col='col-12' label='Descripción' textarea value={form.newsletter_description} onChange={(e) => updateField('newsletter_description', e.target.value)} />
+            <FormField col='col-md-6' label='Placeholder del correo' value={form.newsletter_placeholder} onChange={(e) => updateField('newsletter_placeholder', e.target.value)} />
+            <FormField col='col-md-6' label='Texto del botón' value={form.newsletter_button_label} onChange={(e) => updateField('newsletter_button_label', e.target.value)} />
           </div>
-        </div>
+        </SectionCard>
       ) : null}
     </div>
   )
