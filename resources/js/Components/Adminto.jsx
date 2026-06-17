@@ -7,7 +7,7 @@ import { AdmintoProvider } from './AdmintoContext'
 moment.tz.setDefault('UTC');
 
 const Adminto = ({ ...properties }) => {
-  const { session, children, title, can, unreadMessagesCount, unreadClubCount } = properties
+  const { session, children, title, can, unreadMessagesCount, unreadClubCount, unreadQuotesCount } = properties
 
   useEffect(() => {
     const app = new App
@@ -24,6 +24,7 @@ const Adminto = ({ ...properties }) => {
         can={can}
         unreadMessagesCount={unreadMessagesCount}
         unreadClubCount={unreadClubCount}
+        unreadQuotesCount={unreadQuotesCount}
       />
       <NavBar session={session} title={title} can={can} />
       <div className="modal fade" id="searchModal" tabIndex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">

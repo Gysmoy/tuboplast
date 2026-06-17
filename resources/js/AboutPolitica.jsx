@@ -79,18 +79,18 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
         />
         <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30' />
 
-        <div className='relative mx-auto w-full max-w-site px-4 py-20 sm:py-24 lg:py-28'>
+        <div className='relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28'>
           <AboutNav variant='overlay' />
 
-          <div className='mt-8 max-w-3xl space-y-6 sm:mt-10 lg:mt-12'>
-            <p className='text-xs font-bold uppercase tracking-[0.32em] text-primary sm:text-base'>
+          <div className='mt-8 max-w-3xl space-y-5 sm:mt-10 lg:mt-12'>
+            <p className='text-xs font-bold uppercase tracking-[0.28em] text-primary sm:text-sm'>
               {policyEyebrow}
             </p>
-            <h1 className='max-w-3xl font-title text-5xl leading-[0.95] tracking-tight text-primary sm:text-6xl lg:text-[4.4rem]'>
+            <h1 className='max-w-3xl font-title text-4xl font-medium leading-[1.05] tracking-tight text-primary sm:text-5xl lg:text-6xl'>
               {policyTitle}
             </h1>
-            <div className='flex items-center gap-4 text-sm text-darkmuted'>
-              <span className='h-1 w-10 bg-secondary' />
+            <div className='flex items-center gap-4 text-sm leading-relaxed text-darkmuted sm:text-base'>
+              <span className='h-1 w-10 shrink-0 bg-secondary' />
               <p>{policyCommitmentText}</p>
             </div>
           </div>
@@ -109,7 +109,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
             <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>
               {policyScopeEyebrow}
             </p>
-            <h2 className='font-title text-4xl leading-tight text-primary sm:text-5xl'>{policyScopeTitle}</h2>
+            <h2 className='font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>{policyScopeTitle}</h2>
             <div className='space-y-4 text-sm leading-relaxed text-darkmuted'>
               <p>{policyScopeParagraph1}</p>
               <p>{policyScopeParagraph2}</p>
@@ -124,7 +124,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
             <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>
               {policyScopeEyebrow}
             </p>
-            <h2 className='font-title text-4xl leading-tight text-primary sm:text-5xl'>Nuestra politica</h2>
+            <h2 className='font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>Nuestra politica</h2>
             <p className='text-sm leading-relaxed text-darkmuted'>
               {policyStatement}
             </p>
@@ -144,7 +144,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
       <section className='mx-auto w-full max-w-site px-4 py-12 sm:py-16'>
         <div className='mb-8'>
           <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>Archivos</p>
-          <h2 className='mt-3 font-title text-4xl leading-tight text-primary sm:text-5xl'>
+          <h2 className='mt-3 font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>
             {policyCertificationsTitle}
           </h2>
         </div>
@@ -164,7 +164,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
                 )}
               </div>
               <div className='space-y-3 p-3 pb-2'>
-                <h3 className='font-title text-2xl text-primary'>{cert.title}</h3>
+                <h3 className='font-title text-xl font-medium text-primary'>{cert.title}</h3>
                 {cert.description ? (
                   <p className='text-sm leading-relaxed text-muted'>{cert.description}</p>
                 ) : null}

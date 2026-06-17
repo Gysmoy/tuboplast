@@ -4,7 +4,7 @@ import { addQuoteItem } from '../../Utils/quoteStorage';
 
 const ItemCard = ({ product, showPrice = false }) => {
   const category = product.categoryLabel ?? product.category;
-  const detailUrl = product.detailUrl ?? '/item/tuberia-agua-sp-clase-15-ntp-399-002';
+  const detailUrl = product.detailUrl ?? '/catalog';
   const cardImageRef = useRef(null);
   const cartButtonRef = useRef(null);
 

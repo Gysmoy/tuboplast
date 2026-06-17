@@ -39,18 +39,18 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
         <div className='relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28'>
           <AboutNav variant='overlay' />
 
-          <div className='mt-8 max-w-[22rem] space-y-5 sm:mt-10 sm:max-w-3xl sm:space-y-6 lg:mt-12'>
-            <p className='text-[0.78rem] font-bold uppercase tracking-[0.32em] text-primary sm:text-base'>
+          <div className='mt-8 max-w-xl space-y-5 sm:mt-10 sm:max-w-3xl lg:mt-12'>
+            <p className='text-xs font-bold uppercase tracking-[0.28em] text-primary sm:text-sm'>
               Trayectoria & Ingenieria
             </p>
-            <h1 className='max-w-3xl font-title text-[2.9rem] leading-[0.98] tracking-tight text-primary sm:text-6xl lg:text-[4.8rem]'>
+            <h1 className='max-w-2xl font-title text-4xl font-medium leading-[1.05] tracking-tight text-primary sm:text-5xl lg:text-6xl'>
               60 años de calidad
               <br />
               e innovacion industrial
             </h1>
-            <div className='flex items-start gap-4 text-[1.05rem] leading-snug text-darkmuted sm:items-center sm:text-sm'>
-              <span className='h-1 w-10 bg-secondary' />
-              <p className='max-w-[15rem] sm:max-w-none'>Lideres en soluciones para edificaciones, infraestructura, mineria, agricultura y mas.</p>
+            <div className='flex items-center gap-4 text-sm leading-relaxed text-darkmuted sm:text-base'>
+              <span className='h-1 w-10 shrink-0 bg-secondary' />
+              <p className='max-w-xl'>Lideres en soluciones para edificaciones, infraestructura, mineria, agricultura y mas.</p>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
               className='ml-2 h-[360px] w-full rounded-2xl object-cover shadow-[0_22px_45px_rgba(15,23,42,0.18)] sm:h-[500px]'
             />
             <div className='absolute -top-6 right-4 rounded-2xl bg-secondary px-7 py-5 text-primary shadow-xl lg:-bottom-6 lg:left-0 lg:right-auto lg:px-8 lg:py-7'>
-              <p className='font-title text-5xl font-black leading-none lg:text-5xl'>{about.family_metric_value || defaultAbout.family_metric_value}</p>
+              <p className='font-title text-4xl font-black leading-none sm:text-5xl'>{about.family_metric_value || defaultAbout.family_metric_value}</p>
               <p className='mt-2 max-w-[9rem] text-xs font-bold uppercase tracking-[0.18em]'>{about.family_metric_label || defaultAbout.family_metric_label}</p>
             </div>
           </div>
@@ -74,17 +74,17 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
           <div className='space-y-8'>
             <div className='space-y-4'>
               <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>{about.family_eyebrow || defaultAbout.family_eyebrow}</p>
-              <h2 className='font-title text-[2.5rem] leading-[0.98] text-primary sm:text-5xl'>
+              <h2 className='font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>
                 {about.family_title || defaultAbout.family_title}
               </h2>
-              <p className='max-w-none text-[1.02rem] leading-relaxed text-darkmuted sm:max-w-2xl'>
+              <p className='max-w-none text-base leading-relaxed text-darkmuted sm:max-w-2xl'>
                 {about.family_lead || defaultAbout.family_lead}
               </p>
-              <p className='max-w-none text-[1.02rem] leading-relaxed text-darkmuted sm:max-w-2xl'>
+              <p className='max-w-none text-base leading-relaxed text-darkmuted sm:max-w-2xl'>
                 {about.family_paragraph_1 || defaultAbout.family_paragraph_1}
               </p>
               {about.family_paragraph_2 ? (
-                <p className='max-w-none text-[1.02rem] leading-relaxed text-darkmuted sm:max-w-2xl'>
+                <p className='max-w-none text-base leading-relaxed text-darkmuted sm:max-w-2xl'>
                   {about.family_paragraph_2}
                 </p>
               ) : null}
@@ -112,27 +112,27 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
         <div className='mx-auto w-full max-w-site px-4'>
           <div className='grid gap-4 lg:grid-cols-3'>
             <article className='rounded-2xl border-l-4 border-transparent bg-white p-6 shadow-sm ring-1 ring-black/5 transition-[border-color,box-shadow] hover:border-secondary hover:shadow-lg sm:p-7'>
-              <div className='grid h-14 w-14 place-items-center rounded-xl bg-silver text-primary'>
-                <i className='mdi mdi-bullseye-arrow text-3xl'></i>
+              <div className='grid h-12 w-12 place-items-center rounded-xl bg-silver text-primary'>
+                <i className='mdi mdi-bullseye-arrow text-2xl'></i>
               </div>
-              <h3 className='mt-4 font-title text-2xl text-primary'>{about.mission_title || defaultAbout.mission_title}</h3>
-              <p className='mt-4 text-[1rem] leading-relaxed text-darkmuted sm:text-sm'>{about.mission_text || defaultAbout.mission_text}</p>
+              <h3 className='mt-4 font-title text-xl font-medium text-primary'>{about.mission_title || defaultAbout.mission_title}</h3>
+              <p className='mt-4 text-sm leading-relaxed text-darkmuted'>{about.mission_text || defaultAbout.mission_text}</p>
             </article>
 
             <article className='rounded-2xl border-l-4 border-transparent bg-white p-6 shadow-sm ring-1 ring-black/5 transition-[border-color,box-shadow] hover:border-secondary hover:shadow-lg sm:p-7'>
-              <div className='grid h-14 w-14 place-items-center rounded-xl bg-silver text-primary'>
-                <i className='mdi mdi-eye-outline text-3xl'></i>
+              <div className='grid h-12 w-12 place-items-center rounded-xl bg-silver text-primary'>
+                <i className='mdi mdi-eye-outline text-2xl'></i>
               </div>
-              <h3 className='mt-4 font-title text-2xl text-primary'>{about.vision_title || defaultAbout.vision_title}</h3>
-              <p className='mt-4 text-[1rem] leading-relaxed text-darkmuted sm:text-sm'>{about.vision_text || defaultAbout.vision_text}</p>
+              <h3 className='mt-4 font-title text-xl font-medium text-primary'>{about.vision_title || defaultAbout.vision_title}</h3>
+              <p className='mt-4 text-sm leading-relaxed text-darkmuted'>{about.vision_text || defaultAbout.vision_text}</p>
             </article>
 
             <article className='rounded-2xl border-l-4 border-transparent bg-white p-6 shadow-sm ring-1 ring-black/5 transition-[border-color,box-shadow] hover:border-secondary hover:shadow-lg sm:p-7'>
-              <div className='grid h-14 w-14 place-items-center rounded-xl bg-silver text-primary'>
-                <i className='mdi mdi-account-group text-3xl'></i>
+              <div className='grid h-12 w-12 place-items-center rounded-xl bg-silver text-primary'>
+                <i className='mdi mdi-account-group text-2xl'></i>
               </div>
-              <h3 className='mt-4 font-title text-2xl text-primary'>Valores</h3>
-              <ul className='mt-4 space-y-2 text-[1rem] leading-relaxed text-darkmuted sm:text-sm'>
+              <h3 className='mt-4 font-title text-xl font-medium text-primary'>Valores</h3>
+              <ul className='mt-4 space-y-2 text-sm leading-relaxed text-darkmuted'>
                 {familyValues.map((item) => (
                   <li key={item} className='flex items-start gap-2'>
                     <span className='mt-1.5 h-2 w-2 rounded-full bg-secondary' />

@@ -6,6 +6,7 @@ use App\Http\Classes\dxResponse;
 use App\Models\dxDataGrid;
 use App\Models\ClubExpert;
 use App\Models\Message;
+use App\Models\Quote;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -40,6 +41,7 @@ class BasicController extends Controller
   public $ignoreStatusFilter = false;
   public $useIntervention = true;
   public $identifier = 'id';
+  public array $seo = [];
 
   public function __construct()
   {
@@ -127,6 +129,7 @@ class BasicController extends Controller
     $eurPrice = null;
     $unreadMessagesCount = 0;
     $unreadClubCount = 0;
+    $unreadQuotesCount = 0;
 
     if (Auth::check()) {
       $userJpa = User::find(Auth::id());
@@ -150,12 +153,20 @@ class BasicController extends Controller
             ->count();
         }
       }
+
+      if (Schema::hasTable('quotes')) {
+        $unreadQuotesCount = Quote::query()
+          ->whereNotNull('status')
+          ->where('seen', false)
+          ->count();
+      }
     }
 
     $properties = [
       'session' => $userJpa,
       'unreadMessagesCount' => $unreadMessagesCount,
       'unreadClubCount' => $unreadClubCount,
+      'unreadQuotesCount' => $unreadQuotesCount,
       'global' => [
         'PUBLIC_RSA_KEY' => self::$publicRsaKey,
         'APP_NAME' => env('APP_NAME', 'Ursa'),
@@ -183,10 +194,27 @@ class BasicController extends Controller
     }
     return Inertia::render($this->reactView, $properties)->rootView($this->reactRootView)->withViewData([
       'component' => $this->reactView,
-      // 'seoTitle' => $seoTitle->description ?? '',
-      // 'seoDescription' => $seoDescription->description ?? '',
-      // 'seoKeywords' => $seoKeywords->description ?? '',
+      'seo' => $this->resolveSeo(),
     ]);
+  }
+
+  protected function resolveSeo(): array
+  {
+    $appName = env('APP_NAME', 'Tuboplast');
+
+    $defaults = [
+      'title' => $appName . ' | Expertos en Tuberias y Conexiones de PVC',
+      'description' => 'Tuboplast es el fabricante peruano de tuberias y conexiones de PVC y HDPE para agua, desague, saneamiento, instalaciones electricas e infraestructura. Calidad certificada y asesoria tecnica a nivel nacional.',
+      'keywords' => 'tuboplast, tuberias pvc, conexiones pvc, accesorios pvc, tuberias agua, tuberias desague, tuberias electricas, hdpe, saneamiento, alcantarillado, catalogo tuboplast, peru',
+      'image' => url('/assets/img/icons/og-image.jpg'),
+      'url' => url()->current(),
+      'type' => 'website',
+      'site_name' => $appName,
+    ];
+
+    $custom = array_filter($this->seo, fn ($value) => $value !== null && $value !== '');
+
+    return array_merge($defaults, $custom);
   }
 
   public function paginate(Request $request): HttpResponse|ResponseFactory

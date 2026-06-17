@@ -7,6 +7,10 @@ use App\Models\ClubExpert;
 use App\Models\AboutPage;
 use App\Models\BlogPage;
 use App\Models\Message;
+use App\Models\Item;
+use App\Models\Category;
+use App\Models\Quote;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -40,6 +44,32 @@ class LandingController extends BasicController
 
             $properties['post'] = $post;
             $properties['postSlug'] = $this->blogSlug;
+
+            $postImage = $post['image_url'] ?? $post['image_fallback'] ?? null;
+            $this->seo = [
+                'title' => ($post['title'] ?? 'Blog') . ' | ' . env('APP_NAME', 'Tuboplast'),
+                'description' => Str::limit(strip_tags($post['description'] ?? $post['lead'] ?? ''), 180),
+                'image' => $postImage
+                    ? (Str::startsWith($postImage, 'http') ? $postImage : url($postImage))
+                    : url('/assets/img/icons/og-image.jpg'),
+                'type' => 'article',
+                'url' => route('blog.post', ['slug' => $this->blogSlug]),
+            ];
+        }
+
+        if ($this->reactView === 'Catalog') {
+            $paginator = $this->catalogQuery($request)->paginate($this->catalogPerPage($request));
+
+            $properties['items'] = collect($paginator->items())
+                ->map(fn ($item) => $this->mapCatalogItem($item))
+                ->values();
+            $properties['pagination'] = $this->paginationMeta($paginator);
+            $properties['facets'] = $this->catalogFacets();
+
+            $this->seo = [
+                'description' => 'Catálogo Tuboplast: tuberías y conexiones de PVC para agua fría, desagüe, instalaciones eléctricas, agua potable y alcantarillado. Filtra por segmento, línea, tipo y diámetro.',
+                'url' => route('catalog'),
+            ];
         }
 
         if ($this->reactView === 'Distributors') {
@@ -60,7 +90,198 @@ class LandingController extends BasicController
                 ]);
         }
 
+        $sectionTitles = [
+            'Catalog' => 'Catálogo de productos',
+            'Blog' => 'Blog técnico',
+            'AboutFamilia' => 'Nosotros · Familia e historia',
+            'AboutPolitica' => 'Política del Sistema de Gestión Integrado',
+            'Contact' => 'Contacto y asesoría técnica',
+            'Distributors' => 'Distribuidores autorizados',
+            'Club' => 'Club Experto Tuboplast',
+        ];
+
+        if (empty($this->seo['title']) && !empty($sectionTitles[$this->reactView])) {
+            $this->seo['title'] = $sectionTitles[$this->reactView] . ' | ' . env('APP_NAME', 'Tuboplast');
+        }
+
         return $properties;
+    }
+
+    public function catalogItems(Request $request)
+    {
+        $paginator = $this->catalogQuery($request)->paginate($this->catalogPerPage($request));
+
+        return response()->json([
+            'data' => collect($paginator->items())
+                ->map(fn ($item) => $this->mapCatalogItem($item))
+                ->values(),
+            'meta' => $this->paginationMeta($paginator),
+        ]);
+    }
+
+    private function catalogPerPage(Request $request): int
+    {
+        $perPage = (int) $request->query('per_page', 9);
+
+        return max(3, min($perPage, 48));
+    }
+
+    private function catalogQuery(Request $request)
+    {
+        $query = Item::query()->where('status', true)->with('category');
+
+        $term = trim((string) $request->query('q', ''));
+        if ($term !== '') {
+            $query->where(function ($where) use ($term) {
+                $where->where('title', 'like', "%{$term}%")
+                    ->orWhere('sku', 'like', "%{$term}%")
+                    ->orWhere('classification', 'like', "%{$term}%")
+                    ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
+            });
+        }
+
+        $segments = array_filter((array) $request->query('segment', []));
+        if ($segments) {
+            $query->whereIn('segment', $segments);
+        }
+
+        $types = array_filter((array) $request->query('type', []));
+        if ($types) {
+            $query->whereIn('type', $types);
+        }
+
+        $lines = array_filter((array) $request->query('line', []));
+        if ($lines) {
+            $query->whereHas('category', fn ($c) => $c->whereIn('name', $lines));
+        }
+
+        $diameters = array_filter((array) $request->query('diameter', []));
+        if ($diameters) {
+            $query->where(function ($where) use ($diameters) {
+                foreach ($diameters as $diameter) {
+                    $where->orWhereJsonContains('diameters', $diameter);
+                }
+            });
+        }
+
+        $sort = $request->query('sort', 'popular');
+        if ($sort === 'name-asc') {
+            $query->orderBy('title');
+        } elseif ($sort === 'name-desc') {
+            $query->orderByDesc('title');
+        } else {
+            $query->orderByDesc('views')->orderBy('title');
+        }
+
+        return $query;
+    }
+
+    private function catalogFacets(): array
+    {
+        // Cacheado para que siga siendo barato aunque el catálogo crezca a miles de productos.
+        return Cache::remember('tuboplast.catalog.facets', now()->addMinutes(10), function () {
+            $segment = Item::query()->where('status', true)->whereNotNull('segment')
+                ->distinct()->orderBy('segment')->pluck('segment')->values();
+
+            $type = Item::query()->where('status', true)->whereNotNull('type')
+                ->distinct()->orderBy('type')->pluck('type')->values();
+
+            $line = Category::query()
+                ->whereIn('id', Item::query()->where('status', true)->distinct()->pluck('category_id'))
+                ->orderBy('name')->pluck('name')->values();
+
+            $diameter = Item::query()->where('status', true)->pluck('diameters')
+                ->flatMap(fn ($value) => is_array($value) ? $value : [])
+                ->filter()
+                ->unique()
+                ->sort(fn ($a, $b) => strnatcasecmp((string) $a, (string) $b))
+                ->values();
+
+            return [
+                'segment' => $segment,
+                'line' => $line,
+                'type' => $type,
+                'diameter' => $diameter,
+            ];
+        });
+    }
+
+    private function paginationMeta($paginator): array
+    {
+        return [
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'total' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
+            'from' => $paginator->firstItem(),
+            'to' => $paginator->lastItem(),
+        ];
+    }
+
+    private function mapCatalogItem(Item $item): array
+    {
+        $price = $item->price !== null ? (float) $item->price : null;
+        $diameters = is_array($item->diameters) ? $item->diameters : [];
+
+        return [
+            'id' => $item->id,
+            'sku' => $item->sku,
+            'title' => $item->title,
+            'categoryLabel' => $item->category->name ?? 'Producto',
+            'segment' => $item->segment,
+            'classification' => $item->classification,
+            'type' => $item->type,
+            'image' => $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png',
+            'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+            'unitPrice' => $price,
+            'pressure' => $this->shortPressure($item->pressure),
+            'diameter' => $item->diameter ?: $this->diameterLabel($diameters),
+            'diameters' => $diameters,
+            'views' => (int) $item->views,
+            'detailUrl' => $item->slug
+                ? route('products.show', ['slug' => $item->slug])
+                : route('catalog'),
+        ];
+    }
+
+    public function searchProducts(Request $request)
+    {
+        $term = trim((string) $request->query('q', ''));
+
+        if (mb_strlen($term) < 2) {
+            return response()->json(['data' => []]);
+        }
+
+        $items = Item::query()
+            ->where('status', true)
+            ->with('category')
+            ->where(function ($query) use ($term) {
+                $query->where('title', 'like', "%{$term}%")
+                    ->orWhere('sku', 'like', "%{$term}%")
+                    ->orWhere('classification', 'like', "%{$term}%")
+                    ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
+            })
+            ->orderByDesc('views')
+            ->orderBy('title')
+            ->limit(8)
+            ->get()
+            ->map(function ($item) {
+                $price = $item->price !== null ? (float) $item->price : null;
+
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'categoryLabel' => $item->category->name ?? 'Producto',
+                    'type' => $item->type,
+                    'image' => $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png',
+                    'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+                    'detailUrl' => $item->slug
+                        ? route('products.show', ['slug' => $item->slug])
+                        : route('catalog'),
+                ];
+            });
+
+        return response()->json(['data' => $items]);
     }
 
     public function catalogView(Request $request)
@@ -235,6 +456,121 @@ class LandingController extends BasicController
             'status' => 200,
             'message' => 'Gracias. Tu solicitud fue registrada correctamente.',
         ]);
+    }
+
+    public function storeQuote(Request $request)
+    {
+        $validated = $request->validate([
+            'accepted' => 'accepted',
+            'name' => 'required|string|max:120',
+            'business' => 'nullable|string|max:160',
+            'ruc' => 'nullable|digits:11',
+            'email' => 'required|email|max:180',
+            'phone_prefix' => 'nullable|string|max:8',
+            'phone' => 'nullable|string|max:30',
+            'department' => 'required|string|max:120',
+            'province' => 'required|string|max:120',
+            'district' => 'required|string|max:120',
+            'ubigeo' => 'required|string|max:12',
+            'items' => 'required|array|min:1',
+            'items.*.title' => 'required|string|max:255',
+            'items.*.sku' => 'nullable|string|max:120',
+            'items.*.image' => 'nullable|string|max:500',
+            'items.*.detailUrl' => 'nullable|string|max:500',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price' => 'nullable|string|max:40',
+            'items.*.unitPrice' => 'nullable|numeric',
+        ]);
+
+        $items = array_map(function ($item) {
+            return [
+                'title' => $item['title'],
+                'sku' => $item['sku'] ?? null,
+                'image' => $item['image'] ?? null,
+                'detailUrl' => $item['detailUrl'] ?? null,
+                'quantity' => max(1, (int) $item['quantity']),
+                'price' => $item['price'] ?? null,
+                'unitPrice' => isset($item['unitPrice']) ? (float) $item['unitPrice'] : null,
+            ];
+        }, $validated['items']);
+
+        if (!$this->hasValidUbigeo($validated)) {
+            throw ValidationException::withMessages([
+                'district' => 'Selecciona una ubicación válida.',
+            ]);
+        }
+
+        $totalItems = array_sum(array_column($items, 'quantity'));
+        $location = trim(implode(', ', array_filter([
+            $validated['district'] ?? null,
+            $validated['province'] ?? null,
+            $validated['department'] ?? null,
+        ])));
+
+        $quote = Quote::create([
+            'name' => $validated['name'],
+            'business' => $validated['business'] ?? null,
+            'ruc' => $validated['ruc'] ?? null,
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'phone_prefix' => $validated['phone_prefix'] ?? null,
+            'region' => $location ?: null,
+            'department' => $validated['department'],
+            'province' => $validated['province'],
+            'district' => $validated['district'],
+            'ubigeo' => $validated['ubigeo'],
+            'accepted_terms' => true,
+            'items' => $items,
+            'total_items' => $totalItems,
+            ...$this->detectClientTracking($request),
+            'seen' => false,
+            'status' => true,
+        ]);
+
+        $quote->update([
+            'code' => 'COT-' . now()->format('Y') . '-' . str_pad((string) $quote->id, 5, '0', STR_PAD_LEFT),
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Tu cotización fue registrada correctamente.',
+            'data' => [
+                'id' => $quote->id,
+                'code' => $quote->code,
+                'created_at' => $quote->created_at?->toIso8601String(),
+            ],
+        ]);
+    }
+
+    private function shortPressure(?string $pressure): string
+    {
+        if (!$pressure) {
+            return '-';
+        }
+
+        $low = mb_strtolower($pressure);
+        if (str_contains($low, 'no aplica')) return 'No aplica';
+        if (str_contains($low, 'gravedad') || str_contains($low, 'sin presion')) return 'Gravedad';
+        if (str_contains($low, 'roscado')) return 'Roscado';
+        if (preg_match('/PN-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
+        if (preg_match('/C-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
+        if (preg_match('/[\d.]+\s*bar/i', $pressure, $m)) return $m[0];
+        if (preg_match('/Sn\d[\w.-]*/i', $pressure, $m)) return strtoupper($m[0]);
+
+        return mb_strlen($pressure) > 16 ? (mb_substr($pressure, 0, 14) . '…') : $pressure;
+    }
+
+    private function diameterLabel(array $diameters): string
+    {
+        if (!count($diameters)) {
+            return '-';
+        }
+
+        if (count($diameters) === 1) {
+            return $diameters[0];
+        }
+
+        return $diameters[0] . ' – ' . end($diameters);
     }
 
     private function hasValidUbigeo(array $data): bool

@@ -8,6 +8,7 @@ const aboutRest = new AboutRest()
 const PUBLIC_STORAGE = '/storage/'
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024
 const MAX_CERT_PDF_SIZE = 50 * 1024 * 1024
+const IMAGE_FALLBACK = '/assets/img/landing/bg-main.png'
 
 const createCertification = () => ({
   title: '',
@@ -36,6 +37,105 @@ const normalizeCertifications = (items) => {
 
 const getFamilyImagePreview = (about) => about?.family_image_url || (about?.family_image ? `${PUBLIC_STORAGE}${about.family_image}` : '')
 const getPolicyImagePreview = (about) => about?.policy_image_url || (about?.policy_image ? `${PUBLIC_STORAGE}${about.policy_image}` : '')
+
+// ----------------------------------------------------------------- UI helpers
+const SectionCard = ({ title, subtitle, icon, actions, children, col = 'col-12' }) => (
+  <div className={col}>
+    <div className='card border-0 shadow-sm h-100'>
+      <div className='card-body'>
+        <div className='d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-3'>
+          <div className='d-flex align-items-center gap-2'>
+            {icon && (
+              <span className='d-inline-flex align-items-center justify-content-center rounded-2 bg-primary-subtle text-primary' style={{ width: 38, height: 38 }}>
+                <i className={`mdi ${icon} fs-20`}></i>
+              </span>
+            )}
+            <div>
+              <h5 className='mb-0'>{title}</h5>
+              {subtitle && <small className='text-muted'>{subtitle}</small>}
+            </div>
+          </div>
+          {actions}
+        </div>
+        {children}
+      </div>
+    </div>
+  </div>
+)
+
+const FormField = ({ label, value, onChange, col = 'col-12', type = 'text', placeholder = '', textarea = false, rows = 3 }) => (
+  <div className={col}>
+    <label className='form-label small fw-semibold'>{label}</label>
+    {textarea ? (
+      <textarea className='form-control' rows={rows} value={value || ''} placeholder={placeholder} onChange={onChange} />
+    ) : (
+      <input type={type} className='form-control' value={value || ''} placeholder={placeholder} onChange={onChange} />
+    )}
+  </div>
+)
+
+const SubHeading = ({ children }) => (
+  <div className='col-12'>
+    <p className='mb-0 mt-2 text-uppercase fw-bold text-muted' style={{ fontSize: 11, letterSpacing: '0.06em' }}>{children}</p>
+    <hr className='mt-1 mb-0' />
+  </div>
+)
+
+const MediaUploader = ({ preview, onChange, hint }) => (
+  <div className='row g-3 align-items-center'>
+    <div className='col-lg-7'>
+      <div className='rounded-3 overflow-hidden border bg-light'>
+        <img src={preview || IMAGE_FALLBACK} alt='Vista previa' className='w-100 d-block' style={{ aspectRatio: '16/10', objectFit: 'cover' }} />
+      </div>
+    </div>
+    <div className='col-lg-5'>
+      <label className='form-label small fw-semibold'>Cambiar imagen</label>
+      <input type='file' className='form-control' accept='image/*' onChange={onChange} />
+      <small className='text-muted d-block mt-2'>{hint}</small>
+    </div>
+  </div>
+)
+
+const RepeaterTable = ({ items, columnLabel, placeholder, minimum, onChange, onRemove, onAdd, addLabel }) => (
+  <>
+    <div className='table-responsive'>
+      <table className='table table-sm align-middle mb-0'>
+        <thead>
+          <tr className='text-muted' style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <th style={{ width: 52 }}>#</th>
+            <th>{columnLabel}</th>
+            <th style={{ width: 64 }} className='text-end'></th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.length ? items.map((item, index) => (
+            <tr key={index}>
+              <td className='text-muted'>{index + 1}</td>
+              <td>
+                <input
+                  className='form-control form-control-sm'
+                  value={item}
+                  placeholder={placeholder}
+                  onChange={(event) => onChange(index, event.target.value)}
+                />
+              </td>
+              <td className='text-end'>
+                <button type='button' className='btn btn-sm btn-soft-danger' title='Quitar' disabled={items.length <= minimum} onClick={() => onRemove(index)}>
+                  <i className='mdi mdi-trash-can'></i>
+                </button>
+              </td>
+            </tr>
+          )) : (
+            <tr><td colSpan={3} className='text-center text-muted py-3'>Sin elementos todavía</td></tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+    <button type='button' className='btn btn-soft-primary btn-sm mt-3' onClick={onAdd}>
+      <i className='mdi mdi-plus me-1'></i>{addLabel}
+    </button>
+  </>
+)
 
 const About = ({ about: initialAbout = {} }) => {
   const initialForm = useMemo(() => ({
@@ -217,364 +317,236 @@ const About = ({ about: initialAbout = {} }) => {
     setSaving(false)
   }
 
+  const isFamily = activeSection === 'family'
+
   return (
     <div className='row g-3'>
-      <div className='col-12'>
-        <div className='card border-0 shadow-sm'>
-          <div className='card-body d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center'>
-            <div>
-              <h4 className='mb-1'>Modulo Nosotros</h4>
-              <p className='text-muted mb-0'>
-                Edita Familia, Mision, Vision, Valores, Politica y sus archivos adjuntos reales.
-              </p>
-            </div>
-            <div className='d-flex gap-2'>
-              <a href='/family' target='_blank' rel='noreferrer' className='btn btn-soft-primary'>
-                Ver pagina publica
-              </a>
-              <button type='button' className='btn btn-primary' onClick={save} disabled={saving}>
-                {saving ? 'Guardando...' : 'Guardar cambios'}
-              </button>
-            </div>
-          </div>
-          {alert?.message ? (
-            <div className='card-footer border-0 pt-0'>
-              <div className={`alert alert-${alert.type || 'danger'} mb-0`} role='alert'>
-                {alert.message}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
+      {/* Toolbar */}
       <div className='col-12'>
         <div className='card border-0 shadow-sm'>
           <div className='card-body'>
-            <div className='d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-3'>
-              <div>
-                <h5 className='mb-1'>Organizacion del modulo</h5>
-                <p className='text-muted mb-0'>
-                  El contenido esta dividido en dos partes para editarlo con mas orden: Familia y Politica.
-                </p>
+            <div className='d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center'>
+              <div className='d-flex align-items-center gap-2'>
+                <span className='d-inline-flex align-items-center justify-content-center rounded-2 bg-primary text-white' style={{ width: 44, height: 44 }}>
+                  <i className='mdi mdi-information-outline fs-22'></i>
+                </span>
+                <div>
+                  <h4 className='mb-0'>Módulo Nosotros</h4>
+                  <small className='text-muted'>Edita el contenido público de Familia y Política del SGI.</small>
+                </div>
               </div>
-              <div className='btn-group' role='tablist' aria-label='Secciones de Nosotros'>
-                <button
-                  type='button'
-                  className={`btn ${activeSection === 'family' ? 'btn-primary' : 'btn-outline-primary'}`}
-                  onClick={() => setActiveSection('family')}
-                >
-                  Familia
-                </button>
-                <button
-                  type='button'
-                  className={`btn ${activeSection === 'policy' ? 'btn-primary' : 'btn-outline-primary'}`}
-                  onClick={() => setActiveSection('policy')}
-                >
-                  Politica
+              <div className='d-flex gap-2'>
+                <a href='/about' target='_blank' rel='noreferrer' className='btn btn-soft-primary'>
+                  <i className='mdi mdi-open-in-new me-1'></i>Ver página
+                </a>
+                <button type='button' className='btn btn-primary' onClick={save} disabled={saving}>
+                  <i className='mdi mdi-content-save me-1'></i>{saving ? 'Guardando...' : 'Guardar cambios'}
                 </button>
               </div>
             </div>
-            <div className='alert alert-light border mb-0'>
-              Estás editando la seccion <strong>{activeSection === 'family' ? 'Familia' : 'Politica'}</strong>. Los cambios se guardan en un solo clic para ambas partes del modulo.
+
+            <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mt-3 border-top pt-3'>
+              <ul className='nav nav-pills gap-2 mb-0'>
+                <li className='nav-item'>
+                  <button type='button' className={`nav-link ${isFamily ? 'active' : ''}`} onClick={() => setActiveSection('family')}>
+                    <i className='mdi mdi-account-group me-1'></i>Familia
+                  </button>
+                </li>
+                <li className='nav-item'>
+                  <button type='button' className={`nav-link ${!isFamily ? 'active' : ''}`} onClick={() => setActiveSection('policy')}>
+                    <i className='mdi mdi-shield-check me-1'></i>Política SGI
+                  </button>
+                </li>
+              </ul>
+              <small className='text-muted'>
+                Editando <strong className='text-dark'>{isFamily ? 'Familia' : 'Política SGI'}</strong> · ambas secciones se guardan juntas.
+              </small>
             </div>
+
+            {alert?.message ? (
+              <div className={`alert alert-${alert.type || 'danger'} mb-0 mt-3`} role='alert'>
+                {alert.message}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
 
-      {activeSection === 'family' ? (
+      {isFamily ? (
         <>
-          <div className='col-12'>
-            <div className='card border-0 shadow-sm'>
-              <div className='card-body'>
-                <h5 className='mb-3'>Imagen principal de Familia</h5>
-                <div className='row g-3 align-items-start'>
-                  <div className='col-lg-7'>
-                    <div className='rounded-3 border bg-light p-3'>
-                      <img
-                        src={form.family_image_preview || '/assets/img/landing/bg-main.png'}
-                        alt='Imagen principal de Nosotros'
-                        className='w-100 rounded-3 object-fit-cover'
-                        style={{ aspectRatio: '16/10', objectFit: 'cover' }}
-                      />
-                    </div>
-                  </div>
-                  <div className='col-lg-5'>
-                <label className='form-label'>Cambiar imagen</label>
-                <input type='file' className='form-control' accept='image/*' onChange={onFamilyImageChange} />
-                <input type='hidden' value={form.family_image || ''} readOnly />
-                <small className='text-muted d-block mt-2'>
-                  Sube una imagen horizontal. Tamaño máximo: 4 MB.
-                </small>
-              </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SectionCard title='Imagen principal' subtitle='Cabecera de la página de Familia' icon='mdi-image-outline'>
+            <MediaUploader preview={form.family_image_preview} onChange={onFamilyImageChange} hint='Imagen horizontal. Tamaño máximo: 4 MB.' />
+          </SectionCard>
 
-          <div className='col-12'>
-            <div className='card border-0 shadow-sm'>
-              <div className='card-body'>
-                <h5 className='mb-3'>Familia e historia</h5>
-                <div className='row g-3'>
-                  <div className='col-md-4'>
-                    <label className='form-label'>Etiqueta</label>
-                    <input className='form-control' value={form.family_eyebrow || ''} onChange={(event) => updateField('family_eyebrow', event.target.value)} />
-                  </div>
-                  <div className='col-md-8'>
-                    <label className='form-label'>Titulo</label>
-                    <input className='form-control' value={form.family_title || ''} onChange={(event) => updateField('family_title', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Texto principal</label>
-                    <textarea className='form-control' rows='3' value={form.family_lead || ''} onChange={(event) => updateField('family_lead', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Primer parrafo</label>
-                    <textarea className='form-control' rows='3' value={form.family_paragraph_1 || ''} onChange={(event) => updateField('family_paragraph_1', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Segundo parrafo</label>
-                    <textarea className='form-control' rows='3' value={form.family_paragraph_2 || ''} onChange={(event) => updateField('family_paragraph_2', event.target.value)} />
-                  </div>
-                  <div className='col-md-4'>
-                    <label className='form-label'>Dato destacado</label>
-                    <input className='form-control' value={form.family_metric_value || ''} onChange={(event) => updateField('family_metric_value', event.target.value)} />
-                  </div>
-                  <div className='col-md-8'>
-                    <label className='form-label'>Texto del dato</label>
-                    <input className='form-control' value={form.family_metric_label || ''} onChange={(event) => updateField('family_metric_label', event.target.value)} />
-                  </div>
-                  <div className='col-md-6'>
-                    <label className='form-label'>Bloque 1 titulo</label>
-                    <input className='form-control' value={form.family_aside_1_title || ''} onChange={(event) => updateField('family_aside_1_title', event.target.value)} />
-                  </div>
-                  <div className='col-md-6'>
-                    <label className='form-label'>Bloque 1 texto</label>
-                    <input className='form-control' value={form.family_aside_1_text || ''} onChange={(event) => updateField('family_aside_1_text', event.target.value)} />
-                  </div>
-                  <div className='col-md-6'>
-                    <label className='form-label'>Bloque 2 titulo</label>
-                    <input className='form-control' value={form.family_aside_2_title || ''} onChange={(event) => updateField('family_aside_2_title', event.target.value)} />
-                  </div>
-                  <div className='col-md-6'>
-                    <label className='form-label'>Bloque 2 texto</label>
-                    <input className='form-control' value={form.family_aside_2_text || ''} onChange={(event) => updateField('family_aside_2_text', event.target.value)} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SectionCard title='Familia e historia' subtitle='Texto principal de la sección' icon='mdi-text-box-outline'>
+            <div className='row g-3'>
+              <FormField col='col-md-4' label='Etiqueta' value={form.family_eyebrow} onChange={(e) => updateField('family_eyebrow', e.target.value)} />
+              <FormField col='col-md-8' label='Título' value={form.family_title} onChange={(e) => updateField('family_title', e.target.value)} />
+              <FormField col='col-12' label='Texto principal' textarea value={form.family_lead} onChange={(e) => updateField('family_lead', e.target.value)} />
+              <FormField col='col-md-6' label='Primer párrafo' textarea value={form.family_paragraph_1} onChange={(e) => updateField('family_paragraph_1', e.target.value)} />
+              <FormField col='col-md-6' label='Segundo párrafo' textarea value={form.family_paragraph_2} onChange={(e) => updateField('family_paragraph_2', e.target.value)} />
 
-          <div className='col-12'>
-            <div className='card border-0 shadow-sm'>
-              <div className='card-body'>
-                <h5 className='mb-3'>Mision y vision</h5>
-                <div className='row g-3'>
-                  <div className='col-md-4'>
-                    <label className='form-label'>Etiqueta mision</label>
-                    <input className='form-control' value={form.mission_eyebrow || ''} onChange={(event) => updateField('mission_eyebrow', event.target.value)} />
-                  </div>
-                  <div className='col-md-8'>
-                    <label className='form-label'>Titulo mision</label>
-                    <input className='form-control' value={form.mission_title || ''} onChange={(event) => updateField('mission_title', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Texto mision</label>
-                    <textarea className='form-control' rows='3' value={form.mission_text || ''} onChange={(event) => updateField('mission_text', event.target.value)} />
-                  </div>
-                  <div className='col-md-4'>
-                    <label className='form-label'>Etiqueta vision</label>
-                    <input className='form-control' value={form.vision_eyebrow || ''} onChange={(event) => updateField('vision_eyebrow', event.target.value)} />
-                  </div>
-                  <div className='col-md-8'>
-                    <label className='form-label'>Titulo vision</label>
-                    <input className='form-control' value={form.vision_title || ''} onChange={(event) => updateField('vision_title', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Texto vision</label>
-                    <textarea className='form-control' rows='3' value={form.vision_text || ''} onChange={(event) => updateField('vision_text', event.target.value)} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              <SubHeading>Dato destacado</SubHeading>
+              <FormField col='col-md-4' label='Valor' placeholder='30+' value={form.family_metric_value} onChange={(e) => updateField('family_metric_value', e.target.value)} />
+              <FormField col='col-md-8' label='Texto del dato' value={form.family_metric_label} onChange={(e) => updateField('family_metric_label', e.target.value)} />
 
-          <div className='col-12'>
-            <div className='card border-0 shadow-sm'>
-              <div className='card-body'>
-                <div className='d-flex align-items-center justify-content-between gap-3 mb-3'>
-                  <h5 className='mb-0'>Valores</h5>
-                  <button type='button' className='btn btn-soft-primary btn-sm' onClick={() => addValue('family_values', () => '')}>
-                    Agregar valor
-                  </button>
-                </div>
-                <div className='row g-2'>
-                  {form.family_values.map((item, index) => (
-                    <div className='col-md-6 col-lg-4' key={`family-value-${index}`}>
-                      <div className='input-group'>
-                        <input className='form-control' value={item} onChange={(event) => updateListItem('family_values', index, event.target.value)} />
-                        <button type='button' className='btn btn-outline-danger' onClick={() => removeValue('family_values', index, 3, () => '')}>
-                          Quitar
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+              <SubHeading>Bloques destacados</SubHeading>
+              <div className='col-12'>
+                <div className='table-responsive'>
+                  <table className='table table-sm align-middle mb-0'>
+                    <thead>
+                      <tr className='text-muted' style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        <th style={{ width: 70 }}>Bloque</th>
+                        <th style={{ width: '35%' }}>Título</th>
+                        <th>Texto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className='fw-semibold text-muted'>1</td>
+                        <td><input className='form-control form-control-sm' value={form.family_aside_1_title || ''} onChange={(e) => updateField('family_aside_1_title', e.target.value)} /></td>
+                        <td><input className='form-control form-control-sm' value={form.family_aside_1_text || ''} onChange={(e) => updateField('family_aside_1_text', e.target.value)} /></td>
+                      </tr>
+                      <tr>
+                        <td className='fw-semibold text-muted'>2</td>
+                        <td><input className='form-control form-control-sm' value={form.family_aside_2_title || ''} onChange={(e) => updateField('family_aside_2_title', e.target.value)} /></td>
+                        <td><input className='form-control form-control-sm' value={form.family_aside_2_text || ''} onChange={(e) => updateField('family_aside_2_text', e.target.value)} /></td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          </div>
+          </SectionCard>
+
+          <SectionCard col='col-lg-6' title='Misión' icon='mdi-bullseye-arrow'>
+            <div className='row g-3'>
+              <FormField col='col-md-5' label='Etiqueta' value={form.mission_eyebrow} onChange={(e) => updateField('mission_eyebrow', e.target.value)} />
+              <FormField col='col-md-7' label='Título' value={form.mission_title} onChange={(e) => updateField('mission_title', e.target.value)} />
+              <FormField col='col-12' label='Texto' textarea rows={4} value={form.mission_text} onChange={(e) => updateField('mission_text', e.target.value)} />
+            </div>
+          </SectionCard>
+
+          <SectionCard col='col-lg-6' title='Visión' icon='mdi-eye-outline'>
+            <div className='row g-3'>
+              <FormField col='col-md-5' label='Etiqueta' value={form.vision_eyebrow} onChange={(e) => updateField('vision_eyebrow', e.target.value)} />
+              <FormField col='col-md-7' label='Título' value={form.vision_title} onChange={(e) => updateField('vision_title', e.target.value)} />
+              <FormField col='col-12' label='Texto' textarea rows={4} value={form.vision_text} onChange={(e) => updateField('vision_text', e.target.value)} />
+            </div>
+          </SectionCard>
+
+          <SectionCard title='Valores' subtitle='Lista que se muestra en la tarjeta de Valores' icon='mdi-star-outline'>
+            <RepeaterTable
+              items={form.family_values}
+              columnLabel='Valor'
+              placeholder='Ej. Integridad'
+              minimum={3}
+              addLabel='Agregar valor'
+              onChange={(index, value) => updateListItem('family_values', index, value)}
+              onRemove={(index) => removeValue('family_values', index, 3, () => '')}
+              onAdd={() => addValue('family_values', () => '')}
+            />
+          </SectionCard>
         </>
       ) : (
         <>
-          <div className='col-12'>
-            <div className='card border-0 shadow-sm'>
-              <div className='card-body'>
-                <h5 className='mb-3'>Imagen principal de Politica</h5>
-                <div className='row g-3 align-items-start'>
-                  <div className='col-lg-7'>
-                    <div className='rounded-3 border bg-light p-3'>
-                      <img
-                        src={form.policy_image_preview || '/assets/img/landing/bg-main.png'}
-                        alt='Imagen principal de Politica'
-                        className='w-100 rounded-3 object-fit-cover'
-                        style={{ aspectRatio: '16/10', objectFit: 'cover' }}
-                      />
-                    </div>
-                  </div>
-                  <div className='col-lg-5'>
-                <label className='form-label'>Cambiar imagen</label>
-                <input type='file' className='form-control' accept='image/*' onChange={onPolicyImageChange} />
-                <input type='hidden' value={form.policy_image || ''} readOnly />
-                <small className='text-muted d-block mt-2'>
-                  Sube una imagen horizontal. Tamaño máximo: 4 MB.
-                </small>
-              </div>
-                </div>
-              </div>
+          <SectionCard title='Imagen principal' subtitle='Cabecera de la página de Política' icon='mdi-image-outline'>
+            <MediaUploader preview={form.policy_image_preview} onChange={onPolicyImageChange} hint='Imagen horizontal. Tamaño máximo: 4 MB.' />
+          </SectionCard>
+
+          <SectionCard title='Política del SGI' subtitle='Encabezado, alcance y descripción' icon='mdi-shield-check-outline'>
+            <div className='row g-3'>
+              <FormField col='col-md-4' label='Etiqueta' value={form.policy_eyebrow} onChange={(e) => updateField('policy_eyebrow', e.target.value)} />
+              <FormField col='col-md-8' label='Título' value={form.policy_title} onChange={(e) => updateField('policy_title', e.target.value)} />
+              <FormField col='col-12' label='Texto de compromiso' value={form.policy_commitment_text} onChange={(e) => updateField('policy_commitment_text', e.target.value)} />
+
+              <SubHeading>Alcance</SubHeading>
+              <FormField col='col-md-4' label='Etiqueta de alcance' value={form.policy_scope_eyebrow} onChange={(e) => updateField('policy_scope_eyebrow', e.target.value)} />
+              <FormField col='col-md-8' label='Título de alcance' value={form.policy_scope_title} onChange={(e) => updateField('policy_scope_title', e.target.value)} />
+              <FormField col='col-md-6' label='Párrafo de alcance 1' textarea value={form.policy_scope_paragraph_1} onChange={(e) => updateField('policy_scope_paragraph_1', e.target.value)} />
+              <FormField col='col-md-6' label='Párrafo de alcance 2' textarea value={form.policy_scope_paragraph_2} onChange={(e) => updateField('policy_scope_paragraph_2', e.target.value)} />
+
+              <SubHeading>Nuestra política</SubHeading>
+              <FormField col='col-12' label='Descripción' textarea rows={4} value={form.policy_description} onChange={(e) => updateField('policy_description', e.target.value)} />
+              <FormField col='col-12' label='Título de certificaciones' value={form.policy_certifications_title} onChange={(e) => updateField('policy_certifications_title', e.target.value)} />
             </div>
-          </div>
+          </SectionCard>
 
-          <div className='col-12'>
-            <div className='card border-0 shadow-sm'>
-              <div className='card-body'>
-                <h5 className='mb-3'>Politica y certificaciones</h5>
-                <div className='row g-3'>
-                  <div className='col-md-4'>
-                    <label className='form-label'>Etiqueta</label>
-                    <input className='form-control' value={form.policy_eyebrow || ''} onChange={(event) => updateField('policy_eyebrow', event.target.value)} />
-                  </div>
-                  <div className='col-md-8'>
-                    <label className='form-label'>Titulo</label>
-                    <input className='form-control' value={form.policy_title || ''} onChange={(event) => updateField('policy_title', event.target.value)} />
-                  </div>
-                  <div className='col-md-4'>
-                    <label className='form-label'>Etiqueta de alcance</label>
-                    <input className='form-control' value={form.policy_scope_eyebrow || ''} onChange={(event) => updateField('policy_scope_eyebrow', event.target.value)} />
-                  </div>
-                  <div className='col-md-8'>
-                    <label className='form-label'>Titulo de alcance</label>
-                    <input className='form-control' value={form.policy_scope_title || ''} onChange={(event) => updateField('policy_scope_title', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Parrafo de alcance 1</label>
-                    <textarea className='form-control' rows='3' value={form.policy_scope_paragraph_1 || ''} onChange={(event) => updateField('policy_scope_paragraph_1', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Parrafo de alcance 2</label>
-                    <textarea className='form-control' rows='3' value={form.policy_scope_paragraph_2 || ''} onChange={(event) => updateField('policy_scope_paragraph_2', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Texto de compromiso</label>
-                    <input className='form-control' value={form.policy_commitment_text || ''} onChange={(event) => updateField('policy_commitment_text', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Descripcion</label>
-                    <textarea className='form-control' rows='4' value={form.policy_description || ''} onChange={(event) => updateField('policy_description', event.target.value)} />
-                  </div>
-                  <div className='col-12'>
-                    <label className='form-label'>Titulo de certificaciones</label>
-                    <input className='form-control' value={form.policy_certifications_title || ''} onChange={(event) => updateField('policy_certifications_title', event.target.value)} />
-                  </div>
-                </div>
+          <SectionCard title='Puntos de política' subtitle='Viñetas de la sección "Nuestra política"' icon='mdi-format-list-bulleted'>
+            <RepeaterTable
+              items={form.policy_bullets}
+              columnLabel='Punto'
+              placeholder='Describe el compromiso...'
+              minimum={1}
+              addLabel='Agregar punto'
+              onChange={(index, value) => updateListItem('policy_bullets', index, value)}
+              onRemove={(index) => removeValue('policy_bullets', index, 1, () => '')}
+              onAdd={() => addValue('policy_bullets', () => '')}
+            />
+          </SectionCard>
 
-                <hr className='my-4' />
+          <SectionCard title='Certificaciones' subtitle='Hasta 3 certificados con imagen y PDF descargable' icon='mdi-certificate-outline'>
+            <div className='row g-3'>
+              {form.certifications.map((item, index) => {
+                const hasPdf = Boolean(item.file_path || item.file_file)
 
-                <div className='d-flex align-items-center justify-content-between gap-3 mb-3'>
-                  <h6 className='mb-0'>Puntos de politica</h6>
-                  <button type='button' className='btn btn-soft-primary btn-sm' onClick={() => addValue('policy_bullets', () => '')}>
-                    Agregar punto
-                  </button>
-                </div>
-                <div className='row g-2'>
-                  {form.policy_bullets.map((item, index) => (
-                    <div className='col-12' key={`policy-bullet-${index}`}>
-                      <div className='input-group'>
-                        <input className='form-control' value={item} onChange={(event) => updateListItem('policy_bullets', index, event.target.value)} />
-                        <button type='button' className='btn btn-outline-danger' onClick={() => removeValue('policy_bullets', index, 1, () => '')}>
-                          Quitar
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <hr className='my-4' />
-
-                <div className='row g-3'>
-                  {form.certifications.map((item, index) => (
-                    <div className='col-lg-4' key={`cert-${index}`}>
-                      <div className='border rounded p-3 h-100'>
-                        <div className='mb-3 fw-semibold'>Certificacion {index + 1}</div>
-                        <div className='mb-3'>
-                          <label className='form-label'>Titulo</label>
-                          <input className='form-control' value={item.title || ''} onChange={(event) => updateCertification(index, 'title', event.target.value)} />
+                return (
+                  <div className='col-lg-4' key={`cert-${index}`}>
+                    <div className='card border h-100'>
+                      <div className='card-body'>
+                        <div className='d-flex align-items-center justify-content-between mb-2'>
+                          <span className='badge bg-primary-subtle text-primary'>Certificación {index + 1}</span>
+                          <span className={`badge ${hasPdf ? 'bg-success-subtle text-success' : 'bg-light text-muted'}`}>
+                            {hasPdf ? 'PDF cargado' : 'Sin PDF'}
+                          </span>
                         </div>
-                        <div className='mb-3'>
-                          <label className='form-label'>Descripcion</label>
-                          <textarea className='form-control' rows='3' value={item.description || ''} onChange={(event) => updateCertification(index, 'description', event.target.value)} />
+
+                        <div className='rounded border bg-light p-2 mb-3'>
+                          <img
+                            src={item.image_preview || IMAGE_FALLBACK}
+                            alt={item.title || `Certificación ${index + 1}`}
+                            className='w-100 rounded'
+                            style={{ aspectRatio: '4/3', objectFit: 'contain', background: '#fff' }}
+                          />
                         </div>
-                        <div className='mb-3'>
-                          <label className='form-label'>Imagen del certificado</label>
-                          <div className='mb-2 rounded border bg-light p-2'>
-                            <img
-                              src={item.image_preview || '/assets/img/landing/bg-main.png'}
-                              alt={item.title || `Certificacion ${index + 1}`}
-                              className='w-100 rounded'
-                              style={{ aspectRatio: '4/3', objectFit: 'contain', background: '#fff' }}
-                            />
+
+                        <div className='mb-2'>
+                          <label className='form-label small fw-semibold'>Título</label>
+                          <input className='form-control form-control-sm' value={item.title || ''} onChange={(e) => updateCertification(index, 'title', e.target.value)} />
+                        </div>
+                        <div className='mb-2'>
+                          <label className='form-label small fw-semibold'>Descripción</label>
+                          <textarea className='form-control form-control-sm' rows={2} value={item.description || ''} onChange={(e) => updateCertification(index, 'description', e.target.value)} />
+                        </div>
+                        <div className='mb-2'>
+                          <label className='form-label small fw-semibold'>Imagen <span className='text-muted fw-normal'>(máx. 4 MB)</span></label>
+                          <input type='file' className='form-control form-control-sm' accept='image/*' onChange={(e) => onCertificationImageChange(index, e)} />
+                        </div>
+                        <div>
+                          <label className='form-label small fw-semibold'>PDF <span className='text-muted fw-normal'>(máx. 50 MB)</span></label>
+                          <input type='file' className='form-control form-control-sm mb-2' accept='application/pdf' onChange={(e) => onCertificationPdfChange(index, e)} />
+                          <div className='d-flex align-items-center justify-content-between gap-2'>
+                            {item.file_path ? (
+                              <a href={`/storage/${item.file_path}`} target='_blank' rel='noreferrer' className='small text-primary text-truncate'>
+                                <i className='mdi mdi-file-pdf-box me-1'></i>{item.file_label || 'Ver PDF'}
+                              </a>
+                            ) : item.file_file ? (
+                              <small className='text-success text-truncate'><i className='mdi mdi-file-check-outline me-1'></i>{item.file_label}</small>
+                            ) : (
+                              <small className='text-muted'>Sin archivo</small>
+                            )}
+                            <button type='button' className='btn btn-sm btn-soft-danger' title='Eliminar PDF' disabled={!hasPdf} onClick={() => clearCertificationPdf(index)}>
+                              <i className='mdi mdi-trash-can'></i>
+                            </button>
                           </div>
-                      <input type='file' className='form-control' accept='image/*' onChange={(event) => onCertificationImageChange(index, event)} />
-                      <small className='text-muted d-block mt-2'>Tamaño máximo: 4 MB.</small>
-                    </div>
-                    <div>
-                      <label className='form-label'>PDF del certificado</label>
-                      <input type='file' className='form-control mb-2' accept='application/pdf' onChange={(event) => onCertificationPdfChange(index, event)} />
-                      <small className='text-muted d-block mb-2'>Tamaño máximo: 50 MB.</small>
-                      <div className='mb-2'>
-                        <button
-                          type='button'
-                          className='btn btn-outline-danger btn-sm'
-                          onClick={() => clearCertificationPdf(index)}
-                          disabled={!item.file_path && !item.file_file}
-                        >
-                          Eliminar PDF
-                        </button>
-                      </div>
-                      {item.file_path ? (
-                        <a href={`/storage/${item.file_path}`} target='_blank' rel='noreferrer' className='small text-primary text-decoration-underline'>
-                          {item.file_label || 'Ver PDF actual'}
-                            </a>
-                          ) : (
-                            <small className='text-muted'>Todavia no hay PDF cargado.</small>
-                          )}
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                )
+              })}
             </div>
-          </div>
+          </SectionCard>
         </>
       )}
     </div>

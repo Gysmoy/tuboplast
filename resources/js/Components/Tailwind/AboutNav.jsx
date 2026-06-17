@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 
 const tabs = [
-  { label: 'Familia e Historia', href: '/family' },
-  { label: 'Política de SGI', href: '/politica-sgi' },
+  { label: 'Familia e Historia', href: '/about' },
+  { label: 'Política de SGI', href: '/sgi-policy' },
 ]
 
 const normalizePath = (path) => {
-  if (path === '/family' || path === '/about' || path === '/about/familia' || path === '/nosotros-familia') return '/family'
-  if (path === '/politica-sgi' || path === '/about/politica' || path === '/nosotros-politica') return '/politica-sgi'
+  if (path === '/about' || path === '/family' || path === '/about/familia' || path === '/nosotros-familia') return '/about'
+  if (path === '/sgi-policy' || path === '/politica-sgi' || path === '/about/politica' || path === '/nosotros-politica') return '/sgi-policy'
   return path
 }
 
 const AboutNav = ({ variant = 'default' }) => {
   const currentPath =
-    typeof window === 'undefined' ? '/family' : window.location.pathname.replace(/\/$/, '') || '/family'
+    typeof window === 'undefined' ? '/about' : window.location.pathname.replace(/\/$/, '') || '/about'
 
   const normalizedPath = normalizePath(currentPath)
   const [isOpen, setIsOpen] = useState(false)

@@ -9,14 +9,18 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\QuoteController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\UbigeoController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('landing', [LandingController::class, 'storeContact']);
+Route::get('catalog/search', [LandingController::class, 'searchProducts']);
+Route::get('catalog/items', [LandingController::class, 'catalogItems']);
 Route::get('categories/media/{uuid}', [CategoryController::class, 'media']);
 Route::get('ubigeo/inei', [UbigeoController::class, 'inei']);
 
@@ -31,6 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::post('club/paginate', [ClubController::class, 'paginate']);
     Route::patch('club/seen', [ClubController::class, 'seen']);
     Route::delete('club/{id}', [ClubController::class, 'delete']);
+    Route::post('quotes/paginate', [QuoteController::class, 'paginate']);
+    Route::patch('quotes/seen', [QuoteController::class, 'seen']);
+    Route::patch('quotes/state', [QuoteController::class, 'changeState']);
+    Route::delete('quotes/{id}', [QuoteController::class, 'delete']);
 
     Route::post('roles/paginate', [RoleController::class, 'paginate']);
     Route::post('roles', [RoleController::class, 'save']);
@@ -61,6 +69,12 @@ Route::middleware('auth')->group(function () {
     Route::get('categories/{id}', [CategoryController::class, 'get']);
     Route::patch('categories/status', [CategoryController::class, 'status']);
     Route::delete('categories/{id}', [CategoryController::class, 'delete']);
+
+    Route::post('items/paginate', [ItemController::class, 'paginate']);
+    Route::post('items', [ItemController::class, 'save']);
+    Route::get('items/{id}', [ItemController::class, 'get']);
+    Route::patch('items/status', [ItemController::class, 'status']);
+    Route::delete('items/{id}', [ItemController::class, 'delete']);
 
     Route::post('about', [AboutController::class, 'save']);
     Route::get('about/{id}', [AboutController::class, 'get']);

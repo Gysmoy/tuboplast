@@ -4,66 +4,7 @@ import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
-const productTemplates = [
-  {
-    categoryLabel: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-    image: '/assets/img/items/item-2.png',
-    price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33 mm',
-  },
-  {
-    categoryLabel: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-    image: '/assets/img/items/item-3.png',
-    price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33 mm',
-  },
-  {
-    categoryLabel: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-    image: '/assets/img/items/item-1.png',
-    price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33 mm',
-  },
-  {
-    categoryLabel: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-    image: '/assets/img/items/item-4.png',
-    price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33 mm',
-  },
-];
-
-const products = Array.from({ length: 12 }, (_, index) => ({
-  ...productTemplates[index % productTemplates.length],
-  id: index + 1,
-}));
-
-const materialOptions = [
-  'PVC-U (Saneamiento)',
-  '3/4" (26.5mm) CPVC (Agua Caliente)',
-  'HDPE (Minería)',
-];
-
-const diameterOptions = [
-  '1/2" (21mm)',
-  '3/4" (26.5mm)',
-  '1" (33mm)',
-  '2" (60mm)',
-  '4" (110mm)',
-];
-
-const pressureOptions = [
-  'Clase 5 (75 PSI)',
-  'Clase 7.5 (112 PSI)',
-  'Clase 10 (150 PSI)',
-  'Clase 15 (225 PSI)',
-];
+const emptyFilters = { segment: [], line: [], type: [], diameter: [] };
 
 const FilterCheckbox = ({ checked, label, onChange }) => (
   <label className={`flex cursor-pointer items-center gap-3 text-sm ${checked ? 'font-bold text-primary' : 'text-darkmuted'}`}>
@@ -86,8 +27,8 @@ const FilterGroup = ({ children, title }) => (
 
 const sortOptions = [
   { label: 'Más populares', value: 'popular' },
-  { label: 'Precio: menor a mayor', value: 'price-asc' },
-  { label: 'Precio: mayor a menor', value: 'price-desc' },
+  { label: 'Nombre: A → Z', value: 'name-asc' },
+  { label: 'Nombre: Z → A', value: 'name-desc' },
 ];
 
 const SortDropdown = ({ onChange, value }) => {
@@ -139,9 +80,7 @@ const SortDropdown = ({ onChange, value }) => {
                   setIsOpen(false);
                 }}
                 className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                  isSelected
-                    ? 'bg-silver font-bold text-primary'
-                    : 'text-darkmuted hover:bg-silver'
+                  isSelected ? 'bg-silver font-bold text-primary' : 'text-darkmuted hover:bg-silver'
                 }`}
               >
                 {option.label}
@@ -155,33 +94,122 @@ const SortDropdown = ({ onChange, value }) => {
   );
 };
 
-const CatalogScreen = () => {
-  const [selectedFilters, setSelectedFilters] = useState([
-    'HDPE (Minería)',
-    '1" (33mm)',
-    'Clase 7.5 (112 PSI)',
-  ]);
-  const [application, setApplication] = useState('Edificación');
+// Windowed page list (1 … 4 5 6 … 56) so it scales to thousands of pages.
+const buildPages = (current, last) => {
+  if (last <= 1) return [1];
+  const pages = [1];
+  const left = Math.max(2, current - 1);
+  const right = Math.min(last - 1, current + 1);
+  if (left > 2) pages.push('…');
+  for (let page = left; page <= right; page += 1) pages.push(page);
+  if (right < last - 1) pages.push('…');
+  pages.push(last);
+  return pages;
+};
+
+const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = null }) => {
+  const [items, setItems] = useState(initialItems);
+  const [meta, setMeta] = useState(pagination);
+  const [filters, setFilters] = useState(emptyFilters);
+  const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [sort, setSort] = useState('popular');
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const firstRender = useRef(true);
 
-  const visibleProducts = useMemo(() => {
-    if (sort === 'price-asc') {
-      return [...products].sort((a, b) => Number(a.price.replace(/[^\d.]/g, '')) - Number(b.price.replace(/[^\d.]/g, '')));
-    }
-    if (sort === 'price-desc') {
-      return [...products].sort((a, b) => Number(b.price.replace(/[^\d.]/g, '')) - Number(a.price.replace(/[^\d.]/g, '')));
-    }
-    return products;
-  }, [sort]);
-
-  const toggleFilter = (label) => {
-    setSelectedFilters((current) => (
-      current.includes(label)
-        ? current.filter((item) => item !== label)
-        : [...current, label]
-    ));
+  const facetGroups = {
+    segment: facets.segment || [],
+    line: facets.line || [],
+    type: facets.type || [],
+    diameter: facets.diameter || [],
   };
+
+  const activeCount = Object.values(filters).reduce((total, list) => total + list.length, 0);
+  const hasActive = activeCount > 0 || query.trim().length > 0;
+  const totalPages = meta?.last_page || 1;
+  const currentPage = meta?.current_page || page;
+  const total = meta?.total ?? items.length;
+
+  // Debounce the search box and reset to page 1.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query.trim());
+      setPage(1);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Fetch a page from the backend whenever filters/sort/page/query change.
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    setLoading(true);
+
+    const params = new URLSearchParams();
+    if (debouncedQuery) params.set('q', debouncedQuery);
+    filters.segment.forEach((value) => params.append('segment[]', value));
+    filters.line.forEach((value) => params.append('line[]', value));
+    filters.type.forEach((value) => params.append('type[]', value));
+    filters.diameter.forEach((value) => params.append('diameter[]', value));
+    params.set('sort', sort);
+    params.set('page', String(page));
+
+    fetch(`/api/catalog/items?${params.toString()}`, {
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setItems(Array.isArray(data.data) ? data.data : []);
+        setMeta(data.meta || null);
+      })
+      .catch((error) => {
+        if (error.name !== 'AbortError') {
+          setItems([]);
+          setMeta(null);
+        }
+      })
+      .finally(() => setLoading(false));
+
+    return () => controller.abort();
+  }, [filters, sort, page, debouncedQuery]);
+
+  const toggleFilter = (group, value) => {
+    setFilters((current) => {
+      const list = current[group];
+      const next = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+      return { ...current, [group]: next };
+    });
+    setPage(1);
+  };
+
+  const clearFilters = () => {
+    setFilters(emptyFilters);
+    setQuery('');
+    setDebouncedQuery('');
+    setPage(1);
+  };
+
+  const goToPage = (next) => {
+    const target = Math.min(Math.max(next, 1), totalPages);
+    setPage(target);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const changeSort = (value) => {
+    setSort(value);
+    setPage(1);
+  };
+
+  const pages = useMemo(() => buildPages(currentPage, totalPages), [currentPage, totalPages]);
 
   return (
     <main className="space-y-10 sm:space-y-12 lg:space-y-16">
@@ -205,7 +233,7 @@ const CatalogScreen = () => {
                 Filtrar Por
               </span>
               <span className="flex items-center gap-2 text-xs font-bold lg:hidden">
-                {selectedFilters.length} activos
+                {activeCount} activos
                 <i className={`mdi mdi-chevron-down text-lg transition ${isFiltersOpen ? 'rotate-180' : ''}`}></i>
               </span>
             </button>
@@ -215,57 +243,88 @@ const CatalogScreen = () => {
               className={`${isFiltersOpen ? 'block' : 'hidden'} mt-5 rounded-xl border border-silver bg-white p-5 shadow-sm lg:mt-8 lg:block lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none`}
             >
               <div className="space-y-8">
-                <FilterGroup title="Material">
-                  {materialOptions.map((label) => (
-                    <FilterCheckbox
-                      key={label}
-                      label={label}
-                      checked={selectedFilters.includes(label)}
-                      onChange={() => toggleFilter(label)}
+                <div>
+                  <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.18em] text-muted">Buscar</p>
+                  <label className="relative block">
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                      placeholder="Producto, categoría o SKU…"
+                      className="h-11 w-full rounded-xl border border-silver bg-white pl-10 pr-9 text-sm text-dark outline-none transition focus:border-primary"
                     />
-                  ))}
-                </FilterGroup>
-
-                <FilterGroup title="Aplicación / Uso">
-                  <div className="flex flex-wrap gap-2">
-                    {['Edificación', 'Minería', 'Infraestructura'].map((label) => (
+                    <i className="mdi mdi-magnify pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-primary"></i>
+                    {query && (
                       <button
-                        key={label}
                         type="button"
-                        onClick={() => setApplication(label)}
-                        className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
-                          application === label
-                            ? 'bg-primary text-white'
-                            : 'bg-silver text-darkmuted hover:bg-slate-200'
-                        }`}
+                        onClick={() => setQuery('')}
+                        aria-label="Limpiar búsqueda"
+                        className="absolute right-2 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-full text-muted transition hover:text-primary"
                       >
-                        {label}
+                        <i className="mdi mdi-close text-sm"></i>
                       </button>
+                    )}
+                  </label>
+                </div>
+
+                {hasActive && (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.08em] text-primary transition hover:text-[#003b7a]"
+                  >
+                    <i className="mdi mdi-close-circle-outline text-sm"></i>
+                    Limpiar {activeCount > 0 ? `filtros (${activeCount})` : 'búsqueda'}
+                  </button>
+                )}
+
+                {facetGroups.segment.length > 0 && (
+                  <FilterGroup title="Segmento">
+                    {facetGroups.segment.map((label) => (
+                      <FilterCheckbox key={label} label={label} checked={filters.segment.includes(label)} onChange={() => toggleFilter('segment', label)} />
                     ))}
-                  </div>
-                </FilterGroup>
+                  </FilterGroup>
+                )}
 
-                <FilterGroup title="Diámetro nominal (pulg)">
-                  {diameterOptions.map((label) => (
-                    <FilterCheckbox
-                      key={label}
-                      label={label}
-                      checked={selectedFilters.includes(label)}
-                      onChange={() => toggleFilter(label)}
-                    />
-                  ))}
-                </FilterGroup>
+                {facetGroups.line.length > 0 && (
+                  <FilterGroup title="Línea de producto">
+                    {facetGroups.line.map((label) => (
+                      <FilterCheckbox key={label} label={label} checked={filters.line.includes(label)} onChange={() => toggleFilter('line', label)} />
+                    ))}
+                  </FilterGroup>
+                )}
 
-                <FilterGroup title="Clase / Presión (PSI)">
-                  {pressureOptions.map((label) => (
-                    <FilterCheckbox
-                      key={label}
-                      label={label}
-                      checked={selectedFilters.includes(label)}
-                      onChange={() => toggleFilter(label)}
-                    />
-                  ))}
-                </FilterGroup>
+                {facetGroups.type.length > 0 && (
+                  <FilterGroup title="Tipo de producto">
+                    <div className="flex flex-wrap gap-2">
+                      {facetGroups.type.map((label) => {
+                        const active = filters.type.includes(label);
+                        return (
+                          <button
+                            key={label}
+                            type="button"
+                            onClick={() => toggleFilter('type', label)}
+                            className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
+                              active ? 'bg-primary text-white' : 'bg-silver text-darkmuted hover:bg-slate-200'
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </FilterGroup>
+                )}
+
+                {facetGroups.diameter.length > 0 && (
+                  <FilterGroup title="Diámetro">
+                    <div className="max-h-56 space-y-3 overflow-y-auto pr-1">
+                      {facetGroups.diameter.map((label) => (
+                        <FilterCheckbox key={label} label={label} checked={filters.diameter.includes(label)} onChange={() => toggleFilter('diameter', label)} />
+                      ))}
+                    </div>
+                  </FilterGroup>
+                )}
 
                 <div className="rounded-lg bg-[#f0f0f0] p-4">
                   <p className="text-sm font-bold text-primary">Asesoría Técnica</p>
@@ -284,33 +343,88 @@ const CatalogScreen = () => {
 
         <div>
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
-            <p className="text-sm text-darkmuted">
-              Mostrando <b className="text-primary">{visibleProducts.length} de 48</b> productos
+            <p className="flex items-center gap-2 text-sm text-darkmuted">
+              {loading && <i className="mdi mdi-loading mdi-spin text-base text-primary"></i>}
+              Mostrando <b className="text-primary">{items.length}</b> de <b className="text-primary">{total}</b> productos
             </p>
 
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
               <span className="text-[10px] uppercase tracking-[0.08em] text-muted sm:text-xs">Ordenar por:</span>
-              <SortDropdown value={sort} onChange={setSort} />
+              <SortDropdown value={sort} onChange={changeSort} />
             </div>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
-            {visibleProducts.map((product) => (
-              <ItemCard key={product.id} product={product} />
-            ))}
-          </div>
+          {items.length ? (
+            <div className={`grid gap-5 transition-opacity sm:grid-cols-2 lg:gap-6 xl:grid-cols-3 ${loading ? 'opacity-50' : ''}`}>
+              {items.map((product) => (
+                <ItemCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid place-items-center rounded-2xl border border-dashed border-slate-300 px-6 py-20 text-center">
+              <span className="grid h-16 w-16 place-items-center rounded-full bg-silver text-primary">
+                <i className="mdi mdi-filter-remove-outline text-3xl"></i>
+              </span>
+              <h2 className="mt-5 font-title text-xl font-bold text-primary">
+                {hasActive ? 'No hay productos con esos filtros' : 'Aún no hay productos publicados'}
+              </h2>
+              <p className="mt-2 max-w-sm text-sm text-muted">
+                {hasActive
+                  ? 'Ajusta o limpia los filtros para ver más resultados.'
+                  : 'Los productos que registres en el panel administrativo aparecerán aquí automáticamente.'}
+              </p>
+              {hasActive && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white transition hover:bg-[#003b7a]"
+                >
+                  Limpiar filtros
+                </button>
+              )}
+            </div>
+          )}
 
-          <nav aria-label="Paginación del catálogo" className="mt-16 flex items-center justify-center gap-2">
-            <button type="button" aria-label="Página anterior" className="grid h-10 w-10 place-items-center border-b-2 border-slate-300 text-dark">
-              <i className="mdi mdi-chevron-left"></i>
-            </button>
-            <button type="button" className="grid h-10 w-10 place-items-center border-b-2 border-primary text-sm font-bold text-primary">1</button>
-            <button type="button" className="grid h-10 w-10 place-items-center border-b-2 border-slate-300 text-sm text-muted">2</button>
-            <button type="button" className="grid h-10 w-10 place-items-center border-b-2 border-slate-300 text-sm text-muted">3</button>
-            <button type="button" aria-label="Página siguiente" className="grid h-10 w-10 place-items-center border-b-2 border-slate-300 text-dark">
-              <i className="mdi mdi-chevron-right"></i>
-            </button>
-          </nav>
+          {totalPages > 1 ? (
+            <nav aria-label="Paginación del catálogo" className="mt-16 flex flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                aria-label="Página anterior"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage <= 1}
+                className="grid h-10 w-10 place-items-center border-b-2 border-slate-300 text-dark transition disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <i className="mdi mdi-chevron-left"></i>
+              </button>
+
+              {pages.map((item, index) => (
+                item === '…' ? (
+                  <span key={`gap-${index}`} className="grid h-10 w-10 place-items-center text-sm text-muted">…</span>
+                ) : (
+                  <button
+                    key={`page-${item}`}
+                    type="button"
+                    onClick={() => goToPage(item)}
+                    className={`grid h-10 w-10 place-items-center border-b-2 text-sm transition ${
+                      currentPage === item ? 'border-primary font-bold text-primary' : 'border-slate-300 text-muted hover:text-primary'
+                    }`}
+                  >
+                    {item}
+                  </button>
+                )
+              ))}
+
+              <button
+                type="button"
+                aria-label="Página siguiente"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+                className="grid h-10 w-10 place-items-center border-b-2 border-slate-300 text-dark transition disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <i className="mdi mdi-chevron-right"></i>
+              </button>
+            </nav>
+          ) : null}
         </div>
       </section>
 
@@ -341,10 +455,14 @@ const CatalogScreen = () => {
   );
 };
 
-CreateReactScript((el) => {
+CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title="Catálogo">
-      <CatalogScreen />
+      <CatalogScreen
+        items={properties.items || []}
+        facets={properties.facets || {}}
+        pagination={properties.pagination || null}
+      />
     </Base>,
   );
 });

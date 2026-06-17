@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
 
 class ProductController extends BasicController
 {
@@ -20,95 +23,157 @@ class ProductController extends BasicController
 
     public function setReactViewProperties(Request $request)
     {
+        $item = Item::query()
+            ->where('status', true)
+            ->where('slug', $this->slug)
+            ->with('category')
+            ->first();
+
+        if (!$item) {
+            abort(404);
+        }
+
+        $this->trackView($item, $request);
+
+        $image = $this->imageUrl($item);
+        $this->seo = [
+            'title' => $item->title . ' | ' . env('APP_NAME', 'Tuboplast'),
+            'description' => Str::limit(strip_tags($item->description ?: ($item->category->name ?? 'Producto Tuboplast')), 180),
+            'image' => Str::startsWith($image, 'http') ? $image : url($image),
+            'type' => 'product',
+            'url' => route('products.show', ['slug' => $item->slug]),
+        ];
+
         return [
             'token' => csrf_token(),
-            'product' => $this->findProductBySlug($this->slug),
-            'relatedProducts' => $this->relatedProducts(),
+            'product' => $this->mapProduct($item),
+            'relatedProducts' => $this->relatedProducts($item),
         ];
     }
 
     /**
-     * Replace this dummy resolver with Product::where('slug', $slug)->firstOrFail()
-     * when the catalog is connected to the database.
+     * Cuenta una vista por sesión: usa una cookie de sesión con los IDs ya
+     * vistos, de modo que actualizar la página no vuelve a contar, pero una
+     * próxima sesión (nuevo navegador) sí cuenta de nuevo.
      */
-    private function findProductBySlug(string $slug): array
+    private function trackView(Item $item, Request $request): void
     {
+        $cookieName = 'tuboplast_viewed_items';
+        $raw = $request->cookie($cookieName);
+        $viewed = is_string($raw) ? array_filter(explode(',', $raw)) : [];
+
+        if (in_array((string) $item->id, $viewed, true)) {
+            return;
+        }
+
+        $item->increment('views');
+        $viewed[] = (string) $item->id;
+
+        Cookie::queue($cookieName, implode(',', $viewed), 0); // minutes 0 => cookie de sesión
+    }
+
+    private function imageUrl(Item $item): string
+    {
+        return $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png';
+    }
+
+    private function shortPressure(?string $pressure): string
+    {
+        if (!$pressure) return '-';
+        $low = mb_strtolower($pressure);
+        if (str_contains($low, 'no aplica')) return 'No aplica';
+        if (str_contains($low, 'gravedad') || str_contains($low, 'sin presion')) return 'Gravedad';
+        if (str_contains($low, 'roscado')) return 'Roscado';
+        if (preg_match('/PN-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
+        if (preg_match('/C-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
+        if (preg_match('/[\d.]+\s*bar/i', $pressure, $m)) return $m[0];
+        if (preg_match('/Sn\d[\w.-]*/i', $pressure, $m)) return strtoupper($m[0]);
+        return mb_strlen($pressure) > 16 ? (mb_substr($pressure, 0, 14) . '…') : $pressure;
+    }
+
+    private function diameterLabel(array $diameters): string
+    {
+        if (!count($diameters)) return '-';
+        if (count($diameters) === 1) return $diameters[0];
+        return $diameters[0] . ' – ' . end($diameters);
+    }
+
+    private function mapProduct(Item $item): array
+    {
+        $price = $item->price !== null ? (float) $item->price : null;
+        $category = $item->category->name ?? 'Producto';
+        $image = $this->imageUrl($item);
+
+        $diameters = is_array($item->diameters) ? $item->diameters : [];
+        $diameterLabel = $item->diameter ?: $this->diameterLabel($diameters);
+
         return [
-            'slug' => $slug,
-            'sku' => 'NTP-399.002',
-            'categoryLabel' => 'Tubería PVC-U',
-            'title' => 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-            'description' => 'Tubería de PVC de alta presión diseñada para sistemas de abastecimiento de agua potable. Fabricada bajo estrictos estándares industriales para garantizar durabilidad y resistencia hidráulica superior.',
-            'image' => '/assets/img/items/item-3.png',
-            'gallery' => [
-                '/assets/img/items/item-3.png',
-                '/assets/img/items/item-1.png',
-                '/assets/img/items/item-2.png',
-                '/assets/img/items/item-4.png',
-                '/assets/img/items/item-1.png',
-            ],
-            'unitPrice' => 28.30,
-            'standard' => 'NTP ISO 4422',
+            'id' => $item->id,
+            'slug' => $item->slug,
+            'sku' => $item->sku ?: '-',
+            'categoryLabel' => $category,
+            'title' => $item->title,
+            'description' => $item->description ?: 'Producto fabricado bajo los estándares de calidad de Tuboplast.',
+            'image' => $image,
+            'gallery' => [$image],
+            'unitPrice' => $price,
+            'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+            'standard' => $category,
             'stockLabel' => 'Stock disponible',
-            'summary' => [
-                ['label' => 'Material', 'value' => 'PVC-U Virgen'],
-                ['label' => 'Diámetro', 'value' => '110 mm'],
-                ['label' => 'Longitud', 'value' => '6.0 Metros'],
-                ['label' => 'Presión', 'value' => '10 Bar (PN 10)'],
-            ],
-            'technicalSpecifications' => [
+            'detailUrl' => route('products.show', ['slug' => $item->slug]),
+            'summary' => array_values(array_filter([
+                ['label' => 'Línea', 'value' => $category],
+                $item->type ? ['label' => 'Tipo', 'value' => $item->type] : null,
+                ['label' => 'Diámetros', 'value' => $diameterLabel],
+                ['label' => 'SKU', 'value' => $item->sku ?: '-'],
+            ])),
+            'technicalSpecifications' => array_values(array_filter([
                 [
-                    'title' => 'Material',
-                    'items' => [
-                        ['label' => 'Compuesto', 'value' => 'PVC-U Virgen'],
-                        ['label' => 'Densidad', 'value' => '1.42 g/cm³'],
-                        ['label' => 'Resistencia UV', 'value' => 'Estabilizado'],
-                    ],
+                    'title' => 'Especificaciones',
+                    'items' => array_values(array_filter([
+                        $item->segment ? ['label' => 'Segmento', 'value' => $item->segment] : null,
+                        ['label' => 'Línea', 'value' => $category],
+                        $item->classification ? ['label' => 'Clasificación', 'value' => $item->classification] : null,
+                        $item->type ? ['label' => 'Tipo', 'value' => $item->type] : null,
+                        $item->pressure ? ['label' => 'Presión', 'value' => $item->pressure] : null,
+                    ])),
                 ],
-                [
-                    'title' => 'Dimensiones',
-                    'items' => [
-                        ['label' => 'Diámetro nominal', 'value' => '3/4" (26.5 mm)'],
-                        ['label' => 'Longitud total', 'value' => '5.00 Metros'],
-                        ['label' => 'Espesor de pared', 'value' => '2.4 mm'],
-                    ],
-                ],
-                [
-                    'title' => 'Desempeño',
-                    'items' => [
-                        ['label' => 'Presión de trabajo', 'value' => '1.5 MPa (150 PSI)'],
-                        ['label' => 'Temp. máxima', 'value' => '45°C'],
-                        ['label' => 'Tipo de unión', 'value' => 'Simple Presión (SP)'],
-                    ],
-                ],
-                [
-                    'title' => 'Certificaciones',
-                    'items' => [
-                        ['label' => 'Norma técnica', 'value' => 'NTP 399.002:2015'],
-                        ['label' => 'Registro sanitario', 'value' => 'DIGESA 4452-2023'],
-                    ],
-                    'badges' => ['ISO', 'NTP'],
-                ],
-            ],
+                count($diameters) ? [
+                    'title' => 'Diámetros disponibles',
+                    'items' => [],
+                    'badges' => $diameters,
+                ] : null,
+            ])),
         ];
     }
 
-    private function relatedProducts(): array
+    private function relatedProducts(Item $current): array
     {
-        $defaultProduct = [
-            'categoryLabel' => 'Tubería PVC-U',
-            'title' => 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-            'price' => 'S/ 28.30',
-            'pressure' => '150 PSI',
-            'diameter' => '33 mm',
-            'detailUrl' => route('products.show', ['slug' => 'tuberia-agua-sp-clase-15-ntp-399-002']),
-        ];
+        return Item::query()
+            ->where('status', true)
+            ->where('id', '!=', $current->id)
+            ->with('category')
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(function ($item) {
+                $price = $item->price !== null ? (float) $item->price : null;
+                $diameters = is_array($item->diameters) ? $item->diameters : [];
 
-        return [
-            [...$defaultProduct, 'image' => '/assets/img/items/item-1.png'],
-            [...$defaultProduct, 'image' => '/assets/img/items/item-2.png'],
-            [...$defaultProduct, 'image' => '/assets/img/items/item-3.png'],
-            [...$defaultProduct, 'image' => '/assets/img/items/item-4.png'],
-        ];
+                return [
+                    'id' => $item->id,
+                    'sku' => $item->sku,
+                    'categoryLabel' => $item->category->name ?? 'Producto',
+                    'title' => $item->title,
+                    'image' => $this->imageUrl($item),
+                    'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+                    'unitPrice' => $price,
+                    'pressure' => $this->shortPressure($item->pressure),
+                    'diameter' => $item->diameter ?: $this->diameterLabel($diameters),
+                    'detailUrl' => route('products.show', ['slug' => $item->slug]),
+                ];
+            })
+            ->values()
+            ->all();
     }
 }

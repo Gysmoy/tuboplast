@@ -1,33 +1,38 @@
 import { useEffect, useRef, useState } from 'react';
 import Global from '../../Utils/Global';
+import QuoteRequestModal from './QuoteRequestModal';
+import ThankYouModal from './ThankYouModal';
+import SearchModal from './SearchModal';
 import {
   clearQuoteItems,
   readQuoteItems,
   removeQuoteItem,
   subscribeToQuoteChanges,
   subscribeToQuotePanelOpen,
+  updateQuoteItemQuantity,
 } from '../../Utils/quoteStorage';
 
 const navItems = [
   { label: 'Inicio', href: '/' },
   { label: 'Productos', href: '/catalog' },
   { label: 'Distribuidores', href: '/distributors' },
-  { label: 'Nosotros', href: '/family' },
+  { label: 'Nosotros', href: '/about' },
   { label: 'Club experto', href: '/club' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contacto', href: '/contact' },
 ];
 
-const SearchInput = ({ className = '' }) => (
-  <label className={`relative block ${className}`}>
-    <span className="sr-only">Buscar un producto o categoría</span>
-    <input
-      type="search"
-      placeholder="Busca el producto o categoría"
-      className="h-11 w-full rounded-xl bg-silver px-4 py-3 pr-12 text-sm text-dark outline-none transition placeholder:text-muted focus:ring-2 focus:ring-primary/25"
-    />
-    <i className="mdi mdi-magnify pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-lg text-primary"></i>
-  </label>
+const SearchTrigger = ({ className = '', onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    aria-label="Abrir buscador de productos"
+    className={`relative flex h-11 items-center gap-2 rounded-xl bg-silver px-4 text-left text-sm text-muted transition hover:ring-2 hover:ring-primary/20 ${className}`}
+  >
+    <i className="mdi mdi-magnify text-lg text-primary"></i>
+    <span className="flex-1 truncate">Busca el producto o categoría</span>
+    <span className="hidden shrink-0 rounded-md border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] font-bold text-muted lg:block">Ctrl K</span>
+  </button>
 );
 
 const HeaderAction = ({ children, href, icon, onClick }) => {
@@ -49,6 +54,9 @@ const HeaderAction = ({ children, href, icon, onClick }) => {
 const Header = ({ title }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const [isQuoteFormOpen, setIsQuoteFormOpen] = useState(false);
+  const [isThankYouOpen, setIsThankYouOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [quoteItems, setQuoteItems] = useState(() => readQuoteItems());
   const menuButtonRef = useRef(null);
   const mobileMenuRef = useRef(null);
@@ -66,6 +74,17 @@ const Header = ({ title }) => {
     setIsQuoteOpen(true);
   };
 
+  const changeQuantity = (item, delta) => {
+    updateQuoteItemQuantity(item.quoteKey, (Number(item.quantity) || 1) + delta);
+  };
+
+  const handleQuoteSuccess = () => {
+    clearQuoteItems();
+    setIsQuoteFormOpen(false);
+    setIsQuoteOpen(false);
+    setIsThankYouOpen(true);
+  };
+
   useEffect(() => {
     document.title = `${title} | ${Global.APP_NAME}`;
   }, [title]);
@@ -75,7 +94,8 @@ const Header = ({ title }) => {
 
     const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
+      // While the quote form modal is open, let it own the Escape key.
+      if (event.key === 'Escape' && !isQuoteFormOpen) {
         setIsMenuOpen(false);
         setIsQuoteOpen(false);
       }
@@ -88,7 +108,7 @@ const Header = ({ title }) => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isMenuOpen, isQuoteOpen]);
+  }, [isMenuOpen, isQuoteOpen, isQuoteFormOpen]);
 
   useEffect(() => {
     if (!isMenuOpen) return undefined;
@@ -110,6 +130,18 @@ const Header = ({ title }) => {
 
   useEffect(() => subscribeToQuotePanelOpen(openQuote), []);
 
+  useEffect(() => {
+    const handleShortcut = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleShortcut);
+    return () => window.removeEventListener('keydown', handleShortcut);
+  }, []);
+
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white shadow-sm">
@@ -119,7 +151,7 @@ const Header = ({ title }) => {
               <img src="/assets/img/logo.svg" alt={Global.APP_NAME} className="h-9 md:h-10" />
             </a>
 
-            <SearchInput className="hidden flex-1 md:block" />
+            <SearchTrigger className="hidden flex-1 md:flex" onClick={() => setIsSearchOpen(true)} />
 
             <div className="ml-auto flex items-center gap-2 text-primary sm:gap-3 lg:gap-5">
               <div className="hidden sm:block">
@@ -177,7 +209,7 @@ const Header = ({ title }) => {
             </div>
           </div>
 
-          <SearchInput className="mt-4 md:hidden" />
+          <SearchTrigger className="mt-4 w-full md:hidden" onClick={() => setIsSearchOpen(true)} />
 
           <nav className="hidden items-center justify-between gap-6 lg:flex" aria-label="Navegación principal">
             <ul className="flex items-center gap-5 text-sm font-medium text-dark">
@@ -272,7 +304,7 @@ const Header = ({ title }) => {
             isQuoteOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div className="border-b border-slate-200 px-5 py-5 sm:px-6">
+          <div className="shrink-0 border-b border-slate-200 px-5 py-5 sm:px-6">
             <div className="flex items-start justify-between gap-5">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">
@@ -300,41 +332,69 @@ const Header = ({ title }) => {
             </div>
           </div>
 
-          <div className="flex flex-1 flex-col px-5 py-6 sm:px-6">
+          <div className="flex min-h-0 flex-1 flex-col">
             {quoteItems.length ? (
-              <div className="flex-1 space-y-3 overflow-y-auto pr-1">
+              <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-6 sm:px-6">
                 {quoteItems.map((item) => (
                   <article
                     key={item.quoteKey}
-                    className="flex items-center gap-4 rounded-xl border border-slate-200 p-3"
+                    className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-primary/40"
                   >
-                    <div className="h-16 w-16 overflow-hidden rounded-lg bg-silver">
+                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-silver">
                       <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-bold text-primary">{item.title}</p>
-                      <p className="mt-1 text-xs text-muted">
-                        Cantidad: <span className="font-bold text-darkmuted">{item.quantity}</span>
-                      </p>
-                      {item.priceLabel && (
-                        <p className="mt-1 text-xs text-muted">
-                          Precio: <span className="font-bold text-darkmuted">{item.priceLabel}</span>
-                        </p>
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="line-clamp-2 text-sm font-bold leading-tight text-primary">{item.title}</p>
+                        <button
+                          type="button"
+                          onClick={() => removeQuoteItem(item.quoteKey)}
+                          aria-label={`Eliminar ${item.title} de la cotización`}
+                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-silver text-muted transition hover:bg-red-50 hover:text-red-600"
+                        >
+                          <i className="mdi mdi-trash-can-outline text-base"></i>
+                        </button>
+                      </div>
+                      {item.sku && (
+                        <p className="mt-0.5 text-[10px] uppercase tracking-[0.12em] text-muted">{item.sku}</p>
                       )}
+
+                      <div className="mt-auto flex items-center justify-between pt-3">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted">Cantidad</span>
+                        <div className="flex items-center gap-1 rounded-full bg-silver p-1">
+                          <button
+                            type="button"
+                            onClick={() => changeQuantity(item, -1)}
+                            disabled={item.quantity <= 1}
+                            aria-label={`Reducir cantidad de ${item.title}`}
+                            className="grid h-7 w-7 place-items-center rounded-full bg-white text-primary shadow-sm transition hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-primary"
+                          >
+                            <i className="mdi mdi-minus text-sm"></i>
+                          </button>
+                          <input
+                            type="number"
+                            min={1}
+                            value={item.quantity}
+                            onChange={(event) => updateQuoteItemQuantity(item.quoteKey, event.target.value)}
+                            aria-label={`Cantidad de ${item.title}`}
+                            className="w-10 bg-transparent text-center text-sm font-bold text-primary outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => changeQuantity(item, 1)}
+                            aria-label={`Aumentar cantidad de ${item.title}`}
+                            className="grid h-7 w-7 place-items-center rounded-full bg-white text-primary shadow-sm transition hover:bg-primary hover:text-white"
+                          >
+                            <i className="mdi mdi-plus text-sm"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeQuoteItem(item.quoteKey)}
-                      aria-label={`Eliminar ${item.title} de la cotización`}
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-silver text-muted transition hover:bg-red-50 hover:text-red-600"
-                    >
-                      <i className="mdi mdi-trash-can-outline text-lg"></i>
-                    </button>
                   </article>
                 ))}
               </div>
             ) : (
-              <div className="flex flex-1 flex-col items-center justify-center px-2 py-10 text-center">
+              <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 text-center">
                 <span className="grid h-20 w-20 place-items-center rounded-full bg-silver text-primary">
                   <i className="mdi mdi-cart-outline text-4xl"></i>
                 </span>
@@ -355,7 +415,7 @@ const Header = ({ title }) => {
             )}
           </div>
 
-          <div className="border-t border-slate-200 bg-white px-5 py-5 sm:px-6">
+          <div className="shrink-0 border-t border-slate-200 bg-white px-5 py-5 sm:px-6">
             <p className="mb-4 flex items-start gap-2 text-xs leading-relaxed text-muted">
               <i className="mdi mdi-information-outline mt-0.5 text-base text-primary"></i>
               Agrega al menos un producto para habilitar el envío de tu solicitud.
@@ -363,6 +423,7 @@ const Header = ({ title }) => {
             <button
               type="button"
               disabled={!quoteItems.length}
+              onClick={() => setIsQuoteFormOpen(true)}
               className={`w-full rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-white transition ${
                 quoteItems.length ? 'hover:bg-[#003b7a]' : 'cursor-not-allowed opacity-45'
               }`}
@@ -387,6 +448,23 @@ const Header = ({ title }) => {
           </div>
         </aside>
       </div>
+
+      <QuoteRequestModal
+        isOpen={isQuoteFormOpen}
+        items={quoteItems}
+        onClose={() => setIsQuoteFormOpen(false)}
+        onSuccess={handleQuoteSuccess}
+      />
+
+      <ThankYouModal
+        isOpen={isThankYouOpen}
+        onClose={() => setIsThankYouOpen(false)}
+        eyebrow="Cotización generada"
+        title="¡Gracias por tu solicitud!"
+        description="Tu cotización fue registrada y descargada en PDF. Nuestro equipo comercial se pondrá en contacto contigo a la brevedad."
+      />
+
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
 };

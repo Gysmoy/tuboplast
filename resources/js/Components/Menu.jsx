@@ -4,9 +4,10 @@ import MenuItem from './MenuItem'
 import MenuItemContainer from './MenuItemContainer'
 import LaravelSession from '../Utils/LaravelSession'
 
-const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0 }) => {
+const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuotesCount = 0 }) => {
   const [messagesBadge, setMessagesBadge] = useState(Number(unreadMessagesCount) || 0)
   const [clubBadge, setClubBadge] = useState(Number(unreadClubCount) || 0)
+  const [quotesBadge, setQuotesBadge] = useState(Number(unreadQuotesCount) || 0)
   const mainRole = LaravelSession.roles?.[0] ?? { name: 'User' }
   const avatarImage = LaravelSession.image || session?.image
   const avatarUrl = avatarImage
@@ -20,6 +21,10 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0 }) => {
   useEffect(() => {
     setClubBadge(Number(unreadClubCount) || 0)
   }, [unreadClubCount])
+
+  useEffect(() => {
+    setQuotesBadge(Number(unreadQuotesCount) || 0)
+  }, [unreadQuotesCount])
 
   useEffect(() => {
     const decreaseMessagesBadge = () => {
@@ -37,6 +42,15 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0 }) => {
 
     window.addEventListener('club:seen', decreaseClubBadge)
     return () => window.removeEventListener('club:seen', decreaseClubBadge)
+  }, [])
+
+  useEffect(() => {
+    const decreaseQuotesBadge = () => {
+      setQuotesBadge((current) => Math.max(0, current - 1))
+    }
+
+    window.addEventListener('quotes:seen', decreaseQuotesBadge)
+    return () => window.removeEventListener('quotes:seen', decreaseQuotesBadge)
   }, [])
 
   return (<div className="sidenav-menu">
@@ -133,7 +147,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0 }) => {
 
       <ul className="side-nav">
         <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
-        <MenuItem href="/admin/quotes" icon='ti ti-receipt-2'>Cotizaciones</MenuItem>
+        <MenuItem href="/admin/quotes" icon='ti ti-receipt-2' badge={quotesBadge}>Cotizaciones</MenuItem>
         <MenuItem href="/admin/club" icon='ti ti-users-group' badge={clubBadge}>Club experto</MenuItem>
         <MenuItem href="/admin/messages" icon='ti ti-message-dots' badge={messagesBadge}>Mensajes</MenuItem>
 

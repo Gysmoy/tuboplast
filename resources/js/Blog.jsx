@@ -151,16 +151,16 @@ const BlogScreen = ({ blog = {} }) => {
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/92 to-white/35" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/50" />
 
-        <div className="relative mx-auto flex min-h-[420px] w-full max-w-site items-center px-4 py-10 sm:min-h-[560px] sm:py-16 lg:min-h-[700px] lg:items-end lg:py-24">
-          <div className="max-w-xl space-y-5 pb-2 sm:space-y-6 sm:pb-10 lg:pb-20">
+        <div className="relative mx-auto flex min-h-[340px] w-full max-w-site items-center px-4 py-12 sm:min-h-[420px] sm:py-16 lg:min-h-[500px]">
+          <div className="max-w-xl space-y-5">
             <span className="block h-1 w-12 bg-secondary" />
             <div className="space-y-4">
-              <h1 className="max-w-lg font-title text-[2.7rem] leading-[0.95] tracking-tight text-primary sm:text-6xl lg:text-[4.7rem]">
+              <h1 className="font-title text-4xl font-medium leading-[1.05] tracking-tight text-primary sm:text-5xl lg:text-6xl">
                 {heroBadge}:
                 <br />
                 {heroTitle}
               </h1>
-              <p className="max-w-lg text-[0.98rem] leading-relaxed text-darkmuted sm:text-lg">
+              <p className="max-w-md text-base leading-relaxed text-darkmuted">
                 {heroDescription}
               </p>
             </div>
@@ -189,12 +189,12 @@ const BlogScreen = ({ blog = {} }) => {
                   alt={post.title}
                   className="aspect-[16/10] w-full object-cover sm:aspect-[4/3]"
                 />
-                <div className="space-y-4 p-5">
+                <div className="space-y-3 p-5">
                   <span className="inline-flex rounded-full border border-[#cdddf3] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
                     {post.category}
                   </span>
-                  <h3 className="font-title text-[1.2rem] leading-tight text-primary sm:text-2xl">{post.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted line-clamp-3">{post.description}</p>
+                  <h3 className="font-title text-lg font-medium leading-snug text-primary sm:text-xl">{post.title}</h3>
+                  <p className="text-sm leading-relaxed text-muted line-clamp-2">{post.description}</p>
                   <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition group-hover:gap-3">
                     Leer articulo
                     <i className="mdi mdi-arrow-right text-base"></i>
@@ -206,20 +206,20 @@ const BlogScreen = ({ blog = {} }) => {
 
           <aside className="space-y-8 md:pl-2">
             <div>
-              <div className="mb-4 flex items-center gap-3">
+              <div className="mb-3 flex items-center gap-3">
                 <span className="h-0.5 w-6 bg-secondary" />
-                <p className="font-title text-2xl font-medium uppercase text-primary">Más leídos</p>
+                <p className="font-title text-sm font-bold uppercase tracking-[0.12em] text-primary">Más leídos</p>
               </div>
 
               <div className="divide-y divide-slate-200 rounded-2xl bg-white px-2 sm:px-0">
                 {mostRead.map((item) => (
-                  <article key={item.number} className="flex gap-4 py-5 first:pt-0 last:pb-0">
-                    <span className="min-w-14 font-title text-4xl font-medium leading-none text-[#d9e2ee] sm:text-5xl">
+                  <article key={item.number} className="flex gap-4 py-4 first:pt-0 last:pb-0">
+                    <span className="min-w-10 font-title text-3xl font-medium leading-none text-[#d9e2ee] sm:text-4xl">
                       {item.number}
                     </span>
                     <div className="space-y-1 pr-2">
-                      <h4 className="text-base leading-snug font-medium text-primary sm:text-lg">{item.title}</h4>
-                      <p className="text-xs uppercase tracking-[0.12em] text-muted">{item.category}</p>
+                      <h4 className="text-sm font-semibold leading-snug text-primary sm:text-base">{item.title}</h4>
+                      <p className="text-[11px] uppercase tracking-[0.12em] text-muted">{item.category}</p>
                     </div>
                   </article>
                 ))}
@@ -228,10 +228,10 @@ const BlogScreen = ({ blog = {} }) => {
 
             <article className="overflow-hidden rounded-2xl bg-primary text-white shadow-[0_10px_30px_rgba(0,59,122,0.22)]">
               <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6 sm:px-6 sm:py-7">
-                <h3 className="max-w-[12ch] font-title text-2xl leading-tight sm:text-[2.2rem]">
+                <h3 className="max-w-[14ch] font-title text-xl font-medium leading-tight sm:text-2xl">
                   {newsletter.title}
                 </h3>
-                <p className="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
+                <p className="mt-3 text-sm leading-relaxed text-white/80">
                   {newsletter.description}
                 </p>
 

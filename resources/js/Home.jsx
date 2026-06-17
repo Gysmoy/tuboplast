@@ -265,7 +265,7 @@ const HomeScreen = ({ blog = {} }) => {
             </div>
 
             <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8 lg:mt-auto lg:pt-14">
-              <a href="/family" className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-3 font-title text-sm font-medium text-primary shadow-sm sm:gap-4 sm:text-base">
+              <a href="/about" className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-3 font-title text-sm font-medium text-primary shadow-sm sm:gap-4 sm:text-base">
                 Especificaciones Técnicas
                 <i className="mdi mdi-arrow-right text-xl leading-none"></i>
               </a>

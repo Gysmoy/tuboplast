@@ -10,25 +10,32 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\QuoteController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 Route::get('/', [LandingController::class, 'reactView'])->name('landing');
 Route::get('/catalog', [LandingController::class, 'catalogView'])->name('catalog');
 Route::get('/distributors', [LandingController::class, 'distributorsView'])->name('distributors');
-Route::get('/family', [LandingController::class, 'aboutView'])->name('about');
-Route::get('/politica-sgi', [LandingController::class, 'aboutPoliticaView'])->name('about.politica');
+Route::get('/about', [LandingController::class, 'aboutView'])->name('about');
+Route::get('/sgi-policy', [LandingController::class, 'aboutPoliticaView'])->name('about.politica');
 Route::get('/about/media/{path}', [LandingController::class, 'aboutMedia'])->where('path', '.*')->name('about.media');
 Route::get('/blog/media/{path}', [LandingController::class, 'blogMedia'])->where('path', '.*')->name('blog.media');
-Route::redirect('/about', '/family', 301);
-Route::redirect('/about/familia', '/family', 301);
-Route::redirect('/nosotros-familia', '/family', 301);
-Route::redirect('/about/politica', '/politica-sgi', 301);
-Route::redirect('/nosotros-politica', '/politica-sgi', 301);
+Route::redirect('/family', '/about', 301);
+Route::redirect('/about/familia', '/about', 301);
+Route::redirect('/nosotros-familia', '/about', 301);
+Route::redirect('/politica-sgi', '/sgi-policy', 301);
+Route::redirect('/about/politica', '/sgi-policy', 301);
+Route::redirect('/nosotros-politica', '/sgi-policy', 301);
 Route::get('/blog', [LandingController::class, 'blogView'])->name('blog');
 Route::get('/blog/{slug}', [LandingController::class, 'blogPostView'])->where('slug', '[A-Za-z0-9\-]+')->name('blog.post');
 Route::get('/contact', [LandingController::class, 'contactView'])->name('contact');
@@ -37,6 +44,7 @@ Route::get('/item/{slug}', [ProductController::class, 'show'])->name('products.s
 Route::get('/privacy-policy', [LandingController::class, 'reactView']);
 Route::post('/landing/contact', [LandingController::class, 'storeContact'])->name('landing.contact');
 Route::post('/landing/club', [LandingController::class, 'storeClub'])->name('landing.club');
+Route::post('/landing/quote', [LandingController::class, 'storeQuote'])->name('landing.quote');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginView'])->name('Login.jsx');
@@ -62,6 +70,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/home', [HomeController::class, 'reactView'])->name('admin.home');
     Route::get('/admin/contacts', [ContactController::class, 'reactView'])->name('admin.contacts');
+    Route::get('/admin/quotes', [QuoteController::class, 'reactView'])->name('admin.quotes');
     Route::get('/admin/club', [ClubController::class, 'reactView'])->name('admin.club');
     Route::get('/admin/messages', [MessageController::class, 'reactView'])->name('admin.messages');
     Route::get('/admin/account', [AccountController::class, 'reactView'])->name('admin.account');
@@ -75,6 +84,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/distributors', [DistribuidorController::class, 'reactView'])->name('admin.distributors');
     Route::get('/admin/branches', [SucursalController::class, 'reactView'])->name('admin.branches');
     Route::get('/admin/categories', [CategoryController::class, 'reactView'])->name('admin.categories');
+    Route::get('/admin/items', [ItemController::class, 'reactView'])->name('admin.items');
     Route::get('/admin/about', [AboutController::class, 'reactView'])->name('admin.about');
     Route::get('/admin/blog', [BlogController::class, 'reactView'])->name('admin.blog');
 });
