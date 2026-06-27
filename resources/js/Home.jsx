@@ -27,6 +27,14 @@ const carouselProps = (lgPerView) => ({
   },
 });
 
+// Duplica el arreglo hasta tener al menos `min` slides para que el loop
+// funcione aunque vengan pocos elementos (4 -> 8).
+const loopSafe = (arr, min) => {
+  if (!arr.length || arr.length >= min) return arr;
+  const times = Math.ceil(min / arr.length);
+  return Array.from({ length: times }, () => arr).flat();
+};
+
 const strengths = [
   {
     title: 'Línea Completa',
@@ -356,7 +364,7 @@ const HomeScreen = ({ blog = {} }) => {
           </div>
 
           <Swiper {...carouselProps(4)} className="!pb-1">
-            {recommendations.map((product, index) => (
+            {loopSafe(recommendations, 8).map((product, index) => (
               <SwiperSlide key={`${product.title}-${index}`} className="!h-auto">
                 <ItemCard product={product} />
               </SwiperSlide>
@@ -406,10 +414,12 @@ const HomeScreen = ({ blog = {} }) => {
           <div className="grid gap-4 lg:grid-cols-4 lg:items-stretch">
             <div className="lg:col-span-3">
               <Swiper {...carouselProps(3)} className="!h-full !pb-1">
-                {blogPosts.map((post) => (
-                  <SwiperSlide key={post.title} className="!h-auto">
+                {loopSafe(blogPosts, 6).map((post, index) => (
+                  <SwiperSlide key={`${post.title}-${index}`} className="!h-auto">
                     <article data-reveal className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-                      <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
+                      <div className="aspect-[5/4] w-full overflow-hidden">
+                        <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="block h-full w-full object-cover" />
+                      </div>
                       <div className="px-4 py-6">
                         <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>
                         <p className="font-title text-base text-primary font-medium leading-tight mb-2 line-clamp-2 sm:text-xl">{post.title}</p>

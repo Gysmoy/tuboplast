@@ -121,7 +121,7 @@ class LandingController extends BasicController
 
     private function catalogPerPage(Request $request): int
     {
-        $perPage = (int) $request->query('per_page', 9);
+        $perPage = (int) $request->query('per_page', 12);
 
         return max(3, min($perPage, 48));
     }

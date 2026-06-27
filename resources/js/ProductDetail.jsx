@@ -2,12 +2,37 @@ import { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
 import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 import { addQuoteItem, downloadTechnicalSheet } from './Utils/quoteStorage';
 
 gsap.registerPlugin(useGSAP);
+
+// Carrusel: 2 visibles, avanza de uno, autoplay + drag con mouse.
+const carouselProps = (lgPerView) => ({
+  modules: [Autoplay],
+  spaceBetween: 12,
+  slidesPerView: 2,
+  slidesPerGroup: 1,
+  grabCursor: true,
+  loop: true,
+  autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
+  breakpoints: {
+    640: { slidesPerView: 2, spaceBetween: 16 },
+    1024: { slidesPerView: lgPerView, spaceBetween: 24 },
+  },
+});
+
+// Duplica el arreglo hasta tener al menos `min` slides para que el loop
+// funcione aunque vengan pocos productos (4 -> 8).
+const loopSafe = (arr, min) => {
+  if (!arr.length || arr.length >= min) return arr;
+  const times = Math.ceil(min / arr.length);
+  return Array.from({ length: times }, () => arr).flat();
+};
 
 const ProductGallery = ({ product, selectedIndex, onSelectImage }) => {
   const selectedImage = product.gallery[selectedIndex] ?? product.image;
@@ -348,11 +373,15 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
             </a>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {relatedProducts.map((relatedProduct, index) => (
-              <ItemCard key={`${relatedProduct.title}-${index}`} product={relatedProduct} />
-            ))}
-          </div>
+          {relatedProducts.length > 0 && (
+            <Swiper {...carouselProps(4)} className="!pb-1">
+              {loopSafe(relatedProducts, 8).map((relatedProduct, index) => (
+                <SwiperSlide key={`${relatedProduct.title}-${index}`} className="!h-auto">
+                  <ItemCard product={relatedProduct} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </section>
       </section>
     </main>

@@ -247,6 +247,7 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     filters.color.forEach((value) => params.append('color[]', value));
     params.set('sort', sort);
     params.set('page', String(page));
+    params.set('per_page', '12');
 
     fetch(`/api/catalog/items?${params.toString()}`, {
       headers: { Accept: 'application/json' },
