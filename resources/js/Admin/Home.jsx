@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import CreateReactScript from '../Utils/CreateReactScript.jsx'
 import Adminto from '../Components/Adminto.jsx'
@@ -49,18 +49,98 @@ const BRAND_CSS = `
 .wfd-st.contactado{background:#e8f0ff;color:#185fa5;}
 .wfd-st.convertido{background:#e1f5ee;color:#0f6e56;}
 .wfd-st.archivado{background:#f1efe8;color:#5f5e5a;}
+.wfd-ddwrap{position:relative;}
+.wfd-dd{height:38px;border:1px solid #dce5f0;border-radius:10px;background:#f5f8fc;font-size:13px;font-weight:600;color:#0f2540;padding:0 12px;display:inline-flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;width:100%;}
+.wfd-dd:hover{border-color:#004991;}
+.wfd-dd .chev{color:#8a93a6;font-size:14px;transition:transform .2s;}
+.wfd-ddwrap.open .wfd-dd .chev{transform:rotate(180deg);}
+.wfd-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:40;min-width:100%;max-height:260px;overflow-y:auto;background:#fff;border:1px solid #e7edf5;border-radius:12px;box-shadow:0 12px 30px rgba(15,37,64,.12);padding:6px;}
+.wfd-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;color:#1f2a44;cursor:pointer;border:0;background:none;width:100%;text-align:left;}
+.wfd-opt:hover{background:#f4f8fd;}
+.wfd-opt.sel{background:#e6effa;color:#004991;font-weight:700;}
+.wfd-wrap .spin{display:inline-block;animation:wfd-spin 1s linear infinite;}
+@keyframes wfd-spin{to{transform:rotate(360deg);}}
 `
 
 const FUNNEL_BAR = { warning: '#f0a82b', success: '#16a34a', primary: '#004991' }
 
-const Home = ({ dashboard }) => {
-  const data = useMemo(() => ({ ...EMPTY_DASHBOARD, ...(dashboard || {}) }), [dashboard])
+const CustomSelect = ({ value, options, onChange, icon, minWidth = 140 }) => {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const handler = (event) => {
+      if (!ref.current?.contains(event.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const selected = options.find((o) => String(o.value) === String(value))
+
+  return (
+    <div ref={ref} className={`wfd-ddwrap ${open ? 'open' : ''}`} style={{ minWidth }}>
+      <button type='button' className='wfd-dd' onClick={() => setOpen((o) => !o)}>
+        <span>{icon && <i className={`${icon} me-1`} style={{ color: '#004991' }}></i>}{selected ? selected.label : '—'}</span>
+        <i className='ti ti-chevron-down chev'></i>
+      </button>
+      {open && (
+        <div className='wfd-menu'>
+          {options.map((o) => (
+            <button
+              key={o.value}
+              type='button'
+              className={`wfd-opt ${String(o.value) === String(value) ? 'sel' : ''}`}
+              onClick={() => { onChange(o.value); setOpen(false) }}
+            >
+              {o.label}
+              {String(o.value) === String(value) && <i className='ti ti-check'></i>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const Home = ({ dashboard, filter }) => {
+  const [data, setData] = useState(dashboard || EMPTY_DASHBOARD)
+  const [year, setYear] = useState(filter?.year ?? new Date().getFullYear())
+  const [month, setMonth] = useState(filter?.month ?? (new Date().getMonth() + 1))
+  const [loading, setLoading] = useState(false)
   const chartRef = useRef(null)
   const apexRef = useRef(null)
+  const firstRender = useRef(true)
+
+  const d = useMemo(() => ({ ...EMPTY_DASHBOARD, ...(data || {}) }), [data])
+  const monthOptions = filter?.months ?? []
+  const yearOptions = (filter?.years ?? []).map((y) => ({ value: y, label: String(y) }))
 
   useEffect(() => {
     document.title = 'Inicio | Admin'
   }, [])
+
+  // Refetch del dashboard al cambiar mes/año (sin recargar la página).
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false
+      return undefined
+    }
+
+    const controller = new AbortController()
+    setLoading(true)
+    fetch(`/api/admin/dashboard?month=${month}&year=${year}`, {
+      headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      credentials: 'same-origin',
+      signal: controller.signal,
+    })
+      .then((response) => response.json())
+      .then((res) => { if (res?.dashboard) setData(res.dashboard) })
+      .catch((error) => { if (error.name !== 'AbortError') console.error(error) })
+      .finally(() => setLoading(false))
+
+    return () => controller.abort()
+  }, [month, year])
 
   useEffect(() => {
     if (!chartRef.current || typeof ApexCharts === 'undefined') return
@@ -68,12 +148,12 @@ const Home = ({ dashboard }) => {
     const options = {
       chart: { type: 'line', height: 340, toolbar: { show: false }, fontFamily: 'inherit' },
       series: [
-        { name: 'Cantidad de cotizaciones', type: 'column', data: data.chart.qty },
-        { name: 'Monto cotizado (S/)', type: 'line', data: data.chart.amount },
+        { name: 'Cantidad de cotizaciones', type: 'column', data: d.chart.qty },
+        { name: 'Monto cotizado (S/)', type: 'line', data: d.chart.amount },
       ],
       stroke: { width: [0, 3], curve: 'smooth' },
       plotOptions: { bar: { columnWidth: '46%', borderRadius: 5 } },
-      xaxis: { categories: data.chart.labels, title: { text: 'Día del mes' } },
+      xaxis: { categories: d.chart.labels, title: { text: 'Día del mes' } },
       yaxis: [
         { title: { text: 'Cantidad' }, labels: { formatter: (v) => Math.round(v) } },
         { opposite: true, title: { text: 'Monto (S/)' }, labels: { formatter: (v) => `S/ ${Math.round(v).toLocaleString('es-PE')}` } },
@@ -94,28 +174,35 @@ const Home = ({ dashboard }) => {
         apexRef.current = null
       }
     }
-  }, [data])
+  }, [d])
 
   return (
     <div className='wfd-wrap'>
       <style>{BRAND_CSS}</style>
 
       <div className='row g-3'>
-        {/* Encabezado */}
+        {/* Encabezado + filtro */}
         <div className='col-12'>
           <div className='wfd-card'>
-            <div className='d-flex align-items-center gap-3'>
-              <div className='wfd-iconbox'><i className='ti ti-layout-dashboard'></i></div>
-              <div>
-                <h2 className='wfd-h2'>Panel Comercial</h2>
-                <p className='wfd-sub text-capitalize'>Resumen ejecutivo de <b>{data.month_label || 'el mes actual'}</b></p>
+            <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3'>
+              <div className='d-flex align-items-center gap-3'>
+                <div className='wfd-iconbox'><i className='ti ti-layout-dashboard'></i></div>
+                <div>
+                  <h2 className='wfd-h2'>Panel Comercial</h2>
+                  <p className='wfd-sub text-capitalize'>Resumen ejecutivo de <b>{d.month_label || 'el mes actual'}</b></p>
+                </div>
+              </div>
+              <div className='d-flex align-items-center gap-2'>
+                {loading && <i className='ti ti-loader-2 spin' style={{ color: '#004991', fontSize: 18 }}></i>}
+                <CustomSelect value={month} options={monthOptions} onChange={setMonth} icon='ti ti-calendar-month' minWidth={150} />
+                <CustomSelect value={year} options={yearOptions} onChange={setYear} icon='ti ti-calendar' minWidth={110} />
               </div>
             </div>
           </div>
         </div>
 
         {/* KPIs */}
-        {data.kpis.map((kpi) => (
+        {d.kpis.map((kpi) => (
           <div key={kpi.title} className='col-12 col-md-6 col-xl-3'>
             <div className='wfd-card'>
               <div className='d-flex align-items-start justify-content-between'>
@@ -135,7 +222,7 @@ const Home = ({ dashboard }) => {
           <div className='wfd-card'>
             <div className='d-flex align-items-center justify-content-between mb-3'>
               <h2 className='wfd-h2'>Cotizaciones del mes</h2>
-              <span className='wfd-badge brand text-capitalize'>{data.month_label}</span>
+              <span className='wfd-badge brand text-capitalize'>{d.month_label}</span>
             </div>
             <div ref={chartRef} />
           </div>
@@ -146,7 +233,7 @@ const Home = ({ dashboard }) => {
           <div className='wfd-card'>
             <h2 className='wfd-h2 mb-3'>Métricas de desempeño</h2>
             <div className='d-flex flex-column gap-2'>
-              {data.metrics.map((metric) => (
+              {d.metrics.map((metric) => (
                 <div key={metric.label} className='wfd-metric'>
                   <small>{metric.label}</small>
                   <strong>{metric.value}</strong>
@@ -161,7 +248,7 @@ const Home = ({ dashboard }) => {
           <div className='wfd-card'>
             <h2 className='wfd-h2 mb-3'>Embudo de cotizaciones</h2>
             <div className='row g-3'>
-              {data.funnel.map((item) => (
+              {d.funnel.map((item) => (
                 <div key={item.stage} className='col-12 col-md-4'>
                   <div className='wfd-stage'>
                     <div className='d-flex justify-content-between align-items-center'>
@@ -169,7 +256,7 @@ const Home = ({ dashboard }) => {
                       <strong style={{ color: FUNNEL_BAR[item.color], fontSize: 18 }}>{item.value}</strong>
                     </div>
                     <div className='wfd-prog'>
-                      <span style={{ width: `${Math.min(100, (item.value / (data.funnel_max || 1)) * 100)}%`, background: FUNNEL_BAR[item.color] }} />
+                      <span style={{ width: `${Math.min(100, (item.value / (d.funnel_max || 1)) * 100)}%`, background: FUNNEL_BAR[item.color] }} />
                     </div>
                   </div>
                 </div>
@@ -185,7 +272,7 @@ const Home = ({ dashboard }) => {
               <div className='wfd-iconbox amber'><i className='ti ti-file-invoice'></i></div>
               <div>
                 <h2 className='wfd-h2'>Últimas cotizaciones</h2>
-                <p className='wfd-sub'>Las <b>{data.latest_quotes.length}</b> más recientes</p>
+                <p className='wfd-sub'>Las <b>{d.latest_quotes.length}</b> más recientes del periodo</p>
               </div>
             </div>
 
@@ -203,7 +290,7 @@ const Home = ({ dashboard }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.latest_quotes.length ? data.latest_quotes.map((quote) => (
+                  {d.latest_quotes.length ? d.latest_quotes.map((quote) => (
                     <tr key={quote.code}>
                       <td className='fw-semibold' style={{ color: '#004991' }}>{quote.code}</td>
                       <td>
@@ -217,7 +304,7 @@ const Home = ({ dashboard }) => {
                       <td className='text-end' style={{ color: '#8a93a6', whiteSpace: 'nowrap' }}>{quote.date}</td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={7} className='text-center py-4' style={{ color: '#9aa3b3' }}>Sin cotizaciones todavía</td></tr>
+                    <tr><td colSpan={7} className='text-center py-4' style={{ color: '#9aa3b3' }}>Sin cotizaciones en este periodo</td></tr>
                   )}
                 </tbody>
               </table>

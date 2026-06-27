@@ -16,13 +16,57 @@ class HomeController extends BasicController
 
     public function setReactViewProperties(Request $request)
     {
-        $now = Carbon::now();
-        $monthStart = $now->copy()->startOfMonth();
-        $monthEnd = $now->copy()->endOfMonth();
-        $prevStart = $now->copy()->subMonthNoOverflow()->startOfMonth();
-        $prevEnd = $now->copy()->subMonthNoOverflow()->endOfMonth();
+        return $this->payload($request);
+    }
 
-        // ---------------------------------------------------------- Conteos del mes
+    /** Endpoint JSON para el filtro de mes/año (sin recargar la página). */
+    public function data(Request $request)
+    {
+        return response()->json($this->payload($request));
+    }
+
+    private function payload(Request $request): array
+    {
+        $now = Carbon::now();
+        $year = (int) $request->query('year', $now->year);
+        $month = (int) $request->query('month', $now->month);
+        $month = max(1, min(12, $month));
+
+        return [
+            'dashboard' => $this->buildDashboard($year, $month),
+            'filter' => $this->buildFilter($year, $month),
+        ];
+    }
+
+    private function buildFilter(int $year, int $month): array
+    {
+        $minDate = Quote::min('created_at');
+        $firstYear = $minDate ? Carbon::parse($minDate)->year : Carbon::now()->year;
+        $firstYear = min($firstYear, Carbon::now()->year);
+
+        $years = range(Carbon::now()->year, $firstYear);
+
+        $months = collect(range(1, 12))->map(fn ($m) => [
+            'value' => $m,
+            'label' => ucfirst(Carbon::create(2000, $m, 1)->locale('es')->translatedFormat('F')),
+        ])->all();
+
+        return [
+            'year' => $year,
+            'month' => $month,
+            'years' => array_values($years),
+            'months' => $months,
+        ];
+    }
+
+    private function buildDashboard(int $year, int $month): array
+    {
+        $monthStart = Carbon::create($year, $month, 1)->startOfMonth();
+        $monthEnd = $monthStart->copy()->endOfMonth();
+        $prevStart = $monthStart->copy()->subMonthNoOverflow()->startOfMonth();
+        $prevEnd = $prevStart->copy()->endOfMonth();
+
+        // ---------------------------------------------------------- Conteos del periodo
         $quotesMonth = Quote::whereBetween('created_at', [$monthStart, $monthEnd])->count();
         $quotesPrev = Quote::whereBetween('created_at', [$prevStart, $prevEnd])->count();
 
@@ -38,7 +82,7 @@ class HomeController extends BasicController
         $convRate = $quotesMonth ? round($attended($monthStart, $monthEnd) / $quotesMonth * 100, 1) : 0;
         $convPrev = $quotesPrev ? round($attended($prevStart, $prevEnd) / $quotesPrev * 100, 1) : 0;
 
-        // ---------------------------------------------- Montos del mes (por moneda)
+        // ---------------------------------------------- Montos del periodo (por moneda)
         $totals = ['PEN' => 0.0, 'USD' => 0.0];
         Quote::whereBetween('created_at', [$monthStart, $monthEnd])->get(['items'])
             ->each(function ($quote) use (&$totals) {
@@ -59,8 +103,8 @@ class HomeController extends BasicController
         ]))) ?: 'S/ 0.00';
         $ticket = $quotesMonth ? $totals['PEN'] / $quotesMonth : 0;
 
-        // ---------------------------------------------- Serie del mes (por día)
-        $days = $now->daysInMonth;
+        // ---------------------------------------------- Serie del periodo (por día)
+        $days = $monthStart->daysInMonth;
         $qtyByDay = array_fill(1, $days, 0);
         $amountByDay = array_fill(1, $days, 0.0);
         Quote::whereBetween('created_at', [$monthStart, $monthEnd])->get(['created_at', 'items'])
@@ -85,88 +129,87 @@ class HomeController extends BasicController
         $itemsActive = Item::where('status', true)->count();
 
         return [
-            'dashboard' => [
-                'month_label' => ucfirst($now->locale('es')->translatedFormat('F Y')),
-                'kpis' => [
-                    [
-                        'title' => 'Cotizaciones del mes',
-                        'value' => number_format($quotesMonth),
-                        'icon' => 'ti ti-file-invoice',
-                        ...$this->delta($quotesMonth, $quotesPrev),
-                    ],
-                    [
-                        'title' => 'Club experto (mes)',
-                        'value' => number_format($clubMonth),
-                        'icon' => 'ti ti-users-group',
-                        ...$this->delta($clubMonth, $clubPrev),
-                    ],
-                    [
-                        'title' => 'Mensajes recibidos',
-                        'value' => number_format($messagesMonth),
-                        'icon' => 'ti ti-message-chatbot',
-                        ...$this->delta($messagesMonth, $messagesPrev),
-                    ],
-                    [
-                        'title' => 'Conversión a atendido',
-                        'value' => $convRate . '%',
-                        'icon' => 'ti ti-rotate-2',
-                        ...$this->deltaPts($convRate, $convPrev),
-                    ],
+            'month_label' => ucfirst($monthStart->locale('es')->translatedFormat('F Y')),
+            'kpis' => [
+                [
+                    'title' => 'Cotizaciones del mes',
+                    'value' => number_format($quotesMonth),
+                    'icon' => 'ti ti-file-invoice',
+                    ...$this->delta($quotesMonth, $quotesPrev),
                 ],
-                'metrics' => [
-                    ['label' => 'Monto cotizado del mes', 'value' => $amountLabel],
-                    ['label' => 'Ticket promedio (S/)', 'value' => 'S/ ' . number_format($ticket, 2)],
-                    ['label' => 'Cotizaciones sin leer', 'value' => number_format($unreadQuotes)],
-                    ['label' => 'Items activos en catálogo', 'value' => number_format($itemsActive)],
+                [
+                    'title' => 'Club experto (mes)',
+                    'value' => number_format($clubMonth),
+                    'icon' => 'ti ti-users-group',
+                    ...$this->delta($clubMonth, $clubPrev),
                 ],
-                'funnel' => [
-                    ['stage' => 'Cotizaciones pendientes', 'value' => $pendiente, 'color' => 'warning'],
-                    ['stage' => 'Cotizaciones atendidas', 'value' => $contactado, 'color' => 'success'],
-                    ['stage' => 'Cotizaciones ganadas', 'value' => $convertido, 'color' => 'primary'],
+                [
+                    'title' => 'Mensajes recibidos',
+                    'value' => number_format($messagesMonth),
+                    'icon' => 'ti ti-message-chatbot',
+                    ...$this->delta($messagesMonth, $messagesPrev),
                 ],
-                'funnel_max' => $funnelMax,
-                'chart' => [
-                    'labels' => array_map('strval', range(1, $days)),
-                    'qty' => array_values($qtyByDay),
-                    'amount' => array_map(fn ($value) => round($value, 2), array_values($amountByDay)),
+                [
+                    'title' => 'Conversión a atendido',
+                    'value' => $convRate . '%',
+                    'icon' => 'ti ti-rotate-2',
+                    ...$this->deltaPts($convRate, $convPrev),
                 ],
-                'latest_quotes' => $this->latestQuotes(),
             ],
+            'metrics' => [
+                ['label' => 'Monto cotizado del mes', 'value' => $amountLabel],
+                ['label' => 'Ticket promedio (S/)', 'value' => 'S/ ' . number_format($ticket, 2)],
+                ['label' => 'Cotizaciones sin leer', 'value' => number_format($unreadQuotes)],
+                ['label' => 'Items activos en catálogo', 'value' => number_format($itemsActive)],
+            ],
+            'funnel' => [
+                ['stage' => 'Cotizaciones pendientes', 'value' => $pendiente, 'color' => 'warning'],
+                ['stage' => 'Cotizaciones atendidas', 'value' => $contactado, 'color' => 'success'],
+                ['stage' => 'Cotizaciones ganadas', 'value' => $convertido, 'color' => 'primary'],
+            ],
+            'funnel_max' => $funnelMax,
+            'chart' => [
+                'labels' => array_map('strval', range(1, $days)),
+                'qty' => array_values($qtyByDay),
+                'amount' => array_map(fn ($value) => round($value, 2), array_values($amountByDay)),
+            ],
+            'latest_quotes' => $this->latestQuotes($monthStart, $monthEnd),
         ];
     }
 
-    /** Últimas cotizaciones para la tabla del dashboard. */
-    private function latestQuotes(): array
+    /** Últimas cotizaciones del periodo para la tabla del dashboard. */
+    private function latestQuotes(Carbon $start, Carbon $end): array
     {
-        return Quote::latest()->take(8)->get()->map(function ($quote) {
-            $totals = [];
-            foreach ((array) $quote->items as $item) {
-                $currency = strtoupper($item['currency'] ?? 'PEN');
-                $totals[$currency] = ($totals[$currency] ?? 0)
-                    + (float) ($item['unitPrice'] ?? 0) * max(1, (int) ($item['quantity'] ?? 1));
-            }
-            $amount = trim(implode(' · ', array_filter([
-                !empty($totals['PEN']) ? 'S/ ' . number_format($totals['PEN'], 2) : null,
-                !empty($totals['USD']) ? '$ ' . number_format($totals['USD'], 2) : null,
-            ]))) ?: '—';
+        return Quote::whereBetween('created_at', [$start, $end])
+            ->latest()->take(8)->get()->map(function ($quote) {
+                $totals = [];
+                foreach ((array) $quote->items as $item) {
+                    $currency = strtoupper($item['currency'] ?? 'PEN');
+                    $totals[$currency] = ($totals[$currency] ?? 0)
+                        + (float) ($item['unitPrice'] ?? 0) * max(1, (int) ($item['quantity'] ?? 1));
+                }
+                $amount = trim(implode(' · ', array_filter([
+                    !empty($totals['PEN']) ? 'S/ ' . number_format($totals['PEN'], 2) : null,
+                    !empty($totals['USD']) ? '$ ' . number_format($totals['USD'], 2) : null,
+                ]))) ?: '—';
 
-            $status = $quote->quote_status ?: 'pendiente';
+                $status = $quote->quote_status ?: 'pendiente';
 
-            return [
-                'code' => $quote->code ?: ('#' . $quote->id),
-                'customer' => $quote->name,
-                'business' => $quote->business ?: '—',
-                'region' => $quote->region ?: '—',
-                'items' => (int) $quote->total_items,
-                'status' => $status,
-                'status_label' => ucfirst($status),
-                'amount' => $amount,
-                'date' => optional($quote->created_at)->locale('es')->isoFormat('DD MMM YYYY'),
-            ];
-        })->all();
+                return [
+                    'code' => $quote->code ?: ('#' . $quote->id),
+                    'customer' => $quote->name,
+                    'business' => $quote->business ?: '—',
+                    'region' => $quote->region ?: '—',
+                    'items' => (int) $quote->total_items,
+                    'status' => $status,
+                    'status_label' => ucfirst($status),
+                    'amount' => $amount,
+                    'date' => optional($quote->created_at)->locale('es')->isoFormat('DD MMM YYYY'),
+                ];
+            })->all();
     }
 
-    /** Variación porcentual mes vs mes anterior. */
+    /** Variación porcentual periodo vs anterior. */
     private function delta(int $current, int $previous): array
     {
         if ($previous <= 0) {

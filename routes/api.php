@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ClubController;
 use App\Http\Controllers\Admin\MessageController;
@@ -26,6 +27,8 @@ Route::get('ubigeo/inei', [UbigeoController::class, 'inei']);
 
 Route::middleware('auth')->group(function () {
     Route::delete('logout', [AuthController::class, 'destroy']);
+
+    Route::get('admin/dashboard', [HomeController::class, 'data']);
 
     Route::post('contacts/paginate', [ContactController::class, 'paginate']);
     Route::delete('contacts/{id}', [ContactController::class, 'delete']);
