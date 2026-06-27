@@ -10,7 +10,48 @@ const EMPTY_DASHBOARD = {
   funnel: [],
   funnel_max: 1,
   chart: { labels: [], qty: [], amount: [] },
+  latest_quotes: [],
 }
+
+// Capa de marca (formato de la referencia weFem) con colores Tuboplast.
+const BRAND_CSS = `
+.wfd-wrap{color:#1f2a44;}
+.wfd-card{background:#fff;border:1px solid #e7edf5;border-radius:16px;box-shadow:0 1px 2px rgba(15,37,64,.04),0 6px 16px rgba(0,73,145,.06);padding:16px;height:100%;}
+@media(min-width:992px){.wfd-card{padding:20px;}}
+.wfd-iconbox{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#0a5aa8,#004991);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 10px rgba(0,73,145,.25);flex-shrink:0;}
+.wfd-iconbox.sm{width:34px;height:34px;border-radius:10px;font-size:15px;}
+.wfd-iconbox.amber{background:linear-gradient(135deg,#f7c400,#e0a800);color:#003b7a;box-shadow:0 4px 10px rgba(224,168,0,.25);}
+.wfd-h2{font-size:18px;font-weight:700;line-height:1.25;margin:0;color:#0f2540;}
+@media(min-width:992px){.wfd-h2{font-size:20px;}}
+.wfd-sub{font-size:12px;color:#8a93a6;margin:0;}
+.wfd-sub b{color:#004991;}
+.wfd-kpi-label{font-size:12.5px;color:#8a93a6;margin:0;}
+.wfd-kpi-val{font-size:26px;font-weight:800;color:#0f2540;line-height:1.05;margin:6px 0;}
+.wfd-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50rem;font-size:11px;font-weight:600;white-space:nowrap;}
+.wfd-badge.up{background:#e1f5ee;color:#0f6e56;}
+.wfd-badge.down{background:#fcebeb;color:#e24b4a;}
+.wfd-badge.brand{background:#e6effa;color:#004991;}
+.wfd-metric{border:1px solid #eef2f8;border-radius:12px;padding:10px 12px;}
+.wfd-metric small{font-size:11.5px;color:#8a93a6;display:block;}
+.wfd-metric strong{font-size:17px;color:#0f2540;}
+.wfd-prog{height:8px;border-radius:50rem;background:#eef2f8;overflow:hidden;margin-top:12px;}
+.wfd-prog>span{display:block;height:100%;border-radius:50rem;}
+.wfd-stage{border:1px solid #eef2f8;border-radius:12px;padding:14px;height:100%;}
+.wfd-tablewrap{border:1px solid #eef2f8;border-radius:12px;overflow-x:auto;}
+.wfd-tablewrap::-webkit-scrollbar{height:8px;}
+.wfd-tablewrap::-webkit-scrollbar-thumb{background:#cfdcec;border-radius:9px;}
+.wfd-table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px;margin:0;}
+.wfd-table thead th{background:#f5f8fc;color:#8a93a6;font-size:11px;text-transform:uppercase;letter-spacing:.025em;font-weight:600;padding:12px;white-space:nowrap;}
+.wfd-table tbody td{padding:12px;border-top:1px solid #eef2f8;vertical-align:middle;}
+.wfd-table tbody tr:hover{background:#f9fbfe;}
+.wfd-st{display:inline-flex;align-items:center;padding:4px 10px;border-radius:50rem;font-size:11px;font-weight:600;white-space:nowrap;}
+.wfd-st.pendiente{background:#faeeda;color:#854f0b;}
+.wfd-st.contactado{background:#e8f0ff;color:#185fa5;}
+.wfd-st.convertido{background:#e1f5ee;color:#0f6e56;}
+.wfd-st.archivado{background:#f1efe8;color:#5f5e5a;}
+`
+
+const FUNNEL_BAR = { warning: '#f0a82b', success: '#16a34a', primary: '#004991' }
 
 const Home = ({ dashboard }) => {
   const data = useMemo(() => ({ ...EMPTY_DASHBOARD, ...(dashboard || {}) }), [dashboard])
@@ -25,21 +66,21 @@ const Home = ({ dashboard }) => {
     if (!chartRef.current || typeof ApexCharts === 'undefined') return
 
     const options = {
-      chart: { type: 'line', height: 360, toolbar: { show: false } },
+      chart: { type: 'line', height: 340, toolbar: { show: false }, fontFamily: 'inherit' },
       series: [
         { name: 'Cantidad de cotizaciones', type: 'column', data: data.chart.qty },
         { name: 'Monto cotizado (S/)', type: 'line', data: data.chart.amount },
       ],
       stroke: { width: [0, 3], curve: 'smooth' },
-      plotOptions: { bar: { columnWidth: '48%', borderRadius: 4 } },
+      plotOptions: { bar: { columnWidth: '46%', borderRadius: 5 } },
       xaxis: { categories: data.chart.labels, title: { text: 'Día del mes' } },
       yaxis: [
         { title: { text: 'Cantidad' }, labels: { formatter: (v) => Math.round(v) } },
         { opposite: true, title: { text: 'Monto (S/)' }, labels: { formatter: (v) => `S/ ${Math.round(v).toLocaleString('es-PE')}` } },
       ],
-      colors: ['#3A8DFF', '#17A2B8'],
+      colors: ['#004991', '#e0a800'],
       dataLabels: { enabled: false },
-      grid: { borderColor: '#edf2f7' },
+      grid: { borderColor: '#eef2f8' },
       legend: { position: 'top' },
       tooltip: { shared: true, intersect: false },
     }
@@ -56,89 +97,130 @@ const Home = ({ dashboard }) => {
   }, [data])
 
   return (
-    <div className='row g-3'>
-      <div className='col-12'>
-        <div className='card border-0 shadow-sm'>
-          <div className='card-body py-3'>
-            <h4 className='mb-1'>Panel Comercial</h4>
-            <p className='text-muted mb-0'>
-              Resumen ejecutivo de <strong className='text-capitalize'>{data.month_label || 'el mes actual'}</strong> con indicadores reales de cotizaciones, atención y conversión.
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className='wfd-wrap'>
+      <style>{BRAND_CSS}</style>
 
-      {data.kpis.map((kpi) => (
-        <div key={kpi.title} className='col-12 col-md-6 col-xl-3'>
-          <div className='card h-100 border-0 shadow-sm'>
-            <div className='card-body'>
-              <div className='d-flex align-items-start justify-content-between'>
-                <div>
-                  <p className='text-muted mb-1'>{kpi.title}</p>
-                  <h3 className='mb-1'>{kpi.value}</h3>
-                  <span className={`badge ${kpi.positive ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`}>{kpi.delta}</span>
-                </div>
-                <div className='avatar-sm'>
-                  <span className='avatar-title rounded-circle bg-primary-subtle text-primary fs-22'>
-                    <i className={kpi.icon}></i>
-                  </span>
-                </div>
+      <div className='row g-3'>
+        {/* Encabezado */}
+        <div className='col-12'>
+          <div className='wfd-card'>
+            <div className='d-flex align-items-center gap-3'>
+              <div className='wfd-iconbox'><i className='ti ti-layout-dashboard'></i></div>
+              <div>
+                <h2 className='wfd-h2'>Panel Comercial</h2>
+                <p className='wfd-sub text-capitalize'>Resumen ejecutivo de <b>{data.month_label || 'el mes actual'}</b></p>
               </div>
             </div>
           </div>
         </div>
-      ))}
 
-      <div className='col-12 col-xl-8'>
-        <div className='card border-0 shadow-sm h-100'>
-          <div className='card-body'>
-            <div className='d-flex justify-content-between align-items-center mb-3'>
-              <h5 className='mb-0'>Cotizaciones del mes actual</h5>
-              <span className='badge bg-primary-subtle text-primary text-capitalize'>{data.month_label}</span>
+        {/* KPIs */}
+        {data.kpis.map((kpi) => (
+          <div key={kpi.title} className='col-12 col-md-6 col-xl-3'>
+            <div className='wfd-card'>
+              <div className='d-flex align-items-start justify-content-between'>
+                <p className='wfd-kpi-label'>{kpi.title}</p>
+                <div className='wfd-iconbox sm'><i className={kpi.icon}></i></div>
+              </div>
+              <p className='wfd-kpi-val'>{kpi.value}</p>
+              <span className={`wfd-badge ${kpi.positive ? 'up' : 'down'}`}>
+                <i className={`ti ti-arrow-${kpi.positive ? 'up' : 'down'}-right`}></i>{kpi.delta}
+              </span>
+            </div>
+          </div>
+        ))}
+
+        {/* Gráfico */}
+        <div className='col-12 col-xl-8'>
+          <div className='wfd-card'>
+            <div className='d-flex align-items-center justify-content-between mb-3'>
+              <h2 className='wfd-h2'>Cotizaciones del mes</h2>
+              <span className='wfd-badge brand text-capitalize'>{data.month_label}</span>
             </div>
             <div ref={chartRef} />
           </div>
         </div>
-      </div>
 
-      <div className='col-12 col-xl-4'>
-        <div className='card border-0 shadow-sm h-100'>
-          <div className='card-body'>
-            <h5 className='mb-3'>Métricas de desempeño</h5>
-            <div className='d-flex flex-column gap-3'>
+        {/* Métricas */}
+        <div className='col-12 col-xl-4'>
+          <div className='wfd-card'>
+            <h2 className='wfd-h2 mb-3'>Métricas de desempeño</h2>
+            <div className='d-flex flex-column gap-2'>
               {data.metrics.map((metric) => (
-                <div key={metric.label} className='p-2 border rounded'>
-                  <small className='text-muted d-block'>{metric.label}</small>
-                  <strong className='fs-5'>{metric.value}</strong>
+                <div key={metric.label} className='wfd-metric'>
+                  <small>{metric.label}</small>
+                  <strong>{metric.value}</strong>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </div>
 
-      <div className='col-12'>
-        <div className='card border-0 shadow-sm'>
-          <div className='card-body'>
-            <h5 className='mb-3'>Embudo de cotizaciones</h5>
+        {/* Embudo */}
+        <div className='col-12'>
+          <div className='wfd-card'>
+            <h2 className='wfd-h2 mb-3'>Embudo de cotizaciones</h2>
             <div className='row g-3'>
               {data.funnel.map((item) => (
                 <div key={item.stage} className='col-12 col-md-4'>
-                  <div className='p-3 border rounded h-100'>
+                  <div className='wfd-stage'>
                     <div className='d-flex justify-content-between align-items-center'>
-                      <span>{item.stage}</span>
-                      <span className={`badge bg-${item.color}`}>{item.value}</span>
+                      <span style={{ fontSize: 13, color: '#5b6577' }}>{item.stage}</span>
+                      <strong style={{ color: FUNNEL_BAR[item.color], fontSize: 18 }}>{item.value}</strong>
                     </div>
-                    <div className='progress mt-3' style={{ height: '8px' }}>
-                      <div
-                        className={`progress-bar bg-${item.color}`}
-                        role='progressbar'
-                        style={{ width: `${Math.min(100, (item.value / (data.funnel_max || 1)) * 100)}%` }}
-                      />
+                    <div className='wfd-prog'>
+                      <span style={{ width: `${Math.min(100, (item.value / (data.funnel_max || 1)) * 100)}%`, background: FUNNEL_BAR[item.color] }} />
                     </div>
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Últimas cotizaciones */}
+        <div className='col-12'>
+          <div className='wfd-card'>
+            <div className='d-flex align-items-center gap-3 mb-3'>
+              <div className='wfd-iconbox amber'><i className='ti ti-file-invoice'></i></div>
+              <div>
+                <h2 className='wfd-h2'>Últimas cotizaciones</h2>
+                <p className='wfd-sub'>Las <b>{data.latest_quotes.length}</b> más recientes</p>
+              </div>
+            </div>
+
+            <div className='wfd-tablewrap'>
+              <table className='wfd-table'>
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>Ubicación</th>
+                    <th className='text-center'>Items</th>
+                    <th className='text-end'>Monto</th>
+                    <th className='text-center'>Estado</th>
+                    <th className='text-end'>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.latest_quotes.length ? data.latest_quotes.map((quote) => (
+                    <tr key={quote.code}>
+                      <td className='fw-semibold' style={{ color: '#004991' }}>{quote.code}</td>
+                      <td>
+                        <span className='fw-semibold d-block'>{quote.customer}</span>
+                        <small className='text-muted'>{quote.business}</small>
+                      </td>
+                      <td style={{ color: '#5b6577' }}>{quote.region}</td>
+                      <td className='text-center fw-semibold'>{quote.items}</td>
+                      <td className='text-end fw-semibold' style={{ whiteSpace: 'nowrap' }}>{quote.amount}</td>
+                      <td className='text-center'><span className={`wfd-st ${quote.status}`}>{quote.status_label}</span></td>
+                      <td className='text-end' style={{ color: '#8a93a6', whiteSpace: 'nowrap' }}>{quote.date}</td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan={7} className='text-center py-4' style={{ color: '#9aa3b3' }}>Sin cotizaciones todavía</td></tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

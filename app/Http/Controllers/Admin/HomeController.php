@@ -130,8 +130,40 @@ class HomeController extends BasicController
                     'qty' => array_values($qtyByDay),
                     'amount' => array_map(fn ($value) => round($value, 2), array_values($amountByDay)),
                 ],
+                'latest_quotes' => $this->latestQuotes(),
             ],
         ];
+    }
+
+    /** Últimas cotizaciones para la tabla del dashboard. */
+    private function latestQuotes(): array
+    {
+        return Quote::latest()->take(8)->get()->map(function ($quote) {
+            $totals = [];
+            foreach ((array) $quote->items as $item) {
+                $currency = strtoupper($item['currency'] ?? 'PEN');
+                $totals[$currency] = ($totals[$currency] ?? 0)
+                    + (float) ($item['unitPrice'] ?? 0) * max(1, (int) ($item['quantity'] ?? 1));
+            }
+            $amount = trim(implode(' · ', array_filter([
+                !empty($totals['PEN']) ? 'S/ ' . number_format($totals['PEN'], 2) : null,
+                !empty($totals['USD']) ? '$ ' . number_format($totals['USD'], 2) : null,
+            ]))) ?: '—';
+
+            $status = $quote->quote_status ?: 'pendiente';
+
+            return [
+                'code' => $quote->code ?: ('#' . $quote->id),
+                'customer' => $quote->name,
+                'business' => $quote->business ?: '—',
+                'region' => $quote->region ?: '—',
+                'items' => (int) $quote->total_items,
+                'status' => $status,
+                'status_label' => ucfirst($status),
+                'amount' => $amount,
+                'date' => optional($quote->created_at)->locale('es')->isoFormat('DD MMM YYYY'),
+            ];
+        })->all();
     }
 
     /** Variación porcentual mes vs mes anterior. */
