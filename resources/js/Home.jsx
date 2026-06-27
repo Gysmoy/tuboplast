@@ -413,7 +413,7 @@ const HomeScreen = ({ blog = {} }) => {
 
           <div className="grid gap-4 lg:grid-cols-4 lg:items-stretch">
             <div className="lg:col-span-3">
-              <Swiper {...carouselProps(3)} className="!h-full !pb-1">
+              <Swiper {...carouselProps(3)} className="!pb-1">
                 {loopSafe(blogPosts, 6).map((post, index) => (
                   <SwiperSlide key={`${post.title}-${index}`} className="!h-auto">
                     <article data-reveal className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
@@ -431,7 +431,7 @@ const HomeScreen = ({ blog = {} }) => {
               </Swiper>
             </div>
 
-            <article data-reveal className="flex h-full flex-col justify-center space-y-5 rounded-xl bg-primary p-5 text-white shadow-sm lg:col-span-1">
+            <article data-reveal className="flex flex-col justify-center space-y-5 rounded-xl bg-primary p-5 text-white shadow-sm lg:col-span-1 lg:h-full">
               <div className='space-y-4'>
                 <p className="text-xs uppercase tracking-[0.18em] text-white/70">{newsletter.eyebrow}</p>
                 <p className="text-2xl font-bold font-title">{newsletter.title}</p>
