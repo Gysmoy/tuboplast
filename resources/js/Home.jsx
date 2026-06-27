@@ -403,38 +403,42 @@ const HomeScreen = ({ blog = {} }) => {
             </a>
           </div>
 
-          <Swiper {...carouselProps(3)} className="!pb-1">
-            {blogPosts.map((post) => (
-              <SwiperSlide key={post.title} className="!h-auto">
-                <article data-reveal className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-                  <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
-                  <div className="px-4 py-6">
-                    <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>
-                    <p className="font-title text-base text-primary font-medium leading-tight mb-2 line-clamp-2 sm:text-xl">{post.title}</p>
-                    <p className="text-sm text-muted line-clamp-2">{post.description}</p>
-                  </div>
-                </article>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          <div className="grid gap-4 lg:grid-cols-4 lg:items-stretch">
+            <div className="lg:col-span-3">
+              <Swiper {...carouselProps(3)} className="!h-full !pb-1">
+                {blogPosts.map((post) => (
+                  <SwiperSlide key={post.title} className="!h-auto">
+                    <article data-reveal className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
+                      <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
+                      <div className="px-4 py-6">
+                        <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>
+                        <p className="font-title text-base text-primary font-medium leading-tight mb-2 line-clamp-2 sm:text-xl">{post.title}</p>
+                        <p className="text-sm text-muted line-clamp-2">{post.description}</p>
+                      </div>
+                    </article>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
 
-          <article data-reveal className="mt-6 flex flex-col gap-5 rounded-xl bg-primary p-6 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between sm:gap-8 lg:mt-8 lg:p-8">
-            <div className='space-y-2'>
-              <p className="text-xs uppercase tracking-[0.18em] text-white/70">{newsletter.eyebrow}</p>
-              <p className="text-2xl font-bold font-title">{newsletter.title}</p>
-              <p className="text-sm text-white/80">{newsletter.description}</p>
-            </div>
-            <div className='flex w-full gap-3 sm:max-w-md'>
-              <input
-                className="w-full rounded-full border border-white/20 bg-white/10 py-3 px-5 text-xs outline-none"
-                placeholder={newsletter.placeholder}
-                type="email"
-              />
-              <button type="button" className="whitespace-nowrap rounded-full bg-[#F7DD00] px-5 py-3 text-xs font-bold font-title text-primary">
-                {newsletter.buttonLabel}
-              </button>
-            </div>
-          </article>
+            <article data-reveal className="flex h-full flex-col justify-center space-y-5 rounded-xl bg-primary p-5 text-white shadow-sm lg:col-span-1">
+              <div className='space-y-4'>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/70">{newsletter.eyebrow}</p>
+                <p className="text-2xl font-bold font-title">{newsletter.title}</p>
+                <p className="text-sm text-white/80">{newsletter.description}</p>
+              </div>
+              <div className='space-y-4'>
+                <input
+                  className="w-full rounded-full border border-white/20 bg-white/10 py-4 px-6 text-xs outline-none"
+                  placeholder={newsletter.placeholder}
+                  type="email"
+                />
+                <button type="button" className="w-full rounded-full bg-[#F7DD00] p-4 text-xs font-bold font-title text-primary">
+                  {newsletter.buttonLabel}
+                </button>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
     </main>
