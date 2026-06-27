@@ -411,8 +411,8 @@ const HomeScreen = ({ blog = {} }) => {
             </a>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-4 lg:items-stretch">
-            <div className="lg:col-span-3">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+            <div className="min-w-0 lg:w-3/4">
               <Swiper {...carouselProps(3)} className="!pb-1">
                 {loopSafe(blogPosts, 6).map((post, index) => (
                   <SwiperSlide key={`${post.title}-${index}`} className="!h-auto">
@@ -431,19 +431,19 @@ const HomeScreen = ({ blog = {} }) => {
               </Swiper>
             </div>
 
-            <article data-reveal className="flex flex-col justify-center space-y-5 rounded-xl bg-primary p-5 text-white shadow-sm lg:col-span-1 lg:h-full">
-              <div className='space-y-4'>
+            <article data-reveal className="flex flex-col justify-center gap-5 rounded-xl bg-primary p-5 text-white shadow-sm lg:w-1/4 lg:shrink-0">
+              <div className='space-y-3'>
                 <p className="text-xs uppercase tracking-[0.18em] text-white/70">{newsletter.eyebrow}</p>
                 <p className="text-2xl font-bold font-title">{newsletter.title}</p>
                 <p className="text-sm text-white/80">{newsletter.description}</p>
               </div>
-              <div className='space-y-4'>
+              <div className='space-y-3'>
                 <input
-                  className="w-full rounded-full border border-white/20 bg-white/10 py-4 px-6 text-xs outline-none"
+                  className="w-full rounded-full border border-white/20 bg-white/10 py-3 px-5 text-xs outline-none"
                   placeholder={newsletter.placeholder}
                   type="email"
                 />
-                <button type="button" className="w-full rounded-full bg-[#F7DD00] p-4 text-xs font-bold font-title text-primary">
+                <button type="button" className="w-full rounded-full bg-[#F7DD00] p-3 text-xs font-bold font-title text-primary">
                   {newsletter.buttonLabel}
                 </button>
               </div>
