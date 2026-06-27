@@ -400,17 +400,6 @@ const Quotes = () => {
                   </div>
                 </div>
 
-                {archiveMode && (status === 'pendiente' || status === 'contactado') && (
-                  <div className='mt-3'>
-                    <label className='wfq-lbl'>Motivo de archivado</label>
-                    <textarea className='form-control' rows={2} value={archiveReason} onChange={(e) => setArchiveReason(e.target.value)} placeholder='Indica por qué se archiva esta cotización...' />
-                    <div className='d-flex gap-2 mt-2'>
-                      <button type='button' className='wfq-btn danger' disabled={!archiveReason.trim()} onClick={confirmArchive}><i className='mdi mdi-archive-arrow-down'></i> Confirmar archivado</button>
-                      <button type='button' className='wfq-btn outline' onClick={resetArchive}>Cancelar</button>
-                    </div>
-                  </div>
-                )}
-
                 {status === 'archivado' && selectedQuote.archived_reason && (
                   <div className='mt-3 p-2 px-3' style={{ background: '#f1efe8', borderRadius: 8, fontSize: 13 }}>
                     <span className='fw-semibold'>Motivo de archivado:</span> {selectedQuote.archived_reason}
@@ -517,6 +506,29 @@ const Quotes = () => {
 
             <div className='wfq-modal-foot'>
               <button type='button' className='wfq-btn danger' onClick={closeModal}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal motivo de archivado */}
+      {archiveMode && selectedQuote && (
+        <div className='wfq-modal-ovl' style={{ zIndex: 1200, alignItems: 'center' }} onMouseDown={resetArchive}>
+          <div className='wfq-modal' style={{ width: 'min(460px,96vw)' }} onMouseDown={(e) => e.stopPropagation()}>
+            <div className='wfq-modal-head'>
+              <h3 className='wfq-h2' style={{ fontSize: 16 }}><i className='mdi mdi-archive-arrow-down me-1' style={{ color: '#004991' }}></i>Archivar cotización</h3>
+              <button className='wfq-close' onClick={resetArchive}><i className='mdi mdi-close'></i></button>
+            </div>
+            <div className='wfq-modal-body'>
+              <p className='text-muted mb-2' style={{ fontSize: 13 }}>
+                Indica el motivo por el que archivas <b style={{ color: '#004991' }}>{selectedQuote.code || `#${selectedQuote.id}`}</b>.
+              </p>
+              <label className='wfq-lbl'>Motivo de archivado</label>
+              <textarea className='form-control' rows={3} autoFocus value={archiveReason} onChange={(e) => setArchiveReason(e.target.value)} placeholder='Ej. Cliente desistió, datos incompletos...' />
+            </div>
+            <div className='wfq-modal-foot'>
+              <button type='button' className='wfq-btn outline' onClick={resetArchive}>Cancelar</button>
+              <button type='button' className='wfq-btn danger' disabled={!archiveReason.trim()} onClick={confirmArchive}><i className='mdi mdi-archive-arrow-down'></i> Confirmar archivado</button>
             </div>
           </div>
         </div>
