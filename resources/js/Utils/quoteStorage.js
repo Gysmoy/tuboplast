@@ -59,6 +59,7 @@ export const addQuoteItem = (product, quantity = 1) => {
         quantity: normalizedQuantity,
         unitPrice: product.unitPrice ?? null,
         priceLabel: product.price ?? null,
+        currency: product.currency ?? 'PEN',
       },
     ];
   }
@@ -127,6 +128,14 @@ export const subscribeToQuotePanelOpen = (handler) => {
   return () => window.removeEventListener(QUOTE_OPEN_EVENT, handler);
 };
 
+const currencySymbol = (currency) => (String(currency ?? 'PEN').toUpperCase() === 'USD' ? '$ ' : 'S/ ');
+
+const formatProductPrice = (product) => (
+  product.unitPrice != null
+    ? `${currencySymbol(product.currency)}${Number(product.unitPrice).toFixed(2)}`
+    : (product.price ?? '-')
+);
+
 export const buildTechnicalSheetText = (product, quantity = 1) => {
   const summaryLines = Array.isArray(product.summary)
     ? product.summary.map((item) => `${item.label}: ${item.value}`).join('\n')
@@ -152,7 +161,7 @@ export const buildTechnicalSheetText = (product, quantity = 1) => {
     `SKU: ${product.sku ?? '-'}`,
     `Cantidad solicitada: ${quantity}`,
     `Categoria: ${product.categoryLabel ?? product.category ?? '-'}`,
-    `Precio unitario: ${product.unitPrice != null ? `S/ ${Number(product.unitPrice).toFixed(2)}` : product.price ?? '-'}`,
+    `Precio unitario: ${formatProductPrice(product)}`,
     '',
     'Descripcion',
     product.description ?? '-',
@@ -238,7 +247,7 @@ export const downloadTechnicalSheet = (product, quantity = 1) => {
   doc.text(`SKU: ${product.sku ?? '-'}`, left, cursorY + 13);
   doc.text(`Categoria: ${product.categoryLabel ?? product.category ?? '-'}`, left, cursorY + 19);
   doc.text(
-    `Precio unitario: ${product.unitPrice != null ? `S/ ${Number(product.unitPrice).toFixed(2)}` : product.price ?? '-'}`,
+    `Precio unitario: ${formatProductPrice(product)}`,
     left,
     cursorY + 25,
   );
@@ -337,6 +346,7 @@ export const submitQuote = async (customer, items) => {
       quantity: Math.max(1, Number(item.quantity) || 1),
       price: item.priceLabel ?? item.price ?? '',
       unitPrice: item.unitPrice ?? null,
+      currency: item.currency ?? 'PEN',
     })),
   };
 

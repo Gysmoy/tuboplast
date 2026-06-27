@@ -103,8 +103,8 @@ const ItemCard = ({ product, showPrice = false }) => {
 
         <div className="mt-5 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-end gap-3">
           <div className="rounded-lg bg-white/60 p-2">
-            <span className="block text-[10px] uppercase text-muted">Presion</span>
-            <p className="text-xs font-bold text-primary">{product.pressure}</p>
+            <span className="block text-[10px] uppercase text-muted">Uso</span>
+            <p className="truncate text-xs font-bold text-primary">{product.use ?? product.pressure ?? '-'}</p>
           </div>
           <div className="rounded-lg bg-white/60 p-2">
             <span className="block text-[10px] uppercase text-muted">Diametro</span>

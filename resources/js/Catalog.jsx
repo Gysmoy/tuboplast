@@ -4,7 +4,7 @@ import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
-const emptyFilters = { segment: [], line: [], type: [], diameter: [] };
+const emptyFilters = { segment: [], line: [], type: [], use: [], material: [], color: [], diameter: [] };
 
 const FilterCheckbox = ({ checked, label, onChange }) => (
   <label className={`flex cursor-pointer items-center gap-3 text-sm ${checked ? 'font-bold text-primary' : 'text-darkmuted'}`}>
@@ -123,6 +123,9 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     segment: facets.segment || [],
     line: facets.line || [],
     type: facets.type || [],
+    use: facets.use || [],
+    material: facets.material || [],
+    color: facets.color || [],
     diameter: facets.diameter || [],
   };
 
@@ -156,6 +159,9 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     filters.segment.forEach((value) => params.append('segment[]', value));
     filters.line.forEach((value) => params.append('line[]', value));
     filters.type.forEach((value) => params.append('type[]', value));
+    filters.use.forEach((value) => params.append('use[]', value));
+    filters.material.forEach((value) => params.append('material[]', value));
+    filters.color.forEach((value) => params.append('color[]', value));
     filters.diameter.forEach((value) => params.append('diameter[]', value));
     params.set('sort', sort);
     params.set('page', String(page));
@@ -316,6 +322,44 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
                   </FilterGroup>
                 )}
 
+                {facetGroups.use.length > 0 && (
+                  <FilterGroup title="Uso">
+                    {facetGroups.use.map((label) => (
+                      <FilterCheckbox key={label} label={label} checked={filters.use.includes(label)} onChange={() => toggleFilter('use', label)} />
+                    ))}
+                  </FilterGroup>
+                )}
+
+                {facetGroups.material.length > 0 && (
+                  <FilterGroup title="Material">
+                    {facetGroups.material.map((label) => (
+                      <FilterCheckbox key={label} label={label} checked={filters.material.includes(label)} onChange={() => toggleFilter('material', label)} />
+                    ))}
+                  </FilterGroup>
+                )}
+
+                {facetGroups.color.length > 0 && (
+                  <FilterGroup title="Color">
+                    <div className="flex flex-wrap gap-2">
+                      {facetGroups.color.map((label) => {
+                        const active = filters.color.includes(label);
+                        return (
+                          <button
+                            key={label}
+                            type="button"
+                            onClick={() => toggleFilter('color', label)}
+                            className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
+                              active ? 'bg-primary text-white' : 'bg-silver text-darkmuted hover:bg-slate-200'
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </FilterGroup>
+                )}
+
                 {facetGroups.diameter.length > 0 && (
                   <FilterGroup title="Diámetro">
                     <div className="max-h-56 space-y-3 overflow-y-auto pr-1">
@@ -355,7 +399,7 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
           </div>
 
           {items.length ? (
-            <div className={`grid gap-5 transition-opacity sm:grid-cols-2 lg:gap-6 xl:grid-cols-3 ${loading ? 'opacity-50' : ''}`}>
+            <div className={`grid grid-cols-2 gap-4 transition-opacity sm:gap-5 lg:gap-6 xl:grid-cols-3 ${loading ? 'opacity-50' : ''}`}>
               {items.map((product) => (
                 <ItemCard key={product.id} product={product} />
               ))}

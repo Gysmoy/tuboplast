@@ -155,6 +155,21 @@ class LandingController extends BasicController
             $query->whereHas('category', fn ($c) => $c->whereIn('name', $lines));
         }
 
+        $uses = array_filter((array) $request->query('use', []));
+        if ($uses) {
+            $query->whereIn('use_type', $uses);
+        }
+
+        $materials = array_filter((array) $request->query('material', []));
+        if ($materials) {
+            $query->whereIn('material', $materials);
+        }
+
+        $colors = array_filter((array) $request->query('color', []));
+        if ($colors) {
+            $query->whereIn('color', $colors);
+        }
+
         $diameters = array_filter((array) $request->query('diameter', []));
         if ($diameters) {
             $query->where(function ($where) use ($diameters) {
@@ -186,6 +201,15 @@ class LandingController extends BasicController
             $type = Item::query()->where('status', true)->whereNotNull('type')
                 ->distinct()->orderBy('type')->pluck('type')->values();
 
+            $use = Item::query()->where('status', true)->whereNotNull('use_type')
+                ->distinct()->orderBy('use_type')->pluck('use_type')->values();
+
+            $material = Item::query()->where('status', true)->whereNotNull('material')
+                ->distinct()->orderBy('material')->pluck('material')->values();
+
+            $color = Item::query()->where('status', true)->whereNotNull('color')
+                ->distinct()->orderBy('color')->pluck('color')->values();
+
             $line = Category::query()
                 ->whereIn('id', Item::query()->where('status', true)->distinct()->pluck('category_id'))
                 ->orderBy('name')->pluck('name')->values();
@@ -201,6 +225,9 @@ class LandingController extends BasicController
                 'segment' => $segment,
                 'line' => $line,
                 'type' => $type,
+                'use' => $use,
+                'material' => $material,
+                'color' => $color,
                 'diameter' => $diameter,
             ];
         });
@@ -218,6 +245,17 @@ class LandingController extends BasicController
         ];
     }
 
+    private function moneyLabel(?float $price, ?string $currency): ?string
+    {
+        if ($price === null) {
+            return null;
+        }
+
+        $symbol = strtoupper((string) $currency) === 'USD' ? '$ ' : 'S/ ';
+
+        return $symbol . number_format($price, 2);
+    }
+
     private function mapCatalogItem(Item $item): array
     {
         $price = $item->price !== null ? (float) $item->price : null;
@@ -231,11 +269,15 @@ class LandingController extends BasicController
             'segment' => $item->segment,
             'classification' => $item->classification,
             'type' => $item->type,
+            'use' => $item->use_type,
+            'material' => $item->material,
+            'color' => $item->color,
             'image' => $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png',
-            'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+            'price' => $this->moneyLabel($price, $item->currency),
             'unitPrice' => $price,
+            'currency' => strtoupper($item->currency ?: 'PEN'),
             'pressure' => $this->shortPressure($item->pressure),
-            'diameter' => $item->diameter ?: $this->diameterLabel($diameters),
+            'diameter' => $item->nominal_diameter ?: ($item->diameter ?: $this->diameterLabel($diameters)),
             'diameters' => $diameters,
             'views' => (int) $item->views,
             'detailUrl' => $item->slug
@@ -274,7 +316,7 @@ class LandingController extends BasicController
                     'categoryLabel' => $item->category->name ?? 'Producto',
                     'type' => $item->type,
                     'image' => $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png',
-                    'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+                    'price' => $this->moneyLabel($price, $item->currency),
                     'detailUrl' => $item->slug
                         ? route('products.show', ['slug' => $item->slug])
                         : route('catalog'),
@@ -480,6 +522,7 @@ class LandingController extends BasicController
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'nullable|string|max:40',
             'items.*.unitPrice' => 'nullable|numeric',
+            'items.*.currency' => 'nullable|string|max:3',
         ]);
 
         $items = array_map(function ($item) {
@@ -491,6 +534,7 @@ class LandingController extends BasicController
                 'quantity' => max(1, (int) $item['quantity']),
                 'price' => $item['price'] ?? null,
                 'unitPrice' => isset($item['unitPrice']) ? (float) $item['unitPrice'] : null,
+                'currency' => strtoupper($item['currency'] ?? 'PEN'),
             ];
         }, $validated['items']);
 

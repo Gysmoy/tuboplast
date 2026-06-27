@@ -15,17 +15,18 @@ class ItemsRest extends BasicRest {
     try {
       const formData = new FormData()
       if (item.id) formData.append('id', item.id)
-      formData.append('title', item.title ?? '')
-      formData.append('sku', item.sku ?? '')
-      formData.append('category_id', item.category_id ?? '')
-      formData.append('segment', item.segment ?? '')
-      formData.append('classification', item.classification ?? '')
-      formData.append('type', item.type ?? '')
-      formData.append('description', item.description ?? '')
-      formData.append('price', item.price ?? '')
-      formData.append('pressure', item.pressure ?? '')
-      formData.append('diameter', item.diameter ?? '')
-      formData.append('diameters', item.diameters ?? '')
+
+      const fields = [
+        'title', 'sku', 'category_id', 'segment', 'classification', 'famcons',
+        'family', 'type', 'use_type', 'material', 'color', 'brand', 'unit',
+        'masterpack', 'pieces', 'origin_country', 'description', 'price',
+        'currency', 'pressure', 'diameter', 'nominal_diameter', 'diameters',
+        'package_type', 'perishable', 'hazardous', 'product_height',
+        'product_width', 'product_depth', 'product_weight', 'logistic_height',
+        'logistic_width', 'logistic_depth', 'logistic_weight', 'warranty',
+        'features', 'usage_recommendations', 'observations', 'usage_warning',
+      ]
+      fields.forEach((field) => formData.append(field, item[field] ?? ''))
       formData.append('status', item.status ? '1' : '0')
 
       if (item.image) {

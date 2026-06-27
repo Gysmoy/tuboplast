@@ -54,32 +54,36 @@ const recommendations = [
     title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
     image: '/assets/img/items/item-1.png',
     price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33mm',
+    currency: 'PEN',
+    use: 'AGUA FRIA',
+    diameter: '3/4"',
   },
   {
     category: 'Tubería PVC-U',
     title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
     image: '/assets/img/items/item-2.png',
     price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33mm',
+    currency: 'PEN',
+    use: 'AGUA FRIA',
+    diameter: '3/4"',
   },
   {
     category: 'Tubería PVC-U',
     title: 'Tubería Agua SP Clase 15 MTP 398.002 3/4 x 5m',
     image: '/assets/img/items/item-3.png',
     price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33mm',
+    currency: 'PEN',
+    use: 'AGUA FRIA',
+    diameter: '3/4"',
   },
   {
     category: 'Tubería PVC-U',
     title: 'Tubería Agua SP Clase 15 MTP 980.002 3/4 x 5m',
     image: '/assets/img/items/item-4.png',
     price: 'S/ 28.30',
-    pressure: '150 PSI',
-    diameter: '33mm',
+    currency: 'PEN',
+    use: 'AGUA FRIA',
+    diameter: '3/4"',
   },
 ];
 
@@ -334,7 +338,7 @@ const HomeScreen = ({ blog = {} }) => {
             </a>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {recommendations.map((product, index) => (
               <ItemCard key={`${product.title}-${index}`} product={product} />
             ))}

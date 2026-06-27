@@ -106,6 +106,39 @@ const TechnicalSpecifications = ({ groups }) => (
   </section>
 );
 
+const ProductNotices = ({ notices }) => {
+  if (!Array.isArray(notices) || !notices.length) {
+    return null;
+  }
+
+  return (
+    <section className="mt-24">
+      <div>
+        <h2 className="font-title text-3xl font-medium text-primary">
+          Avisos y recomendaciones de uso
+        </h2>
+        <span className="mt-4 block h-1 w-12 bg-secondary" />
+      </div>
+
+      <div className="mt-10 grid gap-5 sm:grid-cols-2">
+        {notices.map((notice) => (
+          <article
+            key={notice.label}
+            className="rounded-xl border border-slate-200 bg-light p-5"
+          >
+            <h3 className="text-xs font-bold uppercase tracking-[0.08em] text-primary">
+              {notice.label}
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-darkmuted">
+              {notice.value}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 const ProductDetailScreen = ({ product, relatedProducts }) => {
   const pageRef = useRef(null);
   const addButtonRef = useRef(null);
@@ -295,6 +328,8 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
         </div>
 
         <TechnicalSpecifications groups={product.technicalSpecifications} />
+
+        <ProductNotices notices={product.notices} />
 
         <section className="mt-24">
           <div className="mb-10 flex items-end justify-between">

@@ -35,7 +35,11 @@ const parsePrice = (item) => {
   return null
 }
 
-const formatSoles = (value) => `S/ ${Number(value).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+const currencySymbol = (currency) => (String(currency ?? 'PEN').toUpperCase() === 'USD' ? '$' : 'S/')
+
+const formatMoney = (value, currency = 'PEN') => `${currencySymbol(currency)} ${Number(value).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
+const itemCurrency = (item) => String(item?.currency ?? 'PEN').toUpperCase()
 
 const STATUS_META = {
   pendiente: { label: 'Pendiente', cls: 'bg-warning-subtle text-warning' },
@@ -144,12 +148,16 @@ const Quotes = () => {
   }
 
   const selectedItems = normalizeItems(selectedQuote?.items)
-  const quoteTotal = selectedItems.reduce((total, item) => {
+  const totalsByCurrency = selectedItems.reduce((totals, item) => {
     const unit = parsePrice(item)
+    if (unit == null) return totals
     const qty = Math.max(1, Number(item.quantity) || 1)
-    return unit != null ? total + unit * qty : total
-  }, 0)
-  const hasPricing = selectedItems.some((item) => parsePrice(item) != null)
+    const cur = itemCurrency(item)
+    totals[cur] = (totals[cur] || 0) + unit * qty
+    return totals
+  }, {})
+  const currencyTotals = Object.entries(totalsByCurrency)
+  const hasPricing = currencyTotals.length > 0
   const status = selectedQuote?.quote_status || 'pendiente'
 
   return (
@@ -383,6 +391,7 @@ const Quotes = () => {
                   {selectedItems.length ? selectedItems.map((item, index) => {
                     const qty = Math.max(1, Number(item.quantity) || 1)
                     const unit = parsePrice(item)
+                    const cur = itemCurrency(item)
                     return (
                       <tr key={index}>
                         <td>{index + 1}</td>
@@ -394,8 +403,8 @@ const Quotes = () => {
                         <td className='fw-semibold'>{item.title}</td>
                         <td>{item.sku || '-'}</td>
                         <td className='text-center fw-semibold'>{qty}</td>
-                        <td className='text-end'>{unit != null ? formatSoles(unit) : (item.price || '-')}</td>
-                        <td className='text-end fw-semibold'>{unit != null ? formatSoles(unit * qty) : '-'}</td>
+                        <td className='text-end'>{unit != null ? formatMoney(unit, cur) : (item.price || '-')}</td>
+                        <td className='text-end fw-semibold'>{unit != null ? formatMoney(unit * qty, cur) : '-'}</td>
                       </tr>
                     )
                   }) : (
@@ -404,10 +413,12 @@ const Quotes = () => {
                 </tbody>
                 {hasPricing && (
                   <tfoot>
-                    <tr>
-                      <td colSpan={6} className='text-end fw-semibold'>Total estimado</td>
-                      <td className='text-end fw-bold text-primary'>{formatSoles(quoteTotal)}</td>
-                    </tr>
+                    {currencyTotals.map(([cur, total]) => (
+                      <tr key={cur}>
+                        <td colSpan={6} className='text-end fw-semibold'>Total estimado ({cur})</td>
+                        <td className='text-end fw-bold text-primary'>{formatMoney(total, cur)}</td>
+                      </tr>
+                    ))}
                   </tfoot>
                 )}
               </table>

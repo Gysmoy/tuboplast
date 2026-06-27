@@ -98,6 +98,35 @@ class ProductController extends BasicController
         return $diameters[0] . ' – ' . end($diameters);
     }
 
+    private function moneyLabel(?float $price, ?string $currency): ?string
+    {
+        if ($price === null) {
+            return null;
+        }
+
+        $symbol = strtoupper((string) $currency) === 'USD' ? '$ ' : 'S/ ';
+
+        return $symbol . number_format($price, 2);
+    }
+
+    private function spec(?string $label, $value): ?array
+    {
+        $value = is_string($value) ? trim($value) : $value;
+
+        return ($value === null || $value === '') ? null : ['label' => $label, 'value' => (string) $value];
+    }
+
+    private function num($value, string $suffix = ''): ?string
+    {
+        if ($value === null || $value === '' || (float) $value == 0.0) {
+            return null;
+        }
+
+        $clean = rtrim(rtrim(number_format((float) $value, 3, '.', ''), '0'), '.');
+
+        return $clean . $suffix;
+    }
+
     private function mapProduct(Item $item): array
     {
         $price = $item->price !== null ? (float) $item->price : null;
@@ -105,7 +134,46 @@ class ProductController extends BasicController
         $image = $this->imageUrl($item);
 
         $diameters = is_array($item->diameters) ? $item->diameters : [];
-        $diameterLabel = $item->diameter ?: $this->diameterLabel($diameters);
+        $diameterLabel = $item->nominal_diameter ?: ($item->diameter ?: $this->diameterLabel($diameters));
+
+        $specItems = array_values(array_filter([
+            $this->spec('Segmento', $item->segment),
+            $this->spec('Línea', $category),
+            $this->spec('Familia', $item->family ?: $item->famcons),
+            $this->spec('Tipo', $item->type),
+            $this->spec('Uso', $item->use_type),
+            $this->spec('Material', $item->material),
+            $this->spec('Color', $item->color),
+            $this->spec('Marca', $item->brand),
+            $item->pressure ? $this->spec('Presión', $this->shortPressure($item->pressure)) : null,
+            $this->spec('Diámetro nominal', $diameterLabel !== '-' ? $diameterLabel : null),
+        ]));
+
+        $logisticItems = array_values(array_filter([
+            $this->spec('Unidad de medida', $item->unit),
+            $item->masterpack ? $this->spec('Masterpack', (string) $item->masterpack) : null,
+            $this->spec('N° de piezas', $item->pieces),
+            $this->spec('Tipo de empaque', $item->package_type),
+            $this->spec('País de origen', $item->origin_country),
+            $this->spec('Peso del producto', $this->num($item->product_weight, ' kg')),
+            $this->spec('Alto del producto', $this->num($item->product_height)),
+            $this->spec('Ancho del producto', $this->num($item->product_width)),
+            $this->spec('Profundidad del producto', $this->num($item->product_depth)),
+            $this->spec('Peso u. logística', $this->num($item->logistic_weight, ' kg')),
+            $this->spec('Alto u. logística', $this->num($item->logistic_height)),
+            $this->spec('Ancho u. logística', $this->num($item->logistic_width)),
+            $this->spec('Profundidad u. logística', $this->num($item->logistic_depth)),
+        ]));
+
+        $notices = array_values(array_filter([
+            $this->spec('Garantía', $item->warranty),
+            $this->spec('Características', $item->features),
+            $this->spec('Recomendaciones de uso', $item->usage_recommendations),
+            $this->spec('Observaciones', $item->observations),
+            $this->spec('Advertencia de uso', $item->usage_warning),
+            $this->spec('Perecible', $item->perishable),
+            $this->spec('Producto peligroso', $item->hazardous),
+        ]));
 
         return [
             'id' => $item->id,
@@ -117,33 +185,27 @@ class ProductController extends BasicController
             'image' => $image,
             'gallery' => [$image],
             'unitPrice' => $price,
-            'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+            'price' => $this->moneyLabel($price, $item->currency),
+            'currency' => strtoupper($item->currency ?: 'PEN'),
             'standard' => $category,
             'stockLabel' => 'Stock disponible',
             'detailUrl' => route('products.show', ['slug' => $item->slug]),
-            'summary' => array_values(array_filter([
-                ['label' => 'Línea', 'value' => $category],
-                $item->type ? ['label' => 'Tipo', 'value' => $item->type] : null,
-                ['label' => 'Diámetros', 'value' => $diameterLabel],
+            'summary' => array_slice(array_values(array_filter([
+                $this->spec('Uso', $item->use_type) ?: $this->spec('Línea', $category),
+                $this->spec('Tipo', $item->type),
+                ['label' => 'Diámetro', 'value' => $diameterLabel],
                 ['label' => 'SKU', 'value' => $item->sku ?: '-'],
-            ])),
+            ])), 0, 4),
             'technicalSpecifications' => array_values(array_filter([
-                [
-                    'title' => 'Especificaciones',
-                    'items' => array_values(array_filter([
-                        $item->segment ? ['label' => 'Segmento', 'value' => $item->segment] : null,
-                        ['label' => 'Línea', 'value' => $category],
-                        $item->classification ? ['label' => 'Clasificación', 'value' => $item->classification] : null,
-                        $item->type ? ['label' => 'Tipo', 'value' => $item->type] : null,
-                        $item->pressure ? ['label' => 'Presión', 'value' => $item->pressure] : null,
-                    ])),
-                ],
+                count($specItems) ? ['title' => 'Especificaciones', 'items' => $specItems] : null,
+                count($logisticItems) ? ['title' => 'Logística', 'items' => $logisticItems] : null,
                 count($diameters) ? [
                     'title' => 'Diámetros disponibles',
                     'items' => [],
                     'badges' => $diameters,
                 ] : null,
             ])),
+            'notices' => $notices,
         ];
     }
 
@@ -166,10 +228,12 @@ class ProductController extends BasicController
                     'categoryLabel' => $item->category->name ?? 'Producto',
                     'title' => $item->title,
                     'image' => $this->imageUrl($item),
-                    'price' => $price !== null ? 'S/ ' . number_format($price, 2) : null,
+                    'price' => $this->moneyLabel($price, $item->currency),
                     'unitPrice' => $price,
+                    'currency' => strtoupper($item->currency ?: 'PEN'),
+                    'use' => $item->use_type,
                     'pressure' => $this->shortPressure($item->pressure),
-                    'diameter' => $item->diameter ?: $this->diameterLabel($diameters),
+                    'diameter' => $item->nominal_diameter ?: ($item->diameter ?: $this->diameterLabel($diameters)),
                     'detailUrl' => route('products.show', ['slug' => $item->slug]),
                 ];
             })
