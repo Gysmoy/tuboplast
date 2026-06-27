@@ -60,6 +60,16 @@ const BRAND_CSS = `
 .wfd-opt.sel{background:#e6effa;color:#004991;font-weight:700;}
 .wfd-wrap .spin{display:inline-block;animation:wfd-spin 1s linear infinite;}
 @keyframes wfd-spin{to{transform:rotate(360deg);}}
+.wfd-monthpick{padding:10px;min-width:248px;}
+.wfd-mp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.wfd-mp-year{font-weight:700;color:#0f2540;font-size:14px;}
+.wfd-mp-nav{width:30px;height:30px;border:0;border-radius:8px;background:#f4f8fd;color:#004991;display:inline-flex;align-items:center;justify-content:center;}
+.wfd-mp-nav:hover{background:#e6effa;}
+.wfd-mp-nav:disabled{opacity:.4;cursor:not-allowed;}
+.wfd-mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.wfd-mp-cell{padding:8px 0;border:1px solid #eef2f8;border-radius:8px;background:#fff;font-size:12.5px;color:#1f2a44;cursor:pointer;text-transform:capitalize;}
+.wfd-mp-cell:hover{background:#f4f8fd;border-color:#cfdcec;}
+.wfd-mp-cell.sel{background:#004991;border-color:#004991;color:#fff;font-weight:700;}
 `
 
 const FUNNEL_BAR = { warning: '#f0a82b', success: '#16a34a', primary: '#004991' }
@@ -103,8 +113,60 @@ const CustomSelect = ({ value, options, onChange, icon, minWidth = 140 }) => {
   )
 }
 
+// Month picker custom (mes + año en un popover tipo calendario).
+const MonthPicker = ({ month, year, months, years, onChange }) => {
+  const [open, setOpen] = useState(false)
+  const [navYear, setNavYear] = useState(year)
+  const ref = useRef(null)
+
+  useEffect(() => { if (open) setNavYear(year) }, [open, year])
+  useEffect(() => {
+    const handler = (event) => { if (!ref.current?.contains(event.target)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const minYear = years.length ? Math.min(...years) : navYear
+  const maxYear = years.length ? Math.max(...years) : navYear
+  const current = months.find((m) => String(m.value) === String(month))
+
+  return (
+    <div ref={ref} className={`wfd-ddwrap ${open ? 'open' : ''}`} style={{ minWidth: 175 }}>
+      <button type='button' className='wfd-dd' onClick={() => setOpen((o) => !o)}>
+        <span className='text-capitalize'><i className='ti ti-calendar-month me-1' style={{ color: '#004991' }}></i>{current ? current.label : '—'} {year}</span>
+        <i className='ti ti-chevron-down chev'></i>
+      </button>
+      {open && (
+        <div className='wfd-menu wfd-monthpick'>
+          <div className='wfd-mp-head'>
+            <button type='button' className='wfd-mp-nav' disabled={navYear <= minYear} onClick={() => setNavYear((y) => Math.max(minYear, y - 1))}><i className='ti ti-chevron-left'></i></button>
+            <span className='wfd-mp-year'>{navYear}</span>
+            <button type='button' className='wfd-mp-nav' disabled={navYear >= maxYear} onClick={() => setNavYear((y) => Math.min(maxYear, y + 1))}><i className='ti ti-chevron-right'></i></button>
+          </div>
+          <div className='wfd-mp-grid'>
+            {months.map((m) => {
+              const selected = String(m.value) === String(month) && navYear === year
+              return (
+                <button
+                  key={m.value}
+                  type='button'
+                  className={`wfd-mp-cell ${selected ? 'sel' : ''}`}
+                  onClick={() => { onChange(m.value, navYear); setOpen(false) }}
+                >
+                  {m.short || m.label.slice(0, 3)}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const Home = ({ dashboard, filter }) => {
   const [data, setData] = useState(dashboard || EMPTY_DASHBOARD)
+  const [mode, setMode] = useState(filter?.mode ?? 'month')
   const [year, setYear] = useState(filter?.year ?? new Date().getFullYear())
   const [month, setMonth] = useState(filter?.month ?? (new Date().getMonth() + 1))
   const [loading, setLoading] = useState(false)
@@ -113,6 +175,7 @@ const Home = ({ dashboard, filter }) => {
   const firstRender = useRef(true)
 
   const d = useMemo(() => ({ ...EMPTY_DASHBOARD, ...(data || {}) }), [data])
+  const modeOptions = [{ value: 'month', label: 'Por mes' }, { value: 'year', label: 'Por año' }]
   const monthOptions = filter?.months ?? []
   const yearOptions = (filter?.years ?? []).map((y) => ({ value: y, label: String(y) }))
 
@@ -129,7 +192,7 @@ const Home = ({ dashboard, filter }) => {
 
     const controller = new AbortController()
     setLoading(true)
-    fetch(`/api/admin/dashboard?month=${month}&year=${year}`, {
+    fetch(`/api/admin/dashboard?mode=${mode}&month=${month}&year=${year}`, {
       headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
       credentials: 'same-origin',
       signal: controller.signal,
@@ -140,7 +203,7 @@ const Home = ({ dashboard, filter }) => {
       .finally(() => setLoading(false))
 
     return () => controller.abort()
-  }, [month, year])
+  }, [mode, month, year])
 
   useEffect(() => {
     if (!chartRef.current || typeof ApexCharts === 'undefined') return
@@ -153,7 +216,7 @@ const Home = ({ dashboard, filter }) => {
       ],
       stroke: { width: [0, 3], curve: 'smooth' },
       plotOptions: { bar: { columnWidth: '46%', borderRadius: 5 } },
-      xaxis: { categories: d.chart.labels, title: { text: 'Día del mes' } },
+      xaxis: { categories: d.chart.labels, title: { text: d.chart.x_title || 'Día del mes' } },
       yaxis: [
         { title: { text: 'Cantidad' }, labels: { formatter: (v) => Math.round(v) } },
         { opposite: true, title: { text: 'Monto (S/)' }, labels: { formatter: (v) => `S/ ${Math.round(v).toLocaleString('es-PE')}` } },
@@ -192,10 +255,14 @@ const Home = ({ dashboard, filter }) => {
                   <p className='wfd-sub text-capitalize'>Resumen ejecutivo de <b>{d.month_label || 'el mes actual'}</b></p>
                 </div>
               </div>
-              <div className='d-flex align-items-center gap-2'>
+              <div className='d-flex align-items-center gap-2 flex-wrap'>
                 {loading && <i className='ti ti-loader-2 spin' style={{ color: '#004991', fontSize: 18 }}></i>}
-                <CustomSelect value={month} options={monthOptions} onChange={setMonth} icon='ti ti-calendar-month' minWidth={150} />
-                <CustomSelect value={year} options={yearOptions} onChange={setYear} icon='ti ti-calendar' minWidth={110} />
+                <CustomSelect value={mode} options={modeOptions} onChange={setMode} icon='ti ti-filter' minWidth={130} />
+                {mode === 'month' ? (
+                  <MonthPicker month={month} year={year} months={monthOptions} years={filter?.years ?? []} onChange={(m, y) => { setMonth(m); setYear(y) }} />
+                ) : (
+                  <CustomSelect value={year} options={yearOptions} onChange={setYear} icon='ti ti-calendar' minWidth={120} />
+                )}
               </div>
             </div>
           </div>
@@ -221,7 +288,7 @@ const Home = ({ dashboard, filter }) => {
         <div className='col-12 col-xl-8'>
           <div className='wfd-card'>
             <div className='d-flex align-items-center justify-content-between mb-3'>
-              <h2 className='wfd-h2'>Cotizaciones del mes</h2>
+              <h2 className='wfd-h2'>Tendencia de cotizaciones</h2>
               <span className='wfd-badge brand text-capitalize'>{d.month_label}</span>
             </div>
             <div ref={chartRef} />
