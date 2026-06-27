@@ -25,6 +25,89 @@ const FilterGroup = ({ children, title }) => (
   </div>
 );
 
+// Cuántos valores se muestran inline antes de ofrecer "Ver más".
+const FACET_LIMIT = 6;
+
+// Grupo de checkboxes con corte: muestra los primeros y abre un modal con
+// buscador cuando hay demasiados valores.
+const FacetCheckboxGroup = ({ title, groupKey, items, selected, onToggle, onSeeMore }) => {
+  if (!items.length) return null;
+  const shown = items.slice(0, FACET_LIMIT);
+  const extra = items.length - shown.length;
+
+  return (
+    <FilterGroup title={title}>
+      {shown.map((label) => (
+        <FilterCheckbox key={label} label={label} checked={selected.includes(label)} onChange={() => onToggle(groupKey, label)} />
+      ))}
+      {extra > 0 && (
+        <button
+          type="button"
+          onClick={() => onSeeMore({ key: groupKey, title })}
+          className="flex items-center gap-1 text-xs font-bold text-primary transition hover:text-[#003b7a]"
+        >
+          <i className="mdi mdi-plus-circle-outline text-sm"></i>
+          Ver más ({extra})
+        </button>
+      )}
+    </FilterGroup>
+  );
+};
+
+// Modal para seleccionar valores de un filtro con muchos valores + buscador.
+const FilterModal = ({ group, items, selected, onToggle, onClose }) => {
+  const [search, setSearch] = useState('');
+  const term = search.trim().toLowerCase();
+  const filtered = term ? items.filter((label) => label.toLowerCase().includes(term)) : items;
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4" onMouseDown={onClose}>
+      <div
+        className="flex max-h-[85vh] w-full flex-col rounded-t-2xl bg-white shadow-2xl sm:max-w-md sm:rounded-2xl"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-silver px-5 py-4">
+          <h3 className="text-base font-bold text-primary">{group.title}</h3>
+          <button type="button" onClick={onClose} aria-label="Cerrar" className="grid h-8 w-8 place-items-center rounded-full text-muted transition hover:bg-silver hover:text-primary">
+            <i className="mdi mdi-close text-lg"></i>
+          </button>
+        </div>
+
+        <div className="px-5 pt-4">
+          <label className="relative block">
+            <input
+              type="text"
+              value={search}
+              autoFocus
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={`Buscar en ${group.title.toLowerCase()}…`}
+              className="h-11 w-full rounded-xl border border-silver bg-white pl-10 pr-4 text-sm text-dark outline-none transition focus:border-primary"
+            />
+            <i className="mdi mdi-magnify pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-primary"></i>
+          </label>
+        </div>
+
+        <div className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
+          {filtered.length ? (
+            filtered.map((label) => (
+              <FilterCheckbox key={label} label={label} checked={selected.includes(label)} onChange={() => onToggle(group.key, label)} />
+            ))
+          ) : (
+            <p className="py-6 text-center text-sm text-muted">Sin coincidencias para “{search}”.</p>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between border-t border-silver px-5 py-4">
+          <span className="text-xs text-muted">{selected.length} seleccionados</span>
+          <button type="button" onClick={onClose} className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#003b7a]">
+            Listo
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const sortOptions = [
   { label: 'Más populares', value: 'popular' },
   { label: 'Nombre: A → Z', value: 'name-asc' },
@@ -117,6 +200,7 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [modalGroup, setModalGroup] = useState(null);
   const firstRender = useRef(true);
 
   const facetGroups = {
@@ -282,21 +366,9 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
                   </button>
                 )}
 
-                {facetGroups.segment.length > 0 && (
-                  <FilterGroup title="Segmento">
-                    {facetGroups.segment.map((label) => (
-                      <FilterCheckbox key={label} label={label} checked={filters.segment.includes(label)} onChange={() => toggleFilter('segment', label)} />
-                    ))}
-                  </FilterGroup>
-                )}
+                <FacetCheckboxGroup title="Segmento" groupKey="segment" items={facetGroups.segment} selected={filters.segment} onToggle={toggleFilter} onSeeMore={setModalGroup} />
 
-                {facetGroups.line.length > 0 && (
-                  <FilterGroup title="Línea de producto">
-                    {facetGroups.line.map((label) => (
-                      <FilterCheckbox key={label} label={label} checked={filters.line.includes(label)} onChange={() => toggleFilter('line', label)} />
-                    ))}
-                  </FilterGroup>
-                )}
+                <FacetCheckboxGroup title="Línea de producto" groupKey="line" items={facetGroups.line} selected={filters.line} onToggle={toggleFilter} onSeeMore={setModalGroup} />
 
                 {facetGroups.type.length > 0 && (
                   <FilterGroup title="Tipo de producto">
@@ -320,21 +392,9 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
                   </FilterGroup>
                 )}
 
-                {facetGroups.use.length > 0 && (
-                  <FilterGroup title="Uso">
-                    {facetGroups.use.map((label) => (
-                      <FilterCheckbox key={label} label={label} checked={filters.use.includes(label)} onChange={() => toggleFilter('use', label)} />
-                    ))}
-                  </FilterGroup>
-                )}
+                <FacetCheckboxGroup title="Uso" groupKey="use" items={facetGroups.use} selected={filters.use} onToggle={toggleFilter} onSeeMore={setModalGroup} />
 
-                {facetGroups.material.length > 0 && (
-                  <FilterGroup title="Material">
-                    {facetGroups.material.map((label) => (
-                      <FilterCheckbox key={label} label={label} checked={filters.material.includes(label)} onChange={() => toggleFilter('material', label)} />
-                    ))}
-                  </FilterGroup>
-                )}
+                <FacetCheckboxGroup title="Material" groupKey="material" items={facetGroups.material} selected={filters.material} onToggle={toggleFilter} onSeeMore={setModalGroup} />
 
                 {facetGroups.color.length > 0 && (
                   <FilterGroup title="Color">
@@ -483,6 +543,17 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
           </article>
         </div>
       </section>
+
+      {modalGroup && (
+        <FilterModal
+          key={modalGroup.key}
+          group={modalGroup}
+          items={facetGroups[modalGroup.key] || []}
+          selected={filters[modalGroup.key] || []}
+          onToggle={toggleFilter}
+          onClose={() => setModalGroup(null)}
+        />
+      )}
     </main>
   );
 };

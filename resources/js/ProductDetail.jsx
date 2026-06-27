@@ -62,7 +62,7 @@ const SummaryGrid = ({ items }) => (
 );
 
 const TechnicalSpecifications = ({ groups }) => (
-  <section className="mt-24">
+  <section className="mt-20 sm:mt-24">
     <div>
       <h2 className="font-title text-3xl font-medium text-primary">
         Especificaciones tecnicas
@@ -70,30 +70,33 @@ const TechnicalSpecifications = ({ groups }) => (
       <span className="mt-4 block h-1 w-12 bg-secondary" />
     </div>
 
-    <div className="mt-10 grid gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-      {groups.map((group, index) => (
+    <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {groups.map((group) => (
         <article
           key={group.title}
-          className={`px-6 first:pl-0 ${index > 0 ? 'border-l border-slate-300' : ''}`}
+          className="rounded-xl border border-slate-200 bg-light p-5 sm:p-6"
         >
           <h3 className="text-xs font-bold uppercase tracking-[0.08em] text-primary">
             {group.title}
           </h3>
-          <dl className="mt-7 space-y-5">
-            {group.items.map((item) => (
-              <div key={item.label}>
-                <dt className="text-[10px] uppercase text-muted">{item.label}</dt>
-                <dd className="mt-1 text-sm font-medium text-primary">{item.value}</dd>
-              </div>
-            ))}
-          </dl>
+
+          {group.items?.length > 0 && (
+            <dl className="mt-4 divide-y divide-slate-200">
+              {group.items.map((item) => (
+                <div key={item.label} className="flex items-start justify-between gap-4 py-2.5">
+                  <dt className="text-xs text-muted">{item.label}</dt>
+                  <dd className="text-right text-sm font-semibold text-primary">{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
 
           {group.badges && (
-            <div className="mt-5 flex gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               {group.badges.map((badge) => (
                 <span
                   key={badge}
-                  className="grid h-8 min-w-8 place-items-center border border-slate-300 bg-light px-2 text-[9px] font-bold text-primary"
+                  className="grid h-8 min-w-8 place-items-center rounded-md border border-slate-300 bg-white px-2 text-[10px] font-bold text-primary"
                 >
                   {badge}
                 </span>
