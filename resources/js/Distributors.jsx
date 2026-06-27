@@ -4,63 +4,8 @@ import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 import Global from './Utils/Global';
 import { loadGoogleMapsApi } from './Utils/googleMaps';
-import { fetchUbigeoRows, getDepartments, getDistricts, getProvinces } from './Utils/ubigeo';
 
 const DEFAULT_CENTER = { lat: -12.104889, lng: -77.036412 };
-
-// Public seller addresses verified from their storefront websites. Active backend
-// rows are added below so the admin panel can extend the public directory.
-const fallbackDistributors = [
-  {
-    id: 'marsano-surquillo',
-    name: 'Comercial Marsano',
-    department: 'Lima',
-    province: 'Lima',
-    district: 'Surquillo',
-    address: 'Av. Tomás Marsano 1571, Surquillo, Lima',
-    phone: '(01) 260-8182',
-    hours: 'Lun - Sáb: 08:00 - 19:00',
-    latitude: -12.1181634,
-    longitude: -77.0079936,
-    highlighted: true,
-  },
-  {
-    id: 'jireh-chincha',
-    name: 'Ferretería Jireh',
-    department: 'Ica',
-    province: 'Chincha',
-    district: 'Chincha Alta',
-    address: 'Car. Panamericana Sur km 198 N° 746, Chincha Alta, Ica',
-    phone: '930 453 124',
-    hours: 'Consultar horario',
-    latitude: -13.426649,
-    longitude: -76.1333543,
-  },
-  {
-    id: 'ferreman-pucallpa',
-    name: 'Ferreman',
-    department: 'Ucayali',
-    province: 'Coronel Portillo',
-    district: 'Pucallpa',
-    address: 'Av. Habilitación Urbana Municipal Mz. E lote 01, Km 6, Pucallpa',
-    phone: '985 810 486',
-    hours: 'Consultar horario',
-    latitude: -8.4005,
-    longitude: -74.5805385,
-  },
-  {
-    id: 'globaltec-los-olivos',
-    name: 'Globaltec',
-    department: 'Lima',
-    province: 'Lima',
-    district: 'Los Olivos',
-    address: 'Jr. Níquel 240, Urb. Industrial Infantas, Los Olivos, Lima',
-    phone: '997 516 442',
-    hours: 'Consultar horario',
-    latitude: -11.967514,
-    longitude: -77.064481,
-  },
-];
 
 const toCoordinate = (value) => {
   const parsed = Number(value);
@@ -74,7 +19,7 @@ const normalizeDistributor = (distributor) => ({
   province: distributor.province,
   district: distributor.district,
   address: distributor.address,
-  phone: distributor.phone ?? 'Consultar disponibilidad',
+  phone: [distributor.phone_prefix, distributor.phone].filter(Boolean).join(' ') || 'Consultar disponibilidad',
   hours: distributor.hours ?? 'Atención previa coordinación',
   latitude: toCoordinate(distributor.latitude),
   longitude: toCoordinate(distributor.longitude),
@@ -164,7 +109,7 @@ const Dropdown = ({
           id={`${id}-options`}
           role="listbox"
           aria-label={label}
-          className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 rounded-xl border border-silver bg-white p-2 shadow-xl"
+          className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 max-h-72 overflow-y-auto rounded-xl border border-silver bg-white p-2 shadow-xl"
         >
           <button
             type="button"
@@ -450,7 +395,7 @@ const DistributorsScreen = ({ distributors = [] }) => {
   const normalizedDistributors = useMemo(() => {
     const seenLocations = new Set();
 
-    return [...fallbackDistributors, ...distributors]
+    return distributors
       .map(normalizeDistributor)
       .filter((distributor) => {
         const locationKey = distributor.latitude != null && distributor.longitude != null
@@ -463,43 +408,25 @@ const DistributorsScreen = ({ distributors = [] }) => {
         return true;
       });
   }, [distributors]);
-  const [departmentDraft, setDepartmentDraft] = useState('');
-  const [provinceDraft, setProvinceDraft] = useState('');
-  const [districtDraft, setDistrictDraft] = useState('');
   const [department, setDepartment] = useState('');
   const [province, setProvince] = useState('');
   const [district, setDistrict] = useState('');
   const [sort, setSort] = useState('featured');
   const [selectedId, setSelectedId] = useState(normalizedDistributors[0]?.id ?? null);
-  const [ubigeoRows, setUbigeoRows] = useState([]);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchUbigeoRows()
-      .then((rows) => {
-        if (!cancelled) setUbigeoRows(rows);
-      })
-      .catch(() => {
-        if (!cancelled) setUbigeoRows([]);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
+  const sortEs = (a, b) => a.localeCompare(b, 'es');
+  // Solo departamentos/provincias/distritos donde hay distribuidores.
   const departments = useMemo(
-    () => getDepartments(ubigeoRows),
-    [ubigeoRows],
+    () => [...new Set(normalizedDistributors.map((d) => d.department).filter(Boolean))].sort(sortEs),
+    [normalizedDistributors],
   );
   const provinces = useMemo(
-    () => getProvinces(ubigeoRows, departmentDraft),
-    [departmentDraft, ubigeoRows],
+    () => [...new Set(normalizedDistributors.filter((d) => !department || d.department === department).map((d) => d.province).filter(Boolean))].sort(sortEs),
+    [normalizedDistributors, department],
   );
   const districts = useMemo(
-    () => getDistricts(ubigeoRows, departmentDraft, provinceDraft).map((item) => item.district),
-    [departmentDraft, provinceDraft, ubigeoRows],
+    () => [...new Set(normalizedDistributors.filter((d) => (!department || d.department === department) && (!province || d.province === province)).map((d) => d.district).filter(Boolean))].sort(sortEs),
+    [normalizedDistributors, department, province],
   );
   const filteredDistributors = useMemo(() => {
     const filtered = normalizedDistributors.filter((distributor) => (
@@ -520,12 +447,6 @@ const DistributorsScreen = ({ distributors = [] }) => {
       setSelectedId(filteredDistributors[0]?.id ?? null);
     }
   }, [filteredDistributors, selectedId]);
-
-  const search = () => {
-    setDepartment(departmentDraft);
-    setProvince(provinceDraft);
-    setDistrict(districtDraft);
-  };
 
   const selectDistributorFromCard = (id) => {
     setSelectedId(id);
@@ -554,50 +475,42 @@ const DistributorsScreen = ({ distributors = [] }) => {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+          <div className="grid gap-4 sm:grid-cols-3 lg:items-end">
             <Dropdown
               id="department-dropdown"
               label="Departamento"
-              placeholder="Ej. Lima"
-              value={departmentDraft}
+              placeholder="Todos"
+              value={department}
               options={departments.map((option) => ({ label: option, value: option }))}
               onChange={(nextValue) => {
-                  setDepartmentDraft(nextValue);
-                  setProvinceDraft('');
-                  setDistrictDraft('');
+                setDepartment(nextValue);
+                setProvince('');
+                setDistrict('');
               }}
             />
 
             <Dropdown
-              disabled={!departmentDraft}
+              disabled={!department}
               id="province-dropdown"
               label="Provincia"
-              placeholder="Todas las regiones"
-              value={provinceDraft}
+              placeholder="Todas"
+              value={province}
               options={provinces.map((option) => ({ label: option, value: option }))}
               onChange={(nextValue) => {
-                setProvinceDraft(nextValue);
-                setDistrictDraft('');
+                setProvince(nextValue);
+                setDistrict('');
               }}
             />
 
             <Dropdown
-              disabled={!provinceDraft}
+              disabled={!province}
               id="district-dropdown"
               label="Distrito"
-              placeholder="Todos los distritos"
-              value={districtDraft}
+              placeholder="Todos"
+              value={district}
               options={districts.map((option) => ({ label: option, value: option }))}
-              onChange={setDistrictDraft}
+              onChange={setDistrict}
             />
-
-            <button
-              type="button"
-              onClick={search}
-              className="rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-[#003b7a] sm:col-span-2 lg:col-span-1"
-            >
-              Buscar
-            </button>
           </div>
         </div>
 

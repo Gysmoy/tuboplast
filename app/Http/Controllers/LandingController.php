@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Distribuidor;
+use App\Models\Sucursal;
 use App\Models\ClubExpert;
 use App\Models\AboutPage;
 use App\Models\BlogPage;
@@ -75,19 +76,46 @@ class LandingController extends BasicController
         if ($this->reactView === 'Distributors') {
             $properties['distributors'] = Distribuidor::query()
                 ->where('status', true)
+                ->orderByDesc('featured')
                 ->orderBy('department')
                 ->orderBy('province')
                 ->orderBy('district')
-                ->get([
-                    'id',
-                    'department',
-                    'province',
-                    'district',
-                    'address',
-                    'reference',
-                    'latitude',
-                    'longitude',
-                ]);
+                ->get()
+                ->map(fn ($row) => [
+                    'id' => $row->id,
+                    'name' => $row->name,
+                    'department' => $row->department,
+                    'province' => $row->province,
+                    'district' => $row->district,
+                    'address' => $row->address,
+                    'reference' => $row->reference,
+                    'phone' => $row->phone,
+                    'phone_prefix' => $row->phone_prefix,
+                    'hours' => $row->business_hours,
+                    'highlighted' => (bool) $row->featured,
+                    'latitude' => $row->latitude,
+                    'longitude' => $row->longitude,
+                ])
+                ->values();
+        }
+
+        if ($this->reactView === 'Contact') {
+            $properties['branches'] = Sucursal::query()
+                ->where('status', true)
+                ->orderBy('id')
+                ->get()
+                ->map(fn ($row) => [
+                    'id' => $row->id,
+                    'name' => 'Tuboplast - ' . ($row->district ?: 'Sede'),
+                    'department' => $row->department,
+                    'province' => $row->province,
+                    'district' => $row->district,
+                    'address' => $row->address,
+                    'reference' => $row->reference,
+                    'latitude' => $row->latitude !== null ? (float) $row->latitude : null,
+                    'longitude' => $row->longitude !== null ? (float) $row->longitude : null,
+                ])
+                ->values();
         }
 
         $sectionTitles = [

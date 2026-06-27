@@ -12,11 +12,18 @@
         name="description" />
     <meta content="DevEx Consulting" name="author" />
 
+    @php
+        // Cache-busting por mtime: cuando el archivo cambia, la URL cambia y el
+        // navegador re-descarga aunque tenga una copia cacheada (evita iconos/logo
+        // que desaparecen en refresh normal y solo salen con Ctrl+Shift+R).
+        $v = fn ($p) => '/' . ltrim($p, '/') . '?v=' . (is_file(public_path($p)) ? filemtime(public_path($p)) : '1');
+    @endphp
+
     <!-- App favicon -->
     <link rel="shortcut icon" href="/assets/img/icon.svg" type="image/svg+xml" />
 
     <!-- Theme Config Js -->
-    <script src="/lte/assets/js/config.js"></script>
+    <script src="{{ $v('lte/assets/js/config.js') }}"></script>
 
      <!-- Switchery css -->
     <link href="/lte/assets/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css" />
@@ -28,14 +35,14 @@
         rel="stylesheet" type="text/css" id="dg-dark-stylesheet" disabled="disabled" />
 
     <!-- Vendor css -->
-    <link href="/lte/assets/css/vendor.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ $v('lte/assets/css/vendor.min.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- App css -->
-    <link href="/lte/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
+    <link href="{{ $v('lte/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
 
     <!-- Icons css -->
-    <link href="/lte/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/lte/assets/css/mdi-icons.css" rel="stylesheet" type="text/css" />
+    <link href="{{ $v('lte/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ $v('lte/assets/css/mdi-icons.css') }}" rel="stylesheet" type="text/css" />
 
     @isset($component)
         @vite('resources/js/' . $component . '.jsx')
@@ -507,7 +514,7 @@
     <script src="/lte/assets/libs/mohithg-switchery/switchery.min.js"></script>
 
     <!-- App js -->
-    <script src="/lte/assets/js/app.js"></script>
+    <script src="{{ $v('lte/assets/js/app.js') }}"></script>
 
     <!-- Data Grid js -->
     <script src="/lte/assets/libs/dxdatagrid/js/dx.all.js"></script>

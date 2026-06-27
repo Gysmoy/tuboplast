@@ -247,27 +247,28 @@ const renderCustomContent = (content) =>
     return <p key={`paragraph-${index}`}>{renderInlineMarkup(block.text)}</p>;
   });
 
-const NewsletterCard = () => (
+const NewsletterCard = ({ newsletter = {} }) => (
   <aside className="overflow-hidden rounded-2xl bg-primary text-white shadow-[0_10px_30px_rgba(0,59,122,0.22)]">
     <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6">
-      <h3 className="max-w-[12ch] font-title text-2xl leading-tight">
-        SE EL PRIMERO EN SABER
+      {newsletter.eyebrow ? <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-secondary">{newsletter.eyebrow}</p> : null}
+      <h3 className="max-w-[14ch] font-title text-2xl leading-tight">
+        {newsletter.title}
       </h3>
       <p className="mt-4 text-sm leading-relaxed text-white/80">
-        Tips de instalacion, nuevos productos y actualizaciones exclusivas para profesionales.
+        {newsletter.description}
       </p>
 
       <div className="mt-6 space-y-3">
         <input
           className="w-full rounded-full border border-white/15 bg-white/10 px-5 py-3.5 text-sm outline-none placeholder:text-white/55"
-          placeholder="Correo electronico"
+          placeholder={newsletter.placeholder}
           type="email"
         />
         <button
           type="button"
           className="w-full rounded-full bg-secondary px-5 py-3.5 text-sm font-bold text-primary transition hover:bg-[#f0d200]"
         >
-          Suscribirme ahora
+          {newsletter.buttonLabel}
         </button>
       </div>
     </div>
@@ -296,6 +297,13 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
   const lead = selectedPost.lead || template.lead || selectedPost.description || '';
   const highlightLabel = selectedPost.highlight_label || 'Nota Tecnica';
   const highlightText = selectedPost.highlight || template.highlight || '';
+  const newsletter = {
+    eyebrow: blog.newsletter_eyebrow || 'Newsletter',
+    title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
+    description: blog.newsletter_description || 'Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.',
+    placeholder: blog.newsletter_placeholder || 'Correo electronico',
+    buttonLabel: blog.newsletter_button_label || 'Suscribirme ahora',
+  };
 
   return (
     <main className="bg-white">
@@ -305,7 +313,7 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
             {eyebrow}
           </p>
 
-          <h1 className="mt-4 max-w-5xl font-title text-[clamp(2.7rem,5vw,5.6rem)] leading-[0.95] tracking-tight text-primary">
+          <h1 className="mt-4 max-w-4xl font-title text-3xl font-medium leading-tight tracking-tight text-primary sm:text-4xl lg:text-5xl">
             {selectedPost.title || 'Articulo del blog'}
           </h1>
 
@@ -377,7 +385,7 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
               </div>
 
               <div>
-                <NewsletterCard />
+                <NewsletterCard newsletter={newsletter} />
               </div>
             </div>
           </article>

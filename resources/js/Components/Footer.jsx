@@ -7,7 +7,10 @@ const Footer = () => {
     <div className="page-container">
       <div className="row">
         <div className="col-md-6 text-center text-md-start">
-          {fullYear} © Panel {Global.APP_NAME} • Powered by <a href='//xplain.pe' target='_blank' className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">xPlain Solutions</a>
+          {fullYear} © Panel {Global.APP_NAME}
+          <span className='visually-hidden'>
+            • Powered by <a href='//devex.pe' target='_blank' className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">DevEx Consultinh</a>
+            </span>
         </div>
         <div className="col-md-6">
           <div className="text-md-end footer-links d-none d-md-block">

@@ -1,0 +1,20 @@
+import{j as t}from"./DataGrid-DAFs00V8.js";import{r as d}from"./index-RYns6xqu.js";import{r as N}from"./index-DJSEUtJE.js";const R=`
+.cdd-wrap{position:relative;display:inline-block;}
+.cdd-btn{height:34px;border:1px solid #dce5f0;border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:#0f2540;padding:0 10px;display:inline-flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;width:100%;}
+.cdd-btn.compact{height:30px;font-size:12px;padding:0 8px;}
+.cdd-btn.bare{border:0;border-radius:0;background:transparent;height:auto;padding:8px 12px;font-weight:500;}
+.cdd-btn.bare:hover{border-color:transparent;background:#f9fbfe;}
+.cdd-btn:hover{border-color:#004991;}
+.cdd-btn .cdd-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cdd-btn .cdd-chev{color:#8a93a6;font-size:14px;flex-shrink:0;}
+.cdd-menu{position:fixed;z-index:2000;max-height:260px;overflow-y:auto;background:#fff;border:1px solid #e7edf5;border-radius:10px;box-shadow:0 12px 30px rgba(15,37,64,.16);padding:5px;}
+.cdd-menu::-webkit-scrollbar{width:6px;}.cdd-menu::-webkit-scrollbar-thumb{background:#cfdcec;border-radius:9px;}
+.cdd-opt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border-radius:7px;font-size:12.5px;color:#1f2a44;cursor:pointer;border:0;background:none;width:100%;text-align:left;white-space:nowrap;}
+.cdd-opt:hover{background:#f4f8fd;}
+.cdd-opt.sel{background:#e6effa;color:#004991;font-weight:700;}
+.cdd-opt i{font-size:14px;color:#004991;}
+.cdd-search{position:sticky;top:0;background:#fff;padding:2px 2px 6px;}
+.cdd-search input{width:100%;height:32px;border:1px solid #dce5f0;border-radius:8px;padding:0 10px;font-size:12.5px;outline:none;}
+.cdd-search input:focus{border-color:#004991;}
+.cdd-empty{padding:10px;text-align:center;color:#8a93a6;font-size:12px;}
+`;let v=!1;const $=()=>{if(v||typeof document>"u")return;v=!0;const r=document.createElement("style");r.textContent=R,document.head.appendChild(r)},q=({value:r,options:a=[],onChange:y,placeholder:k="Seleccionar",minWidth:j=120,menuWidth:S,compact:E=!1,bare:z=!1,searchable:l=!1})=>{$();const[n,c]=d.useState(!1),[x,b]=d.useState(""),[p,C]=d.useState({left:0,top:0,width:0}),u=d.useRef(null),f=d.useRef(null),h=a.find(e=>String(e.value)===String(r)),m=x.trim().toLowerCase(),g=l&&m?a.filter(e=>`${e.label} ${e.search||""}`.toLowerCase().includes(m)):a;d.useEffect(()=>{n||b("")},[n]);const L=()=>{var o;const e=(o=u.current)==null?void 0:o.getBoundingClientRect();e&&C({left:e.left,top:e.bottom+4,width:e.width})};return d.useLayoutEffect(()=>{n&&L()},[n]),d.useEffect(()=>{if(!n)return;const e=i=>{var s,w;!((s=u.current)!=null&&s.contains(i.target))&&!((w=f.current)!=null&&w.contains(i.target))&&c(!1)},o=i=>{var s;(s=f.current)!=null&&s.contains(i.target)||c(!1)};return document.addEventListener("mousedown",e,!0),window.addEventListener("scroll",o,!0),window.addEventListener("resize",o),()=>{document.removeEventListener("mousedown",e,!0),window.removeEventListener("scroll",o,!0),window.removeEventListener("resize",o)}},[n]),t.jsxs("div",{className:`cdd-wrap ${n?"open":""}`,style:{minWidth:j,width:"100%"},children:[t.jsxs("button",{ref:u,type:"button",className:`cdd-btn ${E?"compact":""} ${z?"bare":""}`,onClick:()=>c(e=>!e),children:[t.jsx("span",{className:"cdd-lbl",children:h?h.label:k}),t.jsx("i",{className:"mdi mdi-chevron-down cdd-chev"})]}),n&&N.createPortal(t.jsxs("div",{ref:f,className:"cdd-menu",style:{left:p.left,top:p.top,minWidth:S||p.width},children:[l&&t.jsx("div",{className:"cdd-search",children:t.jsx("input",{autoFocus:!0,value:x,onChange:e=>b(e.target.value),placeholder:"Buscar..."})}),g.map(e=>t.jsxs("button",{type:"button",className:`cdd-opt ${String(e.value)===String(r)?"sel":""}`,onClick:()=>{y(e.value),c(!1)},children:[e.label,String(e.value)===String(r)&&t.jsx("i",{className:"mdi mdi-check"})]},e.value)),l&&g.length===0&&t.jsx("div",{className:"cdd-empty",children:"Sin resultados"})]}),document.body)]})};export{q as default};

@@ -12,15 +12,27 @@ class Distribuidor extends Model
     protected $table = 'distribuidores';
 
     protected $fillable = [
+        'name',
         'department',
         'province',
         'district',
         'ubigeo',
         'address',
         'reference',
+        'phone',
+        'phone_prefix',
+        'business_hours',
+        'featured',
         'latitude',
         'longitude',
         'status',
+    ];
+
+    protected $casts = [
+        'featured' => 'boolean',
+        'status' => 'boolean',
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 }
 

@@ -69,12 +69,6 @@ const slugify = (value, index) => {
   return base.endsWith(`-${index + 1}`) ? base : `${base}-${index + 1}`;
 };
 
-const defaultMostRead = [
-  { number: '01', title: 'Manual de instalacion de valvulas mariposa', category: 'Soporte tecnico' },
-  { number: '02', title: 'Norma tecnica peruana para PVC-U', category: 'Normativa' },
-  { number: '03', title: 'Comparativo: CPVC vs PPR en edificios', category: 'Infraestructura' },
-];
-
 const postUrl = (post, absoluteIndex) => post.detail_url || `/blog/${post.slug || slugify(post.title, absoluteIndex)}`;
 const postImage = (post) => post.image_url || post.image_fallback || post.image;
 const postMeta = (post) => [post.author, post.published, post.read_time].filter(Boolean).join(' · ');
@@ -150,7 +144,13 @@ const FeaturedCard = ({ post, absoluteIndex }) => {
 
 const BlogScreen = ({ blog = {} }) => {
   const posts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts : defaultPosts;
-  const mostRead = Array.isArray(blog.most_read) && blog.most_read.length ? blog.most_read : defaultMostRead;
+  // Los 3 más leídos se derivan de los artículos (sin configuración manual).
+  const mostRead = posts.slice(0, 3).map((post, index) => ({
+    number: String(index + 1).padStart(2, '0'),
+    title: post.title,
+    category: post.category,
+    detail_url: postUrl(post, index),
+  }));
   const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/sliders/main-slider.png');
   const heroBadge = blog.hero_badge || 'Blog Tuboplast';
   const heroTitle = blog.hero_title || 'Construyendo el futuro';
@@ -309,15 +309,15 @@ const BlogScreen = ({ blog = {} }) => {
 
               <div className="divide-y divide-slate-200 rounded-2xl bg-white px-2 sm:px-0">
                 {mostRead.map((item) => (
-                  <article key={item.number} className="flex gap-4 py-4 first:pt-0 last:pb-0">
-                    <span className="min-w-10 font-title text-3xl font-medium leading-none text-[#d9e2ee] sm:text-4xl">
+                  <a key={item.number} href={item.detail_url} className="group flex gap-4 py-4 transition first:pt-0 last:pb-0">
+                    <span className="min-w-10 font-title text-3xl font-medium leading-none text-[#d9e2ee] transition group-hover:text-secondary sm:text-4xl">
                       {item.number}
                     </span>
                     <div className="space-y-1 pr-2">
-                      <h4 className="text-sm font-semibold leading-snug text-primary sm:text-base">{item.title}</h4>
+                      <h4 className="text-sm font-semibold leading-snug text-primary transition group-hover:text-[#003b7a] sm:text-base">{item.title}</h4>
                       <p className="text-[11px] uppercase tracking-[0.12em] text-muted">{item.category}</p>
                     </div>
-                  </article>
+                  </a>
                 ))}
               </div>
             </div>

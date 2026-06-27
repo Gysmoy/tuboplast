@@ -19,13 +19,10 @@ const serviceOptions = [
   'Otro',
 ];
 
-const contactChannels = [
-  {
-    icon: 'mdi-map-marker-radius-outline',
-    label: 'Sede central',
-    value: 'Calle María Curie 313, Ate, Lima',
-    href: `https://www.google.com/maps/dir/?api=1&destination=${CONTACT_LOCATION.lat},${CONTACT_LOCATION.lng}`,
-  },
+const SEDE_FALLBACK_ADDRESS = 'Calle María Curie 313, Ate, Lima';
+
+// Canales fijos (teléfono/WhatsApp). La sede se arma dinámicamente desde la BD.
+const phoneChannels = [
   {
     icon: 'mdi-phone-outline',
     label: 'Central telefónica',
@@ -39,6 +36,8 @@ const contactChannels = [
     href: 'https://wa.me/51947389121',
   },
 ];
+
+const directionsTo = (location) => `https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`;
 
 const socialLinks = [
   { icon: 'mdi-facebook', label: 'Facebook', href: 'https://www.facebook.com/Tuboplastsa/' },
@@ -144,7 +143,7 @@ const FallbackMap = () => (
   </div>
 );
 
-const ContactMap = () => {
+const ContactMap = ({ location = CONTACT_LOCATION }) => {
   const mapElementRef = useRef(null);
   const [mapStatus, setMapStatus] = useState('loading');
 
@@ -161,7 +160,7 @@ const ContactMap = () => {
         if (cancelled || !mapElementRef.current) return;
 
         const map = new maps.Map(mapElementRef.current, {
-          center: CONTACT_LOCATION,
+          center: location,
           zoom: 16,
           mapTypeControl: false,
           streetViewControl: false,
@@ -170,7 +169,7 @@ const ContactMap = () => {
 
         new maps.Marker({
           map,
-          position: CONTACT_LOCATION,
+          position: location,
           title: 'Tuboplast - Sede central',
           icon: {
             path: maps.SymbolPath.CIRCLE,
@@ -191,7 +190,7 @@ const ContactMap = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [location]);
 
   return (
     <div className="relative h-[300px] overflow-hidden rounded-2xl bg-silver shadow-sm sm:h-[360px] lg:h-[410px]">
@@ -201,7 +200,7 @@ const ContactMap = () => {
         className={`absolute inset-0 transition-opacity duration-500 ${mapStatus === 'ready' ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
       />
       <a
-        href={`https://www.google.com/maps/dir/?api=1&destination=${CONTACT_LOCATION.lat},${CONTACT_LOCATION.lng}`}
+        href={directionsTo(location)}
         target="_blank"
         rel="noreferrer"
         className="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#003b7a]"
@@ -213,10 +212,10 @@ const ContactMap = () => {
   );
 };
 
-const ContactSidebar = () => (
+const ContactSidebar = ({ channels }) => (
   <aside className="rounded-2xl bg-white p-5 shadow-md ring-1 ring-slate-200/70 sm:p-6">
     <div className="space-y-5">
-      {contactChannels.map((channel) => (
+      {channels.map((channel) => (
         <a
           key={channel.label}
           href={channel.href}
@@ -407,41 +406,58 @@ const ContactForm = () => {
   );
 };
 
-const ContactScreen = () => (
-  <main className="bg-light">
-    <section className="relative overflow-hidden bg-white">
-      <img
-        src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1800&q=85"
-        alt="Proyecto de infraestructura en construcción"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/45" />
-      <div className="relative mx-auto w-full max-w-site px-4 pb-20 pt-12 sm:pb-24 sm:pt-16 lg:pb-32 lg:pt-20">
-        <span className="block h-1 w-16 bg-secondary" />
-        <h1 className="mt-8 max-w-4xl font-title text-4xl font-medium leading-tight text-primary sm:text-5xl lg:text-6xl">
-          Estamos para asesorarte
-        </h1>
-        <p className="mt-4 max-w-3xl text-lg leading-relaxed text-darkmuted sm:text-xl">
-          Contamos con un equipo técnico especializado listo para brindar soluciones precisas a tus proyectos de infraestructura y saneamiento en todo el Perú.
-        </p>
-      </div>
-    </section>
+const ContactScreen = ({ branches = [] }) => {
+  const primary = branches.find((branch) => branch.latitude != null && branch.longitude != null) || branches[0];
+  const location = primary && primary.latitude != null && primary.longitude != null
+    ? { lat: Number(primary.latitude), lng: Number(primary.longitude) }
+    : CONTACT_LOCATION;
 
-    <section className="relative z-10 mx-auto -mt-10 grid w-full max-w-site gap-5 px-4 sm:-mt-12 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-6">
-      <ContactSidebar />
-      <ContactForm />
-    </section>
+  const channels = [
+    {
+      icon: 'mdi-map-marker-radius-outline',
+      label: 'Sede central',
+      value: primary?.address || SEDE_FALLBACK_ADDRESS,
+      href: directionsTo(location),
+    },
+    ...phoneChannels,
+  ];
 
-    <section className="mx-auto w-full max-w-site px-4 py-12 sm:py-16">
-      <ContactMap />
-    </section>
-  </main>
-);
+  return (
+    <main className="bg-light">
+      <section className="relative overflow-hidden bg-white">
+        <img
+          src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1800&q=85"
+          alt="Proyecto de infraestructura en construcción"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/45" />
+        <div className="relative mx-auto w-full max-w-site px-4 pb-20 pt-12 sm:pb-24 sm:pt-16 lg:pb-32 lg:pt-20">
+          <span className="block h-1 w-16 bg-secondary" />
+          <h1 className="mt-8 max-w-4xl font-title text-4xl font-medium leading-tight text-primary sm:text-5xl lg:text-6xl">
+            Estamos para asesorarte
+          </h1>
+          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-darkmuted sm:text-xl">
+            Contamos con un equipo técnico especializado listo para brindar soluciones precisas a tus proyectos de infraestructura y saneamiento en todo el Perú.
+          </p>
+        </div>
+      </section>
 
-CreateReactScript((el) => {
+      <section className="relative z-10 mx-auto -mt-10 grid w-full max-w-site gap-5 px-4 sm:-mt-12 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-6">
+        <ContactSidebar channels={channels} />
+        <ContactForm />
+      </section>
+
+      <section className="mx-auto w-full max-w-site px-4 py-12 sm:py-16">
+        <ContactMap location={location} />
+      </section>
+    </main>
+  );
+};
+
+CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title="Contacto">
-      <ContactScreen />
+      <ContactScreen branches={properties?.branches} />
     </Base>,
   );
 });

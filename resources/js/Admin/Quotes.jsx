@@ -1,36 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import CreateReactScript from '../Utils/CreateReactScript.jsx'
 import Adminto from '../Components/Adminto.jsx'
+import AdminTable from '../Components/AdminTable.jsx'
+import ConfirmModal from '../Components/ConfirmModal.jsx'
 import QuotesRest from '../Actions/Admin/QuotesRest.js'
 import { openQuotePdf } from '../Utils/quoteStorage.js'
 
 const quotesRest = new QuotesRest()
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
-
-// Capa de marca (formato de la referencia weFem) con colores Tuboplast.
-const BRAND_CSS = `
-.wfq-wrap{color:#1f2a44;}
-.wfq-card{background:#fff;border:1px solid #e7edf5;border-radius:16px;box-shadow:0 1px 2px rgba(15,37,64,.04),0 6px 16px rgba(0,73,145,.06);padding:16px;}
-@media(min-width:992px){.wfq-card{padding:20px;}}
-.wfq-iconbox{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#0a5aa8,#004991);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 10px rgba(0,73,145,.25);flex-shrink:0;}
-.wfq-h2{font-size:18px;font-weight:700;line-height:1.25;margin:0;color:#0f2540;}
-@media(min-width:992px){.wfq-h2{font-size:20px;}}
-.wfq-sub{font-size:12px;color:#8a93a6;margin:0;}.wfq-sub b{color:#004991;}
-.wfq-tool{height:40px;width:40px;border-radius:12px;background:#e6effa;color:#004991;border:0;display:inline-flex;align-items:center;justify-content:center;transition:background .2s;}
-.wfq-tool:hover{background:#d6e6f7;}
-.wfq-search{height:40px;border-radius:12px;border:1px solid #dce5f0;background:#f5f8fc;font-size:13px;padding:0 12px 0 36px;outline:none;width:100%;}
-.wfq-search:focus{border-color:#004991;}
-.wfq-tablewrap{border:1px solid #eef2f8;border-radius:12px;overflow-x:auto;}
-.wfq-tablewrap::-webkit-scrollbar{height:8px;}.wfq-tablewrap::-webkit-scrollbar-thumb{background:#cfdcec;border-radius:9px;}
-table.wfq-table{width:100%;border-collapse:collapse;font-size:13px;min-width:980px;margin:0;}
-table.wfq-table thead th{background:#f5f8fc;color:#8a93a6;font-size:11px;text-transform:uppercase;letter-spacing:.025em;font-weight:600;padding:12px;white-space:nowrap;}
-table.wfq-table tbody td{padding:12px;border-top:1px solid #eef2f8;vertical-align:middle;}
-table.wfq-table tbody tr{cursor:pointer;transition:background-color .15s ease;}
-table.wfq-table tbody tr:hover{background:#f9fbfe;}
-table.wfq-table tbody tr.unseen{background:#eaf4ff;}
-table.wfq-table tbody tr.unseen:hover{background:#dff0ff;}
+// Estilos propios de esta vista (badges, modal). La tabla trae los suyos.
+const QUOTES_CSS = `
 .wfq-st{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:50rem;font-size:11px;font-weight:600;white-space:nowrap;}
 .wfq-st .dot{width:6px;height:6px;border-radius:50%;}
 .wfq-st.pendiente{background:#fff4d6;color:#854f0b;}.wfq-st.pendiente .dot{background:#caa12a;}
@@ -44,13 +24,9 @@ table.wfq-table tbody tr.unseen:hover{background:#dff0ff;}
 .wfq-act.edit{background:#e8f0ff;color:#3b82f6;}
 .wfq-act.pdf{background:#fff1d6;color:#9a6b00;}
 .wfq-act.del{background:#fcebeb;color:#e24b4a;}
-.wfq-pg{min-width:32px;height:32px;padding:0 8px;border-radius:8px;border:0;background:none;color:#8a93a6;font-weight:600;font-size:13px;}
-.wfq-pg:hover{background:#f4f8fd;}
-.wfq-pg.on{background:#004991;color:#fff;}
-.wfq-pg:disabled{opacity:.4;cursor:not-allowed;}
+.wfq-h2{font-size:18px;font-weight:700;line-height:1.25;margin:0;color:#0f2540;}
 .wfq-btn{height:36px;padding:0 14px;border-radius:10px;background:#004991;color:#fff;font-weight:600;font-size:13px;border:0;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
 .wfq-btn:hover{background:#003b7a;color:#fff;}
-.wfq-btn.ghost{background:#e6effa;color:#004991;}.wfq-btn.ghost:hover{background:#d6e6f7;}
 .wfq-btn.green{background:#16a34a;}.wfq-btn.green:hover{background:#15803d;}
 .wfq-btn.amber{background:#e0a800;color:#003b7a;}.wfq-btn.amber:hover{background:#c99800;color:#003b7a;}
 .wfq-btn.danger{background:#e24b4a;}.wfq-btn.danger:hover{background:#c93b3a;}
@@ -112,19 +88,6 @@ const buildCustomer = (quote) => ({
   department: quote?.department, province: quote?.province, district: quote?.district,
 })
 
-// Lista de páginas con ventana (1 … 4 5 6 … 59).
-const buildPages = (current, last) => {
-  if (last <= 1) return [1]
-  const pages = [1]
-  const left = Math.max(2, current - 1)
-  const right = Math.min(last - 1, current + 1)
-  if (left > 2) pages.push('…')
-  for (let p = left; p <= right; p += 1) pages.push(p)
-  if (right < last - 1) pages.push('…')
-  pages.push(last)
-  return pages
-}
-
 const Detail = ({ label, value }) => (
   <div className='col-md-4 col-sm-6'>
     <span className='wfq-lbl'>{label}</span>
@@ -133,62 +96,21 @@ const Detail = ({ label, value }) => (
 )
 
 const Quotes = () => {
-  const [rows, setRows] = useState([])
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [perPage, setPerPage] = useState(10)
-  const [query, setQuery] = useState('')
-  const [debouncedQuery, setDebouncedQuery] = useState('')
-
+  const tableRef = useRef(null)
   const [selectedQuote, setSelectedQuote] = useState(null)
   const [archiveMode, setArchiveMode] = useState(false)
   const [archiveReason, setArchiveReason] = useState('')
-  const firstSearch = useRef(true)
-
-  // Debounce búsqueda → reset page.
-  useEffect(() => {
-    const t = setTimeout(() => { setDebouncedQuery(query.trim()); setPage(1) }, 350)
-    return () => clearTimeout(t)
-  }, [query])
-
-  const load = useCallback(async () => {
-    setLoading(true)
-    const params = {
-      requireTotalCount: true,
-      skip: (page - 1) * perPage,
-      take: perPage,
-      sort: [{ selector: 'created_at', desc: true }],
-    }
-    if (debouncedQuery) {
-      params.filter = [
-        ['code', 'contains', debouncedQuery], 'or',
-        ['name', 'contains', debouncedQuery], 'or',
-        ['email', 'contains', debouncedQuery], 'or',
-        ['region', 'contains', debouncedQuery],
-      ]
-    }
-    const res = await quotesRest.paginate(params)
-    setRows(Array.isArray(res?.data) ? res.data : [])
-    setTotal(Number(res?.totalCount) || 0)
-    setLoading(false)
-  }, [page, perPage, debouncedQuery])
-
-  useEffect(() => { load() }, [load])
-
-  const totalPages = Math.max(1, Math.ceil(total / perPage))
-  const pages = useMemo(() => buildPages(page, totalPages), [page, totalPages])
+  const [confirmTarget, setConfirmTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
 
   const resetArchive = () => { setArchiveMode(false); setArchiveReason('') }
-
-  const patchRow = (id, patch) => setRows((list) => list.map((r) => (r.id === id ? { ...r, ...patch } : r)))
 
   const changeState = async (quote, state, reason = null) => {
     if (!quote) return
     const ok = await quotesRest.changeState(quote.id, state, reason)
     if (!ok) return
     const patch = { quote_status: state, archived_reason: state === 'archivado' ? reason : null }
-    patchRow(quote.id, patch)
+    tableRef.current?.patchRow(quote.id, patch)
     setSelectedQuote((cur) => (cur?.id === quote.id ? { ...cur, ...patch } : cur))
     resetArchive()
   }
@@ -202,7 +124,7 @@ const Quotes = () => {
     if (!isUnseen(quote)) return
     const ok = await quotesRest.seen(quote.id)
     if (!ok) return
-    patchRow(quote.id, { seen: true })
+    tableRef.current?.patchRow(quote.id, { seen: true })
     setSelectedQuote((cur) => (cur?.id === quote.id ? { ...cur, seen: true } : cur))
     window.dispatchEvent(new CustomEvent('quotes:seen', { detail: { id: quote.id } }))
   }
@@ -220,14 +142,19 @@ const Quotes = () => {
     openQuotePdf(buildCustomer(quote), normalizeItems(quote.items), { code: quote.code, date: quote.created_at }, win)
   }
 
-  const deleteQuote = async (quote, event) => {
-    if (event) event.stopPropagation()
-    if (!confirm('¿Eliminar esta cotización? Esta acción no se puede deshacer.')) return
+  const askDelete = (quote, event) => { if (event) event.stopPropagation(); setConfirmTarget(quote) }
+
+  const performDelete = async () => {
+    const quote = confirmTarget
+    if (!quote) return
+    setDeleting(true)
     const ok = await quotesRest.delete(quote.id)
+    setDeleting(false)
     if (!ok) return
     if (isUnseen(quote)) window.dispatchEvent(new CustomEvent('quotes:seen', { detail: { id: quote.id } }))
     if (selectedQuote?.id === quote.id) closeModal()
-    load()
+    setConfirmTarget(null)
+    tableRef.current?.reload()
   }
 
   // Body scroll lock con modal abierto.
@@ -249,135 +176,80 @@ const Quotes = () => {
   const hasPricing = currencyTotals.length > 0
   const status = selectedQuote?.quote_status || 'pendiente'
 
-  const from = total === 0 ? 0 : (page - 1) * perPage + 1
-  const to = Math.min(page * perPage, total)
+  const stop = (fn) => (e) => { e.stopPropagation(); fn() }
+
+  const columns = [
+    {
+      key: 'code', header: 'Cotización', field: 'code', nowrap: true,
+      render: (q) => (<><span className='fw-semibold' style={{ color: '#004991' }}>{q.code || `#${q.id}`}</span>{isUnseen(q) && <span className='wfq-new'>Nueva</span>}</>),
+    },
+    {
+      key: 'name', header: 'Cliente', field: 'name', filterFields: ['name', 'business'], nowrap: true,
+      render: (q) => (<><span className='fw-semibold d-block'>{q.name}</span><small className='text-muted'>{q.business || 'Sin empresa'}</small></>),
+    },
+    {
+      key: 'email', header: 'Contacto', field: 'email', filterFields: ['email', 'phone'], nowrap: true,
+      render: (q) => (<><span className='d-block'>{q.email}</span><small className='text-muted'>{phoneDisplay(q)}</small></>),
+    },
+    {
+      key: 'items', header: 'Items', align: 'center', filterable: false, sortable: false,
+      render: (q) => { const items = normalizeItems(q.items); return <span className='wfq-chip'>{items.length} ({q.total_items})</span> },
+    },
+    { key: 'region', header: 'Ubicación', field: 'region', render: (q) => <span style={{ color: '#5b6577' }}>{q.region || '-'}</span> },
+    { key: 'created_at', header: 'Fecha', field: 'created_at', filterType: 'date', sortField: 'created_at', nowrap: true, width: 138, render: (q) => <span style={{ color: '#5b6577' }}>{q.created_at ? moment(q.created_at).format('DD/MM/YY HH:mm') : '-'}</span> },
+    {
+      key: 'quote_status', header: 'Estado', field: 'quote_status',
+      filterOptions: Object.entries(STATUS_LABEL).map(([value, label]) => ({ value, label })),
+      render: (q) => <StatusPill state={q.quote_status} />,
+    },
+    {
+      key: 'actions', header: 'Acciones', align: 'center', filterable: false,
+      render: (q) => (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <button className='wfq-act edit' title='Ver detalle' onClick={stop(() => openDetails(q))}><i className='mdi mdi-eye'></i></button>
+          <button className='wfq-act pdf' title='Ver PDF' onClick={stop(() => viewPdf(q))}><i className='mdi mdi-file-pdf-box'></i></button>
+          <button className='wfq-act del' title='Eliminar' onClick={(e) => askDelete(q, e)}><i className='mdi mdi-trash-can'></i></button>
+        </div>
+      ),
+    },
+  ]
 
   return (
-    <div className='wfq-wrap'>
-      <style>{BRAND_CSS}</style>
+    <div>
+      <style>{QUOTES_CSS}</style>
 
-      <div className='wfq-card'>
-        {/* Encabezado */}
-        <div className='d-flex align-items-center justify-content-between gap-3 mb-4'>
-          <div className='d-flex align-items-center gap-3'>
-            <div className='wfq-iconbox'><i className='fas fa-file-invoice-dollar'></i></div>
-            <div>
-              <h2 className='wfq-h2'>Lista de cotizaciones</h2>
-              <p className='wfq-sub'><b>{total.toLocaleString('es-PE')}</b> cotizaciones</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Toolbar */}
-        <div className='d-flex flex-wrap align-items-center gap-2 mb-4'>
-          <button type='button' className='wfq-tool' title='Refrescar' onClick={load}><i className='mdi mdi-refresh'></i></button>
-          {loading && <i className='mdi mdi-loading mdi-spin' style={{ color: '#004991', fontSize: 18 }}></i>}
-          <div className='position-relative ms-auto' style={{ width: '100%', maxWidth: 300 }}>
-            <i className='mdi mdi-magnify position-absolute' style={{ left: 12, top: '50%', transform: 'translateY(-50%)', color: '#8a93a6', fontSize: 16 }}></i>
-            <input type='text' className='wfq-search' placeholder='Buscar cliente, código, ubicación…' value={query} onChange={(e) => setQuery(e.target.value)} />
-          </div>
-        </div>
-
-        {/* Tabla */}
-        <div className='wfq-tablewrap'>
-          <table className='wfq-table'>
-            <thead>
-              <tr>
-                <th>Cotización</th>
-                <th>Cliente</th>
-                <th>Contacto</th>
-                <th className='text-center'>Items</th>
-                <th>Ubicación</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th className='text-center'>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.length ? rows.map((quote) => {
-                const items = normalizeItems(quote.items)
-                return (
-                  <tr key={quote.id} className={isUnseen(quote) ? 'unseen' : ''} onClick={() => openDetails(quote)}>
-                    <td>
-                      <span className='fw-semibold' style={{ color: '#004991' }}>{quote.code || `#${quote.id}`}</span>
-                      {isUnseen(quote) && <span className='wfq-new'>Nueva</span>}
-                    </td>
-                    <td>
-                      <span className='fw-semibold d-block'>{quote.name}</span>
-                      <small className='text-muted'>{quote.business || 'Sin empresa'}</small>
-                    </td>
-                    <td>
-                      <span className='d-block'>{quote.email}</span>
-                      <small className='text-muted'>{phoneDisplay(quote)}</small>
-                    </td>
-                    <td className='text-center'><span className='wfq-chip'>{items.length} ({quote.total_items})</span></td>
-                    <td style={{ color: '#5b6577' }}>{quote.region || '-'}</td>
-                    <td style={{ whiteSpace: 'nowrap', color: '#5b6577' }}>{quote.created_at ? moment(quote.created_at).format('DD MMM YYYY, HH:mm') : '-'}</td>
-                    <td><StatusPill state={quote.quote_status} /></td>
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <div className='d-flex align-items-center justify-content-center gap-1'>
-                        <button className='wfq-act edit' title='Ver detalle' onClick={() => openDetails(quote)}><i className='mdi mdi-eye'></i></button>
-                        <button className='wfq-act pdf' title='Ver PDF' onClick={() => viewPdf(quote)}><i className='mdi mdi-file-pdf-box'></i></button>
-                        <button className='wfq-act del' title='Eliminar' onClick={(e) => deleteQuote(quote, e)}><i className='mdi mdi-trash-can'></i></button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              }) : (
-                <tr><td colSpan={8} className='text-center py-4' style={{ color: '#9aa3b3' }}>{loading ? 'Cargando…' : 'No se encontraron cotizaciones.'}</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Paginación */}
-        <div className='d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mt-4' style={{ fontSize: 13 }}>
-          <div className='d-flex align-items-center gap-1'>
-            <span className='me-1' style={{ color: '#8a93a6', fontSize: 12 }}>Por página:</span>
-            {PER_PAGE_OPTIONS.map((n) => (
-              <button key={n} className={`wfq-pg ${perPage === n ? 'on' : ''}`} onClick={() => { setPerPage(n); setPage(1) }}>{n}</button>
-            ))}
-          </div>
-          <div className='d-flex align-items-center gap-2'>
-            <span className='d-none d-sm-inline' style={{ color: '#8a93a6', fontSize: 12 }}>
-              {from}-{to} de {total.toLocaleString('es-PE')}
-            </span>
-            <div className='d-flex align-items-center gap-1'>
-              <button className='wfq-pg' disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}><i className='mdi mdi-chevron-left'></i></button>
-              {pages.map((item, idx) => item === '…'
-                ? <span key={`g-${idx}`} className='wfq-pg' style={{ cursor: 'default' }}>…</span>
-                : <button key={item} className={`wfq-pg ${page === item ? 'on' : ''}`} onClick={() => setPage(item)}>{item}</button>)}
-              <button className='wfq-pg' disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}><i className='mdi mdi-chevron-right'></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AdminTable
+        ref={tableRef}
+        rest={quotesRest}
+        title='Lista de cotizaciones'
+        icon='ti ti-receipt-2'
+        countSuffix='cotizaciones'
+        defaultSort={[{ selector: 'code', desc: true }]}
+        minWidth={1040}
+        columns={columns}
+        rowClassName={(q) => (isUnseen(q) ? 'at-row-unseen' : '')}
+        onRowClick={openDetails}
+      />
 
       {/* Modal detalle */}
       {selectedQuote && (
         <div className='wfq-modal-ovl' onMouseDown={closeModal}>
           <div className='wfq-modal' onMouseDown={(e) => e.stopPropagation()}>
             <div className='wfq-modal-head'>
-              <h3 className='wfq-h2' style={{ fontSize: 16 }}>
-                Cotización <span style={{ color: '#004991' }}>{selectedQuote.code || `#${selectedQuote.id}`}</span>
-              </h3>
+              <h3 className='wfq-h2' style={{ fontSize: 16 }}>Cotización <span style={{ color: '#004991' }}>{selectedQuote.code || `#${selectedQuote.id}`}</span></h3>
               <button className='wfq-close' onClick={closeModal}><i className='mdi mdi-close'></i></button>
             </div>
 
             <div className='wfq-modal-body'>
-              {/* Resumen superior */}
               <div className='d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3'>
                 <div className='d-flex flex-wrap align-items-center gap-2'>
                   <span className='text-muted' style={{ fontSize: 13 }}>{selectedQuote.created_at ? moment(selectedQuote.created_at).format('LLL') : ''}</span>
                   <StatusPill state={status} />
                   {isUnseen(selectedQuote) && <span className='wfq-new'>Nueva</span>}
                 </div>
-                <button type='button' className='wfq-btn amber' onClick={() => viewPdf(selectedQuote)}>
-                  <i className='mdi mdi-file-pdf-box'></i> Ver PDF
-                </button>
+                <button type='button' className='wfq-btn amber' onClick={() => viewPdf(selectedQuote)}><i className='mdi mdi-file-pdf-box'></i> Ver PDF</button>
               </div>
 
-              {/* Seguimiento */}
               <div className='wfq-sec mb-3'>
                 <div className='d-flex flex-wrap align-items-center gap-2'>
                   <span className='fw-semibold'>Seguimiento</span>
@@ -408,7 +280,6 @@ const Quotes = () => {
               </div>
 
               <div className='row g-3'>
-                {/* Cliente */}
                 <div className='col-12'>
                   <div className='wfq-sec'>
                     <h4 className='mb-3'><i className='mdi mdi-account-tie me-1' style={{ color: '#004991' }}></i>Datos del cliente</h4>
@@ -422,7 +293,6 @@ const Quotes = () => {
                   </div>
                 </div>
 
-                {/* Ubicación */}
                 <div className='col-12'>
                   <div className='wfq-sec'>
                     <h4 className='mb-3'><i className='mdi mdi-map-marker me-1' style={{ color: '#004991' }}></i>Ubicación</h4>
@@ -436,7 +306,6 @@ const Quotes = () => {
                   </div>
                 </div>
 
-                {/* Productos */}
                 <div className='col-12'>
                   <div className='wfq-sec'>
                     <h4 className='mb-3'><i className='mdi mdi-package-variant-closed me-1' style={{ color: '#004991' }}></i>Productos cotizados</h4>
@@ -489,7 +358,6 @@ const Quotes = () => {
                   </div>
                 </div>
 
-                {/* Registro */}
                 <div className='col-12'>
                   <div className='wfq-sec'>
                     <h4 className='mb-3'><i className='mdi mdi-information-outline me-1' style={{ color: '#004991' }}></i>Registro</h4>
@@ -520,9 +388,7 @@ const Quotes = () => {
               <button className='wfq-close' onClick={resetArchive}><i className='mdi mdi-close'></i></button>
             </div>
             <div className='wfq-modal-body'>
-              <p className='text-muted mb-2' style={{ fontSize: 13 }}>
-                Indica el motivo por el que archivas <b style={{ color: '#004991' }}>{selectedQuote.code || `#${selectedQuote.id}`}</b>.
-              </p>
+              <p className='text-muted mb-2' style={{ fontSize: 13 }}>Indica el motivo por el que archivas <b style={{ color: '#004991' }}>{selectedQuote.code || `#${selectedQuote.id}`}</b>.</p>
               <label className='wfq-lbl'>Motivo de archivado</label>
               <textarea className='form-control' rows={3} autoFocus value={archiveReason} onChange={(e) => setArchiveReason(e.target.value)} placeholder='Ej. Cliente desistió, datos incompletos...' />
             </div>
@@ -533,6 +399,17 @@ const Quotes = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        open={!!confirmTarget}
+        title='Eliminar cotización'
+        message={confirmTarget ? `Se eliminará ${confirmTarget.code || `#${confirmTarget.id}`}. Esta acción no se puede deshacer.` : ''}
+        confirmLabel='Eliminar'
+        variant='danger'
+        loading={deleting}
+        onConfirm={performDelete}
+        onCancel={() => { if (!deleting) setConfirmTarget(null) }}
+      />
     </div>
   )
 }

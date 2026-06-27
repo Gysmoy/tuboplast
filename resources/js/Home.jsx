@@ -142,7 +142,7 @@ const HomeScreen = ({ blog = {} }) => {
   const newsletter = {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
     title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
-    description: blog.newsletter_description || 'Tips de instalaciÃ³n, nuevos productos y actualizaciones exclusivas para profesionales.',
+    description: blog.newsletter_description || 'Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.',
     placeholder: blog.newsletter_placeholder || 'Correo electronico',
     buttonLabel: blog.newsletter_button_label || 'Quiero suscribirme',
   };

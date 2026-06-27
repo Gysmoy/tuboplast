@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class DistribuidorController extends BasicController
 {
-    public $reactView = 'Admin/Distribuidores';
+    public $reactView = 'Admin/Distributors';
     public $model = Distribuidor::class;
 
     public function setReactViewProperties(Request $request)
@@ -21,16 +21,23 @@ class DistribuidorController extends BasicController
     public function beforeSave(Request $request)
     {
         $validated = $request->validate([
+            'name' => 'nullable|string|max:160',
             'department' => 'required|string|max:120',
             'province' => 'required|string|max:120',
             'district' => 'required|string|max:120',
             'ubigeo' => 'required|string|max:12',
             'address' => 'required|string|max:255',
             'reference' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:60',
+            'phone_prefix' => 'nullable|string|max:8',
+            'business_hours' => 'nullable|string|max:120',
+            'featured' => 'nullable',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'status' => 'nullable',
         ]);
+
+        $validated['featured'] = in_array($request->input('featured'), [true, 'true', 1, '1', 'on'], true) ? 1 : 0;
 
         if (array_key_exists('status', $validated)) {
             $validated['status'] = in_array($validated['status'], [true, 'true', 1, '1', 'on'], true) ? 1 : 0;

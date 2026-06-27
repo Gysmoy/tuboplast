@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class SucursalController extends BasicController
 {
-    public $reactView = 'Admin/Sucursales';
+    public $reactView = 'Admin/Branches';
     public $model = Sucursal::class;
 
     public function setReactViewProperties(Request $request)

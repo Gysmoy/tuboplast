@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CreateReactScript from '../Utils/CreateReactScript.jsx'
 import Adminto from '../Components/Adminto.jsx'
+import ConfirmModal from '../Components/ConfirmModal.jsx'
 import BlogRest from '../Actions/Admin/BlogRest.js'
 import QuillFormGroup from '../Components/Form/QuillFormGroup.jsx'
 
@@ -9,113 +10,88 @@ const blogRest = new BlogRest()
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024
 const IMAGE_FALLBACK = '/assets/img/landing/bg-main.png'
 
-const createPost = (fallback = '/assets/img/categories/category-1.png') => ({
-  category: '',
-  title: '',
-  description: '',
-  eyebrow: '',
-  author: '',
-  role: '',
-  published: '',
-  read_time: '',
-  lead: '',
-  content_html: '',
-  highlight_label: '',
-  highlight: '',
-  image_path: '',
-  image_file: null,
-  image_preview: '',
-  image_fallback: fallback,
-})
+const BLOG_CSS = `
+.wbl{--pri:#004991;}
+.wbl .wbl-card{background:#fff;border:1px solid #eef2f8;border-radius:16px;box-shadow:0 1px 2px rgba(15,37,64,.04),0 6px 16px rgba(0,73,145,.06);}
+.wbl .wbl-card-body{padding:16px 18px;}
+.wbl .wbl-chip{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:#e6effa;color:var(--pri);flex-shrink:0;}
+.wbl .wbl-h{font-size:18px;font-weight:700;color:#0f2540;margin:0;line-height:1.2;}
+.wbl .wbl-sub{font-size:12px;color:#8a93a6;}
+.wbl .form-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#8a93a6;margin-bottom:4px;display:block;}
+.wbl .form-control{border:1px solid #dce5f0;border-radius:10px;font-size:13.5px;color:#1f2a44;}
+.wbl .form-control:focus{border-color:var(--pri);box-shadow:0 0 0 .18rem rgba(0,73,145,.12);}
+.wbl-btn{height:40px;padding:0 16px;border-radius:10px;font-weight:600;font-size:13px;border:0;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s;cursor:pointer;text-decoration:none;}
+.wbl-btn.sm{height:36px;padding:0 12px;}
+.wbl-btn.primary{background:var(--pri);color:#fff;}.wbl-btn.primary:hover{background:#003b7a;color:#fff;}
+.wbl-btn.primary:disabled{opacity:.6;cursor:default;}
+.wbl-btn.soft{background:#fff;border:1px solid #dce5f0;color:#5b6577;}.wbl-btn.soft:hover{background:#f4f8fd;color:#0f2540;}
+.wbl-ico{width:38px;height:38px;border-radius:10px;border:1px solid #dce5f0;background:#fff;color:#5b6577;display:inline-flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;transition:.15s;}
+.wbl-ico:hover{background:#f4f8fd;color:var(--pri);border-color:#bcd4ef;}
+.wbl-pill{display:inline-flex;align-items:center;gap:6px;background:#f4f8fd;color:#5b6577;border-radius:50rem;padding:4px 12px;font-size:12px;font-weight:600;}
+.wbl-table{width:100%;border-collapse:separate;border-spacing:0;}
+.wbl-table th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8a93a6;font-weight:600;padding:10px 12px;border-bottom:1px solid #eef2f8;text-align:left;white-space:nowrap;}
+.wbl-table td{padding:10px 12px;border-bottom:1px solid #f1f5fa;vertical-align:middle;font-size:13.5px;color:#1f2a44;}
+.wbl-table tr:hover td{background:#f9fbfe;}
+.wbl-thumb{width:60px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #eef2f8;flex-shrink:0;background:#f4f8fd;}
+.wbl-act{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:0;font-size:13px;cursor:pointer;transition:filter .15s;}
+.wbl-act:hover{filter:brightness(.96);}
+.wbl-act.edit{background:#e8f0ff;color:#3b82f6;}
+.wbl-act.del{background:#fcebeb;color:#e24b4a;}
+.wbl-alert{border-radius:12px;padding:10px 14px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.wbl-alert.danger{background:#fcebeb;color:#b42318;}
+.wbl-alert.success{background:#e1f5ee;color:#0f6e56;}
+.wbl-page{min-width:34px;height:34px;border-radius:9px;border:1px solid #dce5f0;background:#fff;color:#5b6577;font-weight:600;font-size:13px;cursor:pointer;}
+.wbl-page.active{background:var(--pri);border-color:var(--pri);color:#fff;}
+.wbl-page:disabled{opacity:.45;cursor:default;}
+.wbl-empty{padding:48px 16px;text-align:center;color:#8a93a6;}
+.wbl-sec{border:1px solid #eef2f8;border-radius:12px;padding:16px;}
+.wbl-sec h4{font-size:14px;font-weight:700;color:#0f2540;margin:0 0 14px;display:flex;align-items:center;gap:6px;}
+.wbl-media{border:1px solid #eef2f8;border-radius:12px;overflow:hidden;background:#f4f8fd;}
+.wbl-modal-ovl{position:fixed;inset:0;z-index:1100;background:rgba(15,23,42,.5);display:flex;align-items:flex-start;justify-content:center;padding:3vh 12px;}
+.wbl-modal{position:relative;width:min(1000px,96vw);max-height:94vh;background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(15,37,64,.25);display:flex;flex-direction:column;overflow:hidden;}
+.wbl-modal.narrow{width:min(840px,96vw);}
+.wbl-modal form{display:flex;flex-direction:column;min-height:0;flex:1;}
+.wbl-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid #eef2f8;flex-shrink:0;}
+.wbl-modal-body{overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px;flex:1;}
+.wbl-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid #eef2f8;flex-shrink:0;}
+.wbl-close{width:36px;height:36px;border-radius:10px;border:0;background:none;color:#8a93a6;font-size:18px;cursor:pointer;}
+.wbl-close:hover{background:#f4f8fd;color:#0f2540;}
+.wbl-h2{font-size:16px;font-weight:700;color:#0f2540;margin:0;}
+`
 
-const createMostRead = () => ({
-  number: '',
-  title: '',
-  category: '',
+const POST_FALLBACKS = [
+  '/assets/img/categories/category-1.png',
+  '/assets/img/categories/category-2.png',
+  '/assets/img/categories/category-3.png',
+]
+
+const createPost = (fallback = POST_FALLBACKS[0]) => ({
+  category: '', title: '', description: '', eyebrow: '', author: '', role: '',
+  published: '', read_time: '', lead: '', content_html: '', highlight_label: '', highlight: '',
+  image_path: '', image_file: null, image_preview: '', image_fallback: fallback,
 })
 
 const normalizePosts = (items) => {
-  const fallbacks = [
-    '/assets/img/categories/category-1.png',
-    '/assets/img/categories/category-2.png',
-    '/assets/img/categories/category-3.png',
-    '/assets/img/categories/category-1.png',
-    '/assets/img/categories/category-2.png',
-    '/assets/img/categories/category-3.png',
-  ]
-
   const list = Array.isArray(items) ? items.slice() : []
-
   return list.map((item, index) => ({
-    ...createPost(fallbacks[index] ?? fallbacks[0]),
+    ...createPost(POST_FALLBACKS[index % POST_FALLBACKS.length]),
     ...item,
     image_preview: item?.image_url || (item?.image_path ? `/storage/${item.image_path}` : ''),
-    image_fallback: item?.image_fallback || fallbacks[index] || fallbacks[0],
-  }))
-}
-
-const normalizeMostRead = (items) => {
-  const list = Array.isArray(items) ? items.slice(0, 3) : []
-  while (list.length < 3) list.push(createMostRead())
-
-  return list.map((item) => ({
-    ...createMostRead(),
-    ...item,
+    image_fallback: item?.image_fallback || POST_FALLBACKS[index % POST_FALLBACKS.length],
   }))
 }
 
 const getHeroPreview = (blog) => blog?.hero_image_url || (blog?.hero_image ? `/storage/${blog.hero_image}` : '')
+const postThumb = (p) => p.image_preview || p.image_url || p.image_fallback || IMAGE_FALLBACK
+const onImgError = (e) => { if (!e.target.src.endsWith(IMAGE_FALLBACK)) e.target.src = IMAGE_FALLBACK }
 
-// ----------------------------------------------------------------- UI helpers
-const SectionCard = ({ title, subtitle, icon, actions, children, col = 'col-12' }) => (
+// ----------------------------------------------------------------- helpers UI
+const Field = ({ label, value, onChange, col = 'col-12', type = 'text', placeholder = '', textarea = false, rows = 3 }) => (
   <div className={col}>
-    <div className='card border-0 shadow-sm h-100'>
-      <div className='card-body'>
-        {(title || actions) && (
-          <div className='d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-3'>
-            <div className='d-flex align-items-center gap-2'>
-              {icon && (
-                <span className='d-inline-flex align-items-center justify-content-center rounded-2 bg-primary-subtle text-primary' style={{ width: 38, height: 38 }}>
-                  <i className={`mdi ${icon} fs-20`}></i>
-                </span>
-              )}
-              <div>
-                <h5 className='mb-0'>{title}</h5>
-                {subtitle && <small className='text-muted'>{subtitle}</small>}
-              </div>
-            </div>
-            {actions}
-          </div>
-        )}
-        {children}
-      </div>
-    </div>
-  </div>
-)
-
-const FormField = ({ label, value, onChange, col = 'col-12', type = 'text', placeholder = '', textarea = false, rows = 3 }) => (
-  <div className={col}>
-    <label className='form-label small fw-semibold'>{label}</label>
-    {textarea ? (
-      <textarea className='form-control' rows={rows} value={value || ''} placeholder={placeholder} onChange={onChange} />
-    ) : (
-      <input type={type} className='form-control' value={value || ''} placeholder={placeholder} onChange={onChange} />
-    )}
-  </div>
-)
-
-const MediaUploader = ({ preview, onChange, hint, aspect = '16/10' }) => (
-  <div className='row g-3 align-items-center'>
-    <div className='col-lg-7'>
-      <div className='rounded-3 overflow-hidden border bg-light'>
-        <img src={preview || IMAGE_FALLBACK} alt='Vista previa' className='w-100 d-block' style={{ aspectRatio: aspect, objectFit: 'cover' }} />
-      </div>
-    </div>
-    <div className='col-lg-5'>
-      <label className='form-label small fw-semibold'>Cambiar imagen</label>
-      <input type='file' className='form-control' accept='image/*' onChange={onChange} />
-      <small className='text-muted d-block mt-2'>{hint}</small>
-    </div>
+    <label className='form-label'>{label}</label>
+    {textarea
+      ? <textarea className='form-control' rows={rows} value={value || ''} placeholder={placeholder} onChange={onChange} />
+      : <input type={type} className='form-control' value={value || ''} placeholder={placeholder} onChange={onChange} />}
   </div>
 )
 
@@ -135,454 +111,409 @@ const Blog = ({ blog: initialBlog = {} }) => {
     newsletter_placeholder: initialBlog.newsletter_placeholder || 'Correo electronico',
     newsletter_button_label: initialBlog.newsletter_button_label || 'Suscribirme ahora',
     posts: normalizePosts(initialBlog.posts),
-    most_read: normalizeMostRead(initialBlog.most_read),
+    most_read: Array.isArray(initialBlog.most_read) ? initialBlog.most_read : [],
   }), [initialBlog])
 
   const [form, setForm] = useState(initialForm)
   const [saving, setSaving] = useState(false)
-  const [activeSection, setActiveSection] = useState('hero')
-  const [expandedPosts, setExpandedPosts] = useState({})
-  const postsPerPage = 5
-  const [currentPostPage, setCurrentPostPage] = useState(1)
   const [alert, setAlert] = useState(null)
-  const contentRefs = useRef([])
+  const [page, setPage] = useState(1)
+  const perPage = 8
+
+  // Modal artículo
+  const [postOpen, setPostOpen] = useState(false)
+  const [postIndex, setPostIndex] = useState(null) // null = nuevo
+  const [postDraft, setPostDraft] = useState(createPost())
+  const quillRef = useRef({ current: { value: '' } })
+
+  // Modal configuración
+  const [configOpen, setConfigOpen] = useState(false)
+  const [configDraft, setConfigDraft] = useState({})
+
+  // Eliminar
+  const [confirmTarget, setConfirmTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => { setForm(initialForm) }, [initialForm])
+
+  const posts = form.posts ?? []
+  const totalPages = Math.max(1, Math.ceil(posts.length / perPage))
+  useEffect(() => { setPage((p) => Math.min(Math.max(p, 1), totalPages)) }, [totalPages])
+
+  const pagePosts = useMemo(() => {
+    const start = (page - 1) * perPage
+    return posts.slice(start, start + perPage).map((p, i) => ({ post: p, index: start + i }))
+  }, [posts, page])
 
   useEffect(() => {
-    setForm(initialForm)
-  }, [initialForm])
+    const open = postOpen || configOpen
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [postOpen, configOpen])
 
-  const totalPostPages = Math.max(1, Math.ceil((form.posts?.length ?? 0) / postsPerPage))
-
-  useEffect(() => {
-    setCurrentPostPage((current) => Math.min(Math.max(current, 1), totalPostPages))
-  }, [totalPostPages])
-
-  const updateField = (field, value) => {
-    setForm((current) => ({ ...current, [field]: value }))
-  }
-
-  const showAlert = (message, type = 'danger') => {
-    setAlert({ message, type })
-  }
+  const showAlert = (message, type = 'danger') => setAlert({ message, type })
 
   const validateFile = (file, label) => {
-    if (file.size > MAX_IMAGE_SIZE) {
-      showAlert(`${label} supera el tamano permitido. El maximo es 4 MB.`)
-      return false
-    }
-
+    if (file.size > MAX_IMAGE_SIZE) { showAlert(`${label} supera el tamaño permitido. El máximo es 4 MB.`); return false }
     setAlert(null)
     return true
   }
 
-  const updatePost = (index, field, value) => {
-    setForm((current) => {
-      const next = [...(current.posts ?? [])]
-      next[index] = { ...next[index], [field]: value }
-      return { ...current, posts: next }
-    })
-  }
+  // Persiste TODO el blog (posts + config) en una sola operación.
+  const persist = async (targetForm) => {
+    setSaving(true)
+    setAlert(null)
+    const result = await blogRest.save(targetForm)
+    setSaving(false)
 
-  const updateMostRead = (index, field, value) => {
-    setForm((current) => {
-      const next = [...(current.most_read ?? [])]
-      next[index] = { ...next[index], [field]: value }
-      return { ...current, most_read: next }
-    })
-  }
-
-  const addPost = () => {
-    setForm((current) => {
-      const nextPosts = [createPost(), ...(current.posts ?? [])]
-      return { ...current, posts: nextPosts }
-    })
-    setExpandedPosts((current) => {
-      const next = { 0: true }
-      Object.entries(current).forEach(([key, value]) => {
-        next[Number(key) + 1] = value
-      })
-      return next
-    })
-    setCurrentPostPage(1)
-  }
-
-  const removePost = (index) => {
-    setForm((current) => {
-      const nextPosts = [...(current.posts ?? [])]
-      if (nextPosts.length <= 1) return current
-      nextPosts.splice(index, 1)
-
-      return { ...current, posts: nextPosts }
-    })
-
-    setExpandedPosts((current) => {
-      const next = {}
-      Object.entries(current).forEach(([key, value]) => {
-        const postIndex = Number(key)
-        if (postIndex < index) {
-          next[postIndex] = value
-        } else if (postIndex > index) {
-          next[postIndex - 1] = value
-        }
-      })
-
-      return next
-    })
-
-    const nextLength = Math.max(1, (form.posts?.length ?? 1) - 1)
-    setCurrentPostPage((current) => Math.min(current, Math.max(1, Math.ceil(nextLength / postsPerPage))))
-  }
-
-  const paginatedPosts = useMemo(() => {
-    const start = (currentPostPage - 1) * postsPerPage
-    return (form.posts ?? []).slice(start, start + postsPerPage)
-  }, [currentPostPage, form.posts])
-
-  const goToPostPage = (page) => {
-    setCurrentPostPage(Math.min(Math.max(page, 1), totalPostPages))
-  }
-
-  const getContentRef = (index, initialValue = '') => {
-    if (!contentRefs.current[index]) {
-      contentRefs.current[index] = { current: { value: initialValue } }
+    if (!result?.data) {
+      showAlert('No se pudieron guardar los cambios. Inténtalo nuevamente.')
+      return false
     }
 
-    return contentRefs.current[index]
+    const nextPosts = normalizePosts(result.data.posts)
+    nextPosts.forEach((post, index) => {
+      const prev = targetForm.posts?.[index]
+      if (prev?.image_file instanceof File && prev.image_preview) post.image_preview = prev.image_preview
+    })
+
+    setForm({
+      ...result.data,
+      hero_image: result.data.hero_image || '',
+      hero_image_file: null,
+      hero_image_preview:
+        targetForm.hero_image_file instanceof File && targetForm.hero_image_preview
+          ? targetForm.hero_image_preview
+          : getHeroPreview(result.data),
+      hero_badge: result.data.hero_badge || '',
+      hero_title: result.data.hero_title || '',
+      hero_description: result.data.hero_description || '',
+      section_title: result.data.section_title || '',
+      newsletter_eyebrow: result.data.newsletter_eyebrow || '',
+      newsletter_title: result.data.newsletter_title || '',
+      newsletter_description: result.data.newsletter_description || '',
+      newsletter_placeholder: result.data.newsletter_placeholder || '',
+      newsletter_button_label: result.data.newsletter_button_label || '',
+      posts: nextPosts,
+      most_read: Array.isArray(result.data.most_read) ? result.data.most_read : [],
+    })
+    showAlert('Cambios guardados correctamente.', 'success')
+    return true
   }
 
-  const togglePost = (index) => {
-    setExpandedPosts((current) => ({
-      ...current,
-      [index]: !current[index],
-    }))
+  // ---- Artículo
+  const openPost = (index = null) => {
+    const draft = index == null ? createPost() : { ...posts[index] }
+    setPostIndex(index)
+    setPostDraft(draft)
+    quillRef.current.current.value = draft.content_html || ''
+    setAlert(null)
+    setPostOpen(true)
   }
+  const closePost = () => { if (!saving) setPostOpen(false) }
+  const setDraft = (field, value) => setPostDraft((d) => ({ ...d, [field]: value }))
+
+  const onPostImageChange = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    if (!validateFile(file, 'La imagen del artículo')) { event.target.value = ''; return }
+    setPostDraft((d) => ({ ...d, image_file: file, image_preview: URL.createObjectURL(file) }))
+  }
+
+  const savePost = async (e) => {
+    e.preventDefault()
+    if (saving) return
+    if (!postDraft.title?.trim()) { showAlert('El título del artículo es obligatorio.'); return }
+    const nextPosts = postIndex == null ? [postDraft, ...posts] : posts.map((p, i) => (i === postIndex ? postDraft : p))
+    const ok = await persist({ ...form, posts: nextPosts })
+    if (ok) { setPostOpen(false); if (postIndex == null) setPage(1) }
+  }
+
+  // ---- Eliminar
+  const performDelete = async () => {
+    const idx = confirmTarget?.index
+    if (idx == null) return
+    setDeleting(true)
+    const nextPosts = posts.filter((_, i) => i !== idx)
+    const ok = await persist({ ...form, posts: nextPosts })
+    setDeleting(false)
+    if (ok) setConfirmTarget(null)
+  }
+
+  // ---- Configuración
+  const openConfig = () => {
+    setConfigDraft({
+      hero_image_file: null,
+      hero_image_preview: form.hero_image_preview,
+      hero_badge: form.hero_badge,
+      hero_title: form.hero_title,
+      hero_description: form.hero_description,
+      section_title: form.section_title,
+      newsletter_eyebrow: form.newsletter_eyebrow,
+      newsletter_title: form.newsletter_title,
+      newsletter_description: form.newsletter_description,
+      newsletter_placeholder: form.newsletter_placeholder,
+      newsletter_button_label: form.newsletter_button_label,
+    })
+    setAlert(null)
+    setConfigOpen(true)
+  }
+  const closeConfig = () => { if (!saving) setConfigOpen(false) }
+  const setCfg = (field, value) => setConfigDraft((d) => ({ ...d, [field]: value }))
 
   const onHeroImageChange = (event) => {
     const file = event.target.files?.[0]
     if (!file) return
-    if (!validateFile(file, 'La imagen principal del blog')) {
-      event.target.value = ''
-      return
-    }
-
-    setForm((current) => ({
-      ...current,
-      hero_image_file: file,
-      hero_image_preview: URL.createObjectURL(file),
-    }))
+    if (!validateFile(file, 'La imagen de portada')) { event.target.value = ''; return }
+    setConfigDraft((d) => ({ ...d, hero_image_file: file, hero_image_preview: URL.createObjectURL(file) }))
   }
 
-  const onPostImageChange = (index, event) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-    if (!validateFile(file, `La imagen del articulo ${index + 1}`)) {
-      event.target.value = ''
-      return
-    }
-
-    updatePost(index, 'image_file', file)
-    updatePost(index, 'image_preview', URL.createObjectURL(file))
-  }
-
-  const save = async () => {
+  const saveConfig = async (e) => {
+    e.preventDefault()
     if (saving) return
-    setSaving(true)
-    setAlert(null)
-
-    const previousForm = form
-    const result = await blogRest.save(form)
-
-    if (result?.data) {
-      const posts = normalizePosts(result.data.posts)
-      posts.forEach((post, index) => {
-        const previousPost = previousForm.posts?.[index] ?? {}
-        if (previousPost.image_file instanceof File && previousPost.image_preview) {
-          post.image_preview = previousPost.image_preview
-        }
-      })
-
-      setForm({
-        ...result.data,
-        hero_image: result.data.hero_image || '',
-        hero_image_file: null,
-        hero_image_preview:
-          previousForm.hero_image_file instanceof File && previousForm.hero_image_preview
-            ? previousForm.hero_image_preview
-            : getHeroPreview(result.data),
-        hero_badge: result.data.hero_badge || '',
-        hero_title: result.data.hero_title || '',
-        hero_description: result.data.hero_description || '',
-        section_title: result.data.section_title || '',
-        newsletter_eyebrow: result.data.newsletter_eyebrow || '',
-        newsletter_title: result.data.newsletter_title || '',
-        newsletter_description: result.data.newsletter_description || '',
-        newsletter_placeholder: result.data.newsletter_placeholder || '',
-        newsletter_button_label: result.data.newsletter_button_label || '',
-        posts,
-        most_read: normalizeMostRead(result.data.most_read),
-      })
-    }
-
-    setSaving(false)
+    const ok = await persist({ ...form, ...configDraft })
+    if (ok) setConfigOpen(false)
   }
-
-  const tabs = [
-    { key: 'hero', label: 'Portada', icon: 'mdi-image-multiple-outline' },
-    { key: 'posts', label: 'Artículos', icon: 'mdi-newspaper-variant-outline' },
-    { key: 'sidebar', label: 'Lateral', icon: 'mdi-view-sequential-outline' },
-    { key: 'newsletter', label: 'Newsletter', icon: 'mdi-email-fast-outline' },
-  ]
 
   return (
-    <div className='row g-3'>
-      {/* Toolbar */}
-      <div className='col-12'>
-        <div className='card border-0 shadow-sm'>
-          <div className='card-body'>
-            <div className='d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center'>
-              <div className='d-flex align-items-center gap-2'>
-                <span className='d-inline-flex align-items-center justify-content-center rounded-2 bg-primary text-white' style={{ width: 44, height: 44 }}>
-                  <i className='mdi mdi-post-outline fs-22'></i>
-                </span>
-                <div>
-                  <h4 className='mb-0'>Módulo Blog</h4>
-                  <small className='text-muted'>Portada, artículos, más leídos y suscripción del blog público.</small>
-                </div>
-              </div>
-              <div className='d-flex gap-2'>
-                <a href='/blog' target='_blank' rel='noreferrer' className='btn btn-soft-primary'>
-                  <i className='mdi mdi-open-in-new me-1'></i>Ver blog
-                </a>
-                <button type='button' className='btn btn-primary' onClick={save} disabled={saving}>
-                  <i className='mdi mdi-content-save me-1'></i>{saving ? 'Guardando...' : 'Guardar cambios'}
-                </button>
+    <div className='wbl'>
+      <style>{BLOG_CSS}</style>
+
+      {alert?.message ? (
+        <div className={`wbl-alert ${alert.type || 'danger'}`} role='alert'>
+          <i className={`mdi ${alert.type === 'success' ? 'mdi-check-circle-outline' : 'mdi-alert-circle-outline'}`}></i>
+          {alert.message}
+        </div>
+      ) : null}
+
+      <div className='wbl-card'>
+        <div className='wbl-card-body'>
+          {/* Header */}
+          <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3'>
+            <div className='d-flex align-items-center gap-2'>
+              <span className='wbl-chip' style={{ width: 44, height: 44, background: '#004991', color: '#fff' }}>
+                <i className='ti ti-news fs-22'></i>
+              </span>
+              <div>
+                <h4 className='wbl-h'>Artículos del blog</h4>
+                <small className='wbl-sub'>{posts.length} artículo(s) · la página pública se adapta automáticamente</small>
               </div>
             </div>
-
-            <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mt-3 border-top pt-3'>
-              <ul className='nav nav-pills flex-wrap gap-2 mb-0'>
-                {tabs.map((tab) => (
-                  <li className='nav-item' key={tab.key}>
-                    <button
-                      type='button'
-                      className={`nav-link ${activeSection === tab.key ? 'active' : ''}`}
-                      onClick={() => setActiveSection(tab.key)}
-                    >
-                      <i className={`mdi ${tab.icon} me-1`}></i>{tab.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <small className='text-muted'>{(form.posts?.length ?? 0)} artículo(s) publicados</small>
+            <div className='d-flex align-items-center gap-2'>
+              <button type='button' className='wbl-btn primary' onClick={() => openPost(null)}>
+                <i className='mdi mdi-plus'></i> Nuevo<span className='d-none d-md-inline'>&nbsp;artículo</span>
+              </button>
+              <button type='button' className='wbl-btn soft' onClick={openConfig}>
+                <i className='mdi mdi-cog-outline'></i> Configuración
+              </button>
+              <a href='/blog' target='_blank' rel='noreferrer' className='wbl-ico' title='Ver blog'><i className='mdi mdi-open-in-new'></i></a>
+              <button type='button' className='wbl-ico' title='Refrescar' onClick={() => window.location.reload()}><i className='mdi mdi-refresh'></i></button>
             </div>
-
-            {alert?.message ? (
-              <div className={`alert alert-${alert.type || 'danger'} mb-0 mt-3`} role='alert'>
-                {alert.message}
-              </div>
-            ) : null}
           </div>
+
+          {/* Tabla */}
+          <div className='table-responsive'>
+            <table className='wbl-table'>
+              <thead>
+                <tr>
+                  <th style={{ width: 80 }}>Imagen</th>
+                  <th>Artículo</th>
+                  <th>Autor</th>
+                  <th style={{ width: 160 }}>Publicado</th>
+                  <th style={{ width: 110 }} className='text-end'>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pagePosts.map(({ post, index }) => (
+                  <tr key={`post-${index}`}>
+                    <td><img className='wbl-thumb' src={postThumb(post)} alt={post.title} onError={onImgError} /></td>
+                    <td>
+                      <span className='fw-semibold d-block' style={{ color: '#0f2540' }}>{post.title || `Artículo ${index + 1}`}</span>
+                      <small className='wbl-sub'>{post.category || 'Sin categoría'}</small>
+                    </td>
+                    <td>
+                      <span className='d-block'>{post.author || '-'}</span>
+                      <small className='wbl-sub'>{post.role || ''}</small>
+                    </td>
+                    <td>
+                      <span className='d-block' style={{ color: '#5b6577' }}>{post.published || '-'}</span>
+                      <small className='wbl-sub'>{post.read_time || ''}</small>
+                    </td>
+                    <td>
+                      <div className='d-flex align-items-center justify-content-end gap-1'>
+                        <button className='wbl-act edit' title='Editar' onClick={() => openPost(index)}><i className='mdi mdi-square-edit-outline'></i></button>
+                        <button className='wbl-act del' title='Eliminar' onClick={() => setConfirmTarget({ index, title: post.title })}><i className='mdi mdi-trash-can'></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {posts.length === 0 && (
+                  <tr><td colSpan={5}>
+                    <div className='wbl-empty'>
+                      <i className='mdi mdi-newspaper-variant-outline' style={{ fontSize: 34, color: '#004991' }}></i>
+                      <p className='mt-2 mb-0 fw-semibold' style={{ color: '#0f2540' }}>Aún no hay artículos</p>
+                      <small>Crea el primero con “Nuevo artículo”.</small>
+                    </div>
+                  </td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {totalPages > 1 ? (
+            <div className='mt-3 d-flex flex-wrap align-items-center justify-content-center gap-2'>
+              <button type='button' className='wbl-page' onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1}><i className='mdi mdi-chevron-left'></i></button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button key={`pg-${p}`} type='button' className={`wbl-page ${page === p ? 'active' : ''}`} onClick={() => setPage(p)}>{p}</button>
+              ))}
+              <button type='button' className='wbl-page' onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages}><i className='mdi mdi-chevron-right'></i></button>
+            </div>
+          ) : null}
         </div>
       </div>
 
-      {activeSection === 'hero' ? (
-        <>
-          <SectionCard title='Imagen de portada' subtitle='Cabecera del blog público' icon='mdi-image-outline'>
-            <MediaUploader preview={form.hero_image_preview} onChange={onHeroImageChange} hint='Imagen horizontal. Tamaño máximo: 4 MB.' />
-          </SectionCard>
+      {/* Modal artículo */}
+      {postOpen && (
+        <div className='wbl-modal-ovl' onMouseDown={closePost}>
+          <div className='wbl-modal' onMouseDown={(e) => e.stopPropagation()}>
+            <form onSubmit={savePost}>
+              <div className='wbl-modal-head'>
+                <h3 className='wbl-h2'>
+                  <i className={`mdi ${postIndex == null ? 'mdi-plus-box' : 'mdi-square-edit-outline'} me-1`} style={{ color: '#004991' }}></i>
+                  {postIndex == null ? 'Nuevo artículo' : 'Editar artículo'}
+                </h3>
+                <button type='button' className='wbl-close' onClick={closePost}><i className='mdi mdi-close'></i></button>
+              </div>
 
-          <SectionCard title='Encabezado del blog' subtitle='Texto principal de la portada' icon='mdi-format-title'>
-            <div className='row g-3'>
-              <FormField col='col-md-4' label='Etiqueta' value={form.hero_badge} onChange={(e) => updateField('hero_badge', e.target.value)} />
-              <FormField col='col-md-8' label='Título' value={form.hero_title} onChange={(e) => updateField('hero_title', e.target.value)} />
-              <FormField col='col-12' label='Descripción' textarea value={form.hero_description} onChange={(e) => updateField('hero_description', e.target.value)} />
-              <FormField col='col-md-6' label='Título de la sección de artículos' value={form.section_title} onChange={(e) => updateField('section_title', e.target.value)} />
-            </div>
-          </SectionCard>
-        </>
-      ) : null}
-
-      {activeSection === 'posts' ? (
-        <SectionCard
-          title='Artículos del blog'
-          subtitle='Agrega, edita o quita artículos. La página pública se adapta automáticamente.'
-          icon='mdi-newspaper-variant-multiple-outline'
-          actions={(
-            <button type='button' className='btn btn-primary btn-sm' onClick={addPost}>
-              <i className='mdi mdi-plus me-1'></i>Agregar artículo
-            </button>
-          )}
-        >
-          <div className='d-flex flex-column gap-3'>
-            {paginatedPosts.map((item, pageIndex) => {
-              const index = (currentPostPage - 1) * postsPerPage + pageIndex
-              const open = !!expandedPosts[index]
-              return (
-                <div className={`border rounded-3 overflow-hidden ${open ? 'border-primary' : ''}`} key={`blog-post-${index}`}>
-                  <div className='d-flex align-items-center gap-2 p-2'>
-                    <button
-                      type='button'
-                      className='d-flex flex-grow-1 align-items-center gap-3 border-0 bg-transparent p-1 text-start'
-                      onClick={() => togglePost(index)}
-                      aria-expanded={open}
-                      aria-controls={`blog-post-panel-${index}`}
-                    >
-                      <span className='rounded-2 overflow-hidden bg-light flex-shrink-0' style={{ width: 56, height: 42 }}>
-                        <img
-                          src={item.image_preview || item.image_url || item.image_fallback || IMAGE_FALLBACK}
-                          alt={item.title || `Artículo ${index + 1}`}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      </span>
-                      <span className='min-w-0'>
-                        <span className='d-block fw-semibold text-truncate'>{item.title || `Artículo ${index + 1}`}</span>
-                        <span className='d-block text-muted small'>{item.category || 'Sin categoría'}</span>
-                      </span>
-                    </button>
-                    <button
-                      type='button'
-                      className='btn btn-sm btn-soft-danger'
-                      title='Quitar artículo'
-                      onClick={() => removePost(index)}
-                      disabled={form.posts.length <= 1}
-                    >
-                      <i className='mdi mdi-trash-can'></i>
-                    </button>
-                    <button type='button' className='btn btn-sm btn-soft-secondary' onClick={() => togglePost(index)} aria-label='Expandir'>
-                      <i className={`mdi mdi-chevron-${open ? 'up' : 'down'}`}></i>
-                    </button>
-                  </div>
-
-                  <div id={`blog-post-panel-${index}`} className={open ? 'border-top' : 'd-none'}>
-                    <div className='p-3'>
+              <div className='wbl-modal-body'>
+                <div className='wbl-sec'>
+                  <h4><i className='mdi mdi-card-text-outline' style={{ color: '#004991' }}></i>Datos del artículo</h4>
+                  <div className='row g-3'>
+                    <div className='col-md-5'>
+                      <div className='wbl-media p-2'>
+                        <img src={postThumb(postDraft)} alt='Vista previa' className='w-100 rounded' style={{ aspectRatio: '16/9', objectFit: 'cover' }} onError={onImgError} />
+                      </div>
+                      <label className='form-label mt-2'>Imagen del artículo</label>
+                      <input type='file' className='form-control form-control-sm' accept='image/*' onChange={onPostImageChange} />
+                    </div>
+                    <div className='col-md-7'>
                       <div className='row g-3'>
-                        <div className='col-md-5'>
-                          <div className='rounded border bg-light p-2'>
-                            <img
-                              src={item.image_preview || item.image_url || item.image_fallback || IMAGE_FALLBACK}
-                              alt={item.title || `Artículo ${index + 1}`}
-                              className='w-100 rounded'
-                              style={{ aspectRatio: '16/9', objectFit: 'cover' }}
-                            />
-                          </div>
-                          <label className='form-label small fw-semibold mt-2'>Imagen del artículo</label>
-                          <input type='file' className='form-control form-control-sm' accept='image/*' onChange={(event) => onPostImageChange(index, event)} />
-                        </div>
-                        <div className='col-md-7'>
-                          <div className='row g-3'>
-                            <FormField col='col-sm-5' label='Categoría' value={item.category} onChange={(e) => updatePost(index, 'category', e.target.value)} />
-                            <FormField col='col-sm-7' label='Etiqueta superior' value={item.eyebrow} onChange={(e) => updatePost(index, 'eyebrow', e.target.value)} />
-                            <FormField col='col-12' label='Título' value={item.title} onChange={(e) => updatePost(index, 'title', e.target.value)} />
-                            <FormField col='col-12' label='Descripción (resumen en la tarjeta)' textarea rows={3} value={item.description} onChange={(e) => updatePost(index, 'description', e.target.value)} />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className='row g-3 mt-1'>
-                        <FormField col='col-md-5' label='Autor' value={item.author} onChange={(e) => updatePost(index, 'author', e.target.value)} />
-                        <FormField col='col-md-3' label='Cargo o rol' value={item.role} onChange={(e) => updatePost(index, 'role', e.target.value)} />
-                        <FormField col='col-md-2' label='Publicado' value={item.published} onChange={(e) => updatePost(index, 'published', e.target.value)} />
-                        <FormField col='col-md-2' label='Lectura' value={item.read_time} onChange={(e) => updatePost(index, 'read_time', e.target.value)} />
-                        <FormField col='col-12' label='Intro o lead' textarea rows={3} value={item.lead} onChange={(e) => updatePost(index, 'lead', e.target.value)} />
-                      </div>
-
-                      <div className='mt-3'>
-                        <QuillFormGroup
-                          col='col-12'
-                          label='Contenido completo'
-                          value={item.content_html || ''}
-                          eRef={getContentRef(index, item.content_html || '')}
-                          onChange={(html) => updatePost(index, 'content_html', html)}
-                        />
-                        <small className='text-muted d-block mt-2'>
-                          Usa <b>## Subtítulo</b> o <b>### Subtítulo</b> para los títulos azules. Para listas, cada línea con <b>-</b>. Para resaltar, <b>**negrita**</b> o <b>*cursiva*</b>.
-                        </small>
-                      </div>
-
-                      <div className='mt-3 rounded-3 bg-light p-3'>
-                        <div className='row g-3'>
-                          <FormField col='col-md-4' label='Título de la nota técnica' value={item.highlight_label} onChange={(e) => updatePost(index, 'highlight_label', e.target.value)} />
-                          <FormField col='col-md-8' label='Contenido de la nota técnica' textarea rows={3} value={item.highlight} onChange={(e) => updatePost(index, 'highlight', e.target.value)} />
-                        </div>
+                        <Field col='col-sm-5' label='Categoría' value={postDraft.category} placeholder='Productos' onChange={(e) => setDraft('category', e.target.value)} />
+                        <Field col='col-sm-7' label='Etiqueta superior' value={postDraft.eyebrow} placeholder='Innovación técnica' onChange={(e) => setDraft('eyebrow', e.target.value)} />
+                        <Field col='col-12' label='Título' value={postDraft.title} onChange={(e) => setDraft('title', e.target.value)} />
+                        <Field col='col-12' label='Descripción (resumen en la tarjeta)' textarea rows={2} value={postDraft.description} onChange={(e) => setDraft('description', e.target.value)} />
                       </div>
                     </div>
                   </div>
+                  <div className='row g-3 mt-1'>
+                    <Field col='col-md-5' label='Autor' value={postDraft.author} onChange={(e) => setDraft('author', e.target.value)} />
+                    <Field col='col-md-3' label='Cargo o rol' value={postDraft.role} onChange={(e) => setDraft('role', e.target.value)} />
+                    <Field col='col-md-2' label='Publicado' value={postDraft.published} placeholder='15 Oct 2026' onChange={(e) => setDraft('published', e.target.value)} />
+                    <Field col='col-md-2' label='Lectura' value={postDraft.read_time} placeholder='8 min' onChange={(e) => setDraft('read_time', e.target.value)} />
+                    <Field col='col-12' label='Intro o lead' textarea rows={2} value={postDraft.lead} onChange={(e) => setDraft('lead', e.target.value)} />
+                  </div>
                 </div>
-              )
-            })}
-          </div>
 
-          {totalPostPages > 1 ? (
-            <div className='mt-4 d-flex flex-wrap align-items-center justify-content-center gap-2'>
-              <button type='button' className='btn btn-sm btn-light' onClick={() => goToPostPage(currentPostPage - 1)} disabled={currentPostPage <= 1}>
-                Anterior
-              </button>
-              {Array.from({ length: totalPostPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={`admin-post-page-${page}`}
-                  type='button'
-                  className={`btn btn-sm ${currentPostPage === page ? 'btn-primary' : 'btn-outline-primary'}`}
-                  onClick={() => goToPostPage(page)}
-                >
-                  {page}
+                <div className='wbl-sec'>
+                  <h4><i className='mdi mdi-text-box-outline' style={{ color: '#004991' }}></i>Contenido</h4>
+                  <QuillFormGroup
+                    col='col-12'
+                    value={postDraft.content_html || ''}
+                    eRef={quillRef.current}
+                    onChange={(html) => { quillRef.current.current.value = html; setDraft('content_html', html) }}
+                  />
+                </div>
+
+                <div className='wbl-sec' style={{ background: '#f7faff' }}>
+                  <h4><i className='mdi mdi-star-outline' style={{ color: '#004991' }}></i>Nota técnica (recuadro destacado)</h4>
+                  <div className='row g-3'>
+                    <Field col='col-md-4' label='Título de la nota' value={postDraft.highlight_label} placeholder='Nota técnica' onChange={(e) => setDraft('highlight_label', e.target.value)} />
+                    <Field col='col-md-8' label='Contenido de la nota' textarea rows={2} value={postDraft.highlight} onChange={(e) => setDraft('highlight', e.target.value)} />
+                  </div>
+                </div>
+              </div>
+
+              <div className='wbl-modal-foot'>
+                <button type='button' className='wbl-btn soft sm' onClick={closePost} disabled={saving}>Cancelar</button>
+                <button type='submit' className='wbl-btn primary sm' disabled={saving}>
+                  {saving ? <><span className='spinner-border spinner-border-sm'></span> Guardando...</> : <><i className='mdi mdi-content-save'></i> {postIndex == null ? 'Crear artículo' : 'Guardar cambios'}</>}
                 </button>
-              ))}
-              <button type='button' className='btn btn-sm btn-light' onClick={() => goToPostPage(currentPostPage + 1)} disabled={currentPostPage >= totalPostPages}>
-                Siguiente
-              </button>
-            </div>
-          ) : null}
-        </SectionCard>
-      ) : null}
-
-      {activeSection === 'sidebar' ? (
-        <>
-          <SectionCard col='col-12 col-xl-7' title='Más leídos' subtitle='Ranking que aparece en la barra lateral del blog' icon='mdi-trophy-outline'>
-            <div className='table-responsive'>
-              <table className='table table-sm align-middle mb-0'>
-                <thead>
-                  <tr className='text-muted' style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                    <th style={{ width: 70 }}>N°</th>
-                    <th>Título</th>
-                    <th style={{ width: '32%' }}>Categoría</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {form.most_read.map((item, index) => (
-                    <tr key={`most-read-${index}`}>
-                      <td>
-                        <input className='form-control form-control-sm text-center' value={item.number || ''} onChange={(e) => updateMostRead(index, 'number', e.target.value)} />
-                      </td>
-                      <td>
-                        <input className='form-control form-control-sm' value={item.title || ''} onChange={(e) => updateMostRead(index, 'title', e.target.value)} />
-                      </td>
-                      <td>
-                        <input className='form-control form-control-sm' value={item.category || ''} onChange={(e) => updateMostRead(index, 'category', e.target.value)} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </SectionCard>
-
-          <SectionCard col='col-12 col-xl-5' title='Portada lateral' subtitle='Usa la misma imagen del hero' icon='mdi-image-frame'>
-            <MediaUploader preview={form.hero_image_preview} onChange={onHeroImageChange} hint='Comparte imagen con la portada. Tamaño máximo: 4 MB.' />
-          </SectionCard>
-        </>
-      ) : null}
-
-      {activeSection === 'newsletter' ? (
-        <SectionCard title='Bloque de newsletter' subtitle='Tarjeta de suscripción en la barra lateral' icon='mdi-email-fast-outline'>
-          <div className='row g-3'>
-            <FormField col='col-md-4' label='Etiqueta' value={form.newsletter_eyebrow} onChange={(e) => updateField('newsletter_eyebrow', e.target.value)} />
-            <FormField col='col-md-8' label='Título' value={form.newsletter_title} onChange={(e) => updateField('newsletter_title', e.target.value)} />
-            <FormField col='col-12' label='Descripción' textarea value={form.newsletter_description} onChange={(e) => updateField('newsletter_description', e.target.value)} />
-            <FormField col='col-md-6' label='Placeholder del correo' value={form.newsletter_placeholder} onChange={(e) => updateField('newsletter_placeholder', e.target.value)} />
-            <FormField col='col-md-6' label='Texto del botón' value={form.newsletter_button_label} onChange={(e) => updateField('newsletter_button_label', e.target.value)} />
+              </div>
+            </form>
           </div>
-        </SectionCard>
-      ) : null}
+        </div>
+      )}
+
+      {/* Modal configuración */}
+      {configOpen && (
+        <div className='wbl-modal-ovl' onMouseDown={closeConfig}>
+          <div className='wbl-modal narrow' onMouseDown={(e) => e.stopPropagation()}>
+            <form onSubmit={saveConfig}>
+              <div className='wbl-modal-head'>
+                <h3 className='wbl-h2'><i className='mdi mdi-cog-outline me-1' style={{ color: '#004991' }}></i>Configuración del blog</h3>
+                <button type='button' className='wbl-close' onClick={closeConfig}><i className='mdi mdi-close'></i></button>
+              </div>
+
+              <div className='wbl-modal-body'>
+                <div className='wbl-sec'>
+                  <h4><i className='mdi mdi-image-outline' style={{ color: '#004991' }}></i>Portada</h4>
+                  <div className='row g-3 align-items-center'>
+                    <div className='col-lg-7'>
+                      <div className='wbl-media'>
+                        <img src={configDraft.hero_image_preview || IMAGE_FALLBACK} alt='Portada' className='w-100 d-block' style={{ aspectRatio: '16/9', objectFit: 'cover' }} onError={onImgError} />
+                      </div>
+                    </div>
+                    <div className='col-lg-5'>
+                      <label className='form-label'>Cambiar imagen</label>
+                      <input type='file' className='form-control' accept='image/*' onChange={onHeroImageChange} />
+                      <small className='wbl-sub d-block mt-2'>Imagen horizontal (16:9). Máx 4 MB.</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='wbl-sec'>
+                  <h4><i className='mdi mdi-format-title' style={{ color: '#004991' }}></i>Encabezado</h4>
+                  <div className='row g-3'>
+                    <Field col='col-md-4' label='Etiqueta' value={configDraft.hero_badge} placeholder='Blog Tuboplast' onChange={(e) => setCfg('hero_badge', e.target.value)} />
+                    <Field col='col-md-8' label='Título' value={configDraft.hero_title} placeholder='Construyendo el futuro' onChange={(e) => setCfg('hero_title', e.target.value)} />
+                    <Field col='col-12' label='Descripción' textarea rows={2} value={configDraft.hero_description} onChange={(e) => setCfg('hero_description', e.target.value)} />
+                    <Field col='col-12' label='Título de la sección de artículos' value={configDraft.section_title} onChange={(e) => setCfg('section_title', e.target.value)} />
+                  </div>
+                </div>
+
+                <div className='wbl-sec'>
+                  <h4><i className='mdi mdi-email-fast-outline' style={{ color: '#004991' }}></i>Newsletter</h4>
+                  <div className='row g-3'>
+                    <Field col='col-md-4' label='Etiqueta' value={configDraft.newsletter_eyebrow} onChange={(e) => setCfg('newsletter_eyebrow', e.target.value)} />
+                    <Field col='col-md-8' label='Título' value={configDraft.newsletter_title} onChange={(e) => setCfg('newsletter_title', e.target.value)} />
+                    <Field col='col-12' label='Descripción' textarea rows={2} value={configDraft.newsletter_description} onChange={(e) => setCfg('newsletter_description', e.target.value)} />
+                    <Field col='col-md-6' label='Placeholder del correo' value={configDraft.newsletter_placeholder} onChange={(e) => setCfg('newsletter_placeholder', e.target.value)} />
+                    <Field col='col-md-6' label='Texto del botón' value={configDraft.newsletter_button_label} onChange={(e) => setCfg('newsletter_button_label', e.target.value)} />
+                  </div>
+                </div>
+              </div>
+
+              <div className='wbl-modal-foot'>
+                <button type='button' className='wbl-btn soft sm' onClick={closeConfig} disabled={saving}>Cancelar</button>
+                <button type='submit' className='wbl-btn primary sm' disabled={saving}>
+                  {saving ? <><span className='spinner-border spinner-border-sm'></span> Guardando...</> : <><i className='mdi mdi-content-save'></i> Guardar configuración</>}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <ConfirmModal
+        open={!!confirmTarget}
+        title='Eliminar artículo'
+        message={confirmTarget ? `Se eliminará "${confirmTarget.title || 'este artículo'}". Esta acción no se puede deshacer.` : ''}
+        confirmLabel='Eliminar'
+        variant='danger'
+        loading={deleting}
+        onConfirm={performDelete}
+        onCancel={() => { if (!deleting) setConfirmTarget(null) }}
+      />
     </div>
   )
 }

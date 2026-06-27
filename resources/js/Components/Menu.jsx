@@ -53,7 +53,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
     return () => window.removeEventListener('quotes:seen', decreaseQuotesBadge)
   }, [])
 
-  return (<div className="sidenav-menu">
+  return (<div className="sidenav-menu" style={{ boxShadow: '0 1px 2px rgba(15,37,64,.04), 0 6px 16px rgba(0,73,145,.06)' }}>
     <a href="/" className="logo">
       <span className="logo-light">
         <span className="logo-lg"><img src="/assets/img/logo-white.svg" alt="logo" style={{ height: '36px' }} /></span>

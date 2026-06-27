@@ -16,6 +16,8 @@
         $seoType = $seo['type'] ?? 'website';
         $seoSiteName = $seo['site_name'] ?? env('APP_NAME', 'Tuboplast');
         $seoKeywords = $seo['keywords'] ?? 'tuboplast, tuberias pvc, conexiones pvc';
+        // Cache-busting por mtime (evita iconos cacheados que solo salen con Ctrl+Shift+R).
+        $v = fn ($p) => '/' . ltrim($p, '/') . '?v=' . (is_file(public_path($p)) ? filemtime(public_path($p)) : '1');
     @endphp
 
     <title>{{ $seoTitle }}</title>
@@ -55,8 +57,8 @@
     <meta name="apple-mobile-web-app-title" content="Tuboplast" />
     <link rel="manifest" href="/manifest.webmanifest">
 
-    <link href="/lte/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/lte/assets/css/mdi-icons.css" rel="stylesheet" type="text/css" />
+    <link href="{{ $v('lte/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ $v('lte/assets/css/mdi-icons.css') }}" rel="stylesheet" type="text/css" />
 
     {{-- Fuentes auto-alojadas (Manrope, Space Grotesk y Noto Color Emoji) --}}
     <link href="{{ asset('fonts/fonts.css') }}" rel="stylesheet">

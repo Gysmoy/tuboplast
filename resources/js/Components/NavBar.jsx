@@ -14,8 +14,8 @@ const NavBar = ({ title = 'Panel' }) => {
     document.title = `${title} | DevEx Consulting`
   }, [null])
 
-  return <header className="app-topbar" id="header">
-    <div className="page-container topbar-menu">
+  return <header className="app-topbar" id="header" >
+    <div className="page-container topbar-menu" style={{ boxShadow: '0 1px 2px rgba(15,37,64,.04), 0 6px 16px rgba(0,73,145,.06)' }}>
       <div className="d-flex align-items-center gap-2">
 
 
