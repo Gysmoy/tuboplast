@@ -3,36 +3,19 @@ import { createRoot } from 'react-dom/client'
 import CreateReactScript from '../Utils/CreateReactScript.jsx'
 import Adminto from '../Components/Adminto.jsx'
 
-const Home = () => {
+const EMPTY_DASHBOARD = {
+  month_label: '',
+  kpis: [],
+  metrics: [],
+  funnel: [],
+  funnel_max: 1,
+  chart: { labels: [], qty: [], amount: [] },
+}
+
+const Home = ({ dashboard }) => {
+  const data = useMemo(() => ({ ...EMPTY_DASHBOARD, ...(dashboard || {}) }), [dashboard])
   const chartRef = useRef(null)
   const apexRef = useRef(null)
-
-  const chartData = useMemo(() => {
-    const labels = Array.from({ length: 30 }, (_, i) => `${i + 1}`)
-    const qty = [4, 6, 8, 7, 10, 12, 11, 9, 13, 15, 12, 11, 14, 16, 18, 17, 15, 13, 19, 21, 18, 16, 15, 14, 20, 22, 19, 17, 16, 18]
-    const amount = [42, 58, 71, 64, 88, 95, 91, 79, 102, 118, 97, 90, 110, 123, 136, 131, 116, 108, 142, 158, 147, 129, 121, 115, 161, 176, 165, 148, 140, 152]
-    return { labels, qty, amount }
-  }, [])
-
-  const kpis = [
-    { title: 'Cotizaciones del mes', value: '472', delta: '+18.4%', icon: 'ti ti-file-invoice' },
-    { title: 'Club experto (personas)', value: '1,286', delta: '+9.2%', icon: 'ti ti-users-group' },
-    { title: 'Mensajes recibidos', value: '214', delta: '+6.8%', icon: 'ti ti-message-chatbot' },
-    { title: 'Conversión pendiente a atendido', value: '73.5%', delta: '+4.1 pts', icon: 'ti ti-rotate-2' },
-  ]
-
-  const extraMetrics = [
-    { label: 'Monto cotizado del mes', value: 'S/ 1,452,800' },
-    { label: 'Ticket promedio por cotización', value: 'S/ 3,078' },
-    { label: 'Tiempo promedio de primera respuesta', value: '2h 14m' },
-    { label: 'Leads calificados (MQL) del mes', value: '329' },
-  ]
-
-  const conversionFunnel = [
-    { stage: 'Cotizaciones pendientes', value: 189, color: 'warning' },
-    { stage: 'Cotizaciones atendidas', value: 139, color: 'success' },
-    { stage: 'Cotizaciones ganadas', value: 74, color: 'primary' },
-  ]
 
   useEffect(() => {
     document.title = 'Inicio | Admin'
@@ -42,46 +25,23 @@ const Home = () => {
     if (!chartRef.current || typeof ApexCharts === 'undefined') return
 
     const options = {
-      chart: {
-        type: 'line',
-        height: 360,
-        toolbar: { show: false },
-      },
+      chart: { type: 'line', height: 360, toolbar: { show: false } },
       series: [
-        { name: 'Cantidad de cotizaciones', type: 'column', data: chartData.qty },
-        { name: 'Monto total (S/ miles)', type: 'line', data: chartData.amount },
+        { name: 'Cantidad de cotizaciones', type: 'column', data: data.chart.qty },
+        { name: 'Monto cotizado (S/)', type: 'line', data: data.chart.amount },
       ],
-      stroke: {
-        width: [0, 3],
-        curve: 'smooth',
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: '48%',
-          borderRadius: 4,
-        },
-      },
-      xaxis: {
-        categories: chartData.labels,
-        title: { text: 'Día del mes' },
-      },
+      stroke: { width: [0, 3], curve: 'smooth' },
+      plotOptions: { bar: { columnWidth: '48%', borderRadius: 4 } },
+      xaxis: { categories: data.chart.labels, title: { text: 'Día del mes' } },
       yaxis: [
-        {
-          title: { text: 'Cantidad' },
-        },
-        {
-          opposite: true,
-          title: { text: 'Monto (S/ miles)' },
-        },
+        { title: { text: 'Cantidad' }, labels: { formatter: (v) => Math.round(v) } },
+        { opposite: true, title: { text: 'Monto (S/)' }, labels: { formatter: (v) => `S/ ${Math.round(v).toLocaleString('es-PE')}` } },
       ],
       colors: ['#3A8DFF', '#17A2B8'],
       dataLabels: { enabled: false },
       grid: { borderColor: '#edf2f7' },
       legend: { position: 'top' },
-      tooltip: {
-        shared: true,
-        intersect: false,
-      },
+      tooltip: { shared: true, intersect: false },
     }
 
     apexRef.current = new ApexCharts(chartRef.current, options)
@@ -93,7 +53,7 @@ const Home = () => {
         apexRef.current = null
       }
     }
-  }, [chartData])
+  }, [data])
 
   return (
     <div className='row g-3'>
@@ -102,13 +62,13 @@ const Home = () => {
           <div className='card-body py-3'>
             <h4 className='mb-1'>Panel Comercial</h4>
             <p className='text-muted mb-0'>
-              Resumen ejecutivo del mes actual con indicadores clave de cotizaciones, atención y conversión.
+              Resumen ejecutivo de <strong className='text-capitalize'>{data.month_label || 'el mes actual'}</strong> con indicadores reales de cotizaciones, atención y conversión.
             </p>
           </div>
         </div>
       </div>
 
-      {kpis.map((kpi) => (
+      {data.kpis.map((kpi) => (
         <div key={kpi.title} className='col-12 col-md-6 col-xl-3'>
           <div className='card h-100 border-0 shadow-sm'>
             <div className='card-body'>
@@ -116,7 +76,7 @@ const Home = () => {
                 <div>
                   <p className='text-muted mb-1'>{kpi.title}</p>
                   <h3 className='mb-1'>{kpi.value}</h3>
-                  <span className='badge bg-success-subtle text-success'>{kpi.delta}</span>
+                  <span className={`badge ${kpi.positive ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`}>{kpi.delta}</span>
                 </div>
                 <div className='avatar-sm'>
                   <span className='avatar-title rounded-circle bg-primary-subtle text-primary fs-22'>
@@ -134,7 +94,7 @@ const Home = () => {
           <div className='card-body'>
             <div className='d-flex justify-content-between align-items-center mb-3'>
               <h5 className='mb-0'>Cotizaciones del mes actual</h5>
-              <span className='badge bg-primary-subtle text-primary'>Data dummy</span>
+              <span className='badge bg-primary-subtle text-primary text-capitalize'>{data.month_label}</span>
             </div>
             <div ref={chartRef} />
           </div>
@@ -146,7 +106,7 @@ const Home = () => {
           <div className='card-body'>
             <h5 className='mb-3'>Métricas de desempeño</h5>
             <div className='d-flex flex-column gap-3'>
-              {extraMetrics.map((metric) => (
+              {data.metrics.map((metric) => (
                 <div key={metric.label} className='p-2 border rounded'>
                   <small className='text-muted d-block'>{metric.label}</small>
                   <strong className='fs-5'>{metric.value}</strong>
@@ -162,7 +122,7 @@ const Home = () => {
           <div className='card-body'>
             <h5 className='mb-3'>Embudo de cotizaciones</h5>
             <div className='row g-3'>
-              {conversionFunnel.map((item) => (
+              {data.funnel.map((item) => (
                 <div key={item.stage} className='col-12 col-md-4'>
                   <div className='p-3 border rounded h-100'>
                     <div className='d-flex justify-content-between align-items-center'>
@@ -173,7 +133,7 @@ const Home = () => {
                       <div
                         className={`progress-bar bg-${item.color}`}
                         role='progressbar'
-                        style={{ width: `${Math.min(100, (item.value / 200) * 100)}%` }}
+                        style={{ width: `${Math.min(100, (item.value / (data.funnel_max || 1)) * 100)}%` }}
                       />
                     </div>
                   </div>
@@ -190,8 +150,7 @@ const Home = () => {
 CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Adminto {...properties} title='Inicio'>
-      <Home />
+      <Home {...properties} />
     </Adminto>
   )
 })
-
