@@ -4,7 +4,7 @@ import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
-const emptyFilters = { segment: [], line: [], type: [], use: [], material: [], color: [], diameter: [] };
+const emptyFilters = { segment: [], line: [], type: [], use: [], material: [], color: [] };
 
 const FilterCheckbox = ({ checked, label, onChange }) => (
   <label className={`flex cursor-pointer items-center gap-3 text-sm ${checked ? 'font-bold text-primary' : 'text-darkmuted'}`}>
@@ -126,7 +126,6 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     use: facets.use || [],
     material: facets.material || [],
     color: facets.color || [],
-    diameter: facets.diameter || [],
   };
 
   const activeCount = Object.values(filters).reduce((total, list) => total + list.length, 0);
@@ -162,7 +161,6 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     filters.use.forEach((value) => params.append('use[]', value));
     filters.material.forEach((value) => params.append('material[]', value));
     filters.color.forEach((value) => params.append('color[]', value));
-    filters.diameter.forEach((value) => params.append('diameter[]', value));
     params.set('sort', sort);
     params.set('page', String(page));
 
@@ -356,16 +354,6 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
                           </button>
                         );
                       })}
-                    </div>
-                  </FilterGroup>
-                )}
-
-                {facetGroups.diameter.length > 0 && (
-                  <FilterGroup title="Diámetro">
-                    <div className="max-h-56 space-y-3 overflow-y-auto pr-1">
-                      {facetGroups.diameter.map((label) => (
-                        <FilterCheckbox key={label} label={label} checked={filters.diameter.includes(label)} onChange={() => toggleFilter('diameter', label)} />
-                      ))}
                     </div>
                   </FilterGroup>
                 )}
