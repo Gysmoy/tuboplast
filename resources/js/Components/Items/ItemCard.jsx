@@ -98,26 +98,38 @@ const ItemCard = ({ product, showPrice = false }) => {
       <div className="flex flex-1 flex-col p-5">
         <div>
           <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-muted">{category}</span>
-          <p className="min-h-[52px] text-lg font-bold leading-tight text-primary">{product.title}</p>
+          <p className="line-clamp-2 text-sm font-bold leading-tight text-primary sm:min-h-[52px] sm:text-lg">{product.title}</p>
         </div>
 
-        <div className="mt-5 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-end gap-3">
-          <div className="rounded-lg bg-white/60 p-2">
-            <span className="block text-[10px] uppercase text-muted">Uso</span>
-            <p className="truncate text-xs font-bold text-primary">{product.use ?? product.pressure ?? '-'}</p>
+        <div className="mt-4 sm:mt-5">
+          <div className="grid grid-cols-2 items-end gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:gap-3">
+            <div className="rounded-lg bg-white/60 p-2">
+              <span className="block text-[10px] uppercase text-muted">Uso</span>
+              <p className="truncate text-xs font-bold text-primary">{product.use ?? product.pressure ?? '-'}</p>
+            </div>
+            <div className="rounded-lg bg-white/60 p-2">
+              <span className="block text-[10px] uppercase text-muted">Diametro</span>
+              <p className="truncate text-xs font-bold text-primary">{product.diameter}</p>
+            </div>
+            <button
+              ref={cartButtonRef}
+              type="button"
+              onClick={handleAddToQuote}
+              aria-label={`Agregar ${product.title} a la cotizacion`}
+              className="relative z-20 hidden h-11 w-11 place-items-center self-stretch rounded-lg bg-primary text-white transition hover:bg-[#003b7a] sm:grid"
+            >
+              <i className="mdi mdi-cart-plus text-xl"></i>
+            </button>
           </div>
-          <div className="rounded-lg bg-white/60 p-2">
-            <span className="block text-[10px] uppercase text-muted">Diametro</span>
-            <p className="text-xs font-bold text-primary">{product.diameter}</p>
-          </div>
+
           <button
-            ref={cartButtonRef}
             type="button"
             onClick={handleAddToQuote}
             aria-label={`Agregar ${product.title} a la cotizacion`}
-            className="relative z-20 grid h-11 w-11 place-items-center self-stretch rounded-lg bg-primary text-white transition hover:bg-[#003b7a]"
+            className="relative z-20 mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-bold text-white transition hover:bg-[#003b7a] sm:hidden"
           >
-            <i className="mdi mdi-cart-plus text-xl"></i>
+            <i className="mdi mdi-cart-plus text-base"></i>
+            Cotizar
           </button>
         </div>
 

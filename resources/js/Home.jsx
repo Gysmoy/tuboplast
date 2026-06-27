@@ -3,12 +3,29 @@ import { createRoot } from 'react-dom/client';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
 import Base from './Components/Tailwind/Base';
 import ItemCard from './Components/Items/ItemCard';
 import CreateReactScript from './Utils/CreateReactScript';
 import Emphasis from './Utils/em';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+// Carrusel: 2 visibles, avanza de uno en uno, autoplay + drag con mouse.
+const carouselProps = (lgPerView) => ({
+  modules: [Autoplay],
+  spaceBetween: 12,
+  slidesPerView: 2,
+  slidesPerGroup: 1,
+  grabCursor: true,
+  loop: true,
+  autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
+  breakpoints: {
+    640: { slidesPerView: 2, spaceBetween: 16 },
+    1024: { slidesPerView: lgPerView, spaceBetween: 24 },
+  },
+});
 
 const strengths = [
   {
@@ -113,7 +130,7 @@ const defaultBlogPosts = [
 
 const HomeScreen = ({ blog = {} }) => {
   const pageRef = useRef(null);
-  const blogPosts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts.slice(0, 3) : defaultBlogPosts;
+  const blogPosts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts.slice(0, 12) : defaultBlogPosts;
   const newsletter = {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
     title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
@@ -338,11 +355,13 @@ const HomeScreen = ({ blog = {} }) => {
             </a>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <Swiper {...carouselProps(4)} className="!pb-1">
             {recommendations.map((product, index) => (
-              <ItemCard key={`${product.title}-${index}`} product={product} />
+              <SwiperSlide key={`${product.title}-${index}`} className="!h-auto">
+                <ItemCard product={product} />
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
         </div>
       </section>
 
@@ -384,36 +403,38 @@ const HomeScreen = ({ blog = {} }) => {
             </a>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Swiper {...carouselProps(3)} className="!pb-1">
             {blogPosts.map((post) => (
-              <article key={post.title} data-reveal className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-                <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
-                <div className="px-4 py-6">
-                  <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>
-                  <p className="font-title text-xl text-primary font-medium leading-tight mb-2">{post.title}</p>
-                  <p className="text-sm text-muted line-clamp-2">{post.description}</p>
-                </div>
-              </article>
+              <SwiperSlide key={post.title} className="!h-auto">
+                <article data-reveal className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
+                  <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="aspect-[5/4] w-full object-cover" />
+                  <div className="px-4 py-6">
+                    <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>
+                    <p className="font-title text-base text-primary font-medium leading-tight mb-2 line-clamp-2 sm:text-xl">{post.title}</p>
+                    <p className="text-sm text-muted line-clamp-2">{post.description}</p>
+                  </div>
+                </article>
+              </SwiperSlide>
             ))}
+          </Swiper>
 
-            <article data-reveal className="rounded-xl bg-primary p-5 text-white shadow-sm flex flex-col justify-center space-y-5">
-                            <div className='space-y-4'>
-                <p className="text-xs uppercase tracking-[0.18em] text-primary/70">{newsletter.eyebrow}</p>
-                <p className="text-2xl font-bold font-title">{newsletter.title}</p>
-                <p className="text-sm">{newsletter.description}</p>
-              </div>
-              <div className='space-y-4'>
-                <input
-                  className=" w-full rounded-full border border-white/20 bg-white/10 py-4 px-6 text-xs outline-none"
-                  placeholder={newsletter.placeholder}
-                  type="email"
-                />
-                <button type="button" className="mt-4 w-full rounded-full bg-[#F7DD00] p-4 text-xs font-bold font-title text-primary">
-                  {newsletter.buttonLabel}
-                </button>
-              </div>
-            </article>
-          </div>
+          <article data-reveal className="mt-6 flex flex-col gap-5 rounded-xl bg-primary p-6 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between sm:gap-8 lg:mt-8 lg:p-8">
+            <div className='space-y-2'>
+              <p className="text-xs uppercase tracking-[0.18em] text-white/70">{newsletter.eyebrow}</p>
+              <p className="text-2xl font-bold font-title">{newsletter.title}</p>
+              <p className="text-sm text-white/80">{newsletter.description}</p>
+            </div>
+            <div className='flex w-full gap-3 sm:max-w-md'>
+              <input
+                className="w-full rounded-full border border-white/20 bg-white/10 py-3 px-5 text-xs outline-none"
+                placeholder={newsletter.placeholder}
+                type="email"
+              />
+              <button type="button" className="whitespace-nowrap rounded-full bg-[#F7DD00] px-5 py-3 text-xs font-bold font-title text-primary">
+                {newsletter.buttonLabel}
+              </button>
+            </div>
+          </article>
         </div>
       </section>
     </main>
