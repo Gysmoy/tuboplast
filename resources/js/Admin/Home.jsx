@@ -60,7 +60,8 @@ const BRAND_CSS = `
 .wfd-opt.sel{background:#e6effa;color:#004991;font-weight:700;}
 .wfd-wrap .spin{display:inline-block;animation:wfd-spin 1s linear infinite;}
 @keyframes wfd-spin{to{transform:rotate(360deg);}}
-.wfd-monthpick{padding:10px;min-width:248px;}
+.wfd-monthpick{padding:10px;min-width:288px;}
+.wfd-mp-cell{white-space:nowrap;}
 .wfd-mp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .wfd-mp-year{font-weight:700;color:#0f2540;font-size:14px;}
 .wfd-mp-nav{width:30px;height:30px;border:0;border-radius:8px;background:#f4f8fd;color:#004991;display:inline-flex;align-items:center;justify-content:center;}
@@ -113,8 +114,11 @@ const CustomSelect = ({ value, options, onChange, icon, minWidth = 140 }) => {
   )
 }
 
+const MONTHS_FULL = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+const MONTHS_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+
 // Month picker custom (mes + año en un popover tipo calendario).
-const MonthPicker = ({ month, year, months, years, onChange }) => {
+const MonthPicker = ({ month, year, years, onChange }) => {
   const [open, setOpen] = useState(false)
   const [navYear, setNavYear] = useState(year)
   const ref = useRef(null)
@@ -128,12 +132,11 @@ const MonthPicker = ({ month, year, months, years, onChange }) => {
 
   const minYear = years.length ? Math.min(...years) : navYear
   const maxYear = years.length ? Math.max(...years) : navYear
-  const current = months.find((m) => String(m.value) === String(month))
 
   return (
-    <div ref={ref} className={`wfd-ddwrap ${open ? 'open' : ''}`} style={{ minWidth: 175 }}>
+    <div ref={ref} className={`wfd-ddwrap ${open ? 'open' : ''}`} style={{ minWidth: 170 }}>
       <button type='button' className='wfd-dd' onClick={() => setOpen((o) => !o)}>
-        <span className='text-capitalize'><i className='ti ti-calendar-month me-1' style={{ color: '#004991' }}></i>{current ? current.label : '—'} {year}</span>
+        <span><i className='ti ti-calendar-month me-1' style={{ color: '#004991' }}></i>{MONTHS_FULL[month - 1]} {year}</span>
         <i className='ti ti-chevron-down chev'></i>
       </button>
       {open && (
@@ -144,16 +147,17 @@ const MonthPicker = ({ month, year, months, years, onChange }) => {
             <button type='button' className='wfd-mp-nav' disabled={navYear >= maxYear} onClick={() => setNavYear((y) => Math.min(maxYear, y + 1))}><i className='ti ti-chevron-right'></i></button>
           </div>
           <div className='wfd-mp-grid'>
-            {months.map((m) => {
-              const selected = String(m.value) === String(month) && navYear === year
+            {MONTHS_SHORT.map((label, idx) => {
+              const value = idx + 1
+              const selected = value === Number(month) && navYear === Number(year)
               return (
                 <button
-                  key={m.value}
+                  key={value}
                   type='button'
                   className={`wfd-mp-cell ${selected ? 'sel' : ''}`}
-                  onClick={() => { onChange(m.value, navYear); setOpen(false) }}
+                  onClick={() => { onChange(value, navYear); setOpen(false) }}
                 >
-                  {m.short || m.label.slice(0, 3)}
+                  {label} {navYear}
                 </button>
               )
             })}
@@ -176,7 +180,6 @@ const Home = ({ dashboard, filter }) => {
 
   const d = useMemo(() => ({ ...EMPTY_DASHBOARD, ...(data || {}) }), [data])
   const modeOptions = [{ value: 'month', label: 'Por mes' }, { value: 'year', label: 'Por año' }]
-  const monthOptions = filter?.months ?? []
   const yearOptions = (filter?.years ?? []).map((y) => ({ value: y, label: String(y) }))
 
   useEffect(() => {
@@ -259,7 +262,7 @@ const Home = ({ dashboard, filter }) => {
                 {loading && <i className='ti ti-loader-2 spin' style={{ color: '#004991', fontSize: 18 }}></i>}
                 <CustomSelect value={mode} options={modeOptions} onChange={setMode} icon='ti ti-filter' minWidth={130} />
                 {mode === 'month' ? (
-                  <MonthPicker month={month} year={year} months={monthOptions} years={filter?.years ?? []} onChange={(m, y) => { setMonth(m); setYear(y) }} />
+                  <MonthPicker month={month} year={year} years={filter?.years ?? []} onChange={(m, y) => { setMonth(m); setYear(y) }} />
                 ) : (
                   <CustomSelect value={year} options={yearOptions} onChange={setYear} icon='ti ti-calendar' minWidth={120} />
                 )}
