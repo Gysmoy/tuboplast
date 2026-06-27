@@ -59,11 +59,10 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
       <section className='mx-auto w-full max-w-site px-4 py-12 sm:py-16 lg:py-20'>
         <div className='grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center'>
           <div className='relative mx-auto w-full max-w-[28rem] lg:max-w-none'>
-            <div className='absolute left-0 top-0 h-full w-3 rounded-l-2xl bg-secondary' />
             <img
               src={familyImage}
               alt='Tuboplast en produccion'
-              className='ml-2 h-[360px] w-full rounded-2xl object-cover shadow-[0_22px_45px_rgba(15,23,42,0.18)] sm:h-[500px]'
+              className='h-[360px] w-full rounded-2xl object-cover shadow-[0_22px_45px_rgba(15,23,42,0.18)] sm:h-[500px]'
             />
             <div className='absolute -top-6 right-4 z-10 rounded-2xl bg-secondary px-7 py-5 text-primary shadow-xl lg:left-0 lg:right-auto lg:px-8 lg:py-7'>
               <p className='font-title text-4xl font-black leading-none sm:text-5xl'>{about.family_metric_value || defaultAbout.family_metric_value}</p>
