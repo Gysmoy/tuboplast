@@ -14,6 +14,8 @@ class HomeController extends BasicController
 {
     public $reactView = 'Admin/Home';
 
+    private const MONTHS_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
     public function setReactViewProperties(Request $request)
     {
         return $this->payload($request);
@@ -48,7 +50,6 @@ class HomeController extends BasicController
         $months = collect(range(1, 12))->map(fn ($m) => [
             'value' => $m,
             'label' => ucfirst(Carbon::create(2000, $m, 1)->locale('es')->translatedFormat('F')),
-            'short' => ucfirst(Carbon::create(2000, $m, 1)->locale('es')->translatedFormat('MMM')),
         ])->all();
 
         return [
@@ -72,8 +73,7 @@ class HomeController extends BasicController
             $label = (string) $year;
             $bucketCount = 12;
             $bucketOf = fn ($date) => (int) $date->month;
-            $labels = collect(range(1, 12))
-                ->map(fn ($m) => ucfirst(Carbon::create(2000, $m, 1)->locale('es')->translatedFormat('MMM')))->all();
+            $labels = self::MONTHS_SHORT;
             $xTitle = 'Mes';
             $word = 'del año';
             $shortWord = 'año';
