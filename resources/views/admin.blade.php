@@ -17,6 +17,18 @@
         // navegador re-descarga aunque tenga una copia cacheada (evita iconos/logo
         // que desaparecen en refresh normal y solo salen con Ctrl+Shift+R).
         $v = fn ($p) => '/' . ltrim($p, '/') . '?v=' . (is_file(public_path($p)) ? filemtime(public_path($p)) : '1');
+
+        // Carga condicional de librerias pesadas por pagina (evita bajar ~6MB en
+        // cada ruta del panel). DataGrid (DevExtreme ~5.3MB) solo en paginas con
+        // tabla; ApexCharts (~563KB) solo en el dashboard.
+        $current = $component ?? '';
+        $gridPages = [
+            'Admin/Users', 'Admin/Roles', 'Admin/Branches', 'Admin/Distributors',
+            'Admin/Categories', 'Admin/Items', 'Admin/Club', 'Admin/Quotes',
+            'Admin/Contacts', 'Admin/Messages',
+        ];
+        $usesGrid = in_array($current, $gridPages, true);
+        $usesCharts = $current === 'Admin/Home';
     @endphp
 
     <!-- App favicon -->
@@ -28,11 +40,13 @@
      <!-- Switchery css -->
     <link href="/lte/assets/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css" />
 
-    <!-- Data Grid css -->
-    <link href="/lte/assets/libs/dxdatagrid/css/dx.light.compact.css?v=06d3ebc8-645c-4d80-a600-c9652743c425"
-        rel="stylesheet" type="text/css" id="dg-default-stylesheet" />
-    <link href="/lte/assets/libs/dxdatagrid/css/dx.dark.compact.css?v=06d3ebc8-645c-4d80-a600-c9652743c425"
-        rel="stylesheet" type="text/css" id="dg-dark-stylesheet" disabled="disabled" />
+    <!-- Data Grid css (solo en paginas con tabla) -->
+    @if ($usesGrid)
+        <link href="/lte/assets/libs/dxdatagrid/css/dx.light.compact.css?v=06d3ebc8-645c-4d80-a600-c9652743c425"
+            rel="stylesheet" type="text/css" id="dg-default-stylesheet" />
+        <link href="/lte/assets/libs/dxdatagrid/css/dx.dark.compact.css?v=06d3ebc8-645c-4d80-a600-c9652743c425"
+            rel="stylesheet" type="text/css" id="dg-dark-stylesheet" disabled="disabled" />
+    @endif
 
     <!-- Vendor css -->
     <link href="{{ $v('lte/assets/css/vendor.min.css') }}" rel="stylesheet" type="text/css" />
@@ -516,17 +530,19 @@
     <!-- App js -->
     <script src="{{ $v('lte/assets/js/app.js') }}"></script>
 
-    <!-- Data Grid js -->
-    <script src="/lte/assets/libs/dxdatagrid/js/dx.all.js"></script>
-    <script src="/lte/assets/libs/dxdatagrid/js/localization/dx.messages.es.js"></script>
-    <script src="/lte/assets/libs/dxdatagrid/js/localization/dx.messages.en.js"></script>
+    <!-- Data Grid js (solo en paginas con tabla) -->
+    @if ($usesGrid)
+        <script src="/lte/assets/libs/dxdatagrid/js/dx.all.js"></script>
+        <script src="/lte/assets/libs/dxdatagrid/js/localization/dx.messages.es.js"></script>
+    @endif
 
-    <script src="/lte/assets/libs/moment/min/moment.min.js"></script>
-    <script src="/lte/assets/libs/moment/moment-timezone.js"></script>
-    <script src="/lte/assets/libs/moment/locale/es.js"></script>
+    {{-- moment ahora viene empaquetado via npm (resources/js/Utils/moment.js):
+         UTC + locale es, ~90KB en el bundle en vez de 780KB de scripts globales. --}}
 
-    <!-- Apex Chart js -->
-    <script src="/lte/assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <!-- Apex Chart js (solo en el dashboard) -->
+    @if ($usesCharts)
+        <script src="/lte/assets/vendor/apexcharts/apexcharts.min.js"></script>
+    @endif
 
 </body>
 

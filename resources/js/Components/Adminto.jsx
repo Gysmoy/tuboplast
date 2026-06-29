@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
+import '../Utils/moment' // configura moment (UTC + locale es) y expone window.moment
 import NavBar from './NavBar'
 import Menu from './Menu'
 import Footer from './Footer'
 import { AdmintoProvider } from './AdmintoContext'
-
-moment.tz.setDefault('UTC');
 
 const Adminto = ({ ...properties }) => {
   const { session, children, title, can, unreadMessagesCount, unreadClubCount, unreadQuotesCount } = properties

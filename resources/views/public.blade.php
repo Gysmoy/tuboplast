@@ -125,10 +125,7 @@
 
     <script src="/lte/assets/js/vendor.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js" defer></script>
-    <script src="/lte/assets/libs/moment/min/moment.min.js" defer></script>
-    <script src="/lte/assets/libs/moment/moment-timezone.js" defer></script>
-    <script src="/lte/assets/libs/moment/locale/es.js" defer></script>
-
+    {{-- moment removido: ninguna pagina publica lo usa (ahorra ~840KB) --}}
     <script src="/lte/assets/libs/tippy.js/tippy.all.min.js" defer></script>
 
     <script>
