@@ -10,7 +10,7 @@ const defaultPosts = [
     title: 'Tuberia PVC-U vs HDPE: cual elegir segun el tipo de proyecto?',
     description:
       'Comparamos resistencia, costo y aplicacion para que tomes la mejor decision tecnica en cada obra.',
-    image: '/assets/img/categories/category-1.png',
+    image: '/assets/img/categories/category-1.webp',
   },
   {
     slug: 'como-instalar-tuberias-cpvc-en-proyectos-de-agua-caliente-sin-errores-2',
@@ -18,7 +18,7 @@ const defaultPosts = [
     title: 'Como instalar tuberias CPVC en proyectos de agua caliente sin errores',
     description:
       'Guia paso a paso para una instalacion segura, duradera y certificada. Todo lo que el maestro necesita saber.',
-    image: '/assets/img/categories/category-2.png',
+    image: '/assets/img/categories/category-2.webp',
   },
   {
     slug: 'infraestructura-hidrica-en-el-peru-los-retos-del-sector-construccion-en-2025-3',
@@ -26,7 +26,7 @@ const defaultPosts = [
     title: 'Infraestructura hidrica en el Peru: los retos del sector construccion en 2025',
     description:
       'Analizamos el panorama actual del sector, las normativas vigentes y como Tuboplast responde a la demanda.',
-    image: '/assets/img/categories/category-3.png',
+    image: '/assets/img/categories/category-3.webp',
   },
   {
     slug: 'tuberia-pvc-u-vs-hdpe-cual-elegir-segun-el-tipo-de-proyecto-4',
@@ -34,7 +34,7 @@ const defaultPosts = [
     title: 'Tuberia PVC-U vs HDPE: cual elegir segun el tipo de proyecto?',
     description:
       'Comparamos resistencia, costo y aplicacion para que tomes la mejor decision tecnica en cada obra.',
-    image: '/assets/img/categories/category-1.png',
+    image: '/assets/img/categories/category-1.webp',
   },
   {
     slug: 'como-instalar-tuberias-cpvc-en-proyectos-de-agua-caliente-sin-errores-5',
@@ -42,7 +42,7 @@ const defaultPosts = [
     title: 'Como instalar tuberias CPVC en proyectos de agua caliente sin errores',
     description:
       'Guia paso a paso para una instalacion segura, duradera y certificada. Todo lo que el maestro necesita saber.',
-    image: '/assets/img/categories/category-2.png',
+    image: '/assets/img/categories/category-2.webp',
   },
   {
     slug: 'infraestructura-hidrica-en-el-peru-los-retos-del-sector-construccion-en-2025-6',
@@ -50,7 +50,7 @@ const defaultPosts = [
     title: 'Infraestructura hidrica en el Peru: los retos del sector construccion en 2025',
     description:
       'Analizamos el panorama actual del sector, las normativas vigentes y como Tuboplast responde a la demanda.',
-    image: '/assets/img/categories/category-3.png',
+    image: '/assets/img/categories/category-3.webp',
   },
 ];
 
@@ -151,7 +151,7 @@ const BlogScreen = ({ blog = {} }) => {
     category: post.category,
     detail_url: postUrl(post, index),
   }));
-  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/sliders/main-slider.png');
+  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/sliders/banner-tuboplast.webp');
   const heroBadge = blog.hero_badge || 'Blog Tuboplast';
   const heroTitle = blog.hero_title || 'Construyendo el futuro';
   const heroDescription = blog.hero_description || 'Explora las ultimas innovaciones tecnicas, proyectos emblematicos y consejos de ingenieria para el mercado peruano.';

@@ -93,7 +93,7 @@ const ItemCard = ({ product, showPrice = false }) => {
         <span className="sr-only">Ver detalle de {product.title}</span>
       </a>
 
-      <img ref={cardImageRef} src={product.image} alt={product.title} className="aspect-[5/4] w-full object-cover" />
+      <img ref={cardImageRef} src={product.image} alt={product.title} loading="lazy" decoding="async" className="aspect-[5/4] w-full object-cover" />
 
       <div className="flex flex-1 flex-col p-5">
         <div>

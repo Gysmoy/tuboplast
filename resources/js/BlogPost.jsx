@@ -285,7 +285,7 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
     selectedPost.image_fallback ||
     selectedPost.image ||
     blog.hero_image_url ||
-    '/assets/img/landing/bg-main.png';
+    '/assets/img/landing/bg-main.webp';
   const customContent = String(selectedPost.content_html || '');
   const hasCustomContent = customContent.trim().length > 0;
   const looksLikeHtml = /<\s*(p|br|div|h[1-6]|ul|ol|li|strong|em|blockquote|span|a)[\s>]/i.test(customContent);

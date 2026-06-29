@@ -60,7 +60,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
       image_fallback: fallback.image_fallback,
     }
   })
-  const policyImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '/assets/img/landing/club-expert.png')
+  const policyImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '/assets/img/landing/club-expert.webp')
   const policyScopeEyebrow = about.policy_scope_eyebrow || defaultAbout.policy_scope_eyebrow
   const policyScopeTitle = about.policy_scope_title || defaultAbout.policy_scope_title
   const policyScopeParagraph1 = about.policy_scope_paragraph_1 || defaultAbout.policy_scope_paragraph_1
@@ -73,8 +73,9 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
     <main className='bg-white'>
       <section className='relative overflow-hidden'>
         <img
-          src='/assets/img/landing/bg-main.png'
+          src='/assets/img/landing/bg-main.webp'
           alt='Planta industrial Tuboplast'
+          decoding='async'
           className='absolute inset-0 h-full w-full object-cover object-center grayscale'
         />
         <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30' />

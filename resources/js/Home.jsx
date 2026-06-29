@@ -1,16 +1,11 @@
 import { useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import Base from './Components/Tailwind/Base';
 import ItemCard from './Components/Items/ItemCard';
 import CreateReactScript from './Utils/CreateReactScript';
 import Emphasis from './Utils/em';
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 // Carrusel: 2 visibles, avanza de uno en uno, autoplay + drag con mouse.
 const carouselProps = (lgPerView) => ({
@@ -54,22 +49,22 @@ const categories = [
   {
     title: 'Edificaciones',
     image:
-      '/assets/img/categories/category-1.png',
+      '/assets/img/categories/category-1.webp',
   },
   {
     title: 'Infraestructura',
     image:
-      '/assets/img/categories/category-2.png',
+      '/assets/img/categories/category-2.webp',
   },
   {
     title: 'Minería e Industria',
     image:
-      '/assets/img/categories/category-3.png',
+      '/assets/img/categories/category-3.webp',
   },
   {
     title: 'Agrícola',
     image:
-      '/assets/img/categories/category-4.png',
+      '/assets/img/categories/category-4.webp',
   },
 ];
 
@@ -77,7 +72,7 @@ const recommendations = [
   {
     category: 'Tubería PVC-U',
     title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-    image: '/assets/img/items/item-1.png',
+    image: '/assets/img/items/item-1.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
     use: 'AGUA FRIA',
@@ -86,7 +81,7 @@ const recommendations = [
   {
     category: 'Tubería PVC-U',
     title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
-    image: '/assets/img/items/item-2.png',
+    image: '/assets/img/items/item-2.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
     use: 'AGUA FRIA',
@@ -95,7 +90,7 @@ const recommendations = [
   {
     category: 'Tubería PVC-U',
     title: 'Tubería Agua SP Clase 15 MTP 398.002 3/4 x 5m',
-    image: '/assets/img/items/item-3.png',
+    image: '/assets/img/items/item-3.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
     use: 'AGUA FRIA',
@@ -104,7 +99,7 @@ const recommendations = [
   {
     category: 'Tubería PVC-U',
     title: 'Tubería Agua SP Clase 15 MTP 980.002 3/4 x 5m',
-    image: '/assets/img/items/item-4.png',
+    image: '/assets/img/items/item-4.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
     use: 'AGUA FRIA',
@@ -151,8 +146,12 @@ const HomeScreen = ({ blog = {} }) => {
     <main ref={pageRef} className="min-h-screen">
       <section className="relative overflow-hidden">
         <img
-          src="/assets/img/sliders/main-slider.png"
+          src="/assets/img/sliders/banner-tuboplast.webp"
           alt="Planta Tuboplast"
+          width={1672}
+          height={941}
+          fetchpriority="high"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/82 to-white/70" />
@@ -308,6 +307,8 @@ const HomeScreen = ({ blog = {} }) => {
             <img
               src="https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&w=1200&q=80"
               alt="Planta industrial"
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover rounded-2xl"
             />
             <div className="absolute bottom-4 left-4 rounded-lg bg-secondary px-5 py-4 text-primary shadow-[0_24px_60px_rgba(0,0,0,0.18)] sm:bottom-6 sm:left-6 sm:px-8 sm:py-6 lg:-bottom-40 lg:left-10 lg:px-10 lg:py-10">
@@ -341,6 +342,8 @@ const HomeScreen = ({ blog = {} }) => {
                 <img
                   src={category.image}
                   alt={category.title}
+                  loading="lazy"
+                  decoding="async"
                   className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-105 lg:aspect-[3/4]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/35 to-transparent" />
@@ -391,8 +394,10 @@ const HomeScreen = ({ blog = {} }) => {
           </div>
           <div className="relative flex items-end justify-center">
             <img
-              src="/assets/img/landing/club-expert.png"
+              src="/assets/img/landing/club-expert.webp"
               alt="Club Experto"
+              loading="lazy"
+              decoding="async"
               className="mx-auto -mt-2 h-auto max-h-[360px] w-auto object-contain sm:max-h-[440px] md:-mt-10 md:h-full md:max-h-none"
             />
           </div>
@@ -418,7 +423,7 @@ const HomeScreen = ({ blog = {} }) => {
                   <SwiperSlide key={`${post.title}-${index}`} className="!h-auto">
                     <article data-reveal className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
                       <div className="aspect-[5/4] w-full overflow-hidden">
-                        <img src={post.image_url || post.image_fallback || post.image} alt={post.title} className="block h-full w-full object-cover" />
+                        <img src={post.image_url || post.image_fallback || post.image} alt={post.title} loading="lazy" decoding="async" className="block h-full w-full object-cover" />
                       </div>
                       <div className="px-4 py-6">
                         <span className='block uppercase bg-[#F7DD00] w-max rounded-full py-0.5 px-2 font-bold text-[10px] text-primary mb-4'>{post.category}</span>

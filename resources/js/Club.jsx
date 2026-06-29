@@ -462,8 +462,10 @@ const ClubScreen = () => {
             </button>
           </div>
           <img
-            src="/assets/img/landing/club-expert.png"
+            src="/assets/img/landing/club-expert.webp"
             alt="Maestro del Club Experto Tuboplast"
+            loading="lazy"
+            decoding="async"
             className="relative -mb-8 ml-auto mt-8 max-h-[300px] w-auto object-contain sm:-mb-10 lg:absolute lg:bottom-0 lg:right-8 lg:mt-0 lg:max-h-[390px]"
           />
         </div>

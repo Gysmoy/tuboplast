@@ -24,14 +24,15 @@ const defaultAbout = {
 
 const AboutFamiliaScreen = ({ about = defaultAbout }) => {
   const familyValues = Array.isArray(about.family_values) && about.family_values.length ? about.family_values : defaultAbout.family_values
-  const familyImage = about.family_image_url || (about.family_image ? `/about/media/${about.family_image}` : '/assets/img/landing/club-expert.png')
+  const familyImage = about.family_image_url || (about.family_image ? `/about/media/${about.family_image}` : '/assets/img/landing/club-expert.webp')
 
   return (
     <main className='bg-white'>
       <section className='relative overflow-hidden'>
         <img
-          src='/assets/img/landing/bg-main.png'
+          src='/assets/img/landing/bg-main.webp'
           alt='Planta industrial Tuboplast'
+          decoding='async'
           className='absolute inset-0 h-full w-full object-cover object-center grayscale'
         />
         <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30' />

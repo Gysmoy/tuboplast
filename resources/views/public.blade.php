@@ -7,6 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    {{-- Preconnect a origenes remotos de imagenes/scripts para acelerar LCP --}}
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     @php
         $seo = $seo ?? [];
         $seoTitle = $seo['title'] ?? (env('APP_NAME', 'Tuboplast') . ' | Expertos en Tuberias y Conexiones de PVC');
@@ -119,13 +123,13 @@
 <body>
     @inertia
 
-    <script src="/lte/assets/js/vendor.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
-    <script src="/lte/assets/libs/moment/min/moment.min.js"></script>
-    <script src="/lte/assets/libs/moment/moment-timezone.js"></script>
-    <script src="/lte/assets/libs/moment/locale/es.js"></script>
+    <script src="/lte/assets/js/vendor.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js" defer></script>
+    <script src="/lte/assets/libs/moment/min/moment.min.js" defer></script>
+    <script src="/lte/assets/libs/moment/moment-timezone.js" defer></script>
+    <script src="/lte/assets/libs/moment/locale/es.js" defer></script>
 
-    <script src="/lte/assets/libs/tippy.js/tippy.all.min.js"></script>
+    <script src="/lte/assets/libs/tippy.js/tippy.all.min.js" defer></script>
 
     <script>
         document.addEventListener('click', function(event) {
