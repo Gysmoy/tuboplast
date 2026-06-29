@@ -54,7 +54,7 @@
     <meta name="twitter:image:alt" content="{{ $seoTitle }}" />
 
 
-    <link rel="icon" type="image/png" href="/assets/img/icons/icon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="/assets/img/icons/icon-96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg" />
     <link rel="shortcut icon" type="image/svg+xml" href="/assets/img/icon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png" />
