@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" data-layout-mode="detached" data-sidenav-size="default" data-bs-theme="light" data-menu-color="light"
-    data-topbar-color="dark">
+<html lang="es" data-layout-mode="fluid" data-sidenav-size="default" data-bs-theme="light" data-menu-color="light"
+    data-topbar-color="light">
 
 <head>
     @viteReactRefresh

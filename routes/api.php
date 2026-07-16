@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\SucursalController;
+use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\AboutController;
@@ -66,6 +67,12 @@ Route::middleware('auth')->group(function () {
     Route::post('sucursales', [SucursalController::class, 'save']);
     Route::get('sucursales/{id}', [SucursalController::class, 'get']);
     Route::delete('sucursales/{id}', [SucursalController::class, 'delete']);
+
+    Route::post('sliders/paginate', [SliderController::class, 'paginate']);
+    Route::post('sliders', [SliderController::class, 'save']);
+    Route::get('sliders/{id}', [SliderController::class, 'get']);
+    Route::patch('sliders/status', [SliderController::class, 'status']);
+    Route::delete('sliders/{id}', [SliderController::class, 'delete']);
     
     Route::post('categories/paginate', [CategoryController::class, 'paginate']);
     Route::post('categories', [CategoryController::class, 'save']);

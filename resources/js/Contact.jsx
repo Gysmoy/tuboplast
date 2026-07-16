@@ -276,6 +276,8 @@ const ContactSidebar = ({ channels }) => (
 const ContactForm = () => {
   const [form, setForm] = useState({
     business: '',
+    celular: '',
+    ruc: '',
     email: '',
     message: '',
     name: '',
@@ -314,7 +316,7 @@ const ContactForm = () => {
         throw new Error(result.message || 'No pudimos enviar tu consulta. Revisa los datos e inténtalo nuevamente.');
       }
 
-      setForm({ business: '', email: '', message: '', name: '', service: '' });
+      setForm({ business: '', celular: '', ruc: '', email: '', message: '', name: '', service: '' });
       setFeedback({ type: '', message: '' });
       setIsThankYouOpen(true);
     } catch (error) {
@@ -354,6 +356,25 @@ const ContactForm = () => {
           value={form.email}
           onChange={updateField}
           required
+        />
+        <Field
+          label="Celular"
+          name="celular"
+          inputMode="numeric"
+          maxLength={9}
+          placeholder="9 dígitos"
+          value={form.celular}
+          onChange={updateField}
+          required
+        />
+        <Field
+          label="RUC"
+          name="ruc"
+          inputMode="numeric"
+          maxLength={11}
+          placeholder="11 dígitos (opcional)"
+          value={form.ruc}
+          onChange={updateField}
         />
         <ServiceDropdown
           value={form.service}

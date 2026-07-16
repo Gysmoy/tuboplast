@@ -130,6 +130,7 @@ const Dropdown = ({ disabled = false, id, label, onChange, options, placeholder,
 const RegistrationForm = () => {
   const [form, setForm] = useState({
     accepted: false,
+    celular: '',
     department: '',
     district: '',
     dni: '',
@@ -206,6 +207,7 @@ const RegistrationForm = () => {
 
       setForm({
         accepted: false,
+        celular: '',
         department: '',
         district: '',
         dni: '',
@@ -276,6 +278,16 @@ const RegistrationForm = () => {
               type="email"
               placeholder="correo@ejemplo.com"
               value={form.email}
+              onChange={updateField}
+              required
+            />
+            <Field
+              label="Número de celular"
+              name="celular"
+              inputMode="numeric"
+              maxLength={9}
+              placeholder="9 dígitos"
+              value={form.celular}
               onChange={updateField}
               required
             />

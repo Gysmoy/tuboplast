@@ -338,6 +338,7 @@ export const submitQuote = async (customer, items) => {
     province: customer.province ?? '',
     district: customer.district ?? '',
     ubigeo: customer.ubigeo ?? '',
+    observations: customer.observations ?? '',
     items: items.map((item) => ({
       title: item.title,
       sku: item.sku ?? '',
@@ -590,6 +591,28 @@ const buildQuotePdf = async (customer, items, meta = {}) => {
   });
 
   cursorY += cardH + 12;
+
+  // ------------------------------------------------------- Observations
+  const observations = (customer.observations ?? '').trim();
+  if (observations) {
+    doc.setFillColor(...PRIMARY_RGB);
+    doc.rect(left, cursorY - 3.4, 3, 3, 'F');
+    doc.setFont(TITLE, 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...PRIMARY_RGB);
+    doc.text('Observaciones', left + 5, cursorY);
+    cursorY += 5;
+
+    const obsLines = doc.splitTextToSize(observations, contentWidth - padX * 2);
+    const obsH = padY + obsLines.length * 4.6 + 3;
+    doc.setFillColor(...CARD_RGB);
+    doc.roundedRect(left, cursorY, contentWidth, obsH, 3, 3, 'F');
+    doc.setFont(BODY, 'normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...TEXT_RGB);
+    doc.text(obsLines, left + padX, cursorY + padY);
+    cursorY += obsH + 12;
+  }
 
   // -------------------------------------------------------- Items section
   doc.setFillColor(...PRIMARY_RGB);

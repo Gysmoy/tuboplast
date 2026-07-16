@@ -463,19 +463,33 @@ const DistributorsScreen = ({ distributors = [] }) => {
 
   return (
     <main>
-      <section className="mx-auto w-full max-w-site px-4 pb-12 pt-10 sm:pb-16 sm:pt-14 lg:pt-20">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-end lg:gap-16">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">Red de distribución nacional</p>
-            <h1 className="mt-5 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl">
+      <section className="relative overflow-hidden bg-white">
+        <img
+          src="/assets/img/sliders/banner-tuboplast.webp"
+          alt="Red de distribuidores autorizados Tuboplast en todo el Perú"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/15" />
+        <div className="relative mx-auto flex w-full max-w-site items-center px-4 py-14 sm:py-20 lg:py-24">
+          <div className="max-w-2xl">
+            <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
+              Red de distribución nacional
+            </span>
+            <h1 className="mt-6 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl lg:text-6xl">
               Encuentra tu distribuidor más cercano
             </h1>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-darkmuted sm:text-lg">
               Localiza puntos de venta autorizados Tuboplast en todo el Perú y asegura la calidad técnica de tus proyectos.
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="grid gap-4 sm:grid-cols-3 lg:items-end">
+      <section className="mx-auto w-full max-w-site px-4 pb-12 pt-8 sm:pb-16 lg:pt-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">Filtra por ubicación</p>
+
+          <div className="grid w-full gap-4 sm:max-w-2xl sm:grid-cols-3 lg:items-end">
             <Dropdown
               id="department-dropdown"
               label="Departamento"

@@ -11,9 +11,11 @@ use App\Models\Message;
 use App\Models\Item;
 use App\Models\Category;
 use App\Models\Quote;
+use App\Models\Slider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -29,11 +31,13 @@ class LandingController extends BasicController
     {
         $aboutData = $this->normalizeAboutPage(AboutPage::current());
         $blogData = $this->normalizeBlogPage(BlogPage::current());
+        $sliderData = $this->normalizeSliders();
 
         $properties = [
             'token' => csrf_token(),
             'about' => $aboutData,
             'blog' => $blogData,
+            'sliders' => $sliderData,
         ];
 
         if ($this->reactView === 'BlogPost') {
@@ -314,6 +318,64 @@ class LandingController extends BasicController
         ];
     }
 
+    private function normalizeSliders(): array
+    {
+        if (!Schema::hasTable('sliders')) {
+            return [];
+        }
+
+        return Slider::query()
+            ->where('status', true)
+            ->with('item.category')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(function (Slider $slider) {
+                return [
+                    'id' => $slider->id,
+                    'title' => $slider->title,
+                    'description' => $slider->description,
+                    'image_path' => $slider->image,
+                    'image_url' => $slider->image ? '/storage/' . $slider->image : null,
+                    'primary_button_text' => $slider->primary_button_text,
+                    'primary_button_link' => $slider->primary_button_link,
+                    'secondary_button_text' => $slider->secondary_button_text,
+                    'secondary_button_link' => $slider->secondary_button_link,
+                    'metrics' => [
+                        [
+                            'value' => $slider->metric_one_value,
+                            'label' => $slider->metric_one_label,
+                        ],
+                        [
+                            'value' => $slider->metric_two_value,
+                            'label' => $slider->metric_two_label,
+                        ],
+                    ],
+                    'item' => $slider->item ? $this->mapHeroItem($slider->item) : null,
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    private function mapHeroItem(Item $item): array
+    {
+        $catalogItem = $this->mapCatalogItem($item);
+
+        return [
+            ...$catalogItem,
+            'description' => $item->description
+                ? Str::limit(strip_tags($item->description), 180)
+                : 'Producto destacado Tuboplast para proyectos profesionales.',
+            'material' => $item->material,
+            'pressure' => $this->shortPressure($item->pressure),
+            'specOneLabel' => 'Material',
+            'specOneValue' => $item->material ?: ($item->category->name ?? 'Tuboplast'),
+            'specTwoLabel' => 'Normativa',
+            'specTwoValue' => $this->shortPressure($item->pressure ?: $item->use_type),
+        ];
+    }
+
     public function searchProducts(Request $request)
     {
         $term = trim((string) $request->query('q', ''));
@@ -462,6 +524,8 @@ class LandingController extends BasicController
             'business' => 'nullable|string|max:160',
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:180',
+            'celular' => 'required|digits:9',
+            'ruc' => 'nullable|digits:11',
             'service' => 'nullable|string|max:160',
             'source' => 'nullable|string|max:60',
             'message' => 'required|string|max:2000',
@@ -473,6 +537,8 @@ class LandingController extends BasicController
             'business' => $validated['business'] ?? null,
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'celular' => $validated['celular'],
+            'ruc' => $validated['ruc'] ?? null,
             'service' => $validated['service'] ?? null,
             'source' => $validated['source'] ?? 'landing',
             'message' => $validated['message'],
@@ -495,6 +561,7 @@ class LandingController extends BasicController
             'district' => 'required|string|max:120',
             'dni' => 'required|string|min:8|max:12',
             'email' => 'required|email|max:180',
+            'celular' => 'required|digits:9',
             'name' => 'required|string|max:120',
             'province' => 'required|string|max:120',
             'specialty' => 'required|string|max:120',
@@ -511,6 +578,7 @@ class LandingController extends BasicController
             'name' => $validated['name'],
             'dni' => $validated['dni'],
             'email' => $validated['email'],
+            'celular' => $validated['celular'],
             'specialty' => $validated['specialty'],
             'department' => $validated['department'],
             'province' => $validated['province'],
@@ -542,6 +610,7 @@ class LandingController extends BasicController
             'province' => 'required|string|max:120',
             'district' => 'required|string|max:120',
             'ubigeo' => 'required|string|max:12',
+            'observations' => 'nullable|string|max:2000',
             'items' => 'required|array|min:1',
             'items.*.title' => 'required|string|max:255',
             'items.*.sku' => 'nullable|string|max:120',
@@ -591,6 +660,7 @@ class LandingController extends BasicController
             'province' => $validated['province'],
             'district' => $validated['district'],
             'ubigeo' => $validated['ubigeo'],
+            'observations' => $validated['observations'] ?? null,
             'accepted_terms' => true,
             'items' => $items,
             'total_items' => $totalItems,

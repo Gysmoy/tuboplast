@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import Base from './Components/Tailwind/Base';
 import ItemCard from './Components/Items/ItemCard';
 import CreateReactScript from './Utils/CreateReactScript';
@@ -131,9 +131,171 @@ const defaultBlogPosts = [
   },
 ];
 
-const HomeScreen = ({ blog = {} }) => {
+const defaultHeroItem = {
+  categoryLabel: 'destacado',
+  title: 'Tuberia de Alta Presion Clase 15',
+  description: 'Uso industrial y civil en conduccion de agua con alta resistencia al impacto y presion.',
+  image: '/assets/img/items/item-1.webp',
+  detailUrl: '/catalog',
+  specOneLabel: 'Material',
+  specOneValue: 'PVC-U Virgen',
+  specTwoLabel: 'Normativa',
+  specTwoValue: 'NTP 399.002',
+};
+
+const defaultHeroSlides = [
+  {
+    id: 'default-home-hero',
+    title: 'Tuboplast',
+    description: 'Expertos en tuberias y conexiones de PVC para proyectos profesionales.',
+    image_url: '/assets/img/sliders/hero-home.webp',
+    primary_button_text: 'Ver catalogo',
+    primary_button_link: '/catalog',
+    secondary_button_text: 'Contactar',
+    secondary_button_link: '/contact',
+    metrics: [],
+    item: defaultHeroItem,
+  },
+];
+
+const heroMetrics = (slide) => {
+  const metrics = Array.isArray(slide.metrics)
+    ? slide.metrics
+    : [
+      { value: slide.metric_one_value, label: slide.metric_one_label },
+      { value: slide.metric_two_value, label: slide.metric_two_label },
+    ];
+
+  return metrics.filter((metric) => metric?.value || metric?.label).slice(0, 2);
+};
+
+const heroButtons = (slide) => [
+  {
+    text: slide.primary_button_text,
+    link: slide.primary_button_link,
+    className: 'bg-primary text-white shadow-md',
+  },
+  {
+    text: slide.secondary_button_text,
+    link: slide.secondary_button_link,
+    className: 'bg-[#F7DD00] text-primary shadow-md',
+  },
+].filter((button) => button.text);
+
+const HeroProductCard = ({ item }) => {
+  const product = item || defaultHeroItem;
+
+  return (
+    <article
+      data-hero-card
+      data-float-card
+      className="space-y-5 rounded-3xl bg-white p-5 shadow-xl sm:max-w-xl sm:p-8 lg:ml-auto lg:max-w-none"
+    >
+      <span className="inline-block bg-[#F7DD00] px-2 py-1 text-[10px] font-bold uppercase text-primary">
+        {product.categoryLabel || product.category || 'destacado'}
+      </span>
+      <div className='space-y-2'>
+        <h3 className="text-2xl font-medium font-title text-primary">{product.title}</h3>
+        <p className="text-sm text-darkmuted line-clamp-3">
+          {product.description || defaultHeroItem.description}
+        </p>
+      </div>
+      <div className="mt-4 space-y-3 text-xs uppercase">
+        <div className='flex justify-between gap-4'>
+          <span className='text-muted'>{product.specOneLabel || 'Material'}</span>
+          <span className='text-right text-darkmuted'>{product.specOneValue || product.material || '-'}</span>
+        </div>
+        <hr className='bg-muted' />
+        <div className='flex justify-between gap-4'>
+          <span className='text-muted'>{product.specTwoLabel || 'Normativa'}</span>
+          <span className='text-right text-darkmuted'>{product.specTwoValue || product.pressure || product.use || '-'}</span>
+        </div>
+      </div>
+      <a
+        href={product.detailUrl || product.detail_url || '/catalog'}
+        className="block w-full rounded-full border border-silver p-4 font-bold font-title text-primary transition-colors hover:bg-silver"
+      >
+        Especificaciones Tecnicas
+      </a>
+    </article>
+  );
+};
+
+const HeroSlide = ({ slide, priority = false }) => {
+  const metrics = heroMetrics(slide);
+  const buttons = heroButtons(slide);
+
+  return (
+    <div className="relative overflow-hidden">
+      <img
+        src={slide.image_url || '/assets/img/sliders/hero-home.webp'}
+        alt={slide.title || 'Tuboplast'}
+        width={1672}
+        height={941}
+        fetchPriority={priority ? 'high' : 'auto'}
+        loading={priority ? undefined : 'lazy'}
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/82 to-white/70" />
+
+      <div className="relative mx-auto grid w-full max-w-site gap-8 px-4 pb-12 pt-10 sm:gap-10 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:pb-32 lg:pt-20">
+        <div className="max-w-2xl space-y-5 sm:space-y-7 lg:space-y-8">
+          <span data-hero-line className="block h-1 w-16 bg-secondary" />
+          <h1
+            data-hero-title
+            className="font-title text-4xl leading-none tracking-tight text-primary sm:text-5xl md:text-6xl lg:text-7xl"
+          >
+            {slide.title || defaultHeroSlides[0].title}
+          </h1>
+          <p data-hero-copy className="max-w-lg text-base leading-relaxed text-darkmuted sm:text-lg lg:text-xl lg:leading-tight">
+            {slide.description || defaultHeroSlides[0].description}
+          </p>
+
+          {buttons.length > 0 && (
+            <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center">
+              {buttons.map((button, index) => (
+                <a
+                  key={`${button.text}-${index}`}
+                  href={button.link || '#'}
+                  data-hero-cta
+                  className={`rounded-full px-6 py-3.5 text-center text-sm font-semibold transition sm:px-10 sm:py-4 ${button.className}`}
+                >
+                  {button.text} <i className="mdi mdi-arrow-right ml-1 align-middle text-sm"></i>
+                </a>
+              ))}
+            </div>
+          )}
+
+          {metrics.length > 0 && (
+            <div className="flex flex-wrap gap-8 sm:gap-10">
+              {metrics.map((metric, index) => (
+                <div key={`${metric.value}-${metric.label}-${index}`} data-hero-stat>
+                  <p className="text-3xl font-title font-light text-primary">{metric.value}</p>
+                  <p className="text-xs text-muted uppercase">{metric.label}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <HeroProductCard item={slide.item} />
+      </div>
+    </div>
+  );
+};
+
+const HomeScreen = ({ blog = {}, sliders = [] }) => {
   const pageRef = useRef(null);
+  const heroPrevRef = useRef(null);
+  const heroNextRef = useRef(null);
+  const heroPaginationRef = useRef(null);
   const blogPosts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts.slice(0, 12) : defaultBlogPosts;
+  const heroSlides = Array.isArray(sliders) && sliders.length ? sliders : defaultHeroSlides;
+  const hasHeroControls = heroSlides.length > 1;
+  const heroAutoplay = hasHeroControls
+    ? { delay: 4800, disableOnInteraction: false, pauseOnMouseEnter: true }
+    : false;
   const newsletter = {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
     title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
@@ -145,94 +307,61 @@ const HomeScreen = ({ blog = {} }) => {
   return (
     <main ref={pageRef} className="min-h-screen">
       <section className="relative overflow-hidden">
-        <img
-          src="/assets/img/sliders/banner-tuboplast.webp"
-          alt="Planta Tuboplast"
-          width={1672}
-          height={941}
-          fetchpriority="high"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/82 to-white/70" />
-
-        <div className="relative mx-auto grid w-full max-w-site gap-8 px-4 pb-12 pt-10 sm:gap-10 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:pb-32 lg:pt-20">
-          <div className="max-w-2xl space-y-5 sm:space-y-7 lg:space-y-8">
-            <span data-hero-line className="block h-1 w-16 bg-secondary" />
-            <h1
-              data-hero-title
-              className="font-title text-4xl leading-none tracking-tight text-primary sm:text-5xl md:text-6xl lg:text-7xl"
+        <style>{`
+          .hero-slider-pagination{position:absolute;left:50%;bottom:18px;z-index:20;display:flex;transform:translateX(-50%);gap:8px;}
+          .hero-dot{display:block;width:10px;height:10px;border-radius:999px;background:#00499133;border:1px solid #00499155;cursor:pointer;transition:width .2s,background .2s,border-color .2s;}
+          .hero-dot.is-active{width:28px;background:#004991;border-color:#004991;}
+          @media(min-width:1024px){.hero-slider-pagination{bottom:28px;}}
+        `}</style>
+        {hasHeroControls && (
+          <>
+            <button
+              ref={heroPrevRef}
+              type="button"
+              aria-label="Slider anterior"
+              className="absolute left-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-primary shadow-lg ring-1 ring-primary/10 transition hover:bg-white sm:left-5 lg:left-8 lg:h-12 lg:w-12"
             >
-              Expertos en Tuberias y Conexiones de PVC
-            </h1>
-            <p data-hero-copy className="max-w-lg text-base leading-relaxed text-darkmuted sm:text-lg lg:text-xl lg:leading-tight">
-              Más de 60 años fabricando sistemas de conducción confiables para los sectores de Edificaciones, Infraestructura, Minería e Industria y Agricola en todo el Perú.
-            </p>
-
-            <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center">
-              <a
-                href="/catalog"
-                data-hero-cta
-                className="rounded-full bg-primary px-6 py-3.5 text-center text-sm font-semibold text-white shadow-md transition sm:px-10 sm:py-4"
-              >
-                Ver catalogo <i className="mdi mdi-arrow-right ml-1 align-middle text-sm"></i>
-              </a>
-              <button
-                data-hero-cta
-                type="button"
-                className="rounded-full bg-[#F7DD00] px-6 py-3.5 text-sm font-semibold text-primary shadow-md transition sm:px-10 sm:py-4"
-              >
-                Solicitar cotizacion
-              </button>
-            </div>
-
-            <div className="flex gap-8 sm:gap-10">
-              <div data-hero-stat>
-                <p className="text-3xl font-title font-light text-primary">60+</p>
-                <p className="text-xs text-muted uppercase">Anos de trayectoria</p>
-              </div>
-              <div data-hero-stat>
-                <p className="text-3xl font-title font-light text-primary">ISO</p>
-                <p className="text-xs text-muted uppercase">Calidad certificada</p>
-              </div>
-            </div>
-          </div>
-
-          <article
-            data-hero-card
-            data-float-card
-            className="space-y-6 rounded-3xl bg-white p-5 shadow-xl sm:max-w-xl sm:p-8 lg:ml-auto lg:max-w-none"
-          >
-            <span className="inline-block bg-[#F7DD00] px-2 py-1 text-[10px] font-bold uppercase text-primary">
-              destacado
-            </span>
-            <div className='space-y-2'>
-              <h3 className="text-2xl font-medium font-title text-primary">Tuberia de Alta Presion Clase 15</h3>
-              <p className="text-sm text-darkmuted">
-                Uso industrial y civil en conduccion de agua con alta resistencia al impacto y presion.
-              </p>
-            </div>
-            <div className="mt-4 space-y-3 text-xs uppercase">
-              <div className='flex justify-between'>
-                <span className='text-muted'>Material</span>
-                <span className='text-darkmuted'>PVC-U Virgen</span>
-              </div>
-              <hr className='bg-muted' />
-              <div className='flex justify-between'>
-                <span className='text-muted'>Normativa</span>
-                <span className='text-darkmuted'>NTP 399.002</span>
-              </div>
-            </div>
-            <a
-              href="/catalog"
-              className="block w-full rounded-full border border-silver p-4 font-bold font-title text-primary transition-colors hover:bg-silver"
+              <i className="mdi mdi-chevron-left text-2xl"></i>
+            </button>
+            <button
+              ref={heroNextRef}
+              type="button"
+              aria-label="Siguiente slider"
+              className="absolute right-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-primary shadow-lg ring-1 ring-primary/10 transition hover:bg-white sm:right-5 lg:right-8 lg:h-12 lg:w-12"
             >
-              Especificaciones Tecnicas
-            </a>
-          </article>
-        </div>
+              <i className="mdi mdi-chevron-right text-2xl"></i>
+            </button>
+            <div ref={heroPaginationRef} className="hero-slider-pagination"></div>
+          </>
+        )}
+        <Swiper
+          modules={[Autoplay, Navigation, Pagination]}
+          slidesPerView={1}
+          loop={heroSlides.length > 1}
+          speed={650}
+          navigation={hasHeroControls ? { prevEl: heroPrevRef.current, nextEl: heroNextRef.current } : false}
+          pagination={hasHeroControls ? {
+            el: heroPaginationRef.current,
+            clickable: true,
+            bulletClass: 'hero-dot',
+            bulletActiveClass: 'is-active',
+            renderBullet: (_, className) => `<button type="button" class="${className}" aria-label="Cambiar slider"></button>`,
+          } : false}
+          autoplay={heroAutoplay}
+          onBeforeInit={(swiper) => {
+            if (!hasHeroControls) return;
+            swiper.params.navigation.prevEl = heroPrevRef.current;
+            swiper.params.navigation.nextEl = heroNextRef.current;
+            swiper.params.pagination.el = heroPaginationRef.current;
+          }}
+        >
+          {heroSlides.map((slide, index) => (
+            <SwiperSlide key={slide.id || index}>
+              <HeroSlide slide={slide} priority={index === 0} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </section>
-
       <section className="relative py-8 sm:py-10">
         <div className="mx-auto grid w-full max-w-site gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:gap-14">
           {strengths.map((strength) => {

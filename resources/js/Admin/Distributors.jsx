@@ -78,6 +78,7 @@ const Distributors = ({ gmapsApiKey }) => {
   const mapInstanceRef = useRef(null)
   const markerRef = useRef(null)
   const nameRef = useRef()
+  const rucRef = useRef()
   const phoneRef = useRef()
   const businessHoursRef = useRef()
   const addressRef = useRef()
@@ -219,6 +220,7 @@ const Distributors = ({ gmapsApiKey }) => {
     setFormError('')
     setIsModalOpen(false)
     if (nameRef.current) nameRef.current.value = ''
+    if (rucRef.current) rucRef.current.value = ''
     if (phoneRef.current) phoneRef.current.value = ''
     if (businessHoursRef.current) businessHoursRef.current.value = ''
     if (addressRef.current) addressRef.current.value = ''
@@ -238,6 +240,7 @@ const Distributors = ({ gmapsApiKey }) => {
     setLatitude(formatCoordinate(data?.latitude))
     setLongitude(formatCoordinate(data?.longitude))
     if (nameRef.current) nameRef.current.value = data?.name || ''
+    if (rucRef.current) rucRef.current.value = data?.ruc || ''
     if (phoneRef.current) phoneRef.current.value = data?.phone || ''
     if (businessHoursRef.current) businessHoursRef.current.value = data?.business_hours || ''
     if (addressRef.current) addressRef.current.value = data?.address || ''
@@ -309,6 +312,7 @@ const Distributors = ({ gmapsApiKey }) => {
     const result = await distribuidoresRest.save({
       id: dataLoaded?.id,
       name: nameRef.current.value,
+      ruc: rucRef.current.value,
       department,
       province,
       district,
@@ -391,8 +395,10 @@ const Distributors = ({ gmapsApiKey }) => {
               <div className='wfd-sec'>
                 <h4><i className='mdi mdi-store me-1' style={{ color: '#004991' }}></i>Datos del distribuidor</h4>
                 <div className='row'>
-                  <InputFormGroup col='col-md-5' eRef={nameRef} label='Nombre comercial' placeholder='Ej. Comercial Marsano' />
-                  <div className='form-group col-md-4 mb-2'>
+                  <InputFormGroup col='col-md-4' eRef={nameRef} label='Nombre comercial' placeholder='Ej. Comercial Marsano' />
+                  <InputFormGroup col='col-md-4' eRef={rucRef} label='RUC' placeholder='11 dígitos' maxLength={11} />
+                  <InputFormGroup col='col-md-4' eRef={businessHoursRef} label='Horario' placeholder='Lun - Sáb: 08:00 - 19:00' />
+                  <div className='form-group col-md-6 mb-2'>
                     <label className='form-label'>Teléfono</label>
                     <div className='d-flex gap-2'>
                       <div style={{ width: 118, flexShrink: 0 }}>
@@ -401,8 +407,7 @@ const Distributors = ({ gmapsApiKey }) => {
                       <input ref={phoneRef} className='form-control' placeholder='000 000 000' />
                     </div>
                   </div>
-                  <InputFormGroup col='col-md-3' eRef={businessHoursRef} label='Horario' placeholder='Lun - Sáb: 08:00 - 19:00' />
-                  <div className='col-md-12 mt-1'>
+                  <div className='col-md-6 mt-1'>
                     <label className='form-label d-block'>Destacado</label>
                     <button type='button' className='wfd-tg' onClick={() => setFeatured((v) => !v)}>
                       <span className={`wfd-tg-track ${featured ? 'on' : ''}`}><span className='wfd-tg-knob'></span></span>

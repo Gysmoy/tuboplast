@@ -13,6 +13,7 @@ class Distribuidor extends Model
 
     protected $fillable = [
         'name',
+        'ruc',
         'department',
         'province',
         'district',

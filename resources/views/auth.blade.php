@@ -65,14 +65,14 @@
     <div class="auth-bg d-flex min-vh-100">
         <div class="row g-0 justify-content-center w-100 m-xxl-5 px-xxl-4 m-3">
             <div class="col-xxl-3 col-lg-5 col-md-6">
-                <a href="/" class="auth-brand d-flex justify-content-center mb-2">
+                <a href="/" class="auth-brand d-flex justify-content-center mb-3 d-block">
                     <img src="/assets/img/logo.svg" alt="dark logo" height="40" class="logo-dark" style="height: 40px;">
                     <img src="/assets/img/logo-white.svg" alt="logo light" height="40" class="logo-light"
                         style="height: 40px;">
                 </a>
-
-                <p class="fw-semibold mb-4 text-center text-muted fs-15">Panel powered by xPlain Solutions</p>
-                <div class="card overflow-hidden text-center p-xxl-4 p-3 mb-0">
+{{-- 
+                <p class="fw-semibold mb-4 text-center text-muted fs-15">Panel powered by xPlain Solutions</p> --}}
+                <div class="card overflow-hidden text-center p-xxl-4 p-3 mb-0 rounded-2xl">
                     @inertia
 
                 </div>

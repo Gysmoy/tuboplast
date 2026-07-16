@@ -88,6 +88,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
             <img src={avatarUrl}
               className="rounded-circle aspect-square"
               style={{
+                backgroundColor: '#252630',
                 width: '46px',
                 aspectRatio: 1,
                 objectFit: 'cover',
@@ -111,35 +112,31 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
             </div>
 
 
-            <a href="/account" className="dropdown-item">
+            <a href="/admin/account" className="dropdown-item">
               <i className="ri-account-circle-line me-1 fs-16 align-middle"></i>
-              <span className="align-middle">Mi cuenta y perfil</span>
-            </a>
-
-
-            <a href="javascript:void(0);" className="dropdown-item">
-              <i className="ri-wallet-3-line me-1 fs-16 align-middle"></i>
-              <span className="align-middle">Billetera: <span className="fw-semibold">$89.25k</span></span>
-            </a>
-
-
-            <a href="javascript:void(0);" className="dropdown-item">
-              <i className="ri-settings-2-line me-1 fs-16 align-middle"></i>
-              <span className="align-middle">Configuracion</span>
+              <span className="align-middle">Mi cuenta</span>
             </a>
 
             <div className="dropdown-divider"></div>
 
 
-            <a href="javascript:void(0);" className="dropdown-item">
-              <i className="ri-lock-line me-1 fs-16 align-middle"></i>
-              <span className="align-middle">Bloquear pantalla</span>
+            <a href="/admin/roles" className="dropdown-item">
+              <i className="ri-shield-keyhole-line me-1 fs-16 align-middle"></i>
+              <span className="align-middle">Roles</span>
             </a>
 
 
-            <a href="javascript:void(0);" className="dropdown-item active fw-semibold text-danger" onClick={Logout}>
+            <a href="/admin/users" className="dropdown-item">
+              <i className="ri-group-line me-1 fs-16 align-middle"></i>
+              <span className="align-middle">Usuarios</span>
+            </a>
+
+            <div className="dropdown-divider"></div>
+
+
+            <a href="javascript:void(0);" className="dropdown-item fw-semibold text-danger" onClick={Logout}>
               <i className="ri-logout-box-line me-1 fs-16 align-middle"></i>
-              <span className="align-middle">Cerrar sesion</span>
+              <span className="align-middle">Cerrar sesión</span>
             </a>
           </div>
         </div>
@@ -156,6 +153,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
         <MenuItem href="/admin/categories" icon='ti ti-category'>Categorias</MenuItem>
 
         <li className="side-nav-title mt-2">Landing</li>
+        <MenuItem href="/admin/sliders" icon='ti ti-slideshow'>Sliders</MenuItem>
         <MenuItem href="/admin/distributors" icon='ti ti-truck-delivery'>Distribuidores</MenuItem>
         <MenuItem href="/admin/branches" icon='ti ti-building-store'>Sucursales</MenuItem>
 

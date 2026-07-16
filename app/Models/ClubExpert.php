@@ -13,6 +13,7 @@ class ClubExpert extends Model
         'name',
         'dni',
         'email',
+        'celular',
         'specialty',
         'department',
         'province',

@@ -13,6 +13,8 @@ class Message extends Model
         'business',
         'name',
         'email',
+        'celular',
+        'ruc',
         'service',
         'source',
         'message',

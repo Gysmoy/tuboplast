@@ -296,20 +296,31 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
               <span className="block text-[10px] uppercase tracking-[0.12em] text-muted">
                 Cantidad
               </span>
-              <div className="mt-2 flex w-32 items-center justify-between border-b border-slate-300 pb-2 text-primary">
+              <div className="mt-2 flex w-40 items-center justify-between border-b border-slate-300 pb-2 text-primary">
                 <button
                   type="button"
                   aria-label="Reducir cantidad"
-                  onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                  onClick={() => setQuantity((current) => Math.max(1, (Number(current) || 1) - 1))}
                   className="grid h-7 w-7 place-items-center text-xl transition hover:bg-silver"
                 >
                   -
                 </button>
-                <span className="text-base">{quantity}</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  aria-label="Cantidad"
+                  value={quantity}
+                  onChange={(event) => {
+                    const digits = event.target.value.replace(/\D/g, '');
+                    setQuantity(digits === '' ? '' : Number(digits));
+                  }}
+                  onBlur={() => setQuantity((current) => Math.max(1, Number(current) || 1))}
+                  className="w-16 bg-transparent text-center text-base outline-none"
+                />
                 <button
                   type="button"
                   aria-label="Aumentar cantidad"
-                  onClick={() => setQuantity((current) => current + 1)}
+                  onClick={() => setQuantity((current) => (Number(current) || 1) + 1)}
                   className="grid h-7 w-7 place-items-center text-xl transition hover:bg-silver"
                 >
                   +

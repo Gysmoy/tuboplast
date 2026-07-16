@@ -15,7 +15,9 @@ const NavBar = ({ title = 'Panel' }) => {
   }, [null])
 
   return <header className="app-topbar" id="header" >
-    <div className="page-container topbar-menu" style={{ boxShadow: '0 1px 2px rgba(15,37,64,.04), 0 6px 16px rgba(0,73,145,.06)' }}>
+    <div className="page-container topbar-menu" 
+    // style={{ boxShadow: '0 1px 2px rgba(15,37,64,.04), 0 6px 16px rgba(0,73,145,.06)' }}
+    >
       <div className="d-flex align-items-center gap-2">
 
 
@@ -407,39 +409,35 @@ const NavBar = ({ title = 'Panel' }) => {
             <div className="dropdown-menu dropdown-menu-end">
 
               <div className="dropdown-header noti-title">
-                <h6 className="text-overflow m-0">Welcome !</h6>
+                <h6 className="text-overflow m-0">Bienvenido!</h6>
               </div>
 
 
-              <a href="/account" className="dropdown-item">
+              <a href="/admin/account" className="dropdown-item">
                 <i className="ri-account-circle-line me-1 fs-16 align-middle"></i>
-                <span className="align-middle">Mi cuenta y perfil</span>
-              </a>
-
-
-              <a href="javascript:void(0);" className="dropdown-item">
-                <i className="ri-wallet-3-line me-1 fs-16 align-middle"></i>
-                <span className="align-middle">Wallet : <span className="fw-semibold">$89.25k</span></span>
-              </a>
-
-
-              <a href="javascript:void(0);" className="dropdown-item">
-                <i className="ri-settings-2-line me-1 fs-16 align-middle"></i>
-                <span className="align-middle">Settings</span>
+                <span className="align-middle">Mi cuenta</span>
               </a>
 
               <div className="dropdown-divider"></div>
 
 
-              <a href="javascript:void(0);" className="dropdown-item">
-                <i className="ri-lock-line me-1 fs-16 align-middle"></i>
-                <span className="align-middle">Lock Screen</span>
+              <a href="/admin/roles" className="dropdown-item">
+                <i className="ri-shield-keyhole-line me-1 fs-16 align-middle"></i>
+                <span className="align-middle">Roles</span>
               </a>
 
 
-              <a href="javascript:void(0);" className="dropdown-item active fw-semibold text-danger" onClick={Logout}>
+              <a href="/admin/users" className="dropdown-item">
+                <i className="ri-group-line me-1 fs-16 align-middle"></i>
+                <span className="align-middle">Usuarios</span>
+              </a>
+
+              <div className="dropdown-divider"></div>
+
+
+              <a href="javascript:void(0);" className="dropdown-item fw-semibold text-danger" onClick={Logout}>
                 <i className="ri-logout-box-line me-1 fs-16 align-middle"></i>
-                <span className="align-middle">Sign Out</span>
+                <span className="align-middle">Cerrar sesión</span>
               </a>
             </div>
           </div>

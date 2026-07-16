@@ -22,6 +22,7 @@ class DistribuidorController extends BasicController
     {
         $validated = $request->validate([
             'name' => 'nullable|string|max:160',
+            'ruc' => 'nullable|digits:11',
             'department' => 'required|string|max:120',
             'province' => 'required|string|max:120',
             'district' => 'required|string|max:120',

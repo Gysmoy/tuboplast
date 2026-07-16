@@ -22,6 +22,7 @@ class Quote extends Model
         'province',
         'district',
         'ubigeo',
+        'observations',
         'accepted_terms',
         'items',
         'total_items',

@@ -13,6 +13,7 @@ const emptyForm = {
   province: '',
   district: '',
   ubigeo: '',
+  observations: '',
   accepted: false,
 };
 
@@ -409,6 +410,21 @@ const QuoteRequestModal = ({ isOpen, items = [], onClose, onSuccess }) => {
               }}
               className="sm:col-span-2"
             />
+
+            <label className="block sm:col-span-2">
+              <span className="block text-[11px] font-bold uppercase tracking-[0.12em] text-primary">
+                Observaciones
+              </span>
+              <textarea
+                name="observations"
+                rows={3}
+                placeholder="Cantidades por medida, plazos, datos de entrega u otra referencia para tu cotización."
+                value={form.observations}
+                onChange={updateField}
+                maxLength={2000}
+                className="mt-2 w-full resize-y border-b border-slate-300 bg-transparent px-1 py-2 text-base text-dark outline-none transition placeholder:text-muted focus:border-primary"
+              />
+            </label>
           </div>
 
           <label className="mt-7 flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-darkmuted">
