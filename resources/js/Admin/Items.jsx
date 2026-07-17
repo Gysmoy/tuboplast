@@ -24,6 +24,7 @@ const ITEMS_CSS = `
 .wfi-btn:hover{background:#003b7a;color:#fff;}
 .wfi-btn:disabled{opacity:.65;cursor:default;}
 .wfi-btn.outline{background:#fff;border:1px solid #dce5f0;color:#5b6577;}.wfi-btn.outline:hover{background:#f4f8fd;color:#0f2540;}
+.wfi-btn.soft{background:#e6effa;color:#004991;}.wfi-btn.soft:hover{background:#d6e6f7;color:#003b7a;}
 .wfi-btn.add{height:40px;border-radius:12px;}
 .wfi-sec{border:1px solid #eef2f8;border-radius:12px;padding:16px;}
 .wfi-sec h4{font-size:14px;font-weight:700;color:#0f2540;margin:0 0 14px;display:flex;align-items:center;}
@@ -37,6 +38,23 @@ const ITEMS_CSS = `
 .wfi-close:hover{background:#f4f8fd;color:#0f2540;}
 .wfi-modal .form-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#8a93a6;margin-bottom:3px;}
 .wfi-err{display:flex;align-items:center;gap:8px;background:#fcebeb;color:#b42318;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:500;}
+.wfi-import-modal{width:min(720px,96vw);}
+.wfi-drop{border:1.5px dashed #b9c8da;border-radius:14px;background:#f8fbff;min-height:150px;padding:22px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+.wfi-drop.drag{border-color:#004991;background:#eef6ff;}
+.wfi-drop i{font-size:34px;color:#004991;}
+.wfi-drop strong{display:block;color:#0f2540;font-size:14px;margin-top:8px;}
+.wfi-drop span{display:block;color:#7d8798;font-size:12px;margin-top:4px;}
+.wfi-file-pill{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #dce5f0;color:#0f2540;font-size:12px;font-weight:600;max-width:100%;}
+.wfi-file-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wfi-mode-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:768px){.wfi-mode-grid{grid-template-columns:1fr 1fr;}}
+.wfi-mode{position:relative;border:1px solid #e2eaf4;border-radius:12px;padding:12px 12px 12px 42px;cursor:pointer;min-height:106px;transition:border-color .2s,box-shadow .2s,background .2s;}
+.wfi-mode:hover{border-color:#b9c8da;background:#fbfdff;}
+.wfi-mode.on{border-color:#004991;box-shadow:0 0 0 3px rgba(0,73,145,.08);background:#f8fbff;}
+.wfi-mode input{position:absolute;left:14px;top:16px;}
+.wfi-mode b{display:block;color:#0f2540;font-size:13px;margin-bottom:4px;}
+.wfi-mode span{display:block;color:#6c7789;font-size:12px;line-height:1.45;}
+.wfi-warn{display:flex;gap:8px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.45;}
 `
 
 const SEGMENT_OPTIONS = ['PREDIAL', 'INFRAESTRUCTURA']
@@ -62,6 +80,7 @@ const FieldSelect = ({ col = 'col-6', label, value, options, placeholder, onChan
 
 const Items = ({ categories = [] }) => {
   const tableRef = useRef(null)
+  const importInputRef = useRef(null)
 
   // Básicos
   const titleRef = useRef()
@@ -110,6 +129,12 @@ const Items = ({ categories = [] }) => {
   const [deleting, setDeleting] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
   const [formError, setFormError] = useState('')
+  const [importOpen, setImportOpen] = useState(false)
+  const [importFile, setImportFile] = useState(null)
+  const [importMode, setImportMode] = useState('upsert')
+  const [importDragging, setImportDragging] = useState(false)
+  const [importLoading, setImportLoading] = useState(false)
+  const [importError, setImportError] = useState('')
   const [selects, setSelects] = useState({ category_id: '', segment: '', type: '', use_type: '', currency: 'PEN' })
 
   const setSelect = (key, value) => setSelects((cur) => ({ ...cur, [key]: value }))
@@ -177,9 +202,9 @@ const Items = ({ categories = [] }) => {
   const closeForm = () => { if (loading) return; setFormOpen(false); setDataLoaded(null); setFormError('') }
 
   useEffect(() => {
-    document.body.style.overflow = formOpen ? 'hidden' : ''
+    document.body.style.overflow = (formOpen || importOpen) ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [formOpen])
+  }, [formOpen, importOpen])
 
   const askDelete = (item, event) => { if (event) event.stopPropagation(); setConfirmTarget(item) }
 
@@ -192,6 +217,53 @@ const Items = ({ categories = [] }) => {
     if (!ok) return
     setConfirmTarget(null)
     tableRef.current?.reload()
+  }
+
+  const openImport = () => {
+    setImportFile(null)
+    setImportMode('upsert')
+    setImportError('')
+    setImportDragging(false)
+    setImportOpen(true)
+    if (importInputRef.current) importInputRef.current.value = ''
+  }
+
+  const closeImport = () => {
+    if (importLoading) return
+    setImportOpen(false)
+    setImportError('')
+    setImportDragging(false)
+  }
+
+  const selectImportFile = (file) => {
+    if (!file) return
+    const name = file.name || ''
+    const allowed = /\.(xlsx|csv)$/i.test(name)
+    if (!allowed) {
+      setImportFile(null)
+      setImportError('Selecciona un archivo .xlsx o .csv.')
+      return
+    }
+    setImportError('')
+    setImportFile(file)
+  }
+
+  const onImportSubmit = async (e) => {
+    e.preventDefault()
+    if (importLoading) return
+    if (!importFile) {
+      setImportError('Selecciona o arrastra un archivo Excel antes de importar.')
+      return
+    }
+
+    setImportError('')
+    setImportLoading(true)
+    const result = await itemsRest.import({ file: importFile, mode: importMode })
+    setImportLoading(false)
+
+    if (!result) return
+    setImportOpen(false)
+    refreshGrid()
   }
 
   const onSaveSubmit = async (e) => {
@@ -273,7 +345,12 @@ const Items = ({ categories = [] }) => {
         countSuffix='items'
         defaultSort={[{ selector: 'title', desc: false }]}
         minWidth={1080}
-        headerActions={<button type='button' className='wfi-btn' onClick={() => onModalOpen(null)}><i className='mdi mdi-plus'></i> Nuevo item</button>}
+        headerActions={(
+          <>
+            <button type='button' className='wfi-btn soft' onClick={openImport}><i className='mdi mdi-upload'></i> Carga masiva</button>
+            <button type='button' className='wfi-btn' onClick={() => onModalOpen(null)}><i className='mdi mdi-plus'></i> Nuevo item</button>
+          </>
+        )}
         columns={[
           {
             key: 'image', header: 'Imagen', filterable: false, sortable: false, width: 90,
@@ -420,6 +497,89 @@ const Items = ({ categories = [] }) => {
                 {loading
                   ? <><span className='spinner-border spinner-border-sm'></span> Guardando...</>
                   : <><i className='mdi mdi-content-save'></i> {dataLoaded ? 'Guardar cambios' : 'Crear item'}</>}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div className='wfi-modal-ovl' style={{ display: importOpen ? 'flex' : 'none' }} onMouseDown={closeImport}>
+        <div className='wfi-modal wfi-import-modal' onMouseDown={(e) => e.stopPropagation()}>
+          <form onSubmit={onImportSubmit}>
+            <div className='wfi-modal-head'>
+              <h3 className='wfi-h2' style={{ fontSize: 16 }}>
+                <i className='mdi mdi-file-excel-outline me-1' style={{ color: '#004991' }}></i>
+                Carga masiva de items
+              </h3>
+              <button type='button' className='wfi-close' onClick={closeImport}><i className='mdi mdi-close'></i></button>
+            </div>
+
+            <div className='wfi-modal-body'>
+              {importError && <div className='wfi-err'><i className='mdi mdi-alert-circle-outline'></i>{importError}</div>}
+
+              <input
+                ref={importInputRef}
+                type='file'
+                accept='.xlsx,.csv'
+                hidden
+                onChange={(e) => selectImportFile(e.target.files?.[0])}
+              />
+
+              <button
+                type='button'
+                className={`wfi-drop ${importDragging ? 'drag' : ''}`}
+                onClick={() => importInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setImportDragging(true) }}
+                onDragLeave={() => setImportDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setImportDragging(false)
+                  selectImportFile(e.dataTransfer.files?.[0])
+                }}
+              >
+                <div>
+                  <i className='mdi mdi-cloud-upload-outline'></i>
+                  <strong>Arrastra tu Excel aquí o haz clic para seleccionarlo</strong>
+                  <span>Formatos soportados: .xlsx y .csv. La columna clave es Codigo Producto.</span>
+                  {importFile && (
+                    <div className='wfi-file-pill'>
+                      <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
+                      <span>{importFile.name}</span>
+                    </div>
+                  )}
+                </div>
+              </button>
+
+              <div>
+                <label className='form-label'>Tipo de carga</label>
+                <div className='wfi-mode-grid'>
+                  <label className={`wfi-mode ${importMode === 'replace' ? 'on' : ''}`}>
+                    <input type='radio' name='import-mode' value='replace' checked={importMode === 'replace'} onChange={(e) => setImportMode(e.target.value)} />
+                    <b>Actualizar por completo</b>
+                    <span>Elimina los items actuales y crea nuevamente todos los productos del archivo.</span>
+                  </label>
+                  <label className={`wfi-mode ${importMode === 'upsert' ? 'on' : ''}`}>
+                    <input type='radio' name='import-mode' value='upsert' checked={importMode === 'upsert'} onChange={(e) => setImportMode(e.target.value)} />
+                    <b>Agregado parcial</b>
+                    <span>Busca por SKU: si existe lo actualiza, si no existe lo agrega como nuevo item.</span>
+                  </label>
+                </div>
+              </div>
+
+              {importMode === 'replace' && (
+                <div className='wfi-warn'>
+                  <i className='mdi mdi-alert-outline'></i>
+                  <span>Esta opción reemplaza el catálogo de items. Si el archivo no puede procesarse, la operación se revierte automáticamente.</span>
+                </div>
+              )}
+            </div>
+
+            <div className='wfi-modal-foot'>
+              <button type='button' className='wfi-btn outline' onClick={closeImport} disabled={importLoading}>Cancelar</button>
+              <button type='submit' className='wfi-btn' disabled={importLoading}>
+                {importLoading
+                  ? <><span className='spinner-border spinner-border-sm'></span> Importando...</>
+                  : <><i className='mdi mdi-upload'></i> Importar items</>}
               </button>
             </div>
           </form>

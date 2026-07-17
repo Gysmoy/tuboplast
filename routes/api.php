@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('categories/{id}', [CategoryController::class, 'delete']);
 
     Route::post('items/paginate', [ItemController::class, 'paginate']);
+    Route::post('items/import', [ItemController::class, 'import']);
     Route::post('items', [ItemController::class, 'save']);
     Route::get('items/{id}', [ItemController::class, 'get']);
     Route::patch('items/status', [ItemController::class, 'status']);

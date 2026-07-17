@@ -11,6 +11,41 @@ const notify = ({ title, body, type }) => {
 class ItemsRest extends BasicRest {
   path = 'items'
 
+  import = async ({ file, mode }) => {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('mode', mode)
+
+      const res = await fetch(`/api/${this.path}/import`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'X-Xsrf-Token': decodeURIComponent(Cookies.get('XSRF-TOKEN'))
+        },
+        body: formData
+      })
+
+      const result = await res.json()
+      if (!res.ok || result?.status !== 200) {
+        throw new Error(result?.message || 'Ocurrio un error inesperado')
+      }
+
+      const data = result.data || {}
+      const body = [
+        `${data.created ?? 0} creados`,
+        `${data.updated ?? 0} actualizados`,
+        `${data.skipped ?? 0} omitidos`,
+      ].join(' · ')
+
+      notify({ title: 'Carga masiva completada', body, type: 'success' })
+      return result
+    } catch (error) {
+      notify({ title: 'Error', body: error.message, type: 'danger' })
+      return null
+    }
+  }
+
   save = async (item) => {
     try {
       const formData = new FormData()

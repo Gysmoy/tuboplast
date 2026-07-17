@@ -68,6 +68,29 @@ const categories = [
   },
 ];
 
+const expertCategories = [
+  {
+    title: 'Edificación',
+    image: '/assets/img/categories/category-1.webp',
+    href: '/catalog',
+  },
+  {
+    title: 'Saneamiento',
+    image: '/assets/img/categories/category-2.webp',
+    href: '/catalog',
+  },
+  {
+    title: 'Minería',
+    image: '/assets/img/categories/category-3.webp',
+    href: '/catalog',
+  },
+  {
+    title: 'Agricultura',
+    image: '/assets/img/categories/category-4.webp',
+    href: '/catalog',
+  },
+];
+
 const recommendations = [
   {
     category: 'Tubería PVC-U',
@@ -319,7 +342,7 @@ const HomeScreen = ({ blog = {}, sliders = [] }) => {
               ref={heroPrevRef}
               type="button"
               aria-label="Slider anterior"
-              className="absolute left-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-primary shadow-lg ring-1 ring-primary/10 transition hover:bg-white sm:left-5 lg:left-8 lg:h-12 lg:w-12"
+              className="absolute left-3 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-primary shadow-lg ring-1 ring-primary/10 transition hover:bg-white sm:left-5 sm:grid lg:left-8 lg:h-12 lg:w-12"
             >
               <i className="mdi mdi-chevron-left text-2xl"></i>
             </button>
@@ -327,7 +350,7 @@ const HomeScreen = ({ blog = {}, sliders = [] }) => {
               ref={heroNextRef}
               type="button"
               aria-label="Siguiente slider"
-              className="absolute right-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-primary shadow-lg ring-1 ring-primary/10 transition hover:bg-white sm:right-5 lg:right-8 lg:h-12 lg:w-12"
+              className="absolute right-3 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-primary shadow-lg ring-1 ring-primary/10 transition hover:bg-white sm:right-5 sm:grid lg:right-8 lg:h-12 lg:w-12"
             >
               <i className="mdi mdi-chevron-right text-2xl"></i>
             </button>
@@ -462,11 +485,12 @@ const HomeScreen = ({ blog = {}, sliders = [] }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {categories.map((category) => (
-              <article
+            {expertCategories.map((category) => (
+              <a
                 key={category.title}
+                href={category.href}
                 data-reveal
-                className="group relative overflow-hidden rounded-xl shadow-md ring-1 ring-black/5"
+                className="group relative block overflow-hidden rounded-xl shadow-md ring-1 ring-black/5"
               >
                 <img
                   src={category.image}
@@ -477,7 +501,7 @@ const HomeScreen = ({ blog = {}, sliders = [] }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/35 to-transparent" />
                 <p className="absolute bottom-5 left-4 right-4 font-title text-xl font-medium leading-tight text-white sm:bottom-7 sm:left-6 sm:right-6 sm:text-2xl lg:bottom-10 lg:left-8 lg:right-8 lg:text-3xl">{category.title}</p>
-              </article>
+              </a>
             ))}
           </div>
         </div>
