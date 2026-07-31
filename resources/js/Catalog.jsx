@@ -4,7 +4,7 @@ import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
-const emptyFilters = { segment: [], line: [], type: [], use: [], material: [], color: [] };
+const emptyFilters = { segment: [], line: [], classification: [], type: [] };
 
 const FilterCheckbox = ({ checked, label, onChange }) => (
   <label className={`flex cursor-pointer items-center gap-3 text-sm ${checked ? 'font-bold text-primary' : 'text-darkmuted'}`}>
@@ -206,10 +206,8 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
   const facetGroups = {
     segment: facets.segment || [],
     line: facets.line || [],
+    classification: facets.classification || [],
     type: facets.type || [],
-    use: facets.use || [],
-    material: facets.material || [],
-    color: facets.color || [],
   };
 
   const activeCount = Object.values(filters).reduce((total, list) => total + list.length, 0);
@@ -241,10 +239,8 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     if (debouncedQuery) params.set('q', debouncedQuery);
     filters.segment.forEach((value) => params.append('segment[]', value));
     filters.line.forEach((value) => params.append('line[]', value));
+    filters.classification.forEach((value) => params.append('classification[]', value));
     filters.type.forEach((value) => params.append('type[]', value));
-    filters.use.forEach((value) => params.append('use[]', value));
-    filters.material.forEach((value) => params.append('material[]', value));
-    filters.color.forEach((value) => params.append('color[]', value));
     params.set('sort', sort);
     params.set('page', String(page));
     params.set('per_page', '12');
@@ -371,6 +367,8 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
 
                 <FacetCheckboxGroup title="Línea de producto" groupKey="line" items={facetGroups.line} selected={filters.line} onToggle={toggleFilter} onSeeMore={setModalGroup} />
 
+                <FacetCheckboxGroup title="Clasificación" groupKey="classification" items={facetGroups.classification} selected={filters.classification} onToggle={toggleFilter} onSeeMore={setModalGroup} />
+
                 {facetGroups.type.length > 0 && (
                   <FilterGroup title="Tipo de producto">
                     <div className="flex flex-wrap gap-2">
@@ -381,32 +379,6 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
                             key={label}
                             type="button"
                             onClick={() => toggleFilter('type', label)}
-                            className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
-                              active ? 'bg-primary text-white' : 'bg-silver text-darkmuted hover:bg-slate-200'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </FilterGroup>
-                )}
-
-                <FacetCheckboxGroup title="Uso" groupKey="use" items={facetGroups.use} selected={filters.use} onToggle={toggleFilter} onSeeMore={setModalGroup} />
-
-                <FacetCheckboxGroup title="Material" groupKey="material" items={facetGroups.material} selected={filters.material} onToggle={toggleFilter} onSeeMore={setModalGroup} />
-
-                {facetGroups.color.length > 0 && (
-                  <FilterGroup title="Color">
-                    <div className="flex flex-wrap gap-2">
-                      {facetGroups.color.map((label) => {
-                        const active = filters.color.includes(label);
-                        return (
-                          <button
-                            key={label}
-                            type="button"
-                            onClick={() => toggleFilter('color', label)}
                             className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
                               active ? 'bg-primary text-white' : 'bg-silver text-darkmuted hover:bg-slate-200'
                             }`}

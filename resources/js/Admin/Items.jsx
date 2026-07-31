@@ -57,8 +57,6 @@ const ITEMS_CSS = `
 .wfi-warn{display:flex;gap:8px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.45;}
 `
 
-const SEGMENT_OPTIONS = ['PREDIAL', 'INFRAESTRUCTURA']
-const TYPE_OPTIONS = ['Tubos', 'Conexiones', 'Accesorios', 'Anillos']
 const USE_OPTIONS = ['AGUA FRIA', 'AGUA POTABLE', 'DESAGUE', 'ALCANTARILLADO', 'ELECTRICO']
 const CURRENCY_OPTIONS = [{ value: 'PEN', label: 'PEN (S/)' }, { value: 'USD', label: 'USD ($)' }]
 
@@ -78,7 +76,7 @@ const FieldSelect = ({ col = 'col-6', label, value, options, placeholder, onChan
   </div>
 )
 
-const Items = ({ categories = [] }) => {
+const Items = ({ categories = [], segments = [], lines = [], classifications = [], types = [] }) => {
   const tableRef = useRef(null)
   const importInputRef = useRef(null)
 
@@ -135,7 +133,15 @@ const Items = ({ categories = [] }) => {
   const [importDragging, setImportDragging] = useState(false)
   const [importLoading, setImportLoading] = useState(false)
   const [importError, setImportError] = useState('')
-  const [selects, setSelects] = useState({ category_id: '', segment: '', type: '', use_type: '', currency: 'PEN' })
+  const [selects, setSelects] = useState({
+    category_id: '',
+    product_segment_id: '',
+    product_line_id: '',
+    product_classification_id: '',
+    product_type_id: '',
+    use_type: '',
+    currency: 'PEN',
+  })
 
   const setSelect = (key, value) => setSelects((cur) => ({ ...cur, [key]: value }))
   const refreshGrid = () => tableRef.current?.reload()
@@ -178,8 +184,10 @@ const Items = ({ categories = [] }) => {
 
     setSelects({
       category_id: data?.category_id ? String(data.category_id) : '',
-      segment: data?.segment || '',
-      type: data?.type || '',
+      product_segment_id: data?.product_segment_id ? String(data.product_segment_id) : '',
+      product_line_id: data?.product_line_id ? String(data.product_line_id) : '',
+      product_classification_id: data?.product_classification_id ? String(data.product_classification_id) : '',
+      product_type_id: data?.product_type_id ? String(data.product_type_id) : '',
       use_type: data?.use_type || '',
       currency: data?.currency || 'PEN',
     })
@@ -278,11 +286,15 @@ const Items = ({ categories = [] }) => {
       title: titleRef.current.value,
       sku: skuRef.current.value,
       category_id: selects.category_id || '',
-      segment: selects.segment || '',
-      type: selects.type || '',
+      product_segment_id: selects.product_segment_id || '',
+      product_line_id: selects.product_line_id || '',
+      product_classification_id: selects.product_classification_id || '',
+      product_type_id: selects.product_type_id || '',
+      segment: segments.find((row) => String(row.id) === selects.product_segment_id)?.name || '',
+      type: types.find((row) => String(row.id) === selects.product_type_id)?.name || '',
       use_type: selects.use_type || '',
       family,
-      classification: family,
+      classification: classifications.find((row) => String(row.id) === selects.product_classification_id)?.name || family,
       famcons: famconsRef.current.value,
       material: materialRef.current.value,
       color: colorRef.current.value,
@@ -362,7 +374,7 @@ const Items = ({ categories = [] }) => {
           },
           {
             key: 'segment', header: 'Categoría / Clasificación', field: 'segment', filterFields: ['segment', 'type', 'use_type'], nowrap: true,
-            render: (d) => (<><span className='d-block'>{d.category?.name || '-'}</span><small className='text-muted'>{[d.segment, d.type, d.use_type].filter(Boolean).join(' · ') || 'Sin clasificar'}</small></>),
+            render: (d) => (<><span className='d-block'>{d.product_line?.name || d.category?.name || '-'}</span><small className='text-muted'>{[d.product_segment?.name || d.segment, d.product_classification?.name || d.classification, d.product_type?.name || d.type].filter(Boolean).join(' · ') || 'Sin clasificar'}</small></>),
           },
           {
             key: 'price', header: 'Precio', field: 'price', filterable: false, align: 'right', nowrap: true,
@@ -417,14 +429,26 @@ const Items = ({ categories = [] }) => {
                     </div>
                     <div className='row'>
                       <InputFormGroup col='col-6' eRef={priceRef} label='Precio unitario' type='number' step='0.001' />
-                      <FieldSelect label='Tipo' value={selects.type} placeholder='Sin tipo' options={toOptions(TYPE_OPTIONS, 'Sin tipo')} onChange={(v) => setSelect('type', v)} />
+                      <FieldSelect label='Tipo' value={selects.product_type_id} placeholder='Sin tipo'
+                        options={[{ value: '', label: 'Sin tipo' }, ...types.map((c) => ({ value: String(c.id), label: c.name }))]}
+                        onChange={(v) => setSelect('product_type_id', v)} />
                     </div>
                     <FieldSelect col='col-12' label='Categoría / Línea' value={selects.category_id} placeholder='Sin categoría'
                       options={[{ value: '', label: 'Sin categoría' }, ...categories.map((c) => ({ value: String(c.id), label: c.name }))]}
                       onChange={(v) => setSelect('category_id', v)} />
                     <div className='row'>
-                      <FieldSelect label='Segmento' value={selects.segment} placeholder='Sin segmento' options={toOptions(SEGMENT_OPTIONS, 'Sin segmento')} onChange={(v) => setSelect('segment', v)} />
+                      <FieldSelect label='Segmento' value={selects.product_segment_id} placeholder='Sin segmento'
+                        options={[{ value: '', label: 'Sin segmento' }, ...segments.map((c) => ({ value: String(c.id), label: c.name }))]}
+                        onChange={(v) => setSelect('product_segment_id', v)} />
                       <FieldSelect label='Uso' value={selects.use_type} placeholder='Sin uso' options={toOptions(USE_OPTIONS, 'Sin uso')} onChange={(v) => setSelect('use_type', v)} />
+                    </div>
+                    <div className='row'>
+                      <FieldSelect label='Linea de producto' value={selects.product_line_id} placeholder='Sin linea'
+                        options={[{ value: '', label: 'Sin linea' }, ...lines.map((c) => ({ value: String(c.id), label: c.name }))]}
+                        onChange={(v) => setSelect('product_line_id', v)} />
+                      <FieldSelect label='Clasificacion' value={selects.product_classification_id} placeholder='Sin clasificacion'
+                        options={[{ value: '', label: 'Sin clasificacion' }, ...classifications.map((c) => ({ value: String(c.id), label: c.name }))]}
+                        onChange={(v) => setSelect('product_classification_id', v)} />
                     </div>
                   </div>
                   <div className='col-md-6'>

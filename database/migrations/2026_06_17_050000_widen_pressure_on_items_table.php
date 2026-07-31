@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         if (Schema::hasColumn('items', 'pressure')) {
             DB::statement('ALTER TABLE items MODIFY pressure VARCHAR(255) NULL');
         }
@@ -15,6 +19,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         if (Schema::hasColumn('items', 'pressure')) {
             DB::statement('ALTER TABLE items MODIFY pressure VARCHAR(60) NULL');
         }

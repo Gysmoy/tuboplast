@@ -11,6 +11,10 @@ class Item extends Model
 
     protected $fillable = [
         'category_id',
+        'product_segment_id',
+        'product_line_id',
+        'product_classification_id',
+        'product_type_id',
         'segment',
         'classification',
         'famcons',
@@ -67,5 +71,25 @@ class Item extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function productSegment()
+    {
+        return $this->belongsTo(ProductSegment::class);
+    }
+
+    public function productLine()
+    {
+        return $this->belongsTo(ProductLine::class);
+    }
+
+    public function productClassification()
+    {
+        return $this->belongsTo(ProductClassification::class);
+    }
+
+    public function productType()
+    {
+        return $this->belongsTo(ProductType::class);
     }
 }

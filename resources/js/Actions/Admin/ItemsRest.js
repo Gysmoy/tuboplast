@@ -52,7 +52,8 @@ class ItemsRest extends BasicRest {
       if (item.id) formData.append('id', item.id)
 
       const fields = [
-        'title', 'sku', 'category_id', 'segment', 'classification', 'famcons',
+        'title', 'sku', 'category_id', 'product_segment_id', 'product_line_id',
+        'product_classification_id', 'product_type_id', 'segment', 'classification', 'famcons',
         'family', 'type', 'use_type', 'material', 'color', 'brand', 'unit',
         'masterpack', 'pieces', 'origin_country', 'description', 'price',
         'currency', 'pressure', 'diameter', 'nominal_diameter', 'diameters',

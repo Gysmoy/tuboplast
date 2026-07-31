@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\BasicController;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\ProductClassification;
+use App\Models\ProductLine;
+use App\Models\ProductSegment;
+use App\Models\ProductType;
 use Exception;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Http\Request;
@@ -20,17 +24,33 @@ class ItemController extends BasicController
     public $reactView = 'Admin/Items';
     public $model = Item::class;
     public $imageFields = [];
-    public $with4get = ['category'];
+    public $with4get = ['category', 'productSegment', 'productLine', 'productClassification', 'productType'];
 
     public function setPaginationInstance(string $model)
     {
-        return $model::with('category');
+        return $model::with('category', 'productSegment', 'productLine', 'productClassification', 'productType');
     }
 
     public function setReactViewProperties(Request $request)
     {
         return [
             'categories' => Category::query()
+                ->whereNotNull('status')
+                ->orderBy('name')
+                ->get(['id', 'name']),
+            'segments' => ProductSegment::query()
+                ->whereNotNull('status')
+                ->orderBy('name')
+                ->get(['id', 'name']),
+            'lines' => ProductLine::query()
+                ->whereNotNull('status')
+                ->orderBy('name')
+                ->get(['id', 'name']),
+            'classifications' => ProductClassification::query()
+                ->whereNotNull('status')
+                ->orderBy('name')
+                ->get(['id', 'name']),
+            'types' => ProductType::query()
                 ->whereNotNull('status')
                 ->orderBy('name')
                 ->get(['id', 'name']),
@@ -45,6 +65,10 @@ class ItemController extends BasicController
             'title' => 'required|string|max:255',
             'sku' => 'nullable|string|max:120',
             'category_id' => 'nullable|integer|exists:categories,id',
+            'product_segment_id' => 'nullable|integer|exists:product_segments,id',
+            'product_line_id' => 'nullable|integer|exists:product_lines,id',
+            'product_classification_id' => 'nullable|integer|exists:product_classifications,id',
+            'product_type_id' => 'nullable|integer|exists:product_types,id',
             'segment' => 'nullable|string|max:120',
             'classification' => 'nullable|string|max:160',
             'famcons' => 'nullable|string|max:160',
@@ -85,6 +109,10 @@ class ItemController extends BasicController
         ]);
 
         $validated['currency'] = $validated['currency'] ?? 'PEN';
+        $validated['segment'] = $this->taxonomyName(ProductSegment::class, $validated['product_segment_id'] ?? null) ?? ($validated['segment'] ?? null);
+        $validated['family'] = $this->taxonomyName(ProductClassification::class, $validated['product_classification_id'] ?? null) ?? ($validated['family'] ?? null);
+        $validated['classification'] = $validated['family'];
+        $validated['type'] = $this->taxonomyName(ProductType::class, $validated['product_type_id'] ?? null) ?? ($validated['type'] ?? null);
 
         if (array_key_exists('status', $validated)) {
             $validated['status'] = in_array($validated['status'], [true, 'true', 1, '1', 'on'], true) ? 1 : 0;
@@ -161,8 +189,8 @@ class ItemController extends BasicController
     private function importRows(array $rows, string $mode): array
     {
         $categoryCache = [];
+        $taxonomyCache = [];
         $reservedSlugs = [];
-        $seenSkus = [];
         $deleted = 0;
         $created = 0;
         $updated = 0;
@@ -185,19 +213,10 @@ class ItemController extends BasicController
                 continue;
             }
 
-            $skuKey = mb_strtoupper($sku);
-            if (isset($seenSkus[$skuKey])) {
-                $skipped++;
-                $this->pushImportError($errors, "Fila {$rowNumber}: SKU duplicado en el archivo ({$sku}).");
-                continue;
-            }
-            $seenSkus[$skuKey] = true;
-
+            $data = $this->mapImportRow($norm, $sku, $categoryCache, $taxonomyCache);
             $existing = $mode === 'upsert'
-                ? Item::query()->where('sku', $sku)->first()
+                ? $this->findImportMatch($sku, $data)
                 : null;
-
-            $data = $this->mapImportRow($norm, $sku, $categoryCache);
             $data['slug'] = $this->uniqueItemSlug($data['title'], $sku, $existing?->id, $reservedSlugs);
 
             if ($existing) {
@@ -228,14 +247,36 @@ class ItemController extends BasicController
         ];
     }
 
-    private function mapImportRow(array $norm, string $sku, array &$categoryCache): array
+    private function findImportMatch(string $sku, array $data): ?Item
+    {
+        return Item::query()
+            ->where('sku', $sku)
+            ->where('product_segment_id', $data['product_segment_id'])
+            ->where('product_line_id', $data['product_line_id'])
+            ->where('product_classification_id', $data['product_classification_id'])
+            ->where('product_type_id', $data['product_type_id'])
+            ->first();
+    }
+
+    private function mapImportRow(array $norm, string $sku, array &$categoryCache, array &$taxonomyCache): array
     {
         $title = $this->stringOrNull($this->getImportValue($norm, 'Descripcion de Producto'))
             ?? ('Producto ' . $sku);
-        $line = $this->stringOrNull($this->getImportValue($norm, 'FAMCONS'))
+        $lineName = $this->stringOrNull($this->getImportValue($norm, 'LINEA DE PRODUCTO'))
+            ?? $this->stringOrNull($this->getImportValue($norm, 'FAMCONS'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA'))
             ?? 'Productos';
-        $category = $this->resolveImportCategory($line, $categoryCache);
+        $segmentName = $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO DE NEGOCIO'))
+            ?? $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO'));
+        $classificationName = $this->stringOrNull($this->getImportValue($norm, 'CLASIFICACION'))
+            ?? $this->stringOrNull($this->getImportValue($norm, 'CLASIFICACIÓN'))
+            ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA'));
+        $typeName = $this->stringOrNull($this->getImportValue($norm, 'TIPO'));
+        $category = $this->resolveImportCategory($lineName, $categoryCache);
+        $segment = $segmentName ? $this->resolveTaxonomy(ProductSegment::class, $segmentName, $taxonomyCache) : null;
+        $line = $lineName ? $this->resolveTaxonomy(ProductLine::class, $lineName, $taxonomyCache) : null;
+        $classification = $classificationName ? $this->resolveTaxonomy(ProductClassification::class, $classificationName, $taxonomyCache) : null;
+        $type = $typeName ? $this->resolveTaxonomy(ProductType::class, $typeName, $taxonomyCache) : null;
         $nominal = $this->stringOrNull($this->getImportValue($norm, 'Diametro Nominal del Producto'));
 
         $currency = mb_strtoupper((string) ($this->getImportValue($norm, 'Moneda') ?? 'PEN'));
@@ -243,11 +284,15 @@ class ItemController extends BasicController
 
         return [
             'category_id' => $category->id,
-            'segment' => $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO')),
+            'product_segment_id' => $segment?->id,
+            'product_line_id' => $line?->id,
+            'product_classification_id' => $classification?->id,
+            'product_type_id' => $type?->id,
+            'segment' => $segmentName,
             'famcons' => $this->stringOrNull($this->getImportValue($norm, 'FAMCONS')),
             'family' => $this->stringOrNull($this->getImportValue($norm, 'FAMILIA')),
-            'classification' => $this->stringOrNull($this->getImportValue($norm, 'FAMILIA')),
-            'type' => $this->stringOrNull($this->getImportValue($norm, 'TIPO')),
+            'classification' => $classificationName,
+            'type' => $typeName,
             'use_type' => $this->stringOrNull($this->getImportValue($norm, 'USO')),
             'material' => $this->stringOrNull($this->getImportValue($norm, 'Material')),
             'color' => $this->stringOrNull($this->getImportValue($norm, 'Color')),
@@ -305,6 +350,58 @@ class ItemController extends BasicController
         return $category;
     }
 
+    private function resolveTaxonomy(string $model, string $name, array &$taxonomyCache)
+    {
+        $name = $this->normalizeTaxonomyName($name);
+        $key = $model . ':' . $this->taxonomyLookupKey($name);
+
+        if (isset($taxonomyCache[$key])) {
+            return $taxonomyCache[$key];
+        }
+
+        $taxonomy = $model::query()
+            ->whereNotNull('status')
+            ->get()
+            ->first(fn ($row) => $this->taxonomyLookupKey($row->name) === $this->taxonomyLookupKey($name));
+
+        if (!$taxonomy) {
+            $taxonomy = $model::create([
+                'name' => $name,
+                'slug' => Str::slug($name),
+                'description' => null,
+                'status' => 1,
+            ]);
+        } elseif ($taxonomy->status === null) {
+            $taxonomy->update(['status' => 1]);
+        }
+
+        $taxonomyCache[$key] = $taxonomy;
+
+        return $taxonomy;
+    }
+
+    private function normalizeTaxonomyName(string $name): string
+    {
+        $name = str_replace("\xC2\xA0", ' ', $name);
+        $name = preg_replace('/\s+/u', ' ', $name) ?: $name;
+
+        return trim($name);
+    }
+
+    private function taxonomyLookupKey(string $name): string
+    {
+        return mb_strtoupper($this->normalizeTaxonomyName($name));
+    }
+
+    private function taxonomyName(string $model, $id): ?string
+    {
+        if (!$id) {
+            return null;
+        }
+
+        return $model::query()->whereKey($id)->value('name');
+    }
+
     private function uniqueItemSlug(string $title, string $sku, ?int $ignoreId, array &$reservedSlugs): string
     {
         $base = Str::slug($title) ?: Str::slug($sku) ?: ('item-' . Str::lower(Str::random(6)));
@@ -336,7 +433,7 @@ class ItemController extends BasicController
 
         try {
             $sharedStrings = $this->readSharedStrings($zip);
-            $sheetPath = $this->firstSheetPath($zip);
+            $sheetPath = $this->sheetPathByName($zip, 'Prod') ?? $this->firstSheetPath($zip);
             $sheetXml = $zip->getFromName($sheetPath);
 
             if ($sheetXml === false) {
@@ -454,6 +551,49 @@ class ItemController extends BasicController
         }
 
         return 'xl/worksheets/sheet1.xml';
+    }
+
+    private function sheetPathByName(ZipArchive $zip, string $name): ?string
+    {
+        $workbookText = $zip->getFromName('xl/workbook.xml');
+        $relsText = $zip->getFromName('xl/_rels/workbook.xml.rels');
+
+        if ($workbookText === false || $relsText === false) {
+            return null;
+        }
+
+        $workbook = simplexml_load_string($workbookText);
+        $rels = simplexml_load_string($relsText);
+
+        if ($workbook === false || $rels === false) {
+            return null;
+        }
+
+        $workbook->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        $targetRelationId = null;
+
+        foreach ($workbook->xpath('//s:sheets/s:sheet') ?: [] as $sheet) {
+            if (trim((string) $sheet['name']) !== $name) {
+                continue;
+            }
+
+            $targetRelationId = (string) $sheet
+                ->attributes('http://schemas.openxmlformats.org/officeDocument/2006/relationships')['id'];
+            break;
+        }
+
+        if (!$targetRelationId) {
+            return null;
+        }
+
+        $rels->registerXPathNamespace('r', 'http://schemas.openxmlformats.org/package/2006/relationships');
+        foreach ($rels->xpath('//r:Relationship') ?: [] as $relationship) {
+            if ((string) $relationship['Id'] === $targetRelationId) {
+                return $this->resolveXlsxPath((string) $relationship['Target']);
+            }
+        }
+
+        return null;
     }
 
     private function resolveXlsxPath(string $target): string

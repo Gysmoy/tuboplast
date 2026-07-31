@@ -12,6 +12,10 @@ use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
+use App\Http\Controllers\Admin\ProductClassificationController;
+use App\Http\Controllers\Admin\ProductLineController;
+use App\Http\Controllers\Admin\ProductSegmentController;
+use App\Http\Controllers\Admin\ProductTypeController;
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\QuoteController;
@@ -79,6 +83,30 @@ Route::middleware('auth')->group(function () {
     Route::get('categories/{id}', [CategoryController::class, 'get']);
     Route::patch('categories/status', [CategoryController::class, 'status']);
     Route::delete('categories/{id}', [CategoryController::class, 'delete']);
+
+    Route::post('product-segments/paginate', [ProductSegmentController::class, 'paginate']);
+    Route::post('product-segments', [ProductSegmentController::class, 'save']);
+    Route::get('product-segments/{id}', [ProductSegmentController::class, 'get']);
+    Route::patch('product-segments/status', [ProductSegmentController::class, 'status']);
+    Route::delete('product-segments/{id}', [ProductSegmentController::class, 'delete']);
+
+    Route::post('product-lines/paginate', [ProductLineController::class, 'paginate']);
+    Route::post('product-lines', [ProductLineController::class, 'save']);
+    Route::get('product-lines/{id}', [ProductLineController::class, 'get']);
+    Route::patch('product-lines/status', [ProductLineController::class, 'status']);
+    Route::delete('product-lines/{id}', [ProductLineController::class, 'delete']);
+
+    Route::post('product-classifications/paginate', [ProductClassificationController::class, 'paginate']);
+    Route::post('product-classifications', [ProductClassificationController::class, 'save']);
+    Route::get('product-classifications/{id}', [ProductClassificationController::class, 'get']);
+    Route::patch('product-classifications/status', [ProductClassificationController::class, 'status']);
+    Route::delete('product-classifications/{id}', [ProductClassificationController::class, 'delete']);
+
+    Route::post('product-types/paginate', [ProductTypeController::class, 'paginate']);
+    Route::post('product-types', [ProductTypeController::class, 'save']);
+    Route::get('product-types/{id}', [ProductTypeController::class, 'get']);
+    Route::patch('product-types/status', [ProductTypeController::class, 'status']);
+    Route::delete('product-types/{id}', [ProductTypeController::class, 'delete']);
 
     Route::post('items/paginate', [ItemController::class, 'paginate']);
     Route::post('items/import', [ItemController::class, 'import']);

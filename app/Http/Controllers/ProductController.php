@@ -26,7 +26,7 @@ class ProductController extends BasicController
         $item = Item::query()
             ->where('status', true)
             ->where('slug', $this->slug)
-            ->with('category')
+            ->with('category', 'productSegment', 'productLine', 'productClassification', 'productType')
             ->first();
 
         if (!$item) {
@@ -130,17 +130,21 @@ class ProductController extends BasicController
     private function mapProduct(Item $item): array
     {
         $price = $item->price !== null ? (float) $item->price : null;
-        $category = $item->category->name ?? 'Producto';
+        $category = $item->productLine->name ?? $item->category->name ?? 'Producto';
+        $segment = $item->productSegment->name ?? $item->segment;
+        $classification = $item->productClassification->name ?? $item->classification;
+        $type = $item->productType->name ?? $item->type;
         $image = $this->imageUrl($item);
 
         $diameters = is_array($item->diameters) ? $item->diameters : [];
         $diameterLabel = $item->nominal_diameter ?: ($item->diameter ?: $this->diameterLabel($diameters));
 
         $specItems = array_values(array_filter([
-            $this->spec('Segmento', $item->segment),
+            $this->spec('Segmento', $segment),
             $this->spec('Línea', $category),
+            $this->spec('Clasificación', $classification),
             $this->spec('Familia', $item->family ?: $item->famcons),
-            $this->spec('Tipo', $item->type),
+            $this->spec('Tipo', $type),
             $this->spec('Uso', $item->use_type),
             $this->spec('Material', $item->material),
             $this->spec('Color', $item->color),
@@ -192,7 +196,7 @@ class ProductController extends BasicController
             'detailUrl' => route('products.show', ['slug' => $item->slug]),
             'summary' => array_slice(array_values(array_filter([
                 $this->spec('Uso', $item->use_type) ?: $this->spec('Línea', $category),
-                $this->spec('Tipo', $item->type),
+                $this->spec('Tipo', $type),
                 ['label' => 'Diámetro', 'value' => $diameterLabel],
                 ['label' => 'SKU', 'value' => $item->sku ?: '-'],
             ])), 0, 4),
@@ -214,7 +218,7 @@ class ProductController extends BasicController
         return Item::query()
             ->where('status', true)
             ->where('id', '!=', $current->id)
-            ->with('category')
+            ->with('category', 'productLine')
             ->latest()
             ->take(4)
             ->get()
@@ -225,7 +229,7 @@ class ProductController extends BasicController
                 return [
                     'id' => $item->id,
                     'sku' => $item->sku,
-                    'categoryLabel' => $item->category->name ?? 'Producto',
+                    'categoryLabel' => $item->productLine->name ?? $item->category->name ?? 'Producto',
                     'title' => $item->title,
                     'image' => $this->imageUrl($item),
                     'price' => $this->moneyLabel($price, $item->currency),

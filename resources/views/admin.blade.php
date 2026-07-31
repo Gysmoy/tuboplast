@@ -24,7 +24,8 @@
         $current = $component ?? '';
         $gridPages = [
             'Admin/Users', 'Admin/Roles', 'Admin/Branches', 'Admin/Distributors',
-            'Admin/Categories', 'Admin/Items', 'Admin/Club', 'Admin/Quotes',
+            'Admin/Categories', 'Admin/Items', 'Admin/ProductSegments', 'Admin/ProductLines',
+            'Admin/ProductClassifications', 'Admin/ProductTypes', 'Admin/Club', 'Admin/Quotes',
             'Admin/Contacts', 'Admin/Messages',
         ];
         $usesGrid = in_array($current, $gridPages, true);
@@ -547,4 +548,3 @@
 </body>
 
 </html>
-

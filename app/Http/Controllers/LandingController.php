@@ -10,6 +10,10 @@ use App\Models\BlogPage;
 use App\Models\Message;
 use App\Models\Item;
 use App\Models\Category;
+use App\Models\ProductClassification;
+use App\Models\ProductLine;
+use App\Models\ProductSegment;
+use App\Models\ProductType;
 use App\Models\Quote;
 use App\Models\Slider;
 use Illuminate\Support\Facades\Cache;
@@ -160,7 +164,9 @@ class LandingController extends BasicController
 
     private function catalogQuery(Request $request)
     {
-        $query = Item::query()->where('status', true)->with('category');
+        $query = Item::query()
+            ->where('status', true)
+            ->with('category', 'productSegment', 'productLine', 'productClassification', 'productType');
 
         $term = trim((string) $request->query('q', ''));
         if ($term !== '') {
@@ -168,47 +174,33 @@ class LandingController extends BasicController
                 $where->where('title', 'like', "%{$term}%")
                     ->orWhere('sku', 'like', "%{$term}%")
                     ->orWhere('classification', 'like', "%{$term}%")
+                    ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
+                    ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
                     ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
             });
         }
 
         $segments = array_filter((array) $request->query('segment', []));
         if ($segments) {
-            $query->whereIn('segment', $segments);
-        }
-
-        $types = array_filter((array) $request->query('type', []));
-        if ($types) {
-            $query->whereIn('type', $types);
+            $this->whereTaxonomy($query, 'product_segment_id', ProductSegment::class, $segments, 'segment');
         }
 
         $lines = array_filter((array) $request->query('line', []));
         if ($lines) {
-            $query->whereHas('category', fn ($c) => $c->whereIn('name', $lines));
-        }
-
-        $uses = array_filter((array) $request->query('use', []));
-        if ($uses) {
-            $query->whereIn('use_type', $uses);
-        }
-
-        $materials = array_filter((array) $request->query('material', []));
-        if ($materials) {
-            $query->whereIn('material', $materials);
-        }
-
-        $colors = array_filter((array) $request->query('color', []));
-        if ($colors) {
-            $query->whereIn('color', $colors);
-        }
-
-        $diameters = array_filter((array) $request->query('diameter', []));
-        if ($diameters) {
-            $query->where(function ($where) use ($diameters) {
-                foreach ($diameters as $diameter) {
-                    $where->orWhereJsonContains('diameters', $diameter);
-                }
+            $query->where(function ($where) use ($lines) {
+                $this->whereTaxonomy($where, 'product_line_id', ProductLine::class, $lines, null);
+                $where->orWhereHas('category', fn ($c) => $c->whereIn('name', $lines));
             });
+        }
+
+        $classifications = array_filter((array) $request->query('classification', []));
+        if ($classifications) {
+            $this->whereTaxonomy($query, 'product_classification_id', ProductClassification::class, $classifications, 'classification');
+        }
+
+        $types = array_filter((array) $request->query('type', []));
+        if ($types) {
+            $this->whereTaxonomy($query, 'product_type_id', ProductType::class, $types, 'type');
         }
 
         $sort = $request->query('sort', 'popular');
@@ -227,42 +219,77 @@ class LandingController extends BasicController
     {
         // Cacheado para que siga siendo barato aunque el catálogo crezca a miles de productos.
         return Cache::remember('tuboplast.catalog.facets', now()->addMinutes(10), function () {
-            $segment = Item::query()->where('status', true)->whereNotNull('segment')
-                ->distinct()->orderBy('segment')->pluck('segment')->values();
-
-            $type = Item::query()->where('status', true)->whereNotNull('type')
-                ->distinct()->orderBy('type')->pluck('type')->values();
-
-            $use = Item::query()->where('status', true)->whereNotNull('use_type')
-                ->distinct()->orderBy('use_type')->pluck('use_type')->values();
-
-            $material = Item::query()->where('status', true)->whereNotNull('material')
-                ->distinct()->orderBy('material')->pluck('material')->values();
-
-            $color = Item::query()->where('status', true)->whereNotNull('color')
-                ->distinct()->orderBy('color')->pluck('color')->values();
-
-            $line = Category::query()
-                ->whereIn('id', Item::query()->where('status', true)->distinct()->pluck('category_id'))
-                ->orderBy('name')->pluck('name')->values();
-
-            $diameter = Item::query()->where('status', true)->pluck('diameters')
-                ->flatMap(fn ($value) => is_array($value) ? $value : [])
-                ->filter()
-                ->unique()
-                ->sort(fn ($a, $b) => strnatcasecmp((string) $a, (string) $b))
-                ->values();
-
             return [
-                'segment' => $segment,
-                'line' => $line,
-                'type' => $type,
-                'use' => $use,
-                'material' => $material,
-                'color' => $color,
-                'diameter' => $diameter,
+                'segment' => $this->taxonomyFacet(ProductSegment::class, 'product_segment_id', 'segment'),
+                'line' => $this->lineFacet(),
+                'classification' => $this->taxonomyFacet(ProductClassification::class, 'product_classification_id', 'classification'),
+                'type' => $this->taxonomyFacet(ProductType::class, 'product_type_id', 'type'),
             ];
         });
+    }
+
+    private function whereTaxonomy($query, string $foreignKey, string $model, array $values, ?string $legacyColumn): void
+    {
+        $ids = $model::query()->whereIn('name', $values)->pluck('id')->all();
+
+        $query->where(function ($where) use ($foreignKey, $ids, $values, $legacyColumn) {
+            if ($ids) {
+                $where->whereIn($foreignKey, $ids);
+            }
+
+            if ($legacyColumn) {
+                $ids ? $where->orWhereIn($legacyColumn, $values) : $where->whereIn($legacyColumn, $values);
+            }
+        });
+    }
+
+    private function taxonomyFacet(string $model, string $foreignKey, string $legacyColumn)
+    {
+        $fromRelations = $model::query()
+            ->whereNotNull('status')
+            ->whereIn('id', Item::query()->where('status', true)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
+            ->pluck('name');
+
+        $legacy = Item::query()
+            ->where('status', true)
+            ->whereNotNull($legacyColumn)
+            ->distinct()
+            ->pluck($legacyColumn);
+
+        return $fromRelations
+            ->merge($legacy)
+            ->pipe(fn ($values) => $this->cleanFacetValues($values));
+    }
+
+    private function lineFacet()
+    {
+        $fromRelations = ProductLine::query()
+            ->whereNotNull('status')
+            ->whereIn('id', Item::query()->where('status', true)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
+            ->pluck('name');
+
+        $legacy = Category::query()
+            ->whereIn('id', Item::query()->where('status', true)->distinct()->pluck('category_id'))
+            ->pluck('name');
+
+        return $fromRelations
+            ->merge($legacy)
+            ->pipe(fn ($values) => $this->cleanFacetValues($values));
+    }
+
+    private function cleanFacetValues($values)
+    {
+        return collect($values)
+            ->map(function ($value) {
+                $value = str_replace("\xC2\xA0", ' ', (string) $value);
+                $value = preg_replace('/\s+/u', ' ', $value) ?: $value;
+
+                return trim($value);
+            })
+            ->filter()
+            ->unique(fn ($value) => mb_strtoupper($value))
+            ->sort(fn ($a, $b) => strnatcasecmp((string) $a, (string) $b))
+            ->values();
     }
 
     private function paginationMeta($paginator): array
@@ -297,10 +324,10 @@ class LandingController extends BasicController
             'id' => $item->id,
             'sku' => $item->sku,
             'title' => $item->title,
-            'categoryLabel' => $item->category->name ?? 'Producto',
-            'segment' => $item->segment,
-            'classification' => $item->classification,
-            'type' => $item->type,
+            'categoryLabel' => $item->productLine->name ?? $item->category->name ?? 'Producto',
+            'segment' => $item->productSegment->name ?? $item->segment,
+            'classification' => $item->productClassification->name ?? $item->classification,
+            'type' => $item->productType->name ?? $item->type,
             'use' => $item->use_type,
             'material' => $item->material,
             'color' => $item->color,
@@ -387,10 +414,13 @@ class LandingController extends BasicController
         $items = Item::query()
             ->where('status', true)
             ->with('category')
+            ->with('productLine', 'productClassification', 'productType')
             ->where(function ($query) use ($term) {
                 $query->where('title', 'like', "%{$term}%")
                     ->orWhere('sku', 'like', "%{$term}%")
                     ->orWhere('classification', 'like', "%{$term}%")
+                    ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
+                    ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
                     ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
             })
             ->orderByDesc('views')
@@ -403,8 +433,8 @@ class LandingController extends BasicController
                 return [
                     'id' => $item->id,
                     'title' => $item->title,
-                    'categoryLabel' => $item->category->name ?? 'Producto',
-                    'type' => $item->type,
+                    'categoryLabel' => $item->productLine->name ?? $item->category->name ?? 'Producto',
+                    'type' => $item->productType->name ?? $item->type,
                     'image' => $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png',
                     'price' => $this->moneyLabel($price, $item->currency),
                     'detailUrl' => $item->slug
