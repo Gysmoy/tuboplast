@@ -73,7 +73,7 @@ class LandingController extends BasicController
                 ->map(fn ($item) => $this->mapCatalogItem($item))
                 ->values();
             $properties['pagination'] = $this->paginationMeta($paginator);
-            $properties['facets'] = $this->catalogFacets();
+            $properties['facets'] = $this->catalogFacetsForRequest($request);
 
             $this->seo = [
                 'description' => 'Catálogo Tuboplast: tuberías y conexiones de PVC para agua fría, desagüe, instalaciones eléctricas, agua potable y alcantarillado. Filtra por segmento, línea, tipo y diámetro.',
@@ -152,6 +152,7 @@ class LandingController extends BasicController
                 ->map(fn ($item) => $this->mapCatalogItem($item))
                 ->values(),
             'meta' => $this->paginationMeta($paginator),
+            'facets' => $this->catalogFacetsForRequest($request),
         ]);
     }
 
@@ -164,44 +165,9 @@ class LandingController extends BasicController
 
     private function catalogQuery(Request $request)
     {
-        $query = Item::query()
-            ->where('status', true)
-            ->with('category', 'productSegment', 'productLine', 'productClassification', 'productType');
-
-        $term = trim((string) $request->query('q', ''));
-        if ($term !== '') {
-            $query->where(function ($where) use ($term) {
-                $where->where('title', 'like', "%{$term}%")
-                    ->orWhere('sku', 'like', "%{$term}%")
-                    ->orWhere('classification', 'like', "%{$term}%")
-                    ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                    ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                    ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
-            });
-        }
-
-        $segments = array_filter((array) $request->query('segment', []));
-        if ($segments) {
-            $this->whereTaxonomy($query, 'product_segment_id', ProductSegment::class, $segments, 'segment');
-        }
-
-        $lines = array_filter((array) $request->query('line', []));
-        if ($lines) {
-            $query->where(function ($where) use ($lines) {
-                $this->whereTaxonomy($where, 'product_line_id', ProductLine::class, $lines, null);
-                $where->orWhereHas('category', fn ($c) => $c->whereIn('name', $lines));
-            });
-        }
-
-        $classifications = array_filter((array) $request->query('classification', []));
-        if ($classifications) {
-            $this->whereTaxonomy($query, 'product_classification_id', ProductClassification::class, $classifications, 'classification');
-        }
-
-        $types = array_filter((array) $request->query('type', []));
-        if ($types) {
-            $this->whereTaxonomy($query, 'product_type_id', ProductType::class, $types, 'type');
-        }
+        $query = $this->catalogBaseQuery();
+        $this->applyCatalogSearch($query, $request);
+        $this->applyCatalogFilters($query, $request);
 
         $sort = $request->query('sort', 'popular');
         if ($sort === 'name-asc') {
@@ -213,6 +179,82 @@ class LandingController extends BasicController
         }
 
         return $query;
+    }
+
+    private function catalogBaseQuery()
+    {
+        return Item::query()
+            ->where('status', true)
+            ->with('category', 'productSegment', 'productLine', 'productClassification', 'productType');
+    }
+
+    private function applyCatalogSearch($query, Request $request): void
+    {
+        $term = trim((string) $request->query('q', ''));
+        if ($term === '') {
+            return;
+        }
+
+        $query->where(function ($where) use ($term) {
+            $where->where('title', 'like', "%{$term}%")
+                ->orWhere('sku', 'like', "%{$term}%")
+                ->orWhere('classification', 'like', "%{$term}%")
+                ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
+                ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
+                ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
+        });
+    }
+
+    private function applyCatalogFilters($query, Request $request, ?string $until = null): void
+    {
+        foreach (['segment', 'line', 'classification', 'type'] as $group) {
+            if ($until === $group) {
+                return;
+            }
+
+            $values = array_filter((array) $request->query($group, []));
+            if (!$values) {
+                continue;
+            }
+
+            if ($group === 'segment') {
+                $this->whereTaxonomy($query, 'product_segment_id', ProductSegment::class, $values, 'segment');
+            } elseif ($group === 'line') {
+                $query->where(function ($where) use ($values) {
+                    $this->whereTaxonomy($where, 'product_line_id', ProductLine::class, $values, null);
+                    $where->orWhereHas('category', fn ($c) => $c->whereIn('name', $values));
+                });
+            } elseif ($group === 'classification') {
+                $this->whereTaxonomy($query, 'product_classification_id', ProductClassification::class, $values, 'classification');
+            } elseif ($group === 'type') {
+                $this->whereTaxonomy($query, 'product_type_id', ProductType::class, $values, 'type');
+            }
+        }
+    }
+
+    private function catalogFacetsForRequest(Request $request): array
+    {
+        $segmentQuery = $this->catalogBaseQuery();
+        $this->applyCatalogSearch($segmentQuery, $request);
+
+        $lineQuery = $this->catalogBaseQuery();
+        $this->applyCatalogSearch($lineQuery, $request);
+        $this->applyCatalogFilters($lineQuery, $request, 'line');
+
+        $classificationQuery = $this->catalogBaseQuery();
+        $this->applyCatalogSearch($classificationQuery, $request);
+        $this->applyCatalogFilters($classificationQuery, $request, 'classification');
+
+        $typeQuery = $this->catalogBaseQuery();
+        $this->applyCatalogSearch($typeQuery, $request);
+        $this->applyCatalogFilters($typeQuery, $request, 'type');
+
+        return [
+            'segment' => $this->taxonomyFacetFromQuery($segmentQuery, ProductSegment::class, 'product_segment_id', 'segment'),
+            'line' => $this->lineFacetFromQuery($lineQuery),
+            'classification' => $this->taxonomyFacetFromQuery($classificationQuery, ProductClassification::class, 'product_classification_id', 'classification'),
+            'type' => $this->taxonomyFacetFromQuery($typeQuery, ProductType::class, 'product_type_id', 'type'),
+        ];
     }
 
     private function catalogFacets(): array
@@ -261,6 +303,23 @@ class LandingController extends BasicController
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
+    private function taxonomyFacetFromQuery($query, string $model, string $foreignKey, string $legacyColumn)
+    {
+        $fromRelations = $model::query()
+            ->whereNotNull('status')
+            ->whereIn('id', (clone $query)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
+            ->pluck('name');
+
+        $legacy = (clone $query)
+            ->whereNotNull($legacyColumn)
+            ->distinct()
+            ->pluck($legacyColumn);
+
+        return $fromRelations
+            ->merge($legacy)
+            ->pipe(fn ($values) => $this->cleanFacetValues($values));
+    }
+
     private function lineFacet()
     {
         $fromRelations = ProductLine::query()
@@ -270,6 +329,22 @@ class LandingController extends BasicController
 
         $legacy = Category::query()
             ->whereIn('id', Item::query()->where('status', true)->distinct()->pluck('category_id'))
+            ->pluck('name');
+
+        return $fromRelations
+            ->merge($legacy)
+            ->pipe(fn ($values) => $this->cleanFacetValues($values));
+    }
+
+    private function lineFacetFromQuery($query)
+    {
+        $fromRelations = ProductLine::query()
+            ->whereNotNull('status')
+            ->whereIn('id', (clone $query)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
+            ->pluck('name');
+
+        $legacy = Category::query()
+            ->whereIn('id', (clone $query)->whereNotNull('category_id')->distinct()->pluck('category_id'))
             ->pluck('name');
 
         return $fromRelations

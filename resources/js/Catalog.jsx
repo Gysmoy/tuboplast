@@ -193,6 +193,7 @@ const buildPages = (current, last) => {
 const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = null }) => {
   const [items, setItems] = useState(initialItems);
   const [meta, setMeta] = useState(pagination);
+  const [availableFacets, setAvailableFacets] = useState(facets);
   const [filters, setFilters] = useState(emptyFilters);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -204,10 +205,10 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
   const firstRender = useRef(true);
 
   const facetGroups = {
-    segment: facets.segment || [],
-    line: facets.line || [],
-    classification: facets.classification || [],
-    type: facets.type || [],
+    segment: availableFacets.segment || [],
+    line: availableFacets.line || [],
+    classification: availableFacets.classification || [],
+    type: availableFacets.type || [],
   };
 
   const activeCount = Object.values(filters).reduce((total, list) => total + list.length, 0);
@@ -253,6 +254,7 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
       .then((data) => {
         setItems(Array.isArray(data.data) ? data.data : []);
         setMeta(data.meta || null);
+        setAvailableFacets(data.facets || {});
       })
       .catch((error) => {
         if (error.name !== 'AbortError') {
@@ -273,6 +275,21 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     });
     setPage(1);
   };
+
+  useEffect(() => {
+    setFilters((current) => {
+      const next = Object.fromEntries(
+        Object.entries(current).map(([group, selected]) => [
+          group,
+          selected.filter((value) => (facetGroups[group] || []).includes(value)),
+        ]),
+      );
+
+      const changed = Object.keys(current).some((group) => next[group].length !== current[group].length);
+
+      return changed ? next : current;
+    });
+  }, [availableFacets]);
 
   const clearFilters = () => {
     setFilters(emptyFilters);
