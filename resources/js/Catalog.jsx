@@ -322,7 +322,7 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
 
       <section className="mx-auto grid min-h-screen w-full max-w-site gap-8 px-4 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-12 xl:gap-16">
         <aside>
-          <div className="lg:sticky lg:top-40">
+          <div className="scrollbar-none lg:sticky lg:top-40 lg:max-h-[calc(100vh-11rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-3">
             <button
               type="button"
               aria-controls="catalog-filters"
