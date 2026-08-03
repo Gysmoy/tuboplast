@@ -56,8 +56,14 @@ class ProductTaxonomyController extends BasicController
     {
         $name = str_replace("\xC2\xA0", ' ', $name);
         $name = preg_replace('/\s+/u', ' ', $name) ?: $name;
+        $name = mb_strtolower(trim($name));
+        $ascii = function_exists('iconv') ? @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name) : false;
 
-        return mb_strtoupper(trim($name));
+        if ($ascii !== false) {
+            $name = $ascii;
+        }
+
+        return preg_replace('/[^a-z0-9]/', '', $name) ?: mb_strtoupper(trim($name));
     }
 
     public function afterSave(Request $request, object $jpa, bool $isNew)

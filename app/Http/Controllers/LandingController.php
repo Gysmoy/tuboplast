@@ -362,9 +362,21 @@ class LandingController extends BasicController
                 return trim($value);
             })
             ->filter()
-            ->unique(fn ($value) => mb_strtoupper($value))
+            ->unique(fn ($value) => $this->facetLookupKey($value))
             ->sort(fn ($a, $b) => strnatcasecmp((string) $a, (string) $b))
             ->values();
+    }
+
+    private function facetLookupKey(string $value): string
+    {
+        $value = mb_strtolower(trim($value));
+        $ascii = function_exists('iconv') ? @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value) : false;
+
+        if ($ascii !== false) {
+            $value = $ascii;
+        }
+
+        return preg_replace('/[^a-z0-9]/', '', $value) ?: mb_strtoupper(trim($value));
     }
 
     private function paginationMeta($paginator): array

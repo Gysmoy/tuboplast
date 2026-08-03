@@ -262,16 +262,16 @@ class ItemController extends BasicController
     {
         $title = $this->stringOrNull($this->getImportValue($norm, 'Descripcion de Producto'))
             ?? ('Producto ' . $sku);
-        $lineName = $this->stringOrNull($this->getImportValue($norm, 'LINEA DE PRODUCTO'))
+        $lineName = $this->normalizeCatalogLabel($this->stringOrNull($this->getImportValue($norm, 'LINEA DE PRODUCTO'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'FAMCONS'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA'))
-            ?? 'Productos';
-        $segmentName = $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO DE NEGOCIO'))
-            ?? $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO'));
-        $classificationName = $this->stringOrNull($this->getImportValue($norm, 'CLASIFICACION'))
+            ?? 'Productos');
+        $segmentName = $this->normalizeCatalogLabel($this->stringOrNull($this->getImportValue($norm, 'SEGMENTO DE NEGOCIO'))
+            ?? $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO')));
+        $classificationName = $this->normalizeCatalogLabel($this->stringOrNull($this->getImportValue($norm, 'CLASIFICACION'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'CLASIFICACIÓN'))
-            ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA'));
-        $typeName = $this->stringOrNull($this->getImportValue($norm, 'TIPO'));
+            ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA')));
+        $typeName = $this->normalizeCatalogType($this->stringOrNull($this->getImportValue($norm, 'TIPO')));
         $category = $this->resolveImportCategory($lineName, $categoryCache);
         $segment = $segmentName ? $this->resolveTaxonomy(ProductSegment::class, $segmentName, $taxonomyCache) : null;
         $line = $lineName ? $this->resolveTaxonomy(ProductLine::class, $lineName, $taxonomyCache) : null;
@@ -390,7 +390,60 @@ class ItemController extends BasicController
 
     private function taxonomyLookupKey(string $name): string
     {
-        return mb_strtoupper($this->normalizeTaxonomyName($name));
+        $name = mb_strtolower($this->normalizeTaxonomyName($name));
+        $ascii = function_exists('iconv') ? @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name) : false;
+
+        if ($ascii !== false) {
+            $name = $ascii;
+        }
+
+        return preg_replace('/[^a-z0-9]/', '', $name) ?: mb_strtoupper($this->normalizeTaxonomyName($name));
+    }
+
+    private function normalizeCatalogLabel(?string $value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        $value = $this->normalizeTaxonomyName($value);
+        $lookup = $this->taxonomyLookupKey($value);
+
+        $aliases = [
+            'predial' => 'Predial o Edificaciones',
+            'predialoedificaciones' => 'Predial o Edificaciones',
+            'infraestructura' => 'Saneamiento o Infraestructura',
+            'saneamientooinfraestructura' => 'Saneamiento o Infraestructura',
+            'aguafria' => 'Agua Fria',
+            'aguapotable' => 'Agua Potable',
+            'alcantarillado' => 'Alcantarillado',
+            'desague' => 'Desague',
+            'electrico' => 'Electrico',
+            'anillosdecaucho' => 'Anillos de Caucho',
+            'claseliviana' => 'Clase Liviana',
+            'clasepesada' => 'Clase Pesada',
+            'sap' => 'SAP',
+            'sel' => 'SEL',
+            'sistemaroscado' => 'Sistema Roscado',
+            'sistemasimplepresion' => 'Sistema Simple Presion',
+            'sistemaunionflexible' => 'Sistema Union Flexible (UF)',
+            'sistemaunionflexibleuf' => 'Sistema Union Flexible (UF)',
+        ];
+
+        return $aliases[$lookup] ?? Str::of($value)->lower()->title()->toString();
+    }
+
+    private function normalizeCatalogType(?string $value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return match ($this->taxonomyLookupKey($value)) {
+            'tubo', 'tubos' => 'Tubos',
+            'conexion', 'conexiones', 'anillo', 'anillos' => 'Conexiones',
+            default => $this->normalizeCatalogLabel($value),
+        };
     }
 
     private function taxonomyName(string $model, $id): ?string
