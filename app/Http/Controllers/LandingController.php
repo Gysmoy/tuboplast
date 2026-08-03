@@ -287,68 +287,37 @@ class LandingController extends BasicController
 
     private function taxonomyFacet(string $model, string $foreignKey, string $legacyColumn)
     {
-        $fromRelations = $model::query()
+        return $model::query()
             ->whereNotNull('status')
             ->whereIn('id', Item::query()->where('status', true)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
-            ->pluck('name');
-
-        $legacy = Item::query()
-            ->where('status', true)
-            ->whereNotNull($legacyColumn)
-            ->distinct()
-            ->pluck($legacyColumn);
-
-        return $fromRelations
-            ->merge($legacy)
+            ->pluck('name')
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
     private function taxonomyFacetFromQuery($query, string $model, string $foreignKey, string $legacyColumn)
     {
-        $fromRelations = $model::query()
+        return $model::query()
             ->whereNotNull('status')
             ->whereIn('id', (clone $query)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
-            ->pluck('name');
-
-        $legacy = (clone $query)
-            ->whereNotNull($legacyColumn)
-            ->distinct()
-            ->pluck($legacyColumn);
-
-        return $fromRelations
-            ->merge($legacy)
+            ->pluck('name')
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
     private function lineFacet()
     {
-        $fromRelations = ProductLine::query()
+        return ProductLine::query()
             ->whereNotNull('status')
             ->whereIn('id', Item::query()->where('status', true)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
-            ->pluck('name');
-
-        $legacy = Category::query()
-            ->whereIn('id', Item::query()->where('status', true)->distinct()->pluck('category_id'))
-            ->pluck('name');
-
-        return $fromRelations
-            ->merge($legacy)
+            ->pluck('name')
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
     private function lineFacetFromQuery($query)
     {
-        $fromRelations = ProductLine::query()
+        return ProductLine::query()
             ->whereNotNull('status')
             ->whereIn('id', (clone $query)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
-            ->pluck('name');
-
-        $legacy = Category::query()
-            ->whereIn('id', (clone $query)->whereNotNull('category_id')->distinct()->pluck('category_id'))
-            ->pluck('name');
-
-        return $fromRelations
-            ->merge($legacy)
+            ->pluck('name')
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
