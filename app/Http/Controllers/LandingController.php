@@ -250,10 +250,10 @@ class LandingController extends BasicController
         $this->applyCatalogFilters($typeQuery, $request, 'type');
 
         return [
-            'segment' => $this->ensureFacetDefaults($this->taxonomyFacetFromQuery($segmentQuery, ProductSegment::class, 'product_segment_id', 'segment'), 'segment'),
+            'segment' => $this->taxonomyFacetFromQuery($segmentQuery, ProductSegment::class, 'product_segment_id', 'segment'),
             'line' => $this->lineFacetFromQuery($lineQuery),
             'classification' => $this->taxonomyFacetFromQuery($classificationQuery, ProductClassification::class, 'product_classification_id', 'classification'),
-            'type' => $this->ensureFacetDefaults($this->taxonomyFacetFromQuery($typeQuery, ProductType::class, 'product_type_id', 'type'), 'type'),
+            'type' => $this->taxonomyFacetFromQuery($typeQuery, ProductType::class, 'product_type_id', 'type'),
         ];
     }
 
@@ -262,25 +262,41 @@ class LandingController extends BasicController
         // Cacheado para que siga siendo barato aunque el catálogo crezca a miles de productos.
         return Cache::remember('tuboplast.catalog.facets', now()->addMinutes(10), function () {
             return [
-                'segment' => $this->ensureFacetDefaults($this->taxonomyFacet(ProductSegment::class, 'product_segment_id', 'segment'), 'segment'),
+                'segment' => $this->taxonomyFacet(ProductSegment::class, 'product_segment_id', 'segment'),
                 'line' => $this->lineFacet(),
                 'classification' => $this->taxonomyFacet(ProductClassification::class, 'product_classification_id', 'classification'),
-                'type' => $this->ensureFacetDefaults($this->taxonomyFacet(ProductType::class, 'product_type_id', 'type'), 'type'),
+                'type' => $this->taxonomyFacet(ProductType::class, 'product_type_id', 'type'),
             ];
         });
     }
 
     private function whereTaxonomy($query, string $foreignKey, string $model, array $values, ?string $legacyColumn): void
     {
-        $ids = $model::query()->whereIn('name', $values)->pluck('id')->all();
+        $selectedKeys = collect($values)
+            ->map(fn ($value) => $this->facetLookupKey($this->canonicalFacetLabel($value)))
+            ->filter()
+            ->values();
 
-        $query->where(function ($where) use ($foreignKey, $ids, $values, $legacyColumn) {
+        $ids = $model::query()
+            ->whereNotNull('status')
+            ->get(['id', 'name'])
+            ->filter(fn ($row) => $selectedKeys->contains($this->facetLookupKey($this->canonicalFacetLabel($row->name))))
+            ->pluck('id')
+            ->all();
+
+        $legacyValues = collect($values)
+            ->flatMap(fn ($value) => $this->legacyFacetAliases($value))
+            ->unique(fn ($value) => $this->facetLookupKey($value))
+            ->values()
+            ->all();
+
+        $query->where(function ($where) use ($foreignKey, $ids, $legacyValues, $legacyColumn) {
             if ($ids) {
                 $where->whereIn($foreignKey, $ids);
             }
 
             if ($legacyColumn) {
-                $ids ? $where->orWhereIn($legacyColumn, $values) : $where->whereIn($legacyColumn, $values);
+                $ids ? $where->orWhereIn($legacyColumn, $legacyValues) : $where->whereIn($legacyColumn, $legacyValues);
             }
         });
     }
@@ -375,26 +391,6 @@ class LandingController extends BasicController
             ->values();
     }
 
-    private function ensureFacetDefaults($values, string $group)
-    {
-        $defaults = [
-            'segment' => [
-                'Predial o Edificaciones',
-                'Saneamiento o Infraestructura',
-                'Agricultura',
-                'Mineria',
-            ],
-            'type' => [
-                'Tubos',
-                'Conexiones',
-            ],
-        ];
-
-        return collect($defaults[$group] ?? [])
-            ->merge($values)
-            ->pipe(fn ($items) => $this->cleanFacetValues($items));
-    }
-
     private function facetLookupKey(string $value): string
     {
         $value = mb_strtolower(trim($value));
@@ -440,6 +436,24 @@ class LandingController extends BasicController
         ];
 
         return $aliases[$this->facetLookupKey($value)] ?? Str::of($value)->lower()->title()->toString();
+    }
+
+    private function legacyFacetAliases($value): array
+    {
+        $canonical = $this->canonicalFacetLabel($value);
+
+        $aliases = [
+            'Predial o Edificaciones' => ['Predial o Edificaciones', 'PREDIAL', 'Predial', 'Edificaciones'],
+            'Saneamiento o Infraestructura' => ['Saneamiento o Infraestructura', 'INFRAESTRUCTURA', 'Infraestructura', 'Saneamiento'],
+            'Agricultura' => ['Agricultura', 'AGRICULTURA'],
+            'Mineria' => ['Mineria', 'Minería', 'MINERIA', 'MINERÍA'],
+            'Tubos' => ['Tubos', 'TUBOS', 'Tubo', 'TUBO'],
+            'Conexiones' => ['Conexiones', 'CONEXIONES', 'Conexion', 'Conexión', 'CONEXION', 'CONEXIÓN', 'Anillos', 'ANILLOS'],
+            'Sistema Simple Presion' => ['Sistema Simple Presion', 'Sistema Simple Presión', 'SISTEMA SIMPLE PRESION', 'SISTEMA SIMPLE PRESIÓN'],
+            'Sistema Union Flexible (UF)' => ['Sistema Union Flexible (UF)', 'Sistema Union Flexible', 'SISTEMA UNION FLEXIBLE', 'SISTEMA UNION FLEXIBLE (UF)'],
+        ];
+
+        return $aliases[$canonical] ?? [$canonical, (string) $value];
     }
 
     private function paginationMeta($paginator): array

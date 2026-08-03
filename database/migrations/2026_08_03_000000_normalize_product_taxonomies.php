@@ -12,6 +12,7 @@ return new class extends Migration
         $this->normalizeTable('product_lines', 'product_line_id', 'famcons');
         $this->normalizeTable('product_classifications', 'product_classification_id', 'classification');
         $this->normalizeTable('product_types', 'product_type_id', 'type');
+        $this->ensureBaseTaxonomies();
 
         DB::table('product_classifications')
             ->orderBy('id')
@@ -58,6 +59,43 @@ return new class extends Migration
 
         foreach ($keepers as $keeper) {
             DB::table('items')->where($foreignKey, $keeper->id)->update([$legacyColumn => $keeper->name]);
+        }
+    }
+
+    private function ensureBaseTaxonomies(): void
+    {
+        $this->ensureRows('product_segments', [
+            'Predial o Edificaciones',
+            'Saneamiento o Infraestructura',
+            'Agricultura',
+            'Mineria',
+        ]);
+
+        $this->ensureRows('product_types', [
+            'Tubos',
+            'Conexiones',
+        ]);
+    }
+
+    private function ensureRows(string $table, array $names): void
+    {
+        foreach ($names as $name) {
+            $exists = DB::table($table)
+                ->get(['id', 'name'])
+                ->contains(fn ($row) => $this->lookupKey($row->name) === $this->lookupKey($name));
+
+            if ($exists) {
+                continue;
+            }
+
+            DB::table($table)->insert([
+                'name' => $name,
+                'slug' => Str::slug($name),
+                'description' => null,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 
