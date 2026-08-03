@@ -250,10 +250,10 @@ class LandingController extends BasicController
         $this->applyCatalogFilters($typeQuery, $request, 'type');
 
         return [
-            'segment' => $this->taxonomyFacetFromQuery($segmentQuery, ProductSegment::class, 'product_segment_id', 'segment'),
+            'segment' => $this->ensureFacetDefaults($this->taxonomyFacetFromQuery($segmentQuery, ProductSegment::class, 'product_segment_id', 'segment'), 'segment'),
             'line' => $this->lineFacetFromQuery($lineQuery),
             'classification' => $this->taxonomyFacetFromQuery($classificationQuery, ProductClassification::class, 'product_classification_id', 'classification'),
-            'type' => $this->taxonomyFacetFromQuery($typeQuery, ProductType::class, 'product_type_id', 'type'),
+            'type' => $this->ensureFacetDefaults($this->taxonomyFacetFromQuery($typeQuery, ProductType::class, 'product_type_id', 'type'), 'type'),
         ];
     }
 
@@ -262,10 +262,10 @@ class LandingController extends BasicController
         // Cacheado para que siga siendo barato aunque el catálogo crezca a miles de productos.
         return Cache::remember('tuboplast.catalog.facets', now()->addMinutes(10), function () {
             return [
-                'segment' => $this->taxonomyFacet(ProductSegment::class, 'product_segment_id', 'segment'),
+                'segment' => $this->ensureFacetDefaults($this->taxonomyFacet(ProductSegment::class, 'product_segment_id', 'segment'), 'segment'),
                 'line' => $this->lineFacet(),
                 'classification' => $this->taxonomyFacet(ProductClassification::class, 'product_classification_id', 'classification'),
-                'type' => $this->taxonomyFacet(ProductType::class, 'product_type_id', 'type'),
+                'type' => $this->ensureFacetDefaults($this->taxonomyFacet(ProductType::class, 'product_type_id', 'type'), 'type'),
             ];
         });
     }
@@ -287,37 +287,76 @@ class LandingController extends BasicController
 
     private function taxonomyFacet(string $model, string $foreignKey, string $legacyColumn)
     {
-        return $model::query()
+        $fromRelations = $model::query()
             ->whereNotNull('status')
             ->whereIn('id', Item::query()->where('status', true)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
-            ->pluck('name')
+            ->pluck('name');
+
+        if ($fromRelations->isNotEmpty()) {
+            return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
+        }
+
+        return Item::query()
+            ->where('status', true)
+            ->whereNotNull($legacyColumn)
+            ->distinct()
+            ->pluck($legacyColumn)
+            ->map(fn ($value) => $this->canonicalFacetLabel($value))
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
     private function taxonomyFacetFromQuery($query, string $model, string $foreignKey, string $legacyColumn)
     {
-        return $model::query()
+        $fromRelations = $model::query()
             ->whereNotNull('status')
             ->whereIn('id', (clone $query)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
-            ->pluck('name')
+            ->pluck('name');
+
+        if ($fromRelations->isNotEmpty()) {
+            return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
+        }
+
+        return (clone $query)
+            ->whereNotNull($legacyColumn)
+            ->distinct()
+            ->pluck($legacyColumn)
+            ->map(fn ($value) => $this->canonicalFacetLabel($value))
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
     private function lineFacet()
     {
-        return ProductLine::query()
+        $fromRelations = ProductLine::query()
             ->whereNotNull('status')
             ->whereIn('id', Item::query()->where('status', true)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
+            ->pluck('name');
+
+        if ($fromRelations->isNotEmpty()) {
+            return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
+        }
+
+        return Category::query()
+            ->whereIn('id', Item::query()->where('status', true)->distinct()->pluck('category_id'))
             ->pluck('name')
+            ->map(fn ($value) => $this->canonicalFacetLabel($value))
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
     private function lineFacetFromQuery($query)
     {
-        return ProductLine::query()
+        $fromRelations = ProductLine::query()
             ->whereNotNull('status')
             ->whereIn('id', (clone $query)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
+            ->pluck('name');
+
+        if ($fromRelations->isNotEmpty()) {
+            return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
+        }
+
+        return Category::query()
+            ->whereIn('id', (clone $query)->whereNotNull('category_id')->distinct()->pluck('category_id'))
             ->pluck('name')
+            ->map(fn ($value) => $this->canonicalFacetLabel($value))
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
@@ -336,6 +375,26 @@ class LandingController extends BasicController
             ->values();
     }
 
+    private function ensureFacetDefaults($values, string $group)
+    {
+        $defaults = [
+            'segment' => [
+                'Predial o Edificaciones',
+                'Saneamiento o Infraestructura',
+                'Agricultura',
+                'Mineria',
+            ],
+            'type' => [
+                'Tubos',
+                'Conexiones',
+            ],
+        ];
+
+        return collect($defaults[$group] ?? [])
+            ->merge($values)
+            ->pipe(fn ($items) => $this->cleanFacetValues($items));
+    }
+
     private function facetLookupKey(string $value): string
     {
         $value = mb_strtolower(trim($value));
@@ -346,6 +405,41 @@ class LandingController extends BasicController
         }
 
         return preg_replace('/[^a-z0-9]/', '', $value) ?: mb_strtoupper(trim($value));
+    }
+
+    private function canonicalFacetLabel($value): string
+    {
+        $value = trim((string) $value);
+        $aliases = [
+            'predial' => 'Predial o Edificaciones',
+            'edificaciones' => 'Predial o Edificaciones',
+            'predialoedificaciones' => 'Predial o Edificaciones',
+            'infraestructura' => 'Saneamiento o Infraestructura',
+            'saneamiento' => 'Saneamiento o Infraestructura',
+            'saneamientooinfraestructura' => 'Saneamiento o Infraestructura',
+            'aguafria' => 'Agua Fria',
+            'aguapotable' => 'Agua Potable',
+            'alcantarillado' => 'Alcantarillado',
+            'desague' => 'Desague',
+            'electrico' => 'Electrico',
+            'anillosdecaucho' => 'Anillos de Caucho',
+            'claseliviana' => 'Clase Liviana',
+            'clasepesada' => 'Clase Pesada',
+            'sap' => 'SAP',
+            'sel' => 'SEL',
+            'sistemaroscado' => 'Sistema Roscado',
+            'sistemasimplepresion' => 'Sistema Simple Presion',
+            'sistemaunionflexible' => 'Sistema Union Flexible (UF)',
+            'sistemaunionflexibleuf' => 'Sistema Union Flexible (UF)',
+            'tubo' => 'Tubos',
+            'tubos' => 'Tubos',
+            'conexion' => 'Conexiones',
+            'conexiones' => 'Conexiones',
+            'anillo' => 'Conexiones',
+            'anillos' => 'Conexiones',
+        ];
+
+        return $aliases[$this->facetLookupKey($value)] ?? Str::of($value)->lower()->title()->toString();
     }
 
     private function paginationMeta($paginator): array
