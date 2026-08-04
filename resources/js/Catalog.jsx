@@ -6,6 +6,23 @@ import CreateReactScript from './Utils/CreateReactScript';
 
 const emptyFilters = { segment: [], line: [], classification: [], type: [] };
 
+const filtersFromUrl = () => {
+  if (typeof window === 'undefined') return emptyFilters;
+
+  const params = new URLSearchParams(window.location.search);
+  const read = (key) => [
+    ...params.getAll(`${key}[]`),
+    ...params.getAll(key),
+  ].filter(Boolean);
+
+  return {
+    segment: read('segment'),
+    line: read('line'),
+    classification: read('classification'),
+    type: read('type'),
+  };
+};
+
 const FilterCheckbox = ({ checked, label, onChange }) => (
   <label className={`flex cursor-pointer items-center gap-3 text-sm ${checked ? 'font-bold text-primary' : 'text-darkmuted'}`}>
     <input
@@ -194,11 +211,11 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
   const [items, setItems] = useState(initialItems);
   const [meta, setMeta] = useState(pagination);
   const [availableFacets, setAvailableFacets] = useState(facets);
-  const [filters, setFilters] = useState(emptyFilters);
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const [sort, setSort] = useState('popular');
-  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState(() => filtersFromUrl());
+  const [query, setQuery] = useState(() => (typeof window === 'undefined' ? '' : (new URLSearchParams(window.location.search).get('q') || '')));
+  const [debouncedQuery, setDebouncedQuery] = useState(() => (typeof window === 'undefined' ? '' : (new URLSearchParams(window.location.search).get('q') || '')));
+  const [sort, setSort] = useState(() => (typeof window === 'undefined' ? 'popular' : (new URLSearchParams(window.location.search).get('sort') || 'popular')));
+  const [page, setPage] = useState(() => (typeof window === 'undefined' ? 1 : Number(new URLSearchParams(window.location.search).get('page') || 1)));
   const [loading, setLoading] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [modalGroup, setModalGroup] = useState(null);
