@@ -207,6 +207,8 @@ class LandingController extends BasicController
 
     private function applyCatalogFilters($query, Request $request, ?string $until = null): void
     {
+        $hasProductLines = ProductLine::query()->exists();
+
         foreach (['segment', 'line', 'classification', 'type'] as $group) {
             if ($until === $group) {
                 return;
@@ -220,9 +222,11 @@ class LandingController extends BasicController
             if ($group === 'segment') {
                 $this->whereTaxonomy($query, 'product_segment_id', ProductSegment::class, $values, 'segment');
             } elseif ($group === 'line') {
-                $query->where(function ($where) use ($values) {
+                $query->where(function ($where) use ($values, $hasProductLines) {
                     $this->whereTaxonomy($where, 'product_line_id', ProductLine::class, $values, null);
-                    $where->orWhereHas('category', fn ($c) => $c->whereIn('name', $values));
+                    if (!$hasProductLines) {
+                        $where->orWhereHas('category', fn ($c) => $c->whereIn('name', $values));
+                    }
                 });
             } elseif ($group === 'classification') {
                 $this->whereTaxonomy($query, 'product_classification_id', ProductClassification::class, $values, 'classification');
@@ -272,13 +276,14 @@ class LandingController extends BasicController
 
     private function whereTaxonomy($query, string $foreignKey, string $model, array $values, ?string $legacyColumn): void
     {
+        $hasTaxonomies = $model::query()->exists();
         $selectedKeys = collect($values)
             ->map(fn ($value) => $this->facetLookupKey($this->canonicalFacetLabel($value)))
             ->filter()
             ->values();
 
         $ids = $model::query()
-            ->whereNotNull('status')
+            ->where('status', true)
             ->get(['id', 'name'])
             ->filter(fn ($row) => $selectedKeys->contains($this->facetLookupKey($this->canonicalFacetLabel($row->name))))
             ->pluck('id')
@@ -290,12 +295,12 @@ class LandingController extends BasicController
             ->values()
             ->all();
 
-        $query->where(function ($where) use ($foreignKey, $ids, $legacyValues, $legacyColumn) {
+        $query->where(function ($where) use ($foreignKey, $ids, $legacyValues, $legacyColumn, $hasTaxonomies) {
             if ($ids) {
                 $where->whereIn($foreignKey, $ids);
             }
 
-            if ($legacyColumn) {
+            if ($legacyColumn && !$hasTaxonomies) {
                 $ids ? $where->orWhereIn($legacyColumn, $legacyValues) : $where->whereIn($legacyColumn, $legacyValues);
             }
         });
@@ -303,12 +308,13 @@ class LandingController extends BasicController
 
     private function taxonomyFacet(string $model, string $foreignKey, string $legacyColumn)
     {
+        $hasTaxonomies = $model::query()->exists();
         $fromRelations = $model::query()
-            ->whereNotNull('status')
+            ->where('status', true)
             ->whereIn('id', Item::query()->where('status', true)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
             ->pluck('name');
 
-        if ($fromRelations->isNotEmpty()) {
+        if ($hasTaxonomies || $fromRelations->isNotEmpty()) {
             return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
         }
 
@@ -323,12 +329,13 @@ class LandingController extends BasicController
 
     private function taxonomyFacetFromQuery($query, string $model, string $foreignKey, string $legacyColumn)
     {
+        $hasTaxonomies = $model::query()->exists();
         $fromRelations = $model::query()
-            ->whereNotNull('status')
+            ->where('status', true)
             ->whereIn('id', (clone $query)->whereNotNull($foreignKey)->distinct()->pluck($foreignKey))
             ->pluck('name');
 
-        if ($fromRelations->isNotEmpty()) {
+        if ($hasTaxonomies || $fromRelations->isNotEmpty()) {
             return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
         }
 
@@ -342,12 +349,13 @@ class LandingController extends BasicController
 
     private function lineFacet()
     {
+        $hasTaxonomies = ProductLine::query()->exists();
         $fromRelations = ProductLine::query()
-            ->whereNotNull('status')
+            ->where('status', true)
             ->whereIn('id', Item::query()->where('status', true)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
             ->pluck('name');
 
-        if ($fromRelations->isNotEmpty()) {
+        if ($hasTaxonomies || $fromRelations->isNotEmpty()) {
             return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
         }
 
@@ -360,12 +368,13 @@ class LandingController extends BasicController
 
     private function lineFacetFromQuery($query)
     {
+        $hasTaxonomies = ProductLine::query()->exists();
         $fromRelations = ProductLine::query()
-            ->whereNotNull('status')
+            ->where('status', true)
             ->whereIn('id', (clone $query)->whereNotNull('product_line_id')->distinct()->pluck('product_line_id'))
             ->pluck('name');
 
-        if ($fromRelations->isNotEmpty()) {
+        if ($hasTaxonomies || $fromRelations->isNotEmpty()) {
             return $fromRelations->pipe(fn ($values) => $this->cleanFacetValues($values));
         }
 

@@ -33,6 +33,8 @@ class ItemController extends BasicController
 
     public function setReactViewProperties(Request $request)
     {
+        $this->ensureBaseTaxonomies();
+
         return [
             'categories' => Category::query()
                 ->whereNotNull('status')
@@ -55,6 +57,18 @@ class ItemController extends BasicController
                 ->orderBy('name')
                 ->get(['id', 'name']),
         ];
+    }
+
+    private function ensureBaseTaxonomies(): void
+    {
+        foreach ([
+            ProductSegmentController::class,
+            ProductLineController::class,
+            ProductClassificationController::class,
+            ProductTypeController::class,
+        ] as $controller) {
+            app($controller)->ensureBaseRows();
+        }
     }
 
     public function beforeSave(Request $request)
