@@ -113,6 +113,7 @@ class ProductTaxonomyController extends BasicController
     public function ensureBaseRows(): void
     {
         if ($this->model::query()->exists()) {
+            $this->normalizeExistingRows();
             return;
         }
 
@@ -167,6 +168,46 @@ class ProductTaxonomyController extends BasicController
         Cache::forget('tuboplast.catalog.facets');
     }
 
+    private function normalizeExistingRows(): void
+    {
+        $groups = $this->model::query()
+            ->get(['id', 'name', 'status'])
+            ->groupBy(fn ($row) => $this->lookupKey($this->canonicalTaxonomyName($row->name)));
+
+        foreach ($groups as $rows) {
+            $canonical = $this->canonicalTaxonomyName($rows->first()->name);
+            $keeper = $rows->sortByDesc(fn ($row) => (bool) $row->status)->sortBy('id')->first();
+
+            $keeper->update([
+                'name' => $canonical,
+                'slug' => Str::slug($canonical),
+            ]);
+
+            foreach ($rows as $row) {
+                if ($row->id === $keeper->id) {
+                    continue;
+                }
+
+                $foreignKey = match ($this->model) {
+                    ProductSegment::class => 'product_segment_id',
+                    ProductLine::class => 'product_line_id',
+                    ProductClassification::class => 'product_classification_id',
+                    ProductType::class => 'product_type_id',
+                    default => null,
+                };
+
+                if ($foreignKey) {
+                    Item::query()->where($foreignKey, $row->id)->update([$foreignKey => $keeper->id]);
+                }
+
+                $row->delete();
+            }
+        }
+
+        $this->syncLegacyItemsForCurrentModel();
+        Cache::forget('tuboplast.catalog.facets');
+    }
+
     private function legacyNamesForCurrentModel()
     {
         return match ($this->model) {
@@ -181,8 +222,7 @@ class ProductTaxonomyController extends BasicController
             ProductClassification::class => Item::query()
                 ->whereNotNull('classification')
                 ->distinct()
-                ->pluck('classification')
-                ->merge(Item::query()->whereNotNull('family')->distinct()->pluck('family')),
+                ->pluck('classification'),
             ProductType::class => Item::query()
                 ->whereNotNull('type')
                 ->distinct()
@@ -201,8 +241,8 @@ class ProductTaxonomyController extends BasicController
                 foreach ($items as $item) {
                     $legacyName = match ($this->model) {
                         ProductSegment::class => $item->segment,
-                        ProductLine::class => $item->category?->name ?? $item->famcons,
-                        ProductClassification::class => $item->classification ?? $item->family,
+                        ProductLine::class => $item->famcons ?: $item->category?->name,
+                        ProductClassification::class => $item->classification,
                         ProductType::class => $item->type,
                         default => null,
                     };
@@ -279,6 +319,34 @@ class ProductTaxonomyController extends BasicController
             'anillos' => 'Conexiones',
         ];
 
-        return $aliases[$this->lookupKey($value)] ?? Str::of($value)->lower()->title()->toString();
+        $key = $this->lookupKey($value);
+
+        if (isset($aliases[$key])) {
+            return $aliases[$key];
+        }
+
+        if ($this->model === ProductLine::class) {
+            if (str_contains($key, 'aguafria')) return 'Agua Fria';
+            if (str_contains($key, 'aguapotable')) return 'Agua Potable';
+            if (str_contains($key, 'alcantarillado')) return 'Alcantarillado';
+            if (str_contains($key, 'desague')) return 'Desague';
+            if (str_contains($key, 'electrico') || str_contains($key, 'elctrico')) return 'Electrico';
+            if (str_contains($key, 'hdpe')) return 'PE (HDPE)';
+            if (str_contains($key, 'conducciondeaguaapresion')) return 'Conduccion de agua a Presion';
+        }
+
+        if ($this->model === ProductClassification::class) {
+            if (str_contains($key, 'sistemaroscado') || preg_match('/(^|pvc)r(aguafria)?$/', $key)) return 'Sistema Roscado';
+            if (str_contains($key, 'sistemasimplepresion') || str_contains($key, 'sp')) return 'Sistema Simple Presion';
+            if (str_contains($key, 'sistemaunionflexible') || str_contains($key, 'uf')) return 'Sistema Union Flexible (UF)';
+            if (str_contains($key, 'sistematermofusion') || str_contains($key, 'termofusion')) return 'Sistema Termofusion';
+            if (str_contains($key, 'claseliviana') || str_contains($key, 'clasel') || str_contains($key, 'salcl')) return 'Clase Liviana';
+            if (str_contains($key, 'clasepesada') || str_contains($key, 'clasep') || str_contains($key, 'salcp')) return 'Clase Pesada';
+            if (str_contains($key, 'sel')) return 'SEL';
+            if (str_contains($key, 'sap') || str_contains($key, 'cajasdepase') || str_contains($key, 'cajasdepaso')) return 'SAP';
+            if (str_contains($key, 'anillosdecaucho') || str_contains($key, 'anilloscaucho')) return 'Anillos de Caucho';
+        }
+
+        return Str::of($value)->lower()->title()->toString();
     }
 }
