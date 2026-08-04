@@ -234,7 +234,7 @@ const Distributors = ({ gmapsApiKey }) => {
     setProvince(data?.province || '')
     setDistrict(data?.district || '')
     setUbigeo(data?.ubigeo || '')
-    setStatus(data?.status == null ? true : Boolean(data.status))
+    setStatus(data?.status == null ? true : data.status === true || data.status === 1 || data.status === '1')
     setFeatured(Boolean(data?.featured))
     setPhonePrefix(data?.phone_prefix || '+51')
     setLatitude(formatCoordinate(data?.latitude))
@@ -347,10 +347,13 @@ const Distributors = ({ gmapsApiKey }) => {
     {
       key: 'status', header: 'Estado', field: 'status', align: 'center',
       filterOptions: [{ value: '1', label: 'Activo' }, { value: '0', label: 'Inactivo' }],
-      render: (d) => (
-        <SwitchFormGroup id={`switch-distributor-${d.id}`} checked={Boolean(d.status)} noMargin
-          onChange={async () => { await distribuidoresRest.status({ id: d.id, status: d.status }); tableRef.current?.reload() }} />
-      ),
+      render: (d) => {
+        const isActive = d.status === true || d.status === 1 || d.status === '1'
+        return (
+          <SwitchFormGroup id={`switch-distributor-${d.id}`} checked={isActive} noMargin
+            onChange={async () => { await distribuidoresRest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+        )
+      },
     },
     {
       key: 'actions', header: 'Acciones', align: 'center', filterable: false, sortable: false,

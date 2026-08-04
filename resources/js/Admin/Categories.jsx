@@ -126,10 +126,13 @@ const Categories = () => {
     {
       key: 'status', header: 'Estado', field: 'status', align: 'center',
       filterOptions: [{ value: '1', label: 'Activo' }, { value: '0', label: 'Inactivo' }],
-      render: (d) => (
-        <SwitchFormGroup id={`switch-category-${d.id}`} checked={Boolean(d.status)} noMargin
-          onChange={async () => { await categoriesRest.status({ id: d.id, status: d.status }); tableRef.current?.reload() }} />
-      ),
+      render: (d) => {
+        const isActive = d.status === true || d.status === 1 || d.status === '1'
+        return (
+          <SwitchFormGroup id={`switch-category-${d.id}`} checked={isActive} noMargin
+            onChange={async () => { await categoriesRest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+        )
+      },
     },
     { key: 'created_at', header: 'Fecha', field: 'created_at', filterType: 'date', sortField: 'created_at', nowrap: true, width: 138, render: (d) => <span style={{ color: '#5b6577' }}>{d.created_at ? moment(d.created_at).format('DD/MM/YY') : '-'}</span> },
     {

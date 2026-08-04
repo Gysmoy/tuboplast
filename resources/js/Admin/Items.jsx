@@ -387,10 +387,13 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
           {
             key: 'status', header: 'Estado', field: 'status', align: 'center',
             filterOptions: [{ value: '1', label: 'Activo' }, { value: '0', label: 'Inactivo' }],
-            render: (d) => (
-              <SwitchFormGroup id={`switch-item-${d.id}`} checked={Boolean(d.status)} noMargin
-                onChange={async () => { await itemsRest.status({ id: d.id, status: d.status }); tableRef.current?.reload() }} />
-            ),
+            render: (d) => {
+              const isActive = d.status === true || d.status === 1 || d.status === '1'
+              return (
+                <SwitchFormGroup id={`switch-item-${d.id}`} checked={isActive} noMargin
+                  onChange={async () => { await itemsRest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+              )
+            },
           },
           {
             key: 'actions', header: 'Acciones', align: 'center', filterable: false, sortable: false,

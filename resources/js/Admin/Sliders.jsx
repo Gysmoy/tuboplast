@@ -138,7 +138,7 @@ const Sliders = ({ items = [] }) => {
     setRef(metricTwoLabelRef, data?.metric_two_label)
     setRef(sortOrderRef, data?.sort_order ?? 0)
     setItemId(data?.item_id ? String(data.item_id) : '')
-    setStatus(data?.status == null ? true : Boolean(data.status))
+    setStatus(data?.status == null ? true : data.status === true || data.status === 1 || data.status === '1')
 
     if (imageRef.current) imageRef.current.value = ''
     if (imageRef.current?.image) {
@@ -251,10 +251,13 @@ const Sliders = ({ items = [] }) => {
     {
       key: 'status', header: 'Estado', field: 'status', align: 'center', width: 110,
       filterOptions: [{ value: '1', label: 'Activo' }, { value: '0', label: 'Inactivo' }],
-      render: (d) => (
-        <SwitchFormGroup id={`switch-slider-${d.id}`} checked={Boolean(d.status)} noMargin
-          onChange={async () => { await slidersRest.status({ id: d.id, status: d.status }); tableRef.current?.reload() }} />
-      ),
+      render: (d) => {
+        const isActive = d.status === true || d.status === 1 || d.status === '1'
+        return (
+          <SwitchFormGroup id={`switch-slider-${d.id}`} checked={isActive} noMargin
+            onChange={async () => { await slidersRest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+        )
+      },
     },
     {
       key: 'actions', header: 'Acciones', align: 'center', filterable: false, sortable: false, width: 110,
