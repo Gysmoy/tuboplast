@@ -65,11 +65,13 @@ Route::middleware('auth')->group(function () {
     Route::post('distribuidores/paginate', [DistribuidorController::class, 'paginate']);
     Route::post('distribuidores', [DistribuidorController::class, 'save']);
     Route::get('distribuidores/{id}', [DistribuidorController::class, 'get']);
+    Route::patch('distribuidores/status', [DistribuidorController::class, 'status']);
     Route::delete('distribuidores/{id}', [DistribuidorController::class, 'delete']);
 
     Route::post('sucursales/paginate', [SucursalController::class, 'paginate']);
     Route::post('sucursales', [SucursalController::class, 'save']);
     Route::get('sucursales/{id}', [SucursalController::class, 'get']);
+    Route::patch('sucursales/status', [SucursalController::class, 'status']);
     Route::delete('sucursales/{id}', [SucursalController::class, 'delete']);
 
     Route::post('sliders/paginate', [SliderController::class, 'paginate']);

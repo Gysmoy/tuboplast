@@ -385,11 +385,16 @@ class BasicController extends Controller
   {
     $response = new Response();
     try {
+      $currentStatus = filter_var($request->status, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+      $currentStatus = $currentStatus ?? false;
+      $newStatus = $currentStatus ? 0 : 1;
+
       $this->model::where($this->identifier, $request->id)
         ->update([
-          'status' => $request->status ? 0 : 1
+          'status' => $newStatus
         ]);
 
+      $response->data = ['status' => $newStatus];
       $response->status = 200;
       $response->message = 'Operacion correcta';
     } catch (\Throwable $th) {

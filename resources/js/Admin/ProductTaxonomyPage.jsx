@@ -127,8 +127,8 @@ const ProductTaxonomyPage = ({ path, title, singular, icon = 'ti ti-list-details
             render: (d) => {
               const isActive = d.status === true || d.status === 1 || d.status === '1'
               return (
-                <SwitchFormGroup id={`switch-${path}-${d.id}`} checked={isActive} noMargin
-                  onChange={async () => { await rest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+                <SwitchFormGroup id={`switch-${path}-${d.id}`} checked={isActive} refreshable={isActive} noMargin
+                  onChange={async (event) => { await rest.status({ id: d.id, status: !event.currentTarget.checked }); tableRef.current?.reload() }} />
               )
             },
           },

@@ -129,8 +129,8 @@ const Categories = () => {
       render: (d) => {
         const isActive = d.status === true || d.status === 1 || d.status === '1'
         return (
-          <SwitchFormGroup id={`switch-category-${d.id}`} checked={isActive} noMargin
-            onChange={async () => { await categoriesRest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+          <SwitchFormGroup id={`switch-category-${d.id}`} checked={isActive} refreshable={isActive} noMargin
+            onChange={async (event) => { await categoriesRest.status({ id: d.id, status: !event.currentTarget.checked }); tableRef.current?.reload() }} />
         )
       },
     },

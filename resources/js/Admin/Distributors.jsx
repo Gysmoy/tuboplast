@@ -350,8 +350,8 @@ const Distributors = ({ gmapsApiKey }) => {
       render: (d) => {
         const isActive = d.status === true || d.status === 1 || d.status === '1'
         return (
-          <SwitchFormGroup id={`switch-distributor-${d.id}`} checked={isActive} noMargin
-            onChange={async () => { await distribuidoresRest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+          <SwitchFormGroup id={`switch-distributor-${d.id}`} checked={isActive} refreshable={isActive} noMargin
+            onChange={async (event) => { await distribuidoresRest.status({ id: d.id, status: !event.currentTarget.checked }); tableRef.current?.reload() }} />
         )
       },
     },

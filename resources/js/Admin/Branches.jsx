@@ -311,8 +311,8 @@ const Branches = ({ gmapsApiKey }) => {
       render: (d) => {
         const isActive = d.status === true || d.status === 1 || d.status === '1'
         return (
-          <SwitchFormGroup id={`switch-branch-${d.id}`} checked={isActive} noMargin
-            onChange={async () => { await sucursalesRest.status({ id: d.id, status: isActive }); tableRef.current?.reload() }} />
+          <SwitchFormGroup id={`switch-branch-${d.id}`} checked={isActive} refreshable={isActive} noMargin
+            onChange={async (event) => { await sucursalesRest.status({ id: d.id, status: !event.currentTarget.checked }); tableRef.current?.reload() }} />
         )
       },
     },
