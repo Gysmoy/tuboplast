@@ -158,7 +158,6 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
 
         <li className="side-nav-title mt-2">Landing</li>
         <MenuItem href="/admin/sliders" icon='ti ti-slideshow'>Sliders</MenuItem>
-        <MenuItem href="/admin/home-expert-categories" icon='ti ti-layout-grid'>Expertos en</MenuItem>
         <MenuItem href="/admin/distributors" icon='ti ti-truck-delivery'>Distribuidores</MenuItem>
         <MenuItem href="/admin/branches" icon='ti ti-building-store'>Sucursales</MenuItem>
 

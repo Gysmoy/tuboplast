@@ -9,7 +9,11 @@ class ProductSegment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'description', 'status'];
+    protected $fillable = ['name', 'slug', 'description', 'image', 'featured', 'featured_order', 'status'];
 
-    protected $casts = ['status' => 'boolean'];
+    protected $casts = [
+        'featured' => 'boolean',
+        'featured_order' => 'integer',
+        'status' => 'boolean',
+    ];
 }

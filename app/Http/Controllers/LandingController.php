@@ -7,7 +7,6 @@ use App\Models\Sucursal;
 use App\Models\ClubExpert;
 use App\Models\AboutPage;
 use App\Models\BlogPage;
-use App\Models\HomeExpertCategory;
 use App\Models\Message;
 use App\Models\Item;
 use App\Models\Category;
@@ -686,27 +685,23 @@ class LandingController extends BasicController
 
     private function normalizeExpertCategories(): array
     {
-        if (!Schema::hasTable('home_expert_categories')) {
+        if (!Schema::hasTable('product_segments') || !Schema::hasColumn('product_segments', 'featured')) {
             return [];
         }
 
-        return HomeExpertCategory::query()
+        return ProductSegment::query()
             ->where('status', true)
-            ->with('productSegment')
-            ->orderBy('sort_order')
+            ->where('featured', true)
+            ->orderBy('featured_order')
             ->orderBy('id')
             ->get()
-            ->map(function (HomeExpertCategory $category) {
-                $segment = $category->productSegment?->name;
-
+            ->map(function (ProductSegment $segment) {
                 return [
-                    'id' => $category->id,
-                    'title' => $category->title,
-                    'image' => $this->expertCategoryImageUrl($category->image),
-                    'segment' => $segment,
-                    'href' => $segment
-                        ? route('catalog') . '?segment%5B%5D=' . rawurlencode($segment)
-                        : route('catalog'),
+                    'id' => $segment->id,
+                    'title' => $segment->name,
+                    'image' => $this->expertCategoryImageUrl($segment->image),
+                    'segment' => $segment->name,
+                    'href' => route('catalog') . '?segment%5B%5D=' . rawurlencode($segment->name),
                 ];
             })
             ->values()

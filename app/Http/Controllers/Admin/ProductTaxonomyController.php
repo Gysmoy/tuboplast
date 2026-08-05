@@ -59,7 +59,7 @@ class ProductTaxonomyController extends BasicController
         ];
     }
 
-    private function assertUniqueName(string $name, $ignoreId): void
+    protected function assertUniqueName(string $name, $ignoreId): void
     {
         $target = $this->lookupKey($name);
         $exists = $this->model::query()
@@ -75,7 +75,7 @@ class ProductTaxonomyController extends BasicController
         }
     }
 
-    private function lookupKey(string $name): string
+    protected function lookupKey(string $name): string
     {
         $name = str_replace("\xC2\xA0", ' ', $name);
         $name = preg_replace('/\s+/u', ' ', $name) ?: $name;
