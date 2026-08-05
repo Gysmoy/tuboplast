@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ProductSegment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class ProductSegmentController extends ProductTaxonomyController
@@ -13,6 +14,10 @@ class ProductSegmentController extends ProductTaxonomyController
 
     public function setPaginationInstance(string $model)
     {
+        if (!Schema::hasTable('item_product_segment')) {
+            return $model::query()->select('product_segments.*')->selectRaw('0 as active_items_count');
+        }
+
         return $model::query()
             ->withCount([
                 'items as active_items_count' => fn ($query) => $query->where('items.status', true),

@@ -17,8 +17,8 @@ const Footer = () => {
           <div className="space-y-3">
             <p className="text-sm font-bold text-primary">Categorias</p>
             <div className="space-y-3 text-xs text-muted">
-              <a href={catalogLink('Predial o Edificaciones')} className="block transition hover:text-primary">Edificaciones</a>
-              <a href={catalogLink('Saneamiento o Infraestructura')} className="block transition hover:text-primary">Infraestructura</a>
+              <a href={catalogLink('Edificaciones')} className="block transition hover:text-primary">Edificaciones</a>
+              <a href={catalogLink('Infraestructura')} className="block transition hover:text-primary">Infraestructura</a>
               <a href={catalogLink('Mineria')} className="block transition hover:text-primary">Mineria e industria</a>
               <a href={catalogLink('Agricultura')} className="block transition hover:text-primary">Agricola</a>
             </div>

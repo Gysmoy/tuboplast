@@ -346,8 +346,8 @@ class LandingController extends BasicController
                 $hasCondition = true;
             }
 
-            if ($legacyValues) {
-                $hasCondition ? $where->orWhereIn('segment', $legacyValues) : $where->whereIn('segment', $legacyValues);
+            if (!$hasCondition && $legacyValues) {
+                $where->whereIn('segment', $legacyValues);
             }
         });
     }
@@ -514,8 +514,6 @@ class LandingController extends BasicController
     {
         $value = trim((string) $value);
         $aliases = [
-            'predialoedificaciones' => 'Predial',
-            'saneamientooinfraestructura' => 'Saneamiento',
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
@@ -546,8 +544,6 @@ class LandingController extends BasicController
         $canonical = $this->canonicalFacetLabel($value);
 
         $aliases = [
-            'Predial o Edificaciones' => ['Predial o Edificaciones', 'PREDIAL', 'Predial', 'Edificaciones'],
-            'Saneamiento o Infraestructura' => ['Saneamiento o Infraestructura', 'INFRAESTRUCTURA', 'Infraestructura', 'Saneamiento'],
             'Agricultura' => ['Agricultura', 'AGRICULTURA'],
             'Mineria' => ['Mineria', 'Minería', 'MINERIA', 'MINERÍA'],
             'Tubos' => ['Tubos', 'TUBOS', 'Tubo', 'TUBO'],
@@ -564,8 +560,6 @@ class LandingController extends BasicController
         $key = $this->facetLookupKey((string) $value);
 
         return match ($key) {
-            'predialoedificaciones' => ['Predial', 'Edificaciones'],
-            'saneamientooinfraestructura' => ['Saneamiento', 'Infraestructura'],
             default => [$this->canonicalFacetLabel($value)],
         };
     }
@@ -575,12 +569,10 @@ class LandingController extends BasicController
         $key = $this->facetLookupKey((string) $value);
 
         return match ($key) {
-            'predial' => ['Predial', 'PREDIAL', 'Predial o Edificaciones'],
-            'edificaciones' => ['Edificaciones', 'Predial o Edificaciones'],
-            'predialoedificaciones' => ['Predial', 'Edificaciones', 'Predial o Edificaciones'],
-            'saneamiento' => ['Saneamiento', 'Saneamiento o Infraestructura'],
-            'infraestructura' => ['Infraestructura', 'INFRAESTRUCTURA', 'Saneamiento o Infraestructura'],
-            'saneamientooinfraestructura' => ['Saneamiento', 'Infraestructura', 'Saneamiento o Infraestructura'],
+            'predial' => ['Predial', 'PREDIAL'],
+            'edificaciones' => ['Edificaciones'],
+            'saneamiento' => ['Saneamiento'],
+            'infraestructura' => ['Infraestructura', 'INFRAESTRUCTURA'],
             default => $this->legacyFacetAliases($value),
         };
     }
