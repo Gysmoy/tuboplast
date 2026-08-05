@@ -63,6 +63,7 @@ class ItemsRest extends BasicRest {
         'features', 'usage_recommendations', 'observations', 'usage_warning',
       ]
       fields.forEach((field) => formData.append(field, item[field] ?? ''))
+      ;(item.product_segment_ids || []).forEach((id) => formData.append('product_segment_ids[]', id))
       formData.append('status', item.status ? '1' : '0')
 
       if (item.image) {

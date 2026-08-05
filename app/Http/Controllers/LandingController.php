@@ -7,6 +7,7 @@ use App\Models\Sucursal;
 use App\Models\ClubExpert;
 use App\Models\AboutPage;
 use App\Models\BlogPage;
+use App\Models\HomeExpertCategory;
 use App\Models\Message;
 use App\Models\Item;
 use App\Models\Category;
@@ -42,6 +43,7 @@ class LandingController extends BasicController
             'about' => $aboutData,
             'blog' => $blogData,
             'sliders' => $sliderData,
+            'expertCategories' => $this->normalizeExpertCategories(),
         ];
 
         if ($this->reactView === 'BlogPost') {
@@ -185,7 +187,7 @@ class LandingController extends BasicController
     {
         return Item::query()
             ->where('status', true)
-            ->with('category', 'productSegment', 'productLine', 'productClassification', 'productType');
+            ->with('category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType');
     }
 
     private function applyCatalogSearch($query, Request $request): void
@@ -220,7 +222,7 @@ class LandingController extends BasicController
             }
 
             if ($group === 'segment') {
-                $this->whereTaxonomy($query, 'product_segment_id', ProductSegment::class, $values, 'segment');
+                $this->whereSegmentTaxonomy($query, $values);
             } elseif ($group === 'line') {
                 $query->where(function ($where) use ($values, $hasProductLines) {
                     $this->whereTaxonomy($where, 'product_line_id', ProductLine::class, $values, null);
@@ -254,7 +256,7 @@ class LandingController extends BasicController
         $this->applyCatalogFilters($typeQuery, $request, 'type');
 
         return [
-            'segment' => $this->taxonomyFacetFromQuery($segmentQuery, ProductSegment::class, 'product_segment_id', 'segment'),
+            'segment' => $this->segmentFacetFromQuery($segmentQuery),
             'line' => $this->lineFacetFromQuery($lineQuery),
             'classification' => $this->taxonomyFacetFromQuery($classificationQuery, ProductClassification::class, 'product_classification_id', 'classification'),
             'type' => $this->taxonomyFacetFromQuery($typeQuery, ProductType::class, 'product_type_id', 'type'),
@@ -266,7 +268,7 @@ class LandingController extends BasicController
         // Cacheado para que siga siendo barato aunque el catálogo crezca a miles de productos.
         return Cache::remember('tuboplast.catalog.facets', now()->addMinutes(10), function () {
             return [
-                'segment' => $this->taxonomyFacet(ProductSegment::class, 'product_segment_id', 'segment'),
+                'segment' => $this->segmentFacet(),
                 'line' => $this->lineFacet(),
                 'classification' => $this->taxonomyFacet(ProductClassification::class, 'product_classification_id', 'classification'),
                 'type' => $this->taxonomyFacet(ProductType::class, 'product_type_id', 'type'),
@@ -306,6 +308,51 @@ class LandingController extends BasicController
         });
     }
 
+    private function whereSegmentTaxonomy($query, array $values): void
+    {
+        $selectedKeys = collect($values)
+            ->flatMap(fn ($value) => $this->segmentLabelsFor($value))
+            ->map(fn ($value) => $this->facetLookupKey($value))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($selectedKeys->isEmpty()) {
+            return;
+        }
+
+        $ids = ProductSegment::query()
+            ->where('status', true)
+            ->get(['id', 'name'])
+            ->filter(fn ($row) => $selectedKeys->contains($this->facetLookupKey($row->name)))
+            ->pluck('id')
+            ->all();
+
+        $legacyValues = collect($values)
+            ->flatMap(fn ($value) => $this->segmentLegacyAliases($value))
+            ->unique(fn ($value) => $this->facetLookupKey($value))
+            ->values()
+            ->all();
+
+        $query->where(function ($where) use ($ids, $legacyValues) {
+            $hasCondition = false;
+
+            if ($ids && Schema::hasTable('item_product_segment')) {
+                $where->whereHas('productSegments', fn ($segment) => $segment->whereIn('product_segments.id', $ids));
+                $hasCondition = true;
+            }
+
+            if ($ids) {
+                $hasCondition ? $where->orWhereIn('product_segment_id', $ids) : $where->whereIn('product_segment_id', $ids);
+                $hasCondition = true;
+            }
+
+            if ($legacyValues) {
+                $hasCondition ? $where->orWhereIn('segment', $legacyValues) : $where->whereIn('segment', $legacyValues);
+            }
+        });
+    }
+
     private function taxonomyFacet(string $model, string $foreignKey, string $legacyColumn)
     {
         $hasTaxonomies = $model::query()->exists();
@@ -327,6 +374,32 @@ class LandingController extends BasicController
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
+    private function segmentFacet()
+    {
+        $fromPivot = collect();
+
+        if (Schema::hasTable('item_product_segment')) {
+            $fromPivot = ProductSegment::query()
+                ->where('status', true)
+                ->whereIn('id', function ($query) {
+                    $query->select('item_product_segment.product_segment_id')
+                        ->from('item_product_segment')
+                        ->join('items', 'items.id', '=', 'item_product_segment.item_id')
+                        ->where('items.status', true);
+                })
+                ->pluck('name');
+        }
+
+        $fromPrimary = ProductSegment::query()
+            ->where('status', true)
+            ->whereIn('id', Item::query()->where('status', true)->whereNotNull('product_segment_id')->distinct()->pluck('product_segment_id'))
+            ->pluck('name');
+
+        return $fromPivot
+            ->merge($fromPrimary)
+            ->pipe(fn ($values) => $this->cleanFacetValues($values));
+    }
+
     private function taxonomyFacetFromQuery($query, string $model, string $foreignKey, string $legacyColumn)
     {
         $hasTaxonomies = $model::query()->exists();
@@ -344,6 +417,32 @@ class LandingController extends BasicController
             ->distinct()
             ->pluck($legacyColumn)
             ->map(fn ($value) => $this->canonicalFacetLabel($value))
+            ->pipe(fn ($values) => $this->cleanFacetValues($values));
+    }
+
+    private function segmentFacetFromQuery($query)
+    {
+        $itemIds = (clone $query)->pluck('items.id');
+        $fromPivot = collect();
+
+        if (Schema::hasTable('item_product_segment')) {
+            $fromPivot = ProductSegment::query()
+                ->where('status', true)
+                ->whereIn('id', function ($segmentQuery) use ($itemIds) {
+                    $segmentQuery->select('product_segment_id')
+                        ->from('item_product_segment')
+                        ->whereIn('item_id', $itemIds);
+                })
+                ->pluck('name');
+        }
+
+        $fromPrimary = ProductSegment::query()
+            ->where('status', true)
+            ->whereIn('id', (clone $query)->whereNotNull('product_segment_id')->distinct()->pluck('product_segment_id'))
+            ->pluck('name');
+
+        return $fromPivot
+            ->merge($fromPrimary)
             ->pipe(fn ($values) => $this->cleanFacetValues($values));
     }
 
@@ -416,12 +515,8 @@ class LandingController extends BasicController
     {
         $value = trim((string) $value);
         $aliases = [
-            'predial' => 'Predial o Edificaciones',
-            'edificaciones' => 'Predial o Edificaciones',
-            'predialoedificaciones' => 'Predial o Edificaciones',
-            'infraestructura' => 'Saneamiento o Infraestructura',
-            'saneamiento' => 'Saneamiento o Infraestructura',
-            'saneamientooinfraestructura' => 'Saneamiento o Infraestructura',
+            'predialoedificaciones' => 'Predial',
+            'saneamientooinfraestructura' => 'Saneamiento',
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
@@ -465,6 +560,32 @@ class LandingController extends BasicController
         return $aliases[$canonical] ?? [$canonical, (string) $value];
     }
 
+    private function segmentLabelsFor($value): array
+    {
+        $key = $this->facetLookupKey((string) $value);
+
+        return match ($key) {
+            'predialoedificaciones' => ['Predial', 'Edificaciones'],
+            'saneamientooinfraestructura' => ['Saneamiento', 'Infraestructura'],
+            default => [$this->canonicalFacetLabel($value)],
+        };
+    }
+
+    private function segmentLegacyAliases($value): array
+    {
+        $key = $this->facetLookupKey((string) $value);
+
+        return match ($key) {
+            'predial' => ['Predial', 'PREDIAL', 'Predial o Edificaciones'],
+            'edificaciones' => ['Edificaciones', 'Predial o Edificaciones'],
+            'predialoedificaciones' => ['Predial', 'Edificaciones', 'Predial o Edificaciones'],
+            'saneamiento' => ['Saneamiento', 'Saneamiento o Infraestructura'],
+            'infraestructura' => ['Infraestructura', 'INFRAESTRUCTURA', 'Saneamiento o Infraestructura'],
+            'saneamientooinfraestructura' => ['Saneamiento', 'Infraestructura', 'Saneamiento o Infraestructura'],
+            default => $this->legacyFacetAliases($value),
+        };
+    }
+
     private function paginationMeta($paginator): array
     {
         return [
@@ -492,13 +613,18 @@ class LandingController extends BasicController
     {
         $price = $item->price !== null ? (float) $item->price : null;
         $diameters = is_array($item->diameters) ? $item->diameters : [];
+        $segments = $item->productSegments->pluck('name')->filter()->values();
+        $segmentLabel = $segments->isNotEmpty()
+            ? $segments->join(' · ')
+            : ($item->productSegment->name ?? $item->segment);
 
         return [
             'id' => $item->id,
             'sku' => $item->sku,
             'title' => $item->title,
             'categoryLabel' => $item->productLine->name ?? $item->category->name ?? 'Producto',
-            'segment' => $item->productSegment->name ?? $item->segment,
+            'segment' => $segmentLabel,
+            'segments' => $segments,
             'classification' => $item->productClassification->name ?? $item->classification,
             'type' => $item->productType->name ?? $item->type,
             'use' => $item->use_type,
@@ -558,6 +684,52 @@ class LandingController extends BasicController
             ->all();
     }
 
+    private function normalizeExpertCategories(): array
+    {
+        if (!Schema::hasTable('home_expert_categories')) {
+            return [];
+        }
+
+        return HomeExpertCategory::query()
+            ->where('status', true)
+            ->with('productSegment')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(function (HomeExpertCategory $category) {
+                $segment = $category->productSegment?->name;
+
+                return [
+                    'id' => $category->id,
+                    'title' => $category->title,
+                    'image' => $this->expertCategoryImageUrl($category->image),
+                    'segment' => $segment,
+                    'href' => $segment
+                        ? route('catalog') . '?segment%5B%5D=' . rawurlencode($segment)
+                        : route('catalog'),
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    private function expertCategoryImageUrl(?string $image): string
+    {
+        if (!$image) {
+            return '/assets/img/categories/category-1.webp';
+        }
+
+        if (Str::startsWith($image, ['http://', 'https://', '/'])) {
+            return $image;
+        }
+
+        if (Str::startsWith($image, 'assets/')) {
+            return '/' . $image;
+        }
+
+        return '/storage/' . $image;
+    }
+
     private function mapHeroItem(Item $item): array
     {
         $catalogItem = $this->mapCatalogItem($item);
@@ -587,7 +759,7 @@ class LandingController extends BasicController
         $items = Item::query()
             ->where('status', true)
             ->with('category')
-            ->with('productLine', 'productClassification', 'productType')
+            ->with('productSegments', 'productLine', 'productClassification', 'productType')
             ->where(function ($query) use ($term) {
                 $query->where('title', 'like', "%{$term}%")
                     ->orWhere('sku', 'like', "%{$term}%")

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\HomeExpertCategoryController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ProductClassificationController;
@@ -79,6 +80,12 @@ Route::middleware('auth')->group(function () {
     Route::get('sliders/{id}', [SliderController::class, 'get']);
     Route::patch('sliders/status', [SliderController::class, 'status']);
     Route::delete('sliders/{id}', [SliderController::class, 'delete']);
+
+    Route::post('home-expert-categories/paginate', [HomeExpertCategoryController::class, 'paginate']);
+    Route::post('home-expert-categories', [HomeExpertCategoryController::class, 'save']);
+    Route::get('home-expert-categories/{id}', [HomeExpertCategoryController::class, 'get']);
+    Route::patch('home-expert-categories/status', [HomeExpertCategoryController::class, 'status']);
+    Route::delete('home-expert-categories/{id}', [HomeExpertCategoryController::class, 'delete']);
     
     Route::post('categories/paginate', [CategoryController::class, 'paginate']);
     Route::post('categories', [CategoryController::class, 'save']);

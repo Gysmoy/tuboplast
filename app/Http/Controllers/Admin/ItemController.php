@@ -24,11 +24,12 @@ class ItemController extends BasicController
     public $reactView = 'Admin/Items';
     public $model = Item::class;
     public $imageFields = [];
-    public $with4get = ['category', 'productSegment', 'productLine', 'productClassification', 'productType'];
+    public $with4get = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType'];
+    private array $pendingSegmentIds = [];
 
     public function setPaginationInstance(string $model)
     {
-        return $model::with('category', 'productSegment', 'productLine', 'productClassification', 'productType');
+        return $model::with('category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType');
     }
 
     public function setReactViewProperties(Request $request)
@@ -80,6 +81,8 @@ class ItemController extends BasicController
             'sku' => 'nullable|string|max:120',
             'category_id' => 'nullable|integer|exists:categories,id',
             'product_segment_id' => 'nullable|integer|exists:product_segments,id',
+            'product_segment_ids' => 'nullable|array',
+            'product_segment_ids.*' => 'integer|exists:product_segments,id',
             'product_line_id' => 'nullable|integer|exists:product_lines,id',
             'product_classification_id' => 'nullable|integer|exists:product_classifications,id',
             'product_type_id' => 'nullable|integer|exists:product_types,id',
@@ -122,8 +125,25 @@ class ItemController extends BasicController
             'status' => 'nullable',
         ]);
 
+        $segmentIds = collect($validated['product_segment_ids'] ?? [])
+            ->map(fn ($id) => (int) $id)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        if (!$segmentIds && !empty($validated['product_segment_id'])) {
+            $segmentIds = [(int) $validated['product_segment_id']];
+        }
+
+        $this->pendingSegmentIds = $segmentIds;
+        $primarySegmentId = $segmentIds[0] ?? ($validated['product_segment_id'] ?? null);
+
+        unset($validated['product_segment_ids']);
+
         $validated['currency'] = $validated['currency'] ?? 'PEN';
-        $validated['segment'] = $this->taxonomyName(ProductSegment::class, $validated['product_segment_id'] ?? null) ?? ($validated['segment'] ?? null);
+        $validated['product_segment_id'] = $primarySegmentId ?: null;
+        $validated['segment'] = $this->taxonomyName(ProductSegment::class, $primarySegmentId) ?? ($validated['segment'] ?? null);
         $validated['family'] = $this->taxonomyName(ProductClassification::class, $validated['product_classification_id'] ?? null) ?? ($validated['family'] ?? null);
         $validated['classification'] = $validated['family'];
         $validated['type'] = $this->taxonomyName(ProductType::class, $validated['product_type_id'] ?? null) ?? ($validated['type'] ?? null);
@@ -156,6 +176,10 @@ class ItemController extends BasicController
 
     public function afterSave(Request $request, object $jpa, bool $isNew)
     {
+        if ($jpa instanceof Item) {
+            $jpa->productSegments()->sync($this->pendingSegmentIds);
+        }
+
         Cache::forget('tuboplast.catalog.facets');
 
         return null;
@@ -234,10 +258,12 @@ class ItemController extends BasicController
             $data['slug'] = $this->uniqueItemSlug($data['title'], $sku, $existing?->id, $reservedSlugs);
 
             if ($existing) {
-                $existing->update($data);
+                $existing->update(collect($data)->except('product_segment_ids')->all());
+                $existing->productSegments()->sync($data['product_segment_ids'] ?? []);
                 $updated++;
             } else {
-                Item::create($data);
+                $item = Item::create(collect($data)->except('product_segment_ids')->all());
+                $item->productSegments()->sync($data['product_segment_ids'] ?? []);
                 $created++;
             }
         }
@@ -280,14 +306,20 @@ class ItemController extends BasicController
             ?? $this->stringOrNull($this->getImportValue($norm, 'FAMCONS'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA'))
             ?? 'Productos');
-        $segmentName = $this->normalizeCatalogLabel($this->stringOrNull($this->getImportValue($norm, 'SEGMENTO DE NEGOCIO'))
-            ?? $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO')));
+        $rawSegmentName = $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO DE NEGOCIO'))
+            ?? $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO'));
+        $segmentName = $this->normalizeCatalogLabel($rawSegmentName);
         $classificationName = $this->normalizeCatalogLabel($this->stringOrNull($this->getImportValue($norm, 'CLASIFICACION'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'CLASIFICACIÓN'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA')));
         $typeName = $this->normalizeCatalogType($this->stringOrNull($this->getImportValue($norm, 'TIPO')));
         $category = $this->resolveImportCategory($lineName, $categoryCache);
-        $segment = $segmentName ? $this->resolveTaxonomy(ProductSegment::class, $segmentName, $taxonomyCache) : null;
+        $segmentNames = $this->segmentNamesFromImport($rawSegmentName);
+        $segments = collect($segmentNames)
+            ->map(fn ($name) => $this->resolveTaxonomy(ProductSegment::class, $name, $taxonomyCache))
+            ->filter()
+            ->values();
+        $segment = $segments->first();
         $line = $lineName ? $this->resolveTaxonomy(ProductLine::class, $lineName, $taxonomyCache) : null;
         $classification = $classificationName ? $this->resolveTaxonomy(ProductClassification::class, $classificationName, $taxonomyCache) : null;
         $type = $typeName ? $this->resolveTaxonomy(ProductType::class, $typeName, $taxonomyCache) : null;
@@ -299,10 +331,11 @@ class ItemController extends BasicController
         return [
             'category_id' => $category->id,
             'product_segment_id' => $segment?->id,
+            'product_segment_ids' => $segments->pluck('id')->all(),
             'product_line_id' => $line?->id,
             'product_classification_id' => $classification?->id,
             'product_type_id' => $type?->id,
-            'segment' => $segmentName,
+            'segment' => $segment?->name ?? $segmentName,
             'famcons' => $this->stringOrNull($this->getImportValue($norm, 'FAMCONS')),
             'family' => $this->stringOrNull($this->getImportValue($norm, 'FAMILIA')),
             'classification' => $classificationName,
@@ -424,10 +457,8 @@ class ItemController extends BasicController
         $lookup = $this->taxonomyLookupKey($value);
 
         $aliases = [
-            'predial' => 'Predial o Edificaciones',
-            'predialoedificaciones' => 'Predial o Edificaciones',
-            'infraestructura' => 'Saneamiento o Infraestructura',
-            'saneamientooinfraestructura' => 'Saneamiento o Infraestructura',
+            'predialoedificaciones' => 'Predial',
+            'saneamientooinfraestructura' => 'Saneamiento',
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
@@ -445,6 +476,19 @@ class ItemController extends BasicController
         ];
 
         return $aliases[$lookup] ?? Str::of($value)->lower()->title()->toString();
+    }
+
+    private function segmentNamesFromImport(?string $value): array
+    {
+        if (!$value) {
+            return [];
+        }
+
+        return match ($this->taxonomyLookupKey($value)) {
+            'predialoedificaciones' => ['Predial', 'Edificaciones'],
+            'saneamientooinfraestructura' => ['Saneamiento', 'Infraestructura'],
+            default => [$this->normalizeCatalogLabel($value)],
+        };
     }
 
     private function normalizeCatalogType(?string $value): ?string

@@ -57,8 +57,8 @@
       "_BasicRest-C1ptku5E.js"
     ]
   },
-  "_CreateReactScript-CUJeT5XM.js": {
-    "file": "assets/CreateReactScript-CUJeT5XM.js",
+  "_CreateReactScript-DjWRvOVH.js": {
+    "file": "assets/CreateReactScript-DjWRvOVH.js",
     "name": "CreateReactScript",
     "imports": [
       "_preload-helper-DPi8upcZ.js",
@@ -78,6 +78,7 @@
       "resources/js/Admin/Contacts.jsx",
       "resources/js/Admin/Distributors.jsx",
       "resources/js/Admin/Home.jsx",
+      "resources/js/Admin/HomeExpertCategories.jsx",
       "resources/js/Admin/Items.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Admin/Messages.jsx",
@@ -151,8 +152,17 @@
       "_BasicRest-C1ptku5E.js"
     ]
   },
-  "_ItemsRest-DDJwdJxD.js": {
-    "file": "assets/ItemsRest-DDJwdJxD.js",
+  "_HomeExpertCategoriesRest-BcYDRnr5.js": {
+    "file": "assets/HomeExpertCategoriesRest-BcYDRnr5.js",
+    "name": "HomeExpertCategoriesRest",
+    "imports": [
+      "_BasicRest-C1ptku5E.js",
+      "_main-CG630k06.js",
+      "_index-C53OKbh3.js"
+    ]
+  },
+  "_ItemsRest-B275LlB3.js": {
+    "file": "assets/ItemsRest-B275LlB3.js",
     "name": "ItemsRest",
     "imports": [
       "_BasicRest-C1ptku5E.js",
@@ -299,9 +309,9 @@
     "file": "assets/sweetalert2.esm.all-C80wueXW.js",
     "name": "sweetalert2.esm.all"
   },
-  "_tippy-!~{01j}~.js": {
+  "_tippy-!~{01k}~.js": {
     "file": "tippy.css",
-    "src": "_tippy-!~{01j}~.js"
+    "src": "_tippy-!~{01k}~.js"
   },
   "_tippy-react.esm-CgiMgDJd.js": {
     "file": "assets/tippy-react.esm-CgiMgDJd.js",
@@ -345,7 +355,7 @@
     "isEntry": true
   },
   "resources/js/AboutFamilia.jsx": {
-    "file": "assets/AboutFamilia-T_quYGka.js",
+    "file": "assets/AboutFamilia-DMAhdWxw.js",
     "name": "AboutFamilia",
     "src": "resources/js/AboutFamilia.jsx",
     "isDynamicEntry": true,
@@ -354,7 +364,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/AboutNav.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
@@ -376,7 +386,7 @@
     ]
   },
   "resources/js/AboutPolitica.jsx": {
-    "file": "assets/AboutPolitica-DgAWDT7j.js",
+    "file": "assets/AboutPolitica-D-fO6MIo.js",
     "name": "AboutPolitica",
     "src": "resources/js/AboutPolitica.jsx",
     "isDynamicEntry": true,
@@ -385,7 +395,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/AboutNav.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
@@ -407,7 +417,7 @@
     ]
   },
   "resources/js/Admin/About.jsx": {
-    "file": "assets/About-DiMdCSUp.js",
+    "file": "assets/About-BGVcKMJs.js",
     "name": "About",
     "src": "resources/js/Admin/About.jsx",
     "isDynamicEntry": true,
@@ -415,7 +425,7 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "_AboutRest-RzEUb2kv.js",
       "_index-DJSEUtJE.js",
@@ -440,7 +450,7 @@
     ]
   },
   "resources/js/Admin/Account.jsx": {
-    "file": "assets/Account-BRZvkBWC.js",
+    "file": "assets/Account-ByUCSCjP.js",
     "name": "Account",
     "src": "resources/js/Admin/Account.jsx",
     "isDynamicEntry": true,
@@ -451,7 +461,7 @@
       "_index-C53OKbh3.js",
       "_AccountRest-CMl3Lt8W.js",
       "resources/js/Components/Adminto.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_LaravelSession-CYcN0AKE.js",
       "_Logout-BEHS1qoq.js",
       "_index-DJSEUtJE.js",
@@ -472,7 +482,7 @@
     ]
   },
   "resources/js/Admin/Blog.jsx": {
-    "file": "assets/Blog-C7lHB9Q7.js",
+    "file": "assets/Blog-BSj9AqNg.js",
     "name": "Blog",
     "src": "resources/js/Admin/Blog.jsx",
     "isDynamicEntry": true,
@@ -480,7 +490,7 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Components/ConfirmModal.jsx",
       "_BlogRest-KCuhERsY.js",
@@ -507,7 +517,7 @@
     ]
   },
   "resources/js/Admin/Branches.jsx": {
-    "file": "assets/Branches-Dx65PdE-.js",
+    "file": "assets/Branches-exOMxQuX.js",
     "name": "Branches",
     "src": "resources/js/Admin/Branches.jsx",
     "isDynamicEntry": true,
@@ -515,7 +525,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -549,7 +559,7 @@
     ]
   },
   "resources/js/Admin/Categories.jsx": {
-    "file": "assets/Categories-slbdjX7C.js",
+    "file": "assets/Categories-BLVKGgyd.js",
     "name": "Categories",
     "src": "resources/js/Admin/Categories.jsx",
     "isDynamicEntry": true,
@@ -557,7 +567,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -591,7 +601,7 @@
     ]
   },
   "resources/js/Admin/Club.jsx": {
-    "file": "assets/Club-DLXTehZS.js",
+    "file": "assets/Club-6NL2iNMA.js",
     "name": "Club",
     "src": "resources/js/Admin/Club.jsx",
     "isDynamicEntry": true,
@@ -599,7 +609,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -628,7 +638,7 @@
     ]
   },
   "resources/js/Admin/Contacts.jsx": {
-    "file": "assets/Contacts-_lSABulG.js",
+    "file": "assets/Contacts-BRlKBLCj.js",
     "name": "Contacts",
     "src": "resources/js/Admin/Contacts.jsx",
     "isDynamicEntry": true,
@@ -636,7 +646,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Components/Modal.jsx",
@@ -667,7 +677,7 @@
     ]
   },
   "resources/js/Admin/Distributors.jsx": {
-    "file": "assets/Distributors-BhBv5uUG.js",
+    "file": "assets/Distributors-CltIQaA9.js",
     "name": "Distributors",
     "src": "resources/js/Admin/Distributors.jsx",
     "isDynamicEntry": true,
@@ -675,7 +685,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -709,7 +719,7 @@
     ]
   },
   "resources/js/Admin/Home.jsx": {
-    "file": "assets/Home-Ccs5DtKA.js",
+    "file": "assets/Home-CoEoy5V9.js",
     "name": "Home",
     "src": "resources/js/Admin/Home.jsx",
     "isDynamicEntry": true,
@@ -717,7 +727,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -739,8 +749,49 @@
       "tippy.css"
     ]
   },
+  "resources/js/Admin/HomeExpertCategories.jsx": {
+    "file": "assets/HomeExpertCategories-CrabPswE.js",
+    "name": "HomeExpertCategories",
+    "src": "resources/js/Admin/HomeExpertCategories.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/Components/DataGrid.jsx",
+      "_index-RYns6xqu.js",
+      "resources/js/Utils/ReactAppend.jsx",
+      "_CreateReactScript-DjWRvOVH.js",
+      "resources/js/Components/Adminto.jsx",
+      "resources/js/Admin/MessageInbox.jsx",
+      "resources/js/Components/ConfirmModal.jsx",
+      "resources/js/Components/CustomDropdown.jsx",
+      "resources/js/Components/Form/ImageFormGroup.jsx",
+      "resources/js/Components/Form/InputFormGroup.jsx",
+      "resources/js/Components/Form/SwitchFormGroup.jsx",
+      "_HomeExpertCategoriesRest-BcYDRnr5.js",
+      "_index-DJSEUtJE.js",
+      "_preload-helper-DPi8upcZ.js",
+      "resources/js/Utils/CreateReactScript.jsx",
+      "_main-CG630k06.js",
+      "_LaravelSession-CYcN0AKE.js",
+      "resources/js/Components/Adminto.jsx",
+      "_index-C53OKbh3.js",
+      "resources/js/Components/AdmintoContext.jsx",
+      "resources/js/Components/NavBar.jsx",
+      "_Logout-BEHS1qoq.js",
+      "resources/js/Utils/Number2Currency.jsx",
+      "resources/js/Components/Menu.jsx",
+      "resources/js/Components/MenuItem.jsx",
+      "resources/js/Components/MenuItemContainer.jsx",
+      "resources/js/Components/Footer.jsx",
+      "resources/js/Components/DateRangeFilter.jsx",
+      "_tippy-react.esm-CgiMgDJd.js",
+      "_BasicRest-C1ptku5E.js"
+    ],
+    "css": [
+      "tippy.css"
+    ]
+  },
   "resources/js/Admin/Items.jsx": {
-    "file": "assets/Items-BhUOgCUK.js",
+    "file": "assets/Items-BaKC7aAb.js",
     "name": "Items",
     "src": "resources/js/Admin/Items.jsx",
     "isDynamicEntry": true,
@@ -748,7 +799,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -757,7 +808,7 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/ImageFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
-      "_ItemsRest-DDJwdJxD.js",
+      "_ItemsRest-B275LlB3.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -796,7 +847,7 @@
     ]
   },
   "resources/js/Admin/Messages.jsx": {
-    "file": "assets/Messages-DAzVz1jY.js",
+    "file": "assets/Messages-CrxYsdgp.js",
     "name": "Messages",
     "src": "resources/js/Admin/Messages.jsx",
     "isDynamicEntry": true,
@@ -804,7 +855,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "_MessagesRest-BUzAf0Yz.js",
       "resources/js/Admin/MessageInbox.jsx",
@@ -834,7 +885,7 @@
     ]
   },
   "resources/js/Admin/ProductClassifications.jsx": {
-    "file": "assets/ProductClassifications-C6OlKuOt.js",
+    "file": "assets/ProductClassifications-9nsWzj1f.js",
     "name": "ProductClassifications",
     "src": "resources/js/Admin/ProductClassifications.jsx",
     "isDynamicEntry": true,
@@ -842,7 +893,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -875,7 +926,7 @@
     ]
   },
   "resources/js/Admin/ProductLines.jsx": {
-    "file": "assets/ProductLines-Dy7_OEZs.js",
+    "file": "assets/ProductLines-BddOUqwL.js",
     "name": "ProductLines",
     "src": "resources/js/Admin/ProductLines.jsx",
     "isDynamicEntry": true,
@@ -883,7 +934,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -916,7 +967,7 @@
     ]
   },
   "resources/js/Admin/ProductSegments.jsx": {
-    "file": "assets/ProductSegments-Bw-nXtCp.js",
+    "file": "assets/ProductSegments-BVwIlEbG.js",
     "name": "ProductSegments",
     "src": "resources/js/Admin/ProductSegments.jsx",
     "isDynamicEntry": true,
@@ -924,7 +975,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -957,7 +1008,7 @@
     ]
   },
   "resources/js/Admin/ProductTaxonomyPage.jsx": {
-    "file": "assets/ProductTaxonomyPage-DKEQpcPl.js",
+    "file": "assets/ProductTaxonomyPage-CFTGL3_I.js",
     "name": "ProductTaxonomyPage",
     "src": "resources/js/Admin/ProductTaxonomyPage.jsx",
     "isDynamicEntry": true,
@@ -979,7 +1030,7 @@
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
       "_Logout-BEHS1qoq.js",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "resources/js/Utils/Number2Currency.jsx",
@@ -996,7 +1047,7 @@
     ]
   },
   "resources/js/Admin/ProductTypes.jsx": {
-    "file": "assets/ProductTypes-DtABUZ7b.js",
+    "file": "assets/ProductTypes-BJp-ZAPm.js",
     "name": "ProductTypes",
     "src": "resources/js/Admin/ProductTypes.jsx",
     "isDynamicEntry": true,
@@ -1004,7 +1055,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -1037,7 +1088,7 @@
     ]
   },
   "resources/js/Admin/Profile.jsx": {
-    "file": "assets/Profile-CGr6nxCz.js",
+    "file": "assets/Profile-DIv798SZ.js",
     "name": "Profile",
     "src": "resources/js/Admin/Profile.jsx",
     "isDynamicEntry": true,
@@ -1046,7 +1097,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Components/Adminto.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Adminto.jsx",
       "_main-CG630k06.js",
@@ -1068,7 +1119,7 @@
     ]
   },
   "resources/js/Admin/Quotes.jsx": {
-    "file": "assets/Quotes-CYaOKMbi.js",
+    "file": "assets/Quotes-ZdXUx0Lx.js",
     "name": "Quotes",
     "src": "resources/js/Admin/Quotes.jsx",
     "isDynamicEntry": true,
@@ -1076,7 +1127,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -1107,7 +1158,7 @@
     ]
   },
   "resources/js/Admin/Roles.jsx": {
-    "file": "assets/Roles-BpFDMccg.js",
+    "file": "assets/Roles-B0v436rj.js",
     "name": "Roles",
     "src": "resources/js/Admin/Roles.jsx",
     "isDynamicEntry": true,
@@ -1115,7 +1166,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -1145,7 +1196,7 @@
     ]
   },
   "resources/js/Admin/Sliders.jsx": {
-    "file": "assets/Sliders-Bdd19BEk.js",
+    "file": "assets/Sliders-BvSAitj1.js",
     "name": "Sliders",
     "src": "resources/js/Admin/Sliders.jsx",
     "isDynamicEntry": true,
@@ -1153,7 +1204,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -1187,7 +1238,7 @@
     ]
   },
   "resources/js/Admin/Users.jsx": {
-    "file": "assets/Users-CuuX2j3T.js",
+    "file": "assets/Users-Mnhh1_wt.js",
     "name": "Users",
     "src": "resources/js/Admin/Users.jsx",
     "isDynamicEntry": true,
@@ -1195,7 +1246,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -1227,7 +1278,7 @@
     ]
   },
   "resources/js/Blog.jsx": {
-    "file": "assets/Blog-DaRfG_rN.js",
+    "file": "assets/Blog-0vUSqVI9.js",
     "name": "Blog",
     "src": "resources/js/Blog.jsx",
     "isDynamicEntry": true,
@@ -1236,7 +1287,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
@@ -1257,7 +1308,7 @@
     ]
   },
   "resources/js/BlogPost.jsx": {
-    "file": "assets/BlogPost-DFaVqDzE.js",
+    "file": "assets/BlogPost-B7H6fH6k.js",
     "name": "BlogPost",
     "src": "resources/js/BlogPost.jsx",
     "isDynamicEntry": true,
@@ -1266,7 +1317,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Utils/HtmlContent.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
@@ -1288,7 +1339,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-DfnxV3Pu.js",
+    "file": "assets/Catalog-CivpS-7T.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isDynamicEntry": true,
@@ -1298,7 +1349,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-DJSEUtJE.js",
       "_index-SFc2wnMY.js",
       "_quoteStorage-DG24QxPh.js",
@@ -1320,7 +1371,7 @@
     ]
   },
   "resources/js/Club.jsx": {
-    "file": "assets/Club-CMkSfX5v.js",
+    "file": "assets/Club-Bg5Gflp3.js",
     "name": "Club",
     "src": "resources/js/Club.jsx",
     "isDynamicEntry": true,
@@ -1330,7 +1381,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/ThankYouModal.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_ubigeo-DdaSjaYO.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
@@ -1378,10 +1429,10 @@
     ]
   },
   "resources/js/Components/AdmintoContext.jsx": {
-    "file": "assets/AdmintoContext-BxLDWCK-.js",
+    "file": "assets/AdmintoContext-DnHCzV57.js",
     "name": "AdmintoContext",
     "src": "resources/js/Components/AdmintoContext.jsx",
-    "isDynamicEntry": true,
+    "isEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
@@ -1575,7 +1626,7 @@
     ]
   },
   "resources/js/Components/Menu.jsx": {
-    "file": "assets/Menu-CxGuEUlT.js",
+    "file": "assets/Menu-C6_LHmyX.js",
     "name": "Menu",
     "src": "resources/js/Components/Menu.jsx",
     "isDynamicEntry": true,
@@ -1732,7 +1783,7 @@
     ]
   },
   "resources/js/Contact.jsx": {
-    "file": "assets/Contact-CIA84yo7.js",
+    "file": "assets/Contact-C-zu138E.js",
     "name": "Contact",
     "src": "resources/js/Contact.jsx",
     "isDynamicEntry": true,
@@ -1742,7 +1793,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/ThankYouModal.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_googleMaps-DrvRtn5X.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
@@ -1763,7 +1814,7 @@
     ]
   },
   "resources/js/Distributors.jsx": {
-    "file": "assets/Distributors-CxXzHYvt.js",
+    "file": "assets/Distributors-qk4Cp0hT.js",
     "name": "Distributors",
     "src": "resources/js/Distributors.jsx",
     "isDynamicEntry": true,
@@ -1772,7 +1823,7 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_googleMaps-DrvRtn5X.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
@@ -1794,7 +1845,7 @@
     ]
   },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-DDkvdA3X.js",
+    "file": "assets/Home-Dy6s48Wx.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isDynamicEntry": true,
@@ -1806,7 +1857,7 @@
       "_pagination-oXwx6O_U.js",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Items/ItemCard.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
@@ -1828,7 +1879,7 @@
     ]
   },
   "resources/js/Landing.jsx": {
-    "file": "assets/Landing-Cs6UpRcj.js",
+    "file": "assets/Landing-_L2TTu71.js",
     "name": "Landing",
     "src": "resources/js/Landing.jsx",
     "isDynamicEntry": true,
@@ -1839,7 +1890,7 @@
       "_index-SFc2wnMY.js",
       "_index-CD7kv5lB.js",
       "_ScrollTrigger-Ijpp9hcm.js",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1851,7 +1902,7 @@
     ]
   },
   "resources/js/Login.jsx": {
-    "file": "assets/Login-rGpUB1dF.js",
+    "file": "assets/Login-DuuDw60D.js",
     "name": "Login",
     "src": "resources/js/Login.jsx",
     "isDynamicEntry": true,
@@ -1860,7 +1911,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
       "_sweetalert2.esm.all-C80wueXW.js",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1872,7 +1923,7 @@
     ]
   },
   "resources/js/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-XuhAFxLr.js",
+    "file": "assets/ProductDetail-yt1BfUAx.js",
     "name": "ProductDetail",
     "src": "resources/js/ProductDetail.jsx",
     "isDynamicEntry": true,
@@ -1885,7 +1936,7 @@
       "_autoplay-DkEx_m1R.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-CUJeT5XM.js",
+      "_CreateReactScript-DjWRvOVH.js",
       "_quoteStorage-DG24QxPh.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Items/ItemCard.jsx",
@@ -1906,7 +1957,7 @@
     ]
   },
   "resources/js/Utils/CreateReactScript.jsx": {
-    "file": "assets/CreateReactScript-CpDBSkCq.js",
+    "file": "assets/CreateReactScript-C2_I88wL.js",
     "name": "CreateReactScript",
     "src": "resources/js/Utils/CreateReactScript.jsx",
     "isEntry": true,

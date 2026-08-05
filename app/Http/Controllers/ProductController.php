@@ -26,7 +26,7 @@ class ProductController extends BasicController
         $item = Item::query()
             ->where('status', true)
             ->where('slug', $this->slug)
-            ->with('category', 'productSegment', 'productLine', 'productClassification', 'productType')
+            ->with('category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType')
             ->first();
 
         if (!$item) {
@@ -131,7 +131,10 @@ class ProductController extends BasicController
     {
         $price = $item->price !== null ? (float) $item->price : null;
         $category = $item->productLine->name ?? $item->category->name ?? 'Producto';
-        $segment = $item->productSegment->name ?? $item->segment;
+        $segments = $item->productSegments->pluck('name')->filter()->values();
+        $segment = $segments->isNotEmpty()
+            ? $segments->join(' · ')
+            : ($item->productSegment->name ?? $item->segment);
         $classification = $item->productClassification->name ?? $item->classification;
         $type = $item->productType->name ?? $item->type;
         $image = $this->imageUrl($item);

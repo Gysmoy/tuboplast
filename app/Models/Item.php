@@ -78,6 +78,11 @@ class Item extends Model
         return $this->belongsTo(ProductSegment::class);
     }
 
+    public function productSegments()
+    {
+        return $this->belongsToMany(ProductSegment::class, 'item_product_segment')->withTimestamps();
+    }
+
     public function productLine()
     {
         return $this->belongsTo(ProductLine::class);

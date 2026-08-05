@@ -68,26 +68,26 @@ const categories = [
   },
 ];
 
-const expertCategories = [
+const defaultExpertCategories = [
   {
     title: 'Edificación',
     image: '/assets/img/categories/category-1.webp',
-    href: '/catalog',
+    href: '/catalog?segment%5B%5D=Edificaciones',
   },
   {
     title: 'Saneamiento',
     image: '/assets/img/categories/category-2.webp',
-    href: '/catalog',
+    href: '/catalog?segment%5B%5D=Saneamiento',
   },
   {
     title: 'Minería',
     image: '/assets/img/categories/category-3.webp',
-    href: '/catalog',
+    href: '/catalog?segment%5B%5D=Mineria',
   },
   {
     title: 'Agricultura',
     image: '/assets/img/categories/category-4.webp',
-    href: '/catalog',
+    href: '/catalog?segment%5B%5D=Agricultura',
   },
 ];
 
@@ -308,13 +308,14 @@ const HeroSlide = ({ slide, priority = false }) => {
   );
 };
 
-const HomeScreen = ({ blog = {}, sliders = [] }) => {
+const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
   const pageRef = useRef(null);
   const heroPrevRef = useRef(null);
   const heroNextRef = useRef(null);
   const heroPaginationRef = useRef(null);
   const blogPosts = Array.isArray(blog.posts) && blog.posts.length ? blog.posts.slice(0, 12) : defaultBlogPosts;
   const heroSlides = Array.isArray(sliders) && sliders.length ? sliders : defaultHeroSlides;
+  const homeExpertCategories = Array.isArray(expertCategories) && expertCategories.length ? expertCategories : defaultExpertCategories;
   const hasHeroControls = heroSlides.length > 1;
   const heroAutoplay = hasHeroControls
     ? { delay: 4800, disableOnInteraction: false, pauseOnMouseEnter: true }
@@ -484,26 +485,27 @@ const HomeScreen = ({ blog = {}, sliders = [] }) => {
             </a>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {expertCategories.map((category) => (
-              <a
-                key={category.title}
-                href={category.href}
-                data-reveal
-                className="group relative block overflow-hidden rounded-xl shadow-md ring-1 ring-black/5"
-              >
-                <img
-                  src={category.image}
-                  alt={category.title}
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-105 lg:aspect-[3/4]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/35 to-transparent" />
-                <p className="absolute bottom-5 left-4 right-4 font-title text-xl font-medium leading-tight text-white sm:bottom-7 sm:left-6 sm:right-6 sm:text-2xl lg:bottom-10 lg:left-8 lg:right-8 lg:text-3xl">{category.title}</p>
-              </a>
+          <Swiper {...carouselProps(4)} className="!pb-1">
+            {loopSafe(homeExpertCategories, 8).map((category, index) => (
+              <SwiperSlide key={`${category.title}-${index}`} className="!h-auto">
+                <a
+                  href={category.href}
+                  data-reveal
+                  className="group relative block h-full overflow-hidden rounded-xl shadow-md ring-1 ring-black/5"
+                >
+                  <img
+                    src={category.image}
+                    alt={category.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-105 lg:aspect-[3/4]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/35 to-transparent" />
+                  <p className="absolute bottom-5 left-4 right-4 font-title text-xl font-medium leading-tight text-white sm:bottom-7 sm:left-6 sm:right-6 sm:text-2xl lg:bottom-10 lg:left-8 lg:right-8 lg:text-3xl">{category.title}</p>
+                </a>
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
         </div>
       </section>
 

@@ -55,6 +55,10 @@ const ITEMS_CSS = `
 .wfi-mode b{display:block;color:#0f2540;font-size:13px;margin-bottom:4px;}
 .wfi-mode span{display:block;color:#6c7789;font-size:12px;line-height:1.45;}
 .wfi-warn{display:flex;gap:8px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.45;}
+.wfi-multi{display:grid;grid-template-columns:1fr;gap:6px;max-height:150px;overflow-y:auto;border:1px solid #dce5f0;border-radius:10px;background:#fff;padding:8px;}
+.wfi-multi label{display:flex;align-items:center;gap:7px;margin:0;padding:5px 6px;border-radius:7px;color:#0f2540;font-size:12.5px;font-weight:600;cursor:pointer;}
+.wfi-multi label:hover{background:#f4f8fd;}
+.wfi-multi input{accent-color:#004991;}
 `
 
 const USE_OPTIONS = ['AGUA FRIA', 'AGUA POTABLE', 'DESAGUE', 'ALCANTARILLADO', 'ELECTRICO']
@@ -75,6 +79,28 @@ const FieldSelect = ({ col = 'col-6', label, value, options, placeholder, onChan
     <CustomDropdown value={value} options={options} onChange={onChange} placeholder={placeholder} />
   </div>
 )
+
+const FieldMultiSegment = ({ col = 'col-6', label, value = [], options, onChange }) => {
+  const selected = Array.isArray(value) ? value.map(String) : []
+  const toggle = (id) => {
+    const key = String(id)
+    onChange(selected.includes(key) ? selected.filter((item) => item !== key) : [...selected, key])
+  }
+
+  return (
+    <div className={`form-group ${col} mb-2`}>
+      <label className='form-label'>{label}</label>
+      <div className='wfi-multi'>
+        {options.map((option) => (
+          <label key={option.value}>
+            <input type='checkbox' checked={selected.includes(String(option.value))} onChange={() => toggle(option.value)} />
+            <span>{option.label}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const Items = ({ categories = [], segments = [], lines = [], classifications = [], types = [] }) => {
   const tableRef = useRef(null)
@@ -136,6 +162,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const [selects, setSelects] = useState({
     category_id: '',
     product_segment_id: '',
+    product_segment_ids: [],
     product_line_id: '',
     product_classification_id: '',
     product_type_id: '',
@@ -185,6 +212,9 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     setSelects({
       category_id: data?.category_id ? String(data.category_id) : '',
       product_segment_id: data?.product_segment_id ? String(data.product_segment_id) : '',
+      product_segment_ids: Array.isArray(data?.product_segments) && data.product_segments.length
+        ? data.product_segments.map((row) => String(row.id))
+        : (data?.product_segment_id ? [String(data.product_segment_id)] : []),
       product_line_id: data?.product_line_id ? String(data.product_line_id) : '',
       product_classification_id: data?.product_classification_id ? String(data.product_classification_id) : '',
       product_type_id: data?.product_type_id ? String(data.product_type_id) : '',
@@ -280,17 +310,20 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
     const family = familyRef.current.value
     const nominal = nominalDiameterRef.current.value
+    const segmentIds = selects.product_segment_ids || []
+    const primarySegmentId = segmentIds[0] || selects.product_segment_id || ''
 
     const item = {
       id: dataLoaded?.id,
       title: titleRef.current.value,
       sku: skuRef.current.value,
       category_id: selects.category_id || '',
-      product_segment_id: selects.product_segment_id || '',
+      product_segment_id: primarySegmentId,
+      product_segment_ids: segmentIds,
       product_line_id: selects.product_line_id || '',
       product_classification_id: selects.product_classification_id || '',
       product_type_id: selects.product_type_id || '',
-      segment: segments.find((row) => String(row.id) === selects.product_segment_id)?.name || '',
+      segment: segments.find((row) => String(row.id) === primarySegmentId)?.name || '',
       type: types.find((row) => String(row.id) === selects.product_type_id)?.name || '',
       use_type: selects.use_type || '',
       family,
@@ -374,7 +407,13 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
           },
           {
             key: 'segment', header: 'Categoría / Clasificación', field: 'segment', filterFields: ['segment', 'type', 'use_type'], nowrap: true,
-            render: (d) => (<><span className='d-block'>{d.product_line?.name || d.category?.name || '-'}</span><small className='text-muted'>{[d.product_segment?.name || d.segment, d.product_classification?.name || d.classification, d.product_type?.name || d.type].filter(Boolean).join(' · ') || 'Sin clasificar'}</small></>),
+            render: (d) => {
+              const segmentLabel = Array.isArray(d.product_segments) && d.product_segments.length
+                ? d.product_segments.map((row) => row.name).filter(Boolean).join(' · ')
+                : (d.product_segment?.name || d.segment)
+
+              return (<><span className='d-block'>{d.product_line?.name || d.category?.name || '-'}</span><small className='text-muted'>{[segmentLabel, d.product_classification?.name || d.classification, d.product_type?.name || d.type].filter(Boolean).join(' · ') || 'Sin clasificar'}</small></>)
+            },
           },
           {
             key: 'price', header: 'Precio', field: 'price', filterable: false, align: 'right', nowrap: true,
@@ -440,9 +479,9 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                       options={[{ value: '', label: 'Sin categoría' }, ...categories.map((c) => ({ value: String(c.id), label: c.name }))]}
                       onChange={(v) => setSelect('category_id', v)} />
                     <div className='row'>
-                      <FieldSelect label='Segmento' value={selects.product_segment_id} placeholder='Sin segmento'
-                        options={[{ value: '', label: 'Sin segmento' }, ...segments.map((c) => ({ value: String(c.id), label: c.name }))]}
-                        onChange={(v) => setSelect('product_segment_id', v)} />
+                      <FieldMultiSegment label='Segmentos' value={selects.product_segment_ids}
+                        options={segments.map((c) => ({ value: String(c.id), label: c.name }))}
+                        onChange={(v) => setSelects((cur) => ({ ...cur, product_segment_ids: v, product_segment_id: v[0] || '' }))} />
                       <FieldSelect label='Uso' value={selects.use_type} placeholder='Sin uso' options={toOptions(USE_OPTIONS, 'Sin uso')} onChange={(v) => setSelect('use_type', v)} />
                     </div>
                     <div className='row'>

@@ -119,8 +119,10 @@ class ProductTaxonomyController extends BasicController
 
         $base = collect(match ($this->model) {
             ProductSegment::class => [
-                'Predial o Edificaciones',
-                'Saneamiento o Infraestructura',
+                'Predial',
+                'Edificaciones',
+                'Saneamiento',
+                'Infraestructura',
                 'Agricultura',
                 'Mineria',
             ],
@@ -290,12 +292,8 @@ class ProductTaxonomyController extends BasicController
     {
         $value = trim((string) $value);
         $aliases = [
-            'predial' => 'Predial o Edificaciones',
-            'edificaciones' => 'Predial o Edificaciones',
-            'predialoedificaciones' => 'Predial o Edificaciones',
-            'infraestructura' => 'Saneamiento o Infraestructura',
-            'saneamiento' => 'Saneamiento o Infraestructura',
-            'saneamientooinfraestructura' => 'Saneamiento o Infraestructura',
+            'predialoedificaciones' => 'Predial',
+            'saneamientooinfraestructura' => 'Saneamiento',
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
