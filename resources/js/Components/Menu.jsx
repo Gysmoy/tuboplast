@@ -150,11 +150,12 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
 
         <li className="side-nav-title mt-2">Catalogo</li>
         <MenuItem href="/admin/items" icon='ti ti-package'>Items</MenuItem>
-        <MenuItem href="/admin/categories" icon='ti ti-category'>Categorias</MenuItem>
-        <MenuItem href="/admin/product-segments" icon='ti ti-layers-subtract'>Segmentos</MenuItem>
-        <MenuItem href="/admin/product-lines" icon='ti ti-route'>Lineas de producto</MenuItem>
-        <MenuItem href="/admin/product-classifications" icon='ti ti-list-details'>Clasificaciones</MenuItem>
-        <MenuItem href="/admin/product-types" icon='ti ti-tags'>Tipos</MenuItem>
+        <MenuItemContainer title='Caracteristicas' icon='ti ti-list-tree'>
+          <MenuItem href="/admin/product-segments" icon='ti ti-layers-subtract'>Segmentos</MenuItem>
+          <MenuItem href="/admin/product-lines" icon='ti ti-route'>Lineas de producto</MenuItem>
+          <MenuItem href="/admin/product-classifications" icon='ti ti-list-details'>Clasificaciones</MenuItem>
+          <MenuItem href="/admin/product-types" icon='ti ti-tags'>Tipos</MenuItem>
+        </MenuItemContainer>
 
         <li className="side-nav-title mt-2">Landing</li>
         <MenuItem href="/admin/sliders" icon='ti ti-slideshow'>Sliders</MenuItem>
