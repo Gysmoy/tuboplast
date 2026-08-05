@@ -21,4 +21,9 @@ class ProductSegment extends Model
     {
         return $this->belongsToMany(Item::class, 'item_product_segment')->withTimestamps();
     }
+
+    public function primaryItems()
+    {
+        return $this->hasMany(Item::class, 'product_segment_id');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ProductSegment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -14,14 +15,31 @@ class ProductSegmentController extends ProductTaxonomyController
 
     public function setPaginationInstance(string $model)
     {
+        $activeItemsCount = DB::table('items')
+            ->selectRaw('COUNT(DISTINCT items.id)')
+            ->where('items.status', true)
+            ->where(function ($query) {
+                $query->whereColumn('items.product_segment_id', 'product_segments.id');
+
+                if (Schema::hasTable('item_product_segment')) {
+                    $query->orWhereExists(function ($exists) {
+                        $exists->selectRaw('1')
+                            ->from('item_product_segment')
+                            ->whereColumn('item_product_segment.item_id', 'items.id')
+                            ->whereColumn('item_product_segment.product_segment_id', 'product_segments.id');
+                    });
+                }
+            });
+
         if (!Schema::hasTable('item_product_segment')) {
-            return $model::query()->select('product_segments.*')->selectRaw('0 as active_items_count');
+            return $model::query()
+                ->select('product_segments.*')
+                ->selectSub($activeItemsCount, 'active_items_count');
         }
 
         return $model::query()
-            ->withCount([
-                'items as active_items_count' => fn ($query) => $query->where('items.status', true),
-            ]);
+            ->select('product_segments.*')
+            ->selectSub($activeItemsCount, 'active_items_count');
     }
 
     public function beforeSave(Request $request)

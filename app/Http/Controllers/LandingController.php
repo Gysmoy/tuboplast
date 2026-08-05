@@ -327,28 +327,20 @@ class LandingController extends BasicController
             ->pluck('id')
             ->all();
 
-        $legacyValues = collect($values)
-            ->flatMap(fn ($value) => $this->segmentLegacyAliases($value))
-            ->unique(fn ($value) => $this->facetLookupKey($value))
-            ->values()
-            ->all();
+        if (!$ids) {
+            $query->whereRaw('1 = 0');
+            return;
+        }
 
-        $query->where(function ($where) use ($ids, $legacyValues) {
+        $query->where(function ($where) use ($ids) {
             $hasCondition = false;
 
-            if ($ids && Schema::hasTable('item_product_segment')) {
+            if (Schema::hasTable('item_product_segment')) {
                 $where->whereHas('productSegments', fn ($segment) => $segment->whereIn('product_segments.id', $ids));
                 $hasCondition = true;
             }
 
-            if ($ids) {
-                $hasCondition ? $where->orWhereIn('product_segment_id', $ids) : $where->whereIn('product_segment_id', $ids);
-                $hasCondition = true;
-            }
-
-            if (!$hasCondition && $legacyValues) {
-                $where->whereIn('segment', $legacyValues);
-            }
+            $hasCondition ? $where->orWhereIn('product_segment_id', $ids) : $where->whereIn('product_segment_id', $ids);
         });
     }
 
@@ -564,19 +556,6 @@ class LandingController extends BasicController
         };
     }
 
-    private function segmentLegacyAliases($value): array
-    {
-        $key = $this->facetLookupKey((string) $value);
-
-        return match ($key) {
-            'predial' => ['Predial', 'PREDIAL'],
-            'edificaciones' => ['Edificaciones'],
-            'saneamiento' => ['Saneamiento'],
-            'infraestructura' => ['Infraestructura', 'INFRAESTRUCTURA'],
-            default => $this->legacyFacetAliases($value),
-        };
-    }
-
     private function paginationMeta($paginator): array
     {
         return [
@@ -679,7 +658,6 @@ class LandingController extends BasicController
     {
         if (
             !Schema::hasTable('product_segments')
-            || !Schema::hasTable('item_product_segment')
             || !Schema::hasColumn('product_segments', 'featured')
         ) {
             return [];
@@ -688,7 +666,13 @@ class LandingController extends BasicController
         return ProductSegment::query()
             ->where('status', true)
             ->where('featured', true)
-            ->whereHas('items', fn ($items) => $items->where('items.status', true))
+            ->where(function ($query) {
+                $query->whereHas('primaryItems', fn ($items) => $items->where('items.status', true));
+
+                if (Schema::hasTable('item_product_segment')) {
+                    $query->orWhereHas('items', fn ($items) => $items->where('items.status', true));
+                }
+            })
             ->orderBy('featured_order')
             ->orderBy('id')
             ->get()
