@@ -458,7 +458,9 @@ class ItemController extends BasicController
 
         $aliases = [
             'predialoedificaciones' => 'Predial',
+            'predialedificaciones' => 'Predial',
             'saneamientooinfraestructura' => 'Saneamiento',
+            'saneamientoinfraestructura' => 'Saneamiento',
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
@@ -484,11 +486,34 @@ class ItemController extends BasicController
             return [];
         }
 
-        return match ($this->taxonomyLookupKey($value)) {
-            'predialoedificaciones' => ['Predial', 'Edificaciones'],
-            'saneamientooinfraestructura' => ['Saneamiento', 'Infraestructura'],
-            default => [$this->normalizeCatalogLabel($value)],
+        $normalized = $this->normalizeTaxonomyName($value);
+        $wholeKey = $this->taxonomyLookupKey($normalized);
+        $grouped = match ($wholeKey) {
+            'predialoedificaciones', 'predialedificaciones' => ['Predial', 'Edificaciones'],
+            'saneamientooinfraestructura', 'saneamientoinfraestructura' => ['Saneamiento', 'Infraestructura'],
+            default => null,
         };
+
+        if ($grouped) {
+            return $grouped;
+        }
+
+        $parts = preg_split('/\s*(?:\||,|;|\/|\bo\b)\s*/iu', $normalized) ?: [];
+        $segments = collect($parts)
+            ->map(fn ($part) => $this->normalizeCatalogLabel($part))
+            ->filter()
+            ->flatMap(function ($part) {
+                return match ($this->taxonomyLookupKey($part)) {
+                    'predialoedificaciones', 'predialedificaciones' => ['Predial', 'Edificaciones'],
+                    'saneamientooinfraestructura', 'saneamientoinfraestructura' => ['Saneamiento', 'Infraestructura'],
+                    default => [$part],
+                };
+            })
+            ->unique(fn ($part) => $this->taxonomyLookupKey($part))
+            ->values()
+            ->all();
+
+        return $segments ?: [$this->normalizeCatalogLabel($value)];
     }
 
     private function normalizeCatalogType(?string $value): ?string

@@ -292,8 +292,6 @@ class ProductTaxonomyController extends BasicController
     {
         $value = trim((string) $value);
         $aliases = [
-            'predialoedificaciones' => 'Predial',
-            'saneamientooinfraestructura' => 'Saneamiento',
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
