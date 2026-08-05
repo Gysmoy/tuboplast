@@ -685,13 +685,18 @@ class LandingController extends BasicController
 
     private function normalizeExpertCategories(): array
     {
-        if (!Schema::hasTable('product_segments') || !Schema::hasColumn('product_segments', 'featured')) {
+        if (
+            !Schema::hasTable('product_segments')
+            || !Schema::hasTable('item_product_segment')
+            || !Schema::hasColumn('product_segments', 'featured')
+        ) {
             return [];
         }
 
         return ProductSegment::query()
             ->where('status', true)
             ->where('featured', true)
+            ->whereHas('items', fn ($items) => $items->where('items.status', true))
             ->orderBy('featured_order')
             ->orderBy('id')
             ->get()

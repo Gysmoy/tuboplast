@@ -16,4 +16,9 @@ class ProductSegment extends Model
         'featured_order' => 'integer',
         'status' => 'boolean',
     ];
+
+    public function items()
+    {
+        return $this->belongsToMany(Item::class, 'item_product_segment')->withTimestamps();
+    }
 }

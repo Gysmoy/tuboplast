@@ -43,9 +43,12 @@ const CSS = `
 .wseg-sec{border:1px solid #eef2f8;border-radius:12px;padding:16px;}
 .wseg-sec h4{font-size:14px;font-weight:700;color:#0f2540;margin:0 0 14px;display:flex;align-items:center;}
 .wseg-err{display:flex;align-items:center;gap:8px;background:#fcebeb;color:#b42318;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:500;}
+.wseg-count{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;padding:0 10px;border-radius:999px;background:#eaf4ff;color:#004991;font-weight:700;font-size:13px;}
+.wseg-count.empty{background:#fff1f2;color:#e24b4a;}
 `
 
 const boolOf = (value) => value === true || value === 1 || value === '1'
+const activeItemsCount = (segment) => Number(segment?.active_items_count ?? 0)
 
 const ProductSegments = (properties) => {
   const tableRef = useRef(null)
@@ -140,12 +143,19 @@ const ProductSegments = (properties) => {
         icon='ti ti-layers-subtract'
         countSuffix='segmentos'
         defaultSort={[{ selector: 'name', desc: false }]}
-        minWidth={920}
+        minWidth={1030}
         headerActions={<button type='button' className='wseg-btn' onClick={() => openForm(null)}><i className='mdi mdi-plus'></i> Nuevo</button>}
         columns={[
           { key: 'image', header: 'Imagen', filterable: false, sortable: false, width: 96, render: (d) => <img src={imageUrl(d.image)} alt={d.name} className='wseg-thumb' /> },
           { key: 'name', header: 'Nombre', field: 'name', nowrap: true, render: (d) => <span className='fw-semibold'>{d.name}</span> },
           { key: 'description', header: 'Descripcion', field: 'description', render: (d) => <span style={{ color: '#5b6577' }}>{d.description || '-'}</span> },
+          {
+            key: 'active_items_count', header: 'Items activos', field: 'active_items_count', align: 'center', width: 120, filterable: false,
+            render: (d) => {
+              const count = activeItemsCount(d)
+              return <span className={`wseg-count ${count ? '' : 'empty'}`} title={count ? 'Puede mostrarse en home si esta destacado y activo' : 'No se mostrara en home porque no tiene items activos'}>{count}</span>
+            },
+          },
           {
             key: 'featured', header: 'Destacado home', field: 'featured', align: 'center', width: 140,
             filterOptions: [{ value: '1', label: 'Si' }, { value: '0', label: 'No' }],

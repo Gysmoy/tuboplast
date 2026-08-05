@@ -11,6 +11,14 @@ class ProductSegmentController extends ProductTaxonomyController
     public $reactView = 'Admin/ProductSegments';
     public $model = ProductSegment::class;
 
+    public function setPaginationInstance(string $model)
+    {
+        return $model::query()
+            ->withCount([
+                'items as active_items_count' => fn ($query) => $query->where('items.status', true),
+            ]);
+    }
+
     public function beforeSave(Request $request)
     {
         $this->ensureBaseRows();
