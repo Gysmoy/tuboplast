@@ -61,6 +61,66 @@ class ItemImportTest extends TestCase
         $this->assertSame([0, 1, 2], $item->images->pluck('sort_order')->all());
     }
 
+    public function test_import_reuses_zip_images_by_temporary_image_code_column(): void
+    {
+        Storage::fake('public');
+        $this->actingAs(User::factory()->create());
+
+        $response = $this->post('/api/items/import', [
+            'file' => UploadedFile::fake()->createWithContent('items.csv', $this->csv([
+                ['ADA112PR', 'Producto ADA 112', 'ADAPR'],
+                ['ADA114PR', 'Producto ADA 114', 'ADAPR'],
+                ['ADA200PR', 'Producto ADA 200', 'ADAPR'],
+            ])),
+            'images_zip' => $this->zipUpload([
+                'ADAPR.png' => 'shared-main',
+            ]),
+            'mode' => 'upsert',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('status', 200)
+            ->assertJsonPath('data.created', 3)
+            ->assertJsonPath('data.images_associated', 3)
+            ->assertJsonPath('data.images_ignored', 0);
+
+        $items = Item::with('images')
+            ->whereIn('sku', ['ADA112PR', 'ADA114PR', 'ADA200PR'])
+            ->orderBy('sku')
+            ->get();
+
+        $this->assertCount(3, $items);
+        foreach ($items as $item) {
+            $this->assertCount(1, $item->images);
+            $this->assertSame($item->images[0]->path, $item->image);
+        }
+    }
+
+    public function test_import_falls_back_to_sku_when_temporary_image_code_is_empty(): void
+    {
+        Storage::fake('public');
+        $this->actingAs(User::factory()->create());
+
+        $response = $this->post('/api/items/import', [
+            'file' => UploadedFile::fake()->createWithContent('items.csv', $this->csv([
+                ['ADA112PR', 'Producto ADA', ''],
+            ])),
+            'images_zip' => $this->zipUpload([
+                'ADA112PR.png' => 'main',
+            ]),
+            'mode' => 'upsert',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('status', 200)
+            ->assertJsonPath('data.images_associated', 1)
+            ->assertJsonPath('data.images_ignored', 0);
+
+        $item = Item::with('images')->where('sku', 'ADA112PR')->firstOrFail();
+        $this->assertCount(1, $item->images);
+        $this->assertSame($item->images[0]->path, $item->image);
+    }
+
     public function test_import_reports_unmatched_and_invalid_zip_files_as_ignored(): void
     {
         Storage::fake('public');
@@ -113,10 +173,11 @@ class ItemImportTest extends TestCase
 
     private function csv(array $rows): string
     {
-        $lines = ['Codigo Producto,Descripcion de Producto,LINEA DE PRODUCTO'];
+        $lines = ['Codigo Producto,CODIGO IMAGEN,Descripcion de Producto,LINEA DE PRODUCTO'];
 
-        foreach ($rows as [$sku, $title]) {
-            $lines[] = "{$sku},{$title},Agua Fria";
+        foreach ($rows as $row) {
+            [$sku, $title, $imageCode] = [$row[0], $row[1], $row[2] ?? ''];
+            $lines[] = "{$sku},{$imageCode},{$title},Agua Fria";
         }
 
         return implode("\n", $lines);

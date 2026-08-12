@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ProductClassificationController;
+use App\Http\Controllers\Admin\ProductFamilyController;
 use App\Http\Controllers\Admin\ProductLineController;
 use App\Http\Controllers\Admin\ProductSegmentController;
 use App\Http\Controllers\Admin\ProductTypeController;
@@ -73,6 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::redirect('/product-segments', '/admin/product-segments');
     Route::redirect('/product-lines', '/admin/product-lines');
     Route::redirect('/product-classifications', '/admin/product-classifications');
+    Route::redirect('/product-families', '/admin/product-families');
     Route::redirect('/product-types', '/admin/product-types');
     Route::redirect('/about-page', '/admin/about');
     Route::redirect('/nosotros', '/admin/about');
@@ -95,6 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::redirect('/admin/segmentos', '/admin/product-segments');
     Route::redirect('/admin/lineas-producto', '/admin/product-lines');
     Route::redirect('/admin/clasificaciones', '/admin/product-classifications');
+    Route::redirect('/admin/familias', '/admin/product-families');
     Route::redirect('/admin/tipos-producto', '/admin/product-types');
     Route::redirect('/admin/nosotros', '/admin/about');
     Route::redirect('/admin/blogs', '/admin/blog');
@@ -105,6 +108,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/product-segments', [ProductSegmentController::class, 'reactView'])->name('admin.product-segments');
     Route::get('/admin/product-lines', [ProductLineController::class, 'reactView'])->name('admin.product-lines');
     Route::get('/admin/product-classifications', [ProductClassificationController::class, 'reactView'])->name('admin.product-classifications');
+    Route::get('/admin/product-families', [ProductFamilyController::class, 'reactView'])->name('admin.product-families');
     Route::get('/admin/product-types', [ProductTypeController::class, 'reactView'])->name('admin.product-types');
     Route::get('/admin/items', [ItemController::class, 'reactView'])->name('admin.items');
     Route::get('/admin/about', [AboutController::class, 'reactView'])->name('admin.about');

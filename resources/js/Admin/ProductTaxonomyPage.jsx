@@ -30,7 +30,11 @@ const TAXONOMY_CSS = `
 .wtx-close:hover{background:#f4f8fd;color:#0f2540;}
 .wtx-modal .form-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#8a93a6;margin-bottom:3px;}
 .wtx-err{display:flex;align-items:center;gap:8px;background:#fcebeb;color:#b42318;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:500;}
+.wtx-count{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;padding:0 10px;border-radius:999px;background:#eaf4ff;color:#004991;font-weight:700;font-size:13px;}
+.wtx-count.empty{background:#fff1f2;color:#e24b4a;}
 `
+
+const activeItemsCount = (taxonomy) => Number(taxonomy?.active_items_count ?? 0)
 
 const ProductTaxonomyPage = ({ path, title, singular, icon = 'ti ti-list-details', ...properties }) => {
   const tableRef = useRef(null)
@@ -116,11 +120,18 @@ const ProductTaxonomyPage = ({ path, title, singular, icon = 'ti ti-list-details
         icon={icon}
         countSuffix={title.toLowerCase()}
         defaultSort={[{ selector: 'name', desc: false }]}
-        minWidth={760}
+        minWidth={880}
         headerActions={<button type='button' className='wtx-btn' onClick={() => onModalOpen(null)}><i className='mdi mdi-plus'></i> Nuevo</button>}
         columns={[
           { key: 'name', header: 'Nombre', field: 'name', nowrap: true, render: (d) => <span className='fw-semibold'>{d.name}</span> },
           { key: 'description', header: 'Descripcion', field: 'description', render: (d) => <span style={{ color: '#5b6577' }}>{d.description || '-'}</span> },
+          {
+            key: 'active_items_count', header: 'Items activos', field: 'active_items_count', align: 'center', width: 120, filterable: false,
+            render: (d) => {
+              const count = activeItemsCount(d)
+              return <span className={`wtx-count ${count ? '' : 'empty'}`} title={`${count} productos activos asociados`}>{count}</span>
+            },
+          },
           {
             key: 'status', header: 'Estado', field: 'status', align: 'center',
             filterOptions: [{ value: '1', label: 'Activo' }, { value: '0', label: 'Inactivo' }],

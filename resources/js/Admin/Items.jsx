@@ -102,7 +102,7 @@ const FieldMultiSegment = ({ col = 'col-6', label, value = [], options, onChange
   )
 }
 
-const Items = ({ categories = [], segments = [], lines = [], classifications = [], types = [] }) => {
+const Items = ({ categories = [], segments = [], lines = [], classifications = [], families = [], types = [] }) => {
   const tableRef = useRef(null)
   const importInputRef = useRef(null)
   const importZipInputRef = useRef(null)
@@ -126,7 +126,6 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const nominalDiameterRef = useRef()
   const pressureRef = useRef()
   const famconsRef = useRef()
-  const familyRef = useRef()
 
   // Logística
   const packageTypeRef = useRef()
@@ -167,6 +166,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     product_segment_ids: [],
     product_line_id: '',
     product_classification_id: '',
+    product_family_id: '',
     product_type_id: '',
     use_type: '',
     currency: 'PEN',
@@ -191,7 +191,6 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     set(originCountryRef, data?.origin_country)
     set(nominalDiameterRef, data?.nominal_diameter || data?.diameter)
     set(famconsRef, data?.famcons)
-    set(familyRef, data?.family || data?.classification)
     set(diametersRef, Array.isArray(data?.diameters) ? data.diameters.join(', ') : (data?.diameters || ''))
     set(descriptionRef, data?.description)
     set(packageTypeRef, data?.package_type)
@@ -219,6 +218,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
         : (data?.product_segment_id ? [String(data.product_segment_id)] : []),
       product_line_id: data?.product_line_id ? String(data.product_line_id) : '',
       product_classification_id: data?.product_classification_id ? String(data.product_classification_id) : '',
+      product_family_id: data?.product_family_id ? String(data.product_family_id) : '',
       product_type_id: data?.product_type_id ? String(data.product_type_id) : '',
       use_type: data?.use_type || '',
       currency: data?.currency || 'PEN',
@@ -341,7 +341,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     e.preventDefault()
     if (loading) return
 
-    const family = familyRef.current.value
+    const family = families.find((row) => String(row.id) === selects.product_family_id)?.name || ''
     const nominal = nominalDiameterRef.current.value
     const segmentIds = selects.product_segment_ids || []
     const primarySegmentId = segmentIds[0] || selects.product_segment_id || ''
@@ -355,12 +355,13 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       product_segment_ids: segmentIds,
       product_line_id: selects.product_line_id || '',
       product_classification_id: selects.product_classification_id || '',
+      product_family_id: selects.product_family_id || '',
       product_type_id: selects.product_type_id || '',
       segment: segments.find((row) => String(row.id) === primarySegmentId)?.name || '',
       type: types.find((row) => String(row.id) === selects.product_type_id)?.name || '',
       use_type: selects.use_type || '',
       family,
-      classification: classifications.find((row) => String(row.id) === selects.product_classification_id)?.name || family,
+      classification: classifications.find((row) => String(row.id) === selects.product_classification_id)?.name || '',
       famcons: famconsRef.current.value,
       material: materialRef.current.value,
       color: colorRef.current.value,
@@ -447,6 +448,10 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
               return (<><span className='d-block'>{d.product_line?.name || d.category?.name || '-'}</span><small className='text-muted'>{[segmentLabel, d.product_classification?.name || d.classification, d.product_type?.name || d.type].filter(Boolean).join(' · ') || 'Sin clasificar'}</small></>)
             },
+          },
+          {
+            key: 'family', header: 'Familia', field: 'family', filterFields: ['family', 'product_family.name'], nowrap: true,
+            render: (d) => <span className='fw-semibold'>{d.product_family?.name || d.family || '-'}</span>,
           },
           {
             key: 'price', header: 'Precio', field: 'price', filterable: false, align: 'right', nowrap: true,
@@ -550,7 +555,9 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 </div>
                 <div className='row'>
                   <InputFormGroup col='col-md-4' eRef={famconsRef} label='Familia (FAMCONS)' />
-                  <InputFormGroup col='col-md-4' eRef={familyRef} label='Familia detallada (FAMILIA)' />
+                  <FieldSelect col='col-md-4' label='Familia (FAMILIA)' value={selects.product_family_id} placeholder='Sin familia'
+                    options={[{ value: '', label: 'Sin familia' }, ...families.map((c) => ({ value: String(c.id), label: c.name }))]}
+                    onChange={(v) => setSelect('product_family_id', v)} />
                   <InputFormGroup col='col-md-4' eRef={pressureRef} label='Presión (opcional)' placeholder='Ej. PN-10' />
                 </div>
               </div>
@@ -647,7 +654,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 <div>
                   <i className='mdi mdi-cloud-upload-outline'></i>
                   <strong>Arrastra tu Excel aquí o haz clic para seleccionarlo</strong>
-                  <span>Formatos soportados: .xlsx y .csv. La columna clave es Codigo Producto.</span>
+                  <span>Formatos soportados: .xlsx y .csv. Usa Codigo Producto y, opcionalmente, CODIGO IMAGEN.</span>
                   {importFile && (
                     <div className='wfi-file-pill'>
                       <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
@@ -673,7 +680,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 <div>
                   <i className='mdi mdi-folder-zip-outline'></i>
                   <strong>Zip de imagenes opcional</strong>
-                  <span>Nombres esperados: CODIGO.png o CODIGO-1.jpg, CODIGO-2.jpg.</span>
+                  <span>Nombres esperados: CODIGO.png o CODIGO-1.jpg. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
                   {importImagesZip && (
                     <div className='wfi-file-pill'>
                       <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
@@ -699,7 +706,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                   <label className={`wfi-mode ${importMode === 'images' ? 'on' : ''}`}>
                     <input type='radio' name='import-mode' value='images' checked={importMode === 'images'} onChange={(e) => setImportMode(e.target.value)} />
                     <b>Solo imagenes</b>
-                    <span>No modifica productos. Solo reemplaza galerias cuando el nombre del archivo coincide claramente con un SKU existente.</span>
+                    <span>No modifica productos. Solo reemplaza galerias cuando el archivo coincide con un SKU existente.</span>
                   </label>
                 </div>
               </div>

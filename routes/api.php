@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ProductClassificationController;
+use App\Http\Controllers\Admin\ProductFamilyController;
 use App\Http\Controllers\Admin\ProductLineController;
 use App\Http\Controllers\Admin\ProductSegmentController;
 use App\Http\Controllers\Admin\ProductTypeController;
@@ -104,6 +105,12 @@ Route::middleware('auth')->group(function () {
     Route::get('product-classifications/{id}', [ProductClassificationController::class, 'get']);
     Route::patch('product-classifications/status', [ProductClassificationController::class, 'status']);
     Route::delete('product-classifications/{id}', [ProductClassificationController::class, 'delete']);
+
+    Route::post('product-families/paginate', [ProductFamilyController::class, 'paginate']);
+    Route::post('product-families', [ProductFamilyController::class, 'save']);
+    Route::get('product-families/{id}', [ProductFamilyController::class, 'get']);
+    Route::patch('product-families/status', [ProductFamilyController::class, 'status']);
+    Route::delete('product-families/{id}', [ProductFamilyController::class, 'delete']);
 
     Route::post('product-types/paginate', [ProductTypeController::class, 'paginate']);
     Route::post('product-types', [ProductTypeController::class, 'save']);

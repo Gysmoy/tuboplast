@@ -4,7 +4,7 @@ import ItemCard from './Components/Items/ItemCard';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 
-const emptyFilters = { segment: [], line: [], classification: [], type: [] };
+const emptyFilters = { segment: [], line: [], classification: [], family: [], type: [] };
 
 const filtersFromUrl = () => {
   if (typeof window === 'undefined') return emptyFilters;
@@ -19,6 +19,7 @@ const filtersFromUrl = () => {
     segment: read('segment'),
     line: read('line'),
     classification: read('classification'),
+    family: read('family'),
     type: read('type'),
   };
 };
@@ -225,6 +226,7 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     segment: availableFacets.segment || [],
     line: availableFacets.line || [],
     classification: availableFacets.classification || [],
+    family: availableFacets.family || [],
     type: availableFacets.type || [],
   };
 
@@ -258,6 +260,7 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
     filters.segment.forEach((value) => params.append('segment[]', value));
     filters.line.forEach((value) => params.append('line[]', value));
     filters.classification.forEach((value) => params.append('classification[]', value));
+    filters.family.forEach((value) => params.append('family[]', value));
     filters.type.forEach((value) => params.append('type[]', value));
     params.set('sort', sort);
     params.set('page', String(page));
@@ -403,27 +406,9 @@ const CatalogScreen = ({ items: initialItems = [], facets = {}, pagination = nul
 
                 <FacetCheckboxGroup title="Clasificación" groupKey="classification" items={facetGroups.classification} selected={filters.classification} onToggle={toggleFilter} onSeeMore={setModalGroup} />
 
-                {facetGroups.type.length > 0 && (
-                  <FilterGroup title="Tipo de producto">
-                    <div className="flex flex-wrap gap-2">
-                      {facetGroups.type.map((label) => {
-                        const active = filters.type.includes(label);
-                        return (
-                          <button
-                            key={label}
-                            type="button"
-                            onClick={() => toggleFilter('type', label)}
-                            className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
-                              active ? 'bg-primary text-white' : 'bg-silver text-darkmuted hover:bg-slate-200'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </FilterGroup>
-                )}
+                <FacetCheckboxGroup title="Tipo de producto" groupKey="type" items={facetGroups.type} selected={filters.type} onToggle={toggleFilter} onSeeMore={setModalGroup} />
+
+                <FacetCheckboxGroup title="Familia" groupKey="family" items={facetGroups.family} selected={filters.family} onToggle={toggleFilter} onSeeMore={setModalGroup} />
 
                 <div className="rounded-lg bg-[#f0f0f0] p-4">
                   <p className="text-sm font-bold text-primary">Asesoría Técnica</p>

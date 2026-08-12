@@ -154,6 +154,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
           <MenuItem href="/admin/product-segments" icon='ti ti-layers-subtract'>Segmentos</MenuItem>
           <MenuItem href="/admin/product-lines" icon='ti ti-route'>Lineas de producto</MenuItem>
           <MenuItem href="/admin/product-classifications" icon='ti ti-list-details'>Clasificaciones</MenuItem>
+          <MenuItem href="/admin/product-families" icon='ti ti-folders'>Familias</MenuItem>
           <MenuItem href="/admin/product-types" icon='ti ti-tags'>Tipos</MenuItem>
         </MenuItemContainer>
 

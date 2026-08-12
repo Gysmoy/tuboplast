@@ -6,6 +6,7 @@ use App\Http\Controllers\BasicController;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\ProductClassification;
+use App\Models\ProductFamily;
 use App\Models\ProductLine;
 use App\Models\ProductSegment;
 use App\Models\ProductType;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -30,6 +32,32 @@ class ProductTaxonomyController extends BasicController
         $this->ensureBaseRows();
 
         return parent::paginate($request);
+    }
+
+    public function setPaginationInstance(string $model)
+    {
+        $table = (new $model)->getTable();
+        $foreignKey = match ($model) {
+            ProductSegment::class => 'product_segment_id',
+            ProductLine::class => 'product_line_id',
+            ProductClassification::class => 'product_classification_id',
+            ProductFamily::class => 'product_family_id',
+            ProductType::class => 'product_type_id',
+            default => null,
+        };
+
+        if (!$foreignKey) {
+            return parent::setPaginationInstance($model);
+        }
+
+        $activeItemsCount = DB::table('items')
+            ->selectRaw('COUNT(DISTINCT items.id)')
+            ->where('items.status', true)
+            ->whereColumn("items.{$foreignKey}", "{$table}.id");
+
+        return $model::query()
+            ->select("{$table}.*")
+            ->selectSub($activeItemsCount, 'active_items_count');
     }
 
     public function beforeSave(Request $request)
@@ -145,6 +173,10 @@ class ProductTaxonomyController extends BasicController
                 'Sistema Union Flexible (UF)',
                 'Sistema Termofusion',
             ],
+            ProductFamily::class => Item::query()
+                ->whereNotNull('family')
+                ->distinct()
+                ->pluck('family'),
             ProductType::class => [
                 'Tubos',
                 'Conexiones',
@@ -190,12 +222,13 @@ class ProductTaxonomyController extends BasicController
                     continue;
                 }
 
-                $foreignKey = match ($this->model) {
-                    ProductSegment::class => 'product_segment_id',
-                    ProductLine::class => 'product_line_id',
-                    ProductClassification::class => 'product_classification_id',
-                    ProductType::class => 'product_type_id',
-                    default => null,
+                    $foreignKey = match ($this->model) {
+                        ProductSegment::class => 'product_segment_id',
+                        ProductLine::class => 'product_line_id',
+                        ProductClassification::class => 'product_classification_id',
+                        ProductFamily::class => 'product_family_id',
+                        ProductType::class => 'product_type_id',
+                        default => null,
                 };
 
                 if ($foreignKey) {
@@ -225,6 +258,10 @@ class ProductTaxonomyController extends BasicController
                 ->whereNotNull('classification')
                 ->distinct()
                 ->pluck('classification'),
+            ProductFamily::class => Item::query()
+                ->whereNotNull('family')
+                ->distinct()
+                ->pluck('family'),
             ProductType::class => Item::query()
                 ->whereNotNull('type')
                 ->distinct()
@@ -245,6 +282,7 @@ class ProductTaxonomyController extends BasicController
                         ProductSegment::class => $item->segment,
                         ProductLine::class => $item->famcons ?: $item->category?->name,
                         ProductClassification::class => $item->classification,
+                        ProductFamily::class => $item->family,
                         ProductType::class => $item->type,
                         default => null,
                     };
@@ -272,6 +310,9 @@ class ProductTaxonomyController extends BasicController
                         ProductClassification::class => [
                             'product_classification_id' => $taxonomy->id,
                             'classification' => $taxonomy->name,
+                        ],
+                        ProductFamily::class => [
+                            'product_family_id' => $taxonomy->id,
                             'family' => $taxonomy->name,
                         ],
                         ProductType::class => [

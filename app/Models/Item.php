@@ -14,6 +14,7 @@ class Item extends Model
         'product_segment_id',
         'product_line_id',
         'product_classification_id',
+        'product_family_id',
         'product_type_id',
         'segment',
         'classification',
@@ -91,6 +92,11 @@ class Item extends Model
     public function productClassification()
     {
         return $this->belongsTo(ProductClassification::class);
+    }
+
+    public function productFamily()
+    {
+        return $this->belongsTo(ProductFamily::class);
     }
 
     public function productType()

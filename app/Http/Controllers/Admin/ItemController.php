@@ -6,6 +6,7 @@ use App\Http\Controllers\BasicController;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\ProductClassification;
+use App\Models\ProductFamily;
 use App\Models\ProductLine;
 use App\Models\ProductSegment;
 use App\Models\ProductType;
@@ -26,7 +27,7 @@ class ItemController extends BasicController
     public $reactView = 'Admin/Items';
     public $model = Item::class;
     public $imageFields = [];
-    public $with4get = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType'];
+    public $with4get = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productFamily', 'productType'];
     private array $pendingSegmentIds = [];
     private array $filesPendingDeletion = [];
 
@@ -37,7 +38,7 @@ class ItemController extends BasicController
 
     private function itemRelations(): array
     {
-        $relations = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType'];
+        $relations = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productFamily', 'productType'];
 
         if (Schema::hasTable('item_images')) {
             $relations[] = 'images';
@@ -67,6 +68,10 @@ class ItemController extends BasicController
                 ->whereNotNull('status')
                 ->orderBy('name')
                 ->get(['id', 'name']),
+            'families' => ProductFamily::query()
+                ->whereNotNull('status')
+                ->orderBy('name')
+                ->get(['id', 'name']),
             'types' => ProductType::query()
                 ->whereNotNull('status')
                 ->orderBy('name')
@@ -80,6 +85,7 @@ class ItemController extends BasicController
             ProductSegmentController::class,
             ProductLineController::class,
             ProductClassificationController::class,
+            ProductFamilyController::class,
             ProductTypeController::class,
         ] as $controller) {
             app($controller)->ensureBaseRows();
@@ -99,6 +105,7 @@ class ItemController extends BasicController
             'product_segment_ids.*' => 'integer|exists:product_segments,id',
             'product_line_id' => 'nullable|integer|exists:product_lines,id',
             'product_classification_id' => 'nullable|integer|exists:product_classifications,id',
+            'product_family_id' => 'nullable|integer|exists:product_families,id',
             'product_type_id' => 'nullable|integer|exists:product_types,id',
             'segment' => 'nullable|string|max:120',
             'classification' => 'nullable|string|max:160',
@@ -158,8 +165,8 @@ class ItemController extends BasicController
         $validated['currency'] = $validated['currency'] ?? 'PEN';
         $validated['product_segment_id'] = $primarySegmentId ?: null;
         $validated['segment'] = $this->taxonomyName(ProductSegment::class, $primarySegmentId) ?? ($validated['segment'] ?? null);
-        $validated['family'] = $this->taxonomyName(ProductClassification::class, $validated['product_classification_id'] ?? null) ?? ($validated['family'] ?? null);
-        $validated['classification'] = $validated['family'];
+        $validated['classification'] = $this->taxonomyName(ProductClassification::class, $validated['product_classification_id'] ?? null) ?? ($validated['classification'] ?? null);
+        $validated['family'] = $this->taxonomyName(ProductFamily::class, $validated['product_family_id'] ?? null) ?? ($validated['family'] ?? null);
         $validated['type'] = $this->taxonomyName(ProductType::class, $validated['product_type_id'] ?? null) ?? ($validated['type'] ?? null);
 
         if (array_key_exists('status', $validated)) {
@@ -336,7 +343,8 @@ class ItemController extends BasicController
                 $created++;
             }
 
-            $imageKey = $this->imagePackageKey($sku);
+            $imageCode = $this->imageLookupCodeFromRow($norm, $sku);
+            $imageKey = $this->imagePackageKey($imageCode);
             if (!empty($imageGroups[$imageKey])) {
                 $imagesAssociated += $this->replaceItemImages($item, $imageGroups[$imageKey]);
                 $matchedImageSkus[$imageKey] = true;
@@ -379,6 +387,11 @@ class ItemController extends BasicController
             ->where('product_classification_id', $data['product_classification_id'])
             ->where('product_type_id', $data['product_type_id'])
             ->first();
+    }
+
+    private function imageLookupCodeFromRow(array $norm, string $sku): string
+    {
+        return $this->stringOrNull($this->getImportValue($norm, 'CODIGO IMAGEN')) ?? $sku;
     }
 
     private function replaceImagesForExistingItems(array $imageGroups, int $initialIgnored): array
@@ -470,9 +483,10 @@ class ItemController extends BasicController
         $rawSegmentName = $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO DE NEGOCIO'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'SEGMENTO'));
         $segmentName = $this->normalizeCatalogLabel($rawSegmentName);
+        $familyName = $this->normalizeCatalogLabel($this->stringOrNull($this->getImportValue($norm, 'FAMILIA')));
         $classificationName = $this->normalizeCatalogLabel($this->stringOrNull($this->getImportValue($norm, 'CLASIFICACION'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'CLASIFICACIÓN'))
-            ?? $this->stringOrNull($this->getImportValue($norm, 'FAMILIA')));
+            ?? $familyName);
         $typeName = $this->normalizeCatalogType($this->stringOrNull($this->getImportValue($norm, 'TIPO')));
         $category = $this->resolveImportCategory($lineName, $categoryCache);
         $segmentNames = $this->segmentNamesFromImport($rawSegmentName);
@@ -483,6 +497,7 @@ class ItemController extends BasicController
         $segment = $segments->first();
         $line = $lineName ? $this->resolveTaxonomy(ProductLine::class, $lineName, $taxonomyCache) : null;
         $classification = $classificationName ? $this->resolveTaxonomy(ProductClassification::class, $classificationName, $taxonomyCache) : null;
+        $family = $familyName ? $this->resolveTaxonomy(ProductFamily::class, $familyName, $taxonomyCache) : null;
         $type = $typeName ? $this->resolveTaxonomy(ProductType::class, $typeName, $taxonomyCache) : null;
         $nominal = $this->stringOrNull($this->getImportValue($norm, 'Diametro Nominal del Producto'));
 
@@ -495,10 +510,11 @@ class ItemController extends BasicController
             'product_segment_ids' => $segments->pluck('id')->all(),
             'product_line_id' => $line?->id,
             'product_classification_id' => $classification?->id,
+            'product_family_id' => $family?->id,
             'product_type_id' => $type?->id,
             'segment' => $segment?->name ?? $segmentName,
             'famcons' => $this->stringOrNull($this->getImportValue($norm, 'FAMCONS')),
-            'family' => $this->stringOrNull($this->getImportValue($norm, 'FAMILIA')),
+            'family' => $family?->name ?? $familyName,
             'classification' => $classificationName,
             'type' => $typeName,
             'use_type' => $this->stringOrNull($this->getImportValue($norm, 'USO')),

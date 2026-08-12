@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\Item;
 use App\Models\Category;
 use App\Models\ProductClassification;
+use App\Models\ProductFamily;
 use App\Models\ProductLine;
 use App\Models\ProductSegment;
 use App\Models\ProductType;
@@ -186,7 +187,7 @@ class LandingController extends BasicController
     {
         return Item::query()
             ->where('status', true)
-            ->with('category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType');
+            ->with('category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productFamily', 'productType');
     }
 
     private function applyCatalogSearch($query, Request $request): void
@@ -200,8 +201,10 @@ class LandingController extends BasicController
             $where->where('title', 'like', "%{$term}%")
                 ->orWhere('sku', 'like', "%{$term}%")
                 ->orWhere('classification', 'like', "%{$term}%")
+                ->orWhere('family', 'like', "%{$term}%")
                 ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
                 ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
+                ->orWhereHas('productFamily', fn ($c) => $c->where('name', 'like', "%{$term}%"))
                 ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
         });
     }
@@ -210,7 +213,7 @@ class LandingController extends BasicController
     {
         $hasProductLines = ProductLine::query()->exists();
 
-        foreach (['segment', 'line', 'classification', 'type'] as $group) {
+        foreach (['segment', 'line', 'classification', 'type', 'family'] as $group) {
             if ($until === $group) {
                 return;
             }
@@ -231,6 +234,8 @@ class LandingController extends BasicController
                 });
             } elseif ($group === 'classification') {
                 $this->whereTaxonomy($query, 'product_classification_id', ProductClassification::class, $values, 'classification');
+            } elseif ($group === 'family') {
+                $this->whereTaxonomy($query, 'product_family_id', ProductFamily::class, $values, 'family');
             } elseif ($group === 'type') {
                 $this->whereTaxonomy($query, 'product_type_id', ProductType::class, $values, 'type');
             }
@@ -254,10 +259,15 @@ class LandingController extends BasicController
         $this->applyCatalogSearch($typeQuery, $request);
         $this->applyCatalogFilters($typeQuery, $request, 'type');
 
+        $familyQuery = $this->catalogBaseQuery();
+        $this->applyCatalogSearch($familyQuery, $request);
+        $this->applyCatalogFilters($familyQuery, $request, 'family');
+
         return [
             'segment' => $this->segmentFacetFromQuery($segmentQuery),
             'line' => $this->lineFacetFromQuery($lineQuery),
             'classification' => $this->taxonomyFacetFromQuery($classificationQuery, ProductClassification::class, 'product_classification_id', 'classification'),
+            'family' => $this->taxonomyFacetFromQuery($familyQuery, ProductFamily::class, 'product_family_id', 'family'),
             'type' => $this->taxonomyFacetFromQuery($typeQuery, ProductType::class, 'product_type_id', 'type'),
         ];
     }
@@ -270,6 +280,7 @@ class LandingController extends BasicController
                 'segment' => $this->segmentFacet(),
                 'line' => $this->lineFacet(),
                 'classification' => $this->taxonomyFacet(ProductClassification::class, 'product_classification_id', 'classification'),
+                'family' => $this->taxonomyFacet(ProductFamily::class, 'product_family_id', 'family'),
                 'type' => $this->taxonomyFacet(ProductType::class, 'product_type_id', 'type'),
             ];
         });
@@ -596,6 +607,7 @@ class LandingController extends BasicController
             'segment' => $segmentLabel,
             'segments' => $segments,
             'classification' => $item->productClassification->name ?? $item->classification,
+            'family' => $item->productFamily->name ?? $item->family,
             'type' => $item->productType->name ?? $item->type,
             'use' => $item->use_type,
             'material' => $item->material,
@@ -735,13 +747,15 @@ class LandingController extends BasicController
         $items = Item::query()
             ->where('status', true)
             ->with('category')
-            ->with('productSegments', 'productLine', 'productClassification', 'productType')
+            ->with('productSegments', 'productLine', 'productClassification', 'productFamily', 'productType')
             ->where(function ($query) use ($term) {
                 $query->where('title', 'like', "%{$term}%")
                     ->orWhere('sku', 'like', "%{$term}%")
                     ->orWhere('classification', 'like', "%{$term}%")
+                    ->orWhere('family', 'like', "%{$term}%")
                     ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
                     ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
+                    ->orWhereHas('productFamily', fn ($c) => $c->where('name', 'like', "%{$term}%"))
                     ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
             })
             ->orderByDesc('views')
