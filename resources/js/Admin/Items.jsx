@@ -47,7 +47,7 @@ const ITEMS_CSS = `
 .wfi-file-pill{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #dce5f0;color:#0f2540;font-size:12px;font-weight:600;max-width:100%;}
 .wfi-file-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .wfi-mode-grid{display:grid;grid-template-columns:1fr;gap:10px;}
-@media(min-width:768px){.wfi-mode-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(min-width:768px){.wfi-mode-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
 .wfi-mode{position:relative;border:1px solid #e2eaf4;border-radius:12px;padding:12px 12px 12px 42px;cursor:pointer;min-height:106px;transition:border-color .2s,box-shadow .2s,background .2s;}
 .wfi-mode:hover{border-color:#b9c8da;background:#fbfdff;}
 .wfi-mode.on{border-color:#004991;box-shadow:0 0 0 3px rgba(0,73,145,.08);background:#f8fbff;}
@@ -106,12 +106,14 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const tableRef = useRef(null)
   const importInputRef = useRef(null)
   const importZipInputRef = useRef(null)
+  const importSheetsZipInputRef = useRef(null)
 
   // Básicos
   const titleRef = useRef()
   const skuRef = useRef()
   const priceRef = useRef()
   const imageRef = useRef()
+  const technicalSheetRef = useRef()
   const descriptionRef = useRef()
   const diametersRef = useRef()
 
@@ -156,6 +158,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const [importOpen, setImportOpen] = useState(false)
   const [importFile, setImportFile] = useState(null)
   const [importImagesZip, setImportImagesZip] = useState(null)
+  const [importSheetsZip, setImportSheetsZip] = useState(null)
   const [importMode, setImportMode] = useState('upsert')
   const [importDragging, setImportDragging] = useState(false)
   const [importLoading, setImportLoading] = useState(false)
@@ -262,12 +265,14 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const openImport = () => {
     setImportFile(null)
     setImportImagesZip(null)
+    setImportSheetsZip(null)
     setImportMode('upsert')
     setImportError('')
     setImportDragging(false)
     setImportOpen(true)
     if (importInputRef.current) importInputRef.current.value = ''
     if (importZipInputRef.current) importZipInputRef.current.value = ''
+    if (importSheetsZipInputRef.current) importSheetsZipInputRef.current.value = ''
   }
 
   const closeImport = () => {
@@ -302,6 +307,18 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     setImportImagesZip(file)
   }
 
+  const selectSheetsZip = (file) => {
+    if (!file) return
+    const name = file.name || ''
+    if (!/\.zip$/i.test(name)) {
+      setImportSheetsZip(null)
+      setImportError('Selecciona un archivo .zip para las fichas tecnicas.')
+      return
+    }
+    setImportError('')
+    setImportSheetsZip(file)
+  }
+
   const onImportSubmit = async (e) => {
     e.preventDefault()
     if (importLoading) return
@@ -322,6 +339,23 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       return
     }
 
+    if (importMode === 'sheets') {
+      if (!importSheetsZip) {
+        setImportError('Selecciona el zip de fichas tecnicas antes de cargar.')
+        return
+      }
+
+      setImportError('')
+      setImportLoading(true)
+      const result = await itemsRest.importSheets({ sheetsZip: importSheetsZip })
+      setImportLoading(false)
+
+      if (!result) return
+      setImportOpen(false)
+      refreshGrid()
+      return
+    }
+
     if (!importFile) {
       setImportError('Selecciona o arrastra un archivo Excel antes de importar.')
       return
@@ -329,7 +363,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
     setImportError('')
     setImportLoading(true)
-    const result = await itemsRest.import({ file: importFile, mode: importMode, imagesZip: importImagesZip })
+    const result = await itemsRest.import({ file: importFile, mode: importMode, imagesZip: importImagesZip, sheetsZip: importSheetsZip })
     setImportLoading(false)
 
     if (!result) return
@@ -394,7 +428,8 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       observations: observationsRef.current.value,
       usage_warning: usageWarningRef.current.value,
       status: true,
-      image: imageRef.current.files?.[0] ?? null
+      image: imageRef.current.files?.[0] ?? null,
+      technical_sheet: technicalSheetRef.current.files?.[0] ?? null
     }
 
     if (!item.id && !item.image) {
@@ -456,6 +491,12 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
           {
             key: 'price', header: 'Precio', field: 'price', filterable: false, align: 'right', nowrap: true,
             render: (d) => <span className='fw-semibold' style={{ color: '#004991' }}>{d.price != null ? formatPrice(d.price, d.currency) : '-'}</span>,
+          },
+          {
+            key: 'technical_sheet', header: 'Ficha', field: 'technical_sheet', filterable: false, sortable: false, align: 'center', width: 80,
+            render: (d) => d.technical_sheet
+              ? <a href={`/storage/${d.technical_sheet}`} target='_blank' rel='noreferrer' className='text-danger fs-4' title='Ver ficha técnica'><i className='mdi mdi-file-pdf-box'></i></a>
+              : <span className='text-muted'>-</span>,
           },
           {
             key: 'use_type', header: 'Uso / Diámetro', field: 'use_type', filterFields: ['use_type', 'nominal_diameter'], nowrap: true,
@@ -533,6 +574,15 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                   </div>
                   <div className='col-md-6'>
                     <ImageFormGroup eRef={imageRef} label='Imagen' required={!dataLoaded} aspect='4/3' fit='cover' onError='/assets/img/items/item-1.png' />
+                    <div className='form-group mb-2'>
+                      <label className='form-label'>Ficha técnica PDF</label>
+                      <input ref={technicalSheetRef} type='file' className='form-control' accept='application/pdf' />
+                      {dataLoaded?.technical_sheet && (
+                        <a href={`/storage/${dataLoaded.technical_sheet}`} target='_blank' rel='noreferrer' className='small text-primary d-inline-flex align-items-center gap-1 mt-2'>
+                          <i className='mdi mdi-file-pdf-box'></i> Ver ficha actual
+                        </a>
+                      )}
+                    </div>
                     <TextareaFormGroup eRef={descriptionRef} label='Descripción' rows={3} />
                     <TextareaFormGroup eRef={diametersRef} label='Diámetros disponibles (separados por coma)' rows={2} />
                   </div>
@@ -639,6 +689,14 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 onChange={(e) => selectImagesZip(e.target.files?.[0])}
               />
 
+              <input
+                ref={importSheetsZipInputRef}
+                type='file'
+                accept='.zip'
+                hidden
+                onChange={(e) => selectSheetsZip(e.target.files?.[0])}
+              />
+
               <button
                 type='button'
                 className={`wfi-drop ${importDragging ? 'drag' : ''}`}
@@ -690,6 +748,32 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 </div>
               </button>
 
+              <button
+                type='button'
+                className={`wfi-drop ${importDragging ? 'drag' : ''}`}
+                style={{ minHeight: 110 }}
+                onClick={() => importSheetsZipInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setImportDragging(true) }}
+                onDragLeave={() => setImportDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setImportDragging(false)
+                  selectSheetsZip(e.dataTransfer.files?.[0])
+                }}
+              >
+                <div>
+                  <i className='mdi mdi-file-pdf-box'></i>
+                  <strong>Zip de fichas técnicas opcional</strong>
+                  <span>Nombres esperados: CODIGO.pdf. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
+                  {importSheetsZip && (
+                    <div className='wfi-file-pill'>
+                      <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
+                      <span>{importSheetsZip.name}</span>
+                    </div>
+                  )}
+                </div>
+              </button>
+
               <div>
                 <label className='form-label'>Tipo de carga</label>
                 <div className='wfi-mode-grid'>
@@ -707,6 +791,11 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                     <input type='radio' name='import-mode' value='images' checked={importMode === 'images'} onChange={(e) => setImportMode(e.target.value)} />
                     <b>Solo imagenes</b>
                     <span>No modifica productos. Solo reemplaza galerias cuando el archivo coincide con un SKU existente.</span>
+                  </label>
+                  <label className={`wfi-mode ${importMode === 'sheets' ? 'on' : ''}`}>
+                    <input type='radio' name='import-mode' value='sheets' checked={importMode === 'sheets'} onChange={(e) => setImportMode(e.target.value)} />
+                    <b>Solo fichas</b>
+                    <span>No modifica productos. Solo reemplaza la ficha PDF cuando coincide con un SKU existente.</span>
                   </label>
                 </div>
               </div>

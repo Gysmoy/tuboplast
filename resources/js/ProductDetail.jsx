@@ -255,6 +255,11 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
   };
 
   const handleDownloadSheet = () => {
+    if (product.technicalSheetUrl) {
+      window.open(product.technicalSheetUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
     downloadTechnicalSheet(product, quantity);
   };
 

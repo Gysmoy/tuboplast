@@ -24,7 +24,7 @@ class ProductController extends BasicController
 
     public function setReactViewProperties(Request $request)
     {
-        $relations = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType'];
+        $relations = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productFamily', 'productType'];
         if (Schema::hasTable('item_images')) {
             $relations[] = 'images';
         }
@@ -179,7 +179,7 @@ class ProductController extends BasicController
             $this->spec('Segmento', $segment),
             $this->spec('Línea', $category),
             $this->spec('Clasificación', $classification),
-            $this->spec('Familia', $item->family ?: $item->famcons),
+            $this->spec('Familia', $item->productFamily->name ?? ($item->family ?: $item->famcons)),
             $this->spec('Tipo', $type),
             $this->spec('Uso', $item->use_type),
             $this->spec('Material', $item->material),
@@ -224,6 +224,7 @@ class ProductController extends BasicController
             'description' => $item->description ?: 'Producto fabricado bajo los estándares de calidad de Tuboplast.',
             'image' => $image,
             'gallery' => $gallery,
+            'technicalSheetUrl' => $item->technical_sheet ? $this->publicImageUrl($item->technical_sheet) : null,
             'unitPrice' => $price,
             'price' => $this->moneyLabel($price, $item->currency),
             'currency' => strtoupper($item->currency ?: 'PEN'),

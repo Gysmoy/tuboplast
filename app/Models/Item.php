@@ -34,6 +34,7 @@ class Item extends Model
         'title',
         'description',
         'image',
+        'technical_sheet',
         'price',
         'currency',
         'pressure',

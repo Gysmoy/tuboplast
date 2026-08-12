@@ -143,6 +143,7 @@ class ItemController extends BasicController
             'usage_recommendations' => 'nullable|string|max:2000',
             'observations' => 'nullable|string|max:2000',
             'usage_warning' => 'nullable|string|max:2000',
+            'technical_sheet' => 'nullable|file|mimes:pdf|max:51200',
             'status' => 'nullable',
         ]);
 
@@ -189,6 +190,13 @@ class ItemController extends BasicController
             $validated['image'] = $request->file('image')->store('items', 'public');
         }
 
+        if ($request->hasFile('technical_sheet')) {
+            if ($id) {
+                $this->queueFileForDeletion(Item::query()->whereKey($id)->value('technical_sheet'));
+            }
+            $validated['technical_sheet'] = $request->file('technical_sheet')->store('items/sheets', 'public');
+        }
+
         return [
             'id' => $id,
             ...$validated,
@@ -201,6 +209,8 @@ class ItemController extends BasicController
             $jpa->productSegments()->sync($this->pendingSegmentIds);
             $this->syncManualImageGallery($request, $jpa);
         }
+
+        $this->deletePendingFiles();
 
         Cache::forget('tuboplast.catalog.facets');
 
@@ -216,12 +226,16 @@ class ItemController extends BasicController
                 'file' => 'required|file|max:20480',
                 'mode' => 'required|in:replace,upsert',
                 'images_zip' => 'nullable|file|mimes:zip|max:51200',
+                'sheets_zip' => 'nullable|file|mimes:zip|max:51200',
             ]);
 
             $file = $request->file('file');
             $extension = mb_strtolower($file->getClientOriginalExtension());
             $imagePackage = $request->hasFile('images_zip')
                 ? $this->readImagePackage($request->file('images_zip')->getRealPath())
+                : ['groups' => [], 'ignored' => 0, 'errors' => []];
+            $sheetPackage = $request->hasFile('sheets_zip')
+                ? $this->readSheetPackage($request->file('sheets_zip')->getRealPath())
                 : ['groups' => [], 'ignored' => 0, 'errors' => []];
 
             $rows = match ($extension) {
@@ -236,7 +250,7 @@ class ItemController extends BasicController
 
             $mode = (string) $request->input('mode');
             $this->filesPendingDeletion = [];
-            $result = DB::transaction(fn () => $this->importRows($rows, $mode, $imagePackage), 3);
+            $result = DB::transaction(fn () => $this->importRows($rows, $mode, $imagePackage, $sheetPackage), 3);
             $this->deletePendingFiles();
 
             Cache::forget('tuboplast.catalog.facets');
@@ -290,19 +304,55 @@ class ItemController extends BasicController
         }
     }
 
-    private function importRows(array $rows, string $mode, array $imagePackage = []): array
+    public function importSheets(Request $request): HttpResponse|ResponseFactory
+    {
+        $response = new Response();
+
+        try {
+            $request->validate([
+                'sheets_zip' => 'required|file|mimes:zip|max:51200',
+            ]);
+
+            $sheetPackage = $this->readSheetPackage($request->file('sheets_zip')->getRealPath());
+            $sheetGroups = $sheetPackage['groups'] ?? [];
+
+            if (!count($sheetGroups)) {
+                throw new Exception('No se encontraron fichas tecnicas PDF validas dentro del zip.');
+            }
+
+            $this->filesPendingDeletion = [];
+            $result = DB::transaction(fn () => $this->replaceSheetsForExistingItems($sheetGroups, (int) ($sheetPackage['ignored'] ?? 0)), 3);
+            $this->deletePendingFiles();
+
+            $response->status = 200;
+            $response->message = 'Carga de fichas tecnicas completada';
+            $response->data = $result;
+        } catch (\Throwable $th) {
+            $response->status = 400;
+            $response->message = $th->getMessage();
+            $this->filesPendingDeletion = [];
+        } finally {
+            return response($response->toArray(), $response->status);
+        }
+    }
+
+    private function importRows(array $rows, string $mode, array $imagePackage = [], array $sheetPackage = []): array
     {
         $categoryCache = [];
         $taxonomyCache = [];
         $reservedSlugs = [];
         $imageGroups = $imagePackage['groups'] ?? [];
+        $sheetGroups = $sheetPackage['groups'] ?? [];
         $matchedImageSkus = [];
+        $matchedSheetSkus = [];
         $deleted = 0;
         $created = 0;
         $updated = 0;
         $skipped = 0;
         $imagesAssociated = 0;
         $imagesIgnored = (int) ($imagePackage['ignored'] ?? 0);
+        $sheetsAssociated = 0;
+        $sheetsIgnored = (int) ($sheetPackage['ignored'] ?? 0);
         $errors = [];
 
         if ($mode === 'replace') {
@@ -349,6 +399,11 @@ class ItemController extends BasicController
                 $imagesAssociated += $this->replaceItemImages($item, $imageGroups[$imageKey]);
                 $matchedImageSkus[$imageKey] = true;
             }
+
+            if (!empty($sheetGroups[$imageKey])) {
+                $sheetsAssociated += $this->replaceItemSheet($item, $sheetGroups[$imageKey][0]);
+                $matchedSheetSkus[$imageKey] = true;
+            }
         }
 
         if ($mode === 'replace' && $skipped > 0) {
@@ -366,6 +421,12 @@ class ItemController extends BasicController
             }
         }
 
+        foreach ($sheetGroups as $skuKey => $sheets) {
+            if (!isset($matchedSheetSkus[$skuKey])) {
+                $sheetsIgnored += count($sheets);
+            }
+        }
+
         return [
             'mode' => $mode,
             'deleted' => $deleted,
@@ -374,6 +435,8 @@ class ItemController extends BasicController
             'skipped' => $skipped,
             'images_associated' => $imagesAssociated,
             'images_ignored' => $imagesIgnored,
+            'sheets_associated' => $sheetsAssociated,
+            'sheets_ignored' => $sheetsIgnored,
             'errors' => $errors,
         ];
     }
@@ -382,10 +445,6 @@ class ItemController extends BasicController
     {
         return Item::query()
             ->where('sku', $sku)
-            ->where('product_segment_id', $data['product_segment_id'])
-            ->where('product_line_id', $data['product_line_id'])
-            ->where('product_classification_id', $data['product_classification_id'])
-            ->where('product_type_id', $data['product_type_id'])
             ->first();
     }
 
@@ -1212,6 +1271,78 @@ class ItemController extends BasicController
         return compact('groups', 'ignored', 'errors');
     }
 
+    private function readSheetPackage(string $path): array
+    {
+        $zip = new ZipArchive();
+
+        if ($zip->open($path) !== true) {
+            throw new Exception('No se pudo abrir el zip de fichas tecnicas.');
+        }
+
+        $groups = [];
+        $ignored = 0;
+        $errors = [];
+
+        try {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $entry = $zip->statIndex($i);
+                $name = str_replace('\\', '/', $entry['name'] ?? '');
+                $basename = basename($name);
+
+                if ($basename === '' || str_ends_with($name, '/')) {
+                    continue;
+                }
+
+                $extension = mb_strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+                $filename = pathinfo($basename, PATHINFO_FILENAME);
+
+                if ($extension !== 'pdf') {
+                    $ignored++;
+                    continue;
+                }
+
+                if (!preg_match('/^(.+?)(?:-(\d+))?$/', $filename, $matches)) {
+                    $ignored++;
+                    continue;
+                }
+
+                $content = $zip->getFromIndex($i);
+                if ($content === false || $content === '') {
+                    $ignored++;
+                    continue;
+                }
+
+                $sku = trim($matches[1]);
+                if ($sku === '') {
+                    $ignored++;
+                    continue;
+                }
+
+                $order = isset($matches[2]) ? (int) $matches[2] : 0;
+                $groups[$this->imagePackageKey($sku)][] = [
+                    'original' => $basename,
+                    'extension' => $extension,
+                    'order' => $order,
+                    'content' => $content,
+                ];
+            }
+        } finally {
+            $zip->close();
+        }
+
+        foreach ($groups as &$sheets) {
+            usort($sheets, function ($a, $b) {
+                if ($a['order'] === $b['order']) {
+                    return strnatcasecmp($a['original'], $b['original']);
+                }
+
+                return $a['order'] <=> $b['order'];
+            });
+        }
+
+        return compact('groups', 'ignored', 'errors');
+    }
+
     private function imagePackageKey(string $sku): string
     {
         return $this->taxonomyLookupKey($sku);
@@ -1252,6 +1383,76 @@ class ItemController extends BasicController
         return $associated;
     }
 
+    private function replaceSheetsForExistingItems(array $sheetGroups, int $initialIgnored): array
+    {
+        $matched = 0;
+        $sheetsAssociated = 0;
+        $sheetsIgnored = $initialIgnored;
+        $notFound = 0;
+        $ambiguous = 0;
+        $errors = [];
+
+        $itemsByKey = Item::query()
+            ->whereNotNull('sku')
+            ->get(['id', 'sku', 'technical_sheet'])
+            ->groupBy(fn ($item) => $this->imagePackageKey((string) $item->sku));
+
+        foreach ($sheetGroups as $skuKey => $sheets) {
+            $candidates = $itemsByKey->get($skuKey, collect());
+
+            if ($candidates->isEmpty()) {
+                $notFound++;
+                $sheetsIgnored += count($sheets);
+                $this->pushImportError($errors, "No existe producto para la ficha tecnica {$skuKey}.");
+                continue;
+            }
+
+            if ($candidates->count() > 1) {
+                $ambiguous++;
+                $sheetsIgnored += count($sheets);
+                $this->pushImportError($errors, "Ficha tecnica {$skuKey} coincide con mas de un producto.");
+                continue;
+            }
+
+            $item = Item::find($candidates->first()->id);
+            if (!$item) {
+                $notFound++;
+                $sheetsIgnored += count($sheets);
+                continue;
+            }
+
+            $sheetsAssociated += $this->replaceItemSheet($item, $sheets[0]);
+            $sheetsIgnored += max(0, count($sheets) - 1);
+            $matched++;
+        }
+
+        if ($matched === 0) {
+            throw new Exception('No se cargo ninguna ficha tecnica: ningun nombre de archivo coincide claramente con un SKU existente.');
+        }
+
+        return [
+            'matched_items' => $matched,
+            'sheets_associated' => $sheetsAssociated,
+            'sheets_ignored' => $sheetsIgnored,
+            'not_found' => $notFound,
+            'ambiguous' => $ambiguous,
+            'errors' => $errors,
+        ];
+    }
+
+    private function replaceItemSheet(Item $item, array $sheet): int
+    {
+        if ($item->technical_sheet) {
+            $this->queueFileForDeletion($item->technical_sheet);
+        }
+
+        $path = 'items/sheets/' . Str::slug($item->sku ?: 'item-' . $item->id) . '-' . Str::lower(Str::random(10)) . '.pdf';
+        Storage::disk('public')->put($path, $sheet['content']);
+        $item->forceFill(['technical_sheet' => $path])->save();
+
+        return 1;
+    }
+
     private function syncManualImageGallery(Request $request, Item $item): void
     {
         if (!$request->hasFile('image') || !$item->image || !Schema::hasTable('item_images')) {
@@ -1277,6 +1478,12 @@ class ItemController extends BasicController
         $paths = Item::query()
             ->whereNotNull('image')
             ->pluck('image');
+
+        $paths = $paths->merge(
+            Item::query()
+                ->whereNotNull('technical_sheet')
+                ->pluck('technical_sheet')
+        );
 
         if (Schema::hasTable('item_images')) {
             $paths = $paths->merge(
