@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use SoDe\Extend\Response;
 use ZipArchive;
@@ -26,10 +28,22 @@ class ItemController extends BasicController
     public $imageFields = [];
     public $with4get = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType'];
     private array $pendingSegmentIds = [];
+    private array $filesPendingDeletion = [];
 
     public function setPaginationInstance(string $model)
     {
-        return $model::with('category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType');
+        return $model::with($this->itemRelations());
+    }
+
+    private function itemRelations(): array
+    {
+        $relations = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType'];
+
+        if (Schema::hasTable('item_images')) {
+            $relations[] = 'images';
+        }
+
+        return $relations;
     }
 
     public function setReactViewProperties(Request $request)
@@ -178,6 +192,7 @@ class ItemController extends BasicController
     {
         if ($jpa instanceof Item) {
             $jpa->productSegments()->sync($this->pendingSegmentIds);
+            $this->syncManualImageGallery($request, $jpa);
         }
 
         Cache::forget('tuboplast.catalog.facets');
@@ -193,10 +208,14 @@ class ItemController extends BasicController
             $request->validate([
                 'file' => 'required|file|max:20480',
                 'mode' => 'required|in:replace,upsert',
+                'images_zip' => 'nullable|file|mimes:zip|max:51200',
             ]);
 
             $file = $request->file('file');
             $extension = mb_strtolower($file->getClientOriginalExtension());
+            $imagePackage = $request->hasFile('images_zip')
+                ? $this->readImagePackage($request->file('images_zip')->getRealPath())
+                : ['groups' => [], 'ignored' => 0, 'errors' => []];
 
             $rows = match ($extension) {
                 'xlsx' => $this->readXlsxRows($file->getRealPath()),
@@ -209,7 +228,9 @@ class ItemController extends BasicController
             }
 
             $mode = (string) $request->input('mode');
-            $result = DB::transaction(fn () => $this->importRows($rows, $mode), 3);
+            $this->filesPendingDeletion = [];
+            $result = DB::transaction(fn () => $this->importRows($rows, $mode, $imagePackage), 3);
+            $this->deletePendingFiles();
 
             Cache::forget('tuboplast.catalog.facets');
 
@@ -224,18 +245,65 @@ class ItemController extends BasicController
         }
     }
 
-    private function importRows(array $rows, string $mode): array
+    public function importImages(Request $request): HttpResponse|ResponseFactory
+    {
+        $response = new Response();
+
+        try {
+            $request->validate([
+                'images_zip' => 'required|file|mimes:zip|max:51200',
+            ]);
+
+            if (!Schema::hasTable('item_images')) {
+                throw new Exception('La tabla de galeria de imagenes aun no existe. Ejecuta las migraciones antes de cargar imagenes.');
+            }
+
+            $imagePackage = $this->readImagePackage($request->file('images_zip')->getRealPath());
+            $imageGroups = $imagePackage['groups'] ?? [];
+
+            if (!count($imageGroups)) {
+                throw new Exception('No se encontraron imagenes validas dentro del zip.');
+            }
+
+            $this->filesPendingDeletion = [];
+            $result = DB::transaction(fn () => $this->replaceImagesForExistingItems($imageGroups, (int) ($imagePackage['ignored'] ?? 0)), 3);
+            $this->deletePendingFiles();
+
+            Cache::forget('tuboplast.catalog.facets');
+
+            $response->status = 200;
+            $response->message = 'Carga de imagenes completada';
+            $response->data = $result;
+        } catch (\Throwable $th) {
+            $response->status = 400;
+            $response->message = $th->getMessage();
+            $this->filesPendingDeletion = [];
+        } finally {
+            return response($response->toArray(), $response->status);
+        }
+    }
+
+    private function importRows(array $rows, string $mode, array $imagePackage = []): array
     {
         $categoryCache = [];
         $taxonomyCache = [];
         $reservedSlugs = [];
+        $imageGroups = $imagePackage['groups'] ?? [];
+        $matchedImageSkus = [];
         $deleted = 0;
         $created = 0;
         $updated = 0;
         $skipped = 0;
+        $imagesAssociated = 0;
+        $imagesIgnored = (int) ($imagePackage['ignored'] ?? 0);
         $errors = [];
 
         if ($mode === 'replace') {
+            $this->assertReplaceRowsAreValid($rows);
+        }
+
+        if ($mode === 'replace') {
+            $this->queueCurrentItemImageFilesForDeletion();
             $deleted = Item::query()->count();
             Item::query()->delete();
         }
@@ -260,11 +328,18 @@ class ItemController extends BasicController
             if ($existing) {
                 $existing->update(collect($data)->except('product_segment_ids')->all());
                 $existing->productSegments()->sync($data['product_segment_ids'] ?? []);
+                $item = $existing->fresh();
                 $updated++;
             } else {
                 $item = Item::create(collect($data)->except('product_segment_ids')->all());
                 $item->productSegments()->sync($data['product_segment_ids'] ?? []);
                 $created++;
+            }
+
+            $imageKey = $this->imagePackageKey($sku);
+            if (!empty($imageGroups[$imageKey])) {
+                $imagesAssociated += $this->replaceItemImages($item, $imageGroups[$imageKey]);
+                $matchedImageSkus[$imageKey] = true;
             }
         }
 
@@ -277,12 +352,20 @@ class ItemController extends BasicController
             throw new Exception('No se importo ningun item. Revisa que el archivo tenga la columna Codigo Producto.');
         }
 
+        foreach ($imageGroups as $skuKey => $images) {
+            if (!isset($matchedImageSkus[$skuKey])) {
+                $imagesIgnored += count($images);
+            }
+        }
+
         return [
             'mode' => $mode,
             'deleted' => $deleted,
             'created' => $created,
             'updated' => $updated,
             'skipped' => $skipped,
+            'images_associated' => $imagesAssociated,
+            'images_ignored' => $imagesIgnored,
             'errors' => $errors,
         ];
     }
@@ -296,6 +379,84 @@ class ItemController extends BasicController
             ->where('product_classification_id', $data['product_classification_id'])
             ->where('product_type_id', $data['product_type_id'])
             ->first();
+    }
+
+    private function replaceImagesForExistingItems(array $imageGroups, int $initialIgnored): array
+    {
+        $matched = 0;
+        $imagesAssociated = 0;
+        $imagesIgnored = $initialIgnored;
+        $notFound = 0;
+        $ambiguous = 0;
+        $errors = [];
+
+        $itemsByKey = Item::query()
+            ->whereNotNull('sku')
+            ->get(['id', 'sku', 'image'])
+            ->groupBy(fn ($item) => $this->imagePackageKey((string) $item->sku));
+
+        foreach ($imageGroups as $skuKey => $images) {
+            $candidates = $itemsByKey->get($skuKey, collect());
+
+            if ($candidates->isEmpty()) {
+                $notFound++;
+                $imagesIgnored += count($images);
+                $this->pushImportError($errors, "No existe producto para el codigo de imagen {$skuKey}.");
+                continue;
+            }
+
+            if ($candidates->count() > 1) {
+                $ambiguous++;
+                $imagesIgnored += count($images);
+                $this->pushImportError($errors, "Codigo de imagen {$skuKey} coincide con mas de un producto.");
+                continue;
+            }
+
+            $item = Item::with('images')->find($candidates->first()->id);
+            if (!$item) {
+                $notFound++;
+                $imagesIgnored += count($images);
+                continue;
+            }
+
+            $imagesAssociated += $this->replaceItemImages($item, $images);
+            $matched++;
+        }
+
+        if ($matched === 0) {
+            throw new Exception('No se cargo ninguna imagen: ningun nombre de archivo coincide claramente con un SKU existente.');
+        }
+
+        return [
+            'matched_items' => $matched,
+            'images_associated' => $imagesAssociated,
+            'images_ignored' => $imagesIgnored,
+            'not_found' => $notFound,
+            'ambiguous' => $ambiguous,
+            'errors' => $errors,
+        ];
+    }
+
+    private function assertReplaceRowsAreValid(array $rows): void
+    {
+        $errors = [];
+        $skipped = 0;
+
+        foreach ($rows as $index => $raw) {
+            $norm = $this->normalizeRow($raw);
+            $sku = $this->stringOrNull($this->getImportValue($norm, 'Codigo Producto'));
+
+            if (!$sku) {
+                $skipped++;
+                $rowNumber = $index + 2;
+                $this->pushImportError($errors, "Fila {$rowNumber}: falta Codigo Producto.");
+            }
+        }
+
+        if ($skipped > 0) {
+            $detail = $errors[0] ?? 'Revisa el archivo antes de volver a intentar.';
+            throw new Exception("Importacion completa cancelada: hay {$skipped} fila(s) omitidas. {$detail}");
+        }
     }
 
     private function mapImportRow(array $norm, string $sku, array &$categoryCache, array &$taxonomyCache): array
@@ -960,5 +1121,194 @@ class ItemController extends BasicController
         if (count($errors) < 20) {
             $errors[] = $message;
         }
+    }
+
+    private function readImagePackage(string $path): array
+    {
+        $zip = new ZipArchive();
+
+        if ($zip->open($path) !== true) {
+            throw new Exception('No se pudo abrir el zip de imagenes.');
+        }
+
+        $groups = [];
+        $ignored = 0;
+        $errors = [];
+        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+
+        try {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $entry = $zip->statIndex($i);
+                $name = str_replace('\\', '/', $entry['name'] ?? '');
+                $basename = basename($name);
+
+                if ($basename === '' || str_ends_with($name, '/')) {
+                    continue;
+                }
+
+                $extension = mb_strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+                $filename = pathinfo($basename, PATHINFO_FILENAME);
+
+                if (!in_array($extension, $allowed, true)) {
+                    $ignored++;
+                    continue;
+                }
+
+                if (!preg_match('/^(.+?)(?:-(\d+))?$/', $filename, $matches)) {
+                    $ignored++;
+                    continue;
+                }
+
+                $content = $zip->getFromIndex($i);
+                if ($content === false || $content === '') {
+                    $ignored++;
+                    continue;
+                }
+
+                $sku = trim($matches[1]);
+                if ($sku === '') {
+                    $ignored++;
+                    continue;
+                }
+
+                $order = isset($matches[2]) ? (int) $matches[2] : 0;
+                $groups[$this->imagePackageKey($sku)][] = [
+                    'original' => $basename,
+                    'extension' => $extension,
+                    'order' => $order,
+                    'content' => $content,
+                ];
+            }
+        } finally {
+            $zip->close();
+        }
+
+        foreach ($groups as &$images) {
+            usort($images, function ($a, $b) {
+                if ($a['order'] === $b['order']) {
+                    return strnatcasecmp($a['original'], $b['original']);
+                }
+
+                return $a['order'] <=> $b['order'];
+            });
+        }
+
+        return compact('groups', 'ignored', 'errors');
+    }
+
+    private function imagePackageKey(string $sku): string
+    {
+        return $this->taxonomyLookupKey($sku);
+    }
+
+    private function replaceItemImages(Item $item, array $images): int
+    {
+        $item->loadMissing('images');
+        foreach ($item->images as $image) {
+            $this->queueFileForDeletion($image->path);
+        }
+        $item->images()->delete();
+
+        $associated = 0;
+        $primaryPath = null;
+
+        foreach (array_values($images) as $index => $image) {
+            $path = 'items/' . Str::slug($item->sku ?: 'item-' . $item->id) . '-' . Str::lower(Str::random(10)) . '.' . $image['extension'];
+            Storage::disk('public')->put($path, $image['content']);
+
+            $item->images()->create([
+                'path' => $path,
+                'sort_order' => $index,
+            ]);
+
+            $primaryPath ??= $path;
+            $associated++;
+        }
+
+        if ($primaryPath) {
+            if ($item->image && $item->image !== $primaryPath) {
+                $this->queueFileForDeletion($item->image);
+            }
+
+            $item->forceFill(['image' => $primaryPath])->save();
+        }
+
+        return $associated;
+    }
+
+    private function syncManualImageGallery(Request $request, Item $item): void
+    {
+        if (!$request->hasFile('image') || !$item->image || !Schema::hasTable('item_images')) {
+            return;
+        }
+
+        $item->loadMissing('images');
+        foreach ($item->images as $image) {
+            if ($image->path !== $item->image) {
+                Storage::disk('public')->delete($image->path);
+            }
+        }
+
+        $item->images()->delete();
+        $item->images()->create([
+            'path' => $item->image,
+            'sort_order' => 0,
+        ]);
+    }
+
+    private function queueCurrentItemImageFilesForDeletion(): void
+    {
+        $paths = Item::query()
+            ->whereNotNull('image')
+            ->pluck('image');
+
+        if (Schema::hasTable('item_images')) {
+            $paths = $paths->merge(
+                DB::table('item_images')
+                    ->whereNotNull('path')
+                    ->pluck('path')
+            );
+        }
+
+        $paths
+            ->filter()
+            ->unique()
+            ->each(fn ($path) => $this->queueFileForDeletion($path));
+    }
+
+    private function queueFileForDeletion(?string $path): void
+    {
+        if (!$path) {
+            return;
+        }
+
+        $this->filesPendingDeletion[] = $path;
+    }
+
+    private function deletePendingFiles(): void
+    {
+        collect($this->filesPendingDeletion)
+            ->filter()
+            ->map(fn ($path) => $this->storagePathForPublicDisk((string) $path))
+            ->filter()
+            ->unique()
+            ->each(fn ($path) => Storage::disk('public')->delete($path));
+
+        $this->filesPendingDeletion = [];
+    }
+
+    private function storagePathForPublicDisk(string $path): string
+    {
+        $path = trim($path);
+
+        if (Str::startsWith($path, '/storage/')) {
+            return Str::after($path, '/storage/');
+        }
+
+        if (Str::startsWith($path, 'storage/')) {
+            return Str::after($path, 'storage/');
+        }
+
+        return ltrim($path, '/');
     }
 }

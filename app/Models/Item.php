@@ -97,4 +97,9 @@ class Item extends Model
     {
         return $this->belongsTo(ProductType::class);
     }
+
+    public function images()
+    {
+        return $this->hasMany(ItemImage::class)->orderBy('sort_order')->orderBy('id');
+    }
 }

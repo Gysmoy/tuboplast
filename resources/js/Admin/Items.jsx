@@ -47,7 +47,7 @@ const ITEMS_CSS = `
 .wfi-file-pill{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #dce5f0;color:#0f2540;font-size:12px;font-weight:600;max-width:100%;}
 .wfi-file-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .wfi-mode-grid{display:grid;grid-template-columns:1fr;gap:10px;}
-@media(min-width:768px){.wfi-mode-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:768px){.wfi-mode-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 .wfi-mode{position:relative;border:1px solid #e2eaf4;border-radius:12px;padding:12px 12px 12px 42px;cursor:pointer;min-height:106px;transition:border-color .2s,box-shadow .2s,background .2s;}
 .wfi-mode:hover{border-color:#b9c8da;background:#fbfdff;}
 .wfi-mode.on{border-color:#004991;box-shadow:0 0 0 3px rgba(0,73,145,.08);background:#f8fbff;}
@@ -105,6 +105,7 @@ const FieldMultiSegment = ({ col = 'col-6', label, value = [], options, onChange
 const Items = ({ categories = [], segments = [], lines = [], classifications = [], types = [] }) => {
   const tableRef = useRef(null)
   const importInputRef = useRef(null)
+  const importZipInputRef = useRef(null)
 
   // Básicos
   const titleRef = useRef()
@@ -155,6 +156,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const [formError, setFormError] = useState('')
   const [importOpen, setImportOpen] = useState(false)
   const [importFile, setImportFile] = useState(null)
+  const [importImagesZip, setImportImagesZip] = useState(null)
   const [importMode, setImportMode] = useState('upsert')
   const [importDragging, setImportDragging] = useState(false)
   const [importLoading, setImportLoading] = useState(false)
@@ -259,11 +261,13 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
   const openImport = () => {
     setImportFile(null)
+    setImportImagesZip(null)
     setImportMode('upsert')
     setImportError('')
     setImportDragging(false)
     setImportOpen(true)
     if (importInputRef.current) importInputRef.current.value = ''
+    if (importZipInputRef.current) importZipInputRef.current.value = ''
   }
 
   const closeImport = () => {
@@ -286,9 +290,38 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     setImportFile(file)
   }
 
+  const selectImagesZip = (file) => {
+    if (!file) return
+    const name = file.name || ''
+    if (!/\.zip$/i.test(name)) {
+      setImportImagesZip(null)
+      setImportError('Selecciona un archivo .zip para las imagenes.')
+      return
+    }
+    setImportError('')
+    setImportImagesZip(file)
+  }
+
   const onImportSubmit = async (e) => {
     e.preventDefault()
     if (importLoading) return
+    if (importMode === 'images') {
+      if (!importImagesZip) {
+        setImportError('Selecciona el zip de imagenes antes de cargar.')
+        return
+      }
+
+      setImportError('')
+      setImportLoading(true)
+      const result = await itemsRest.importImages({ imagesZip: importImagesZip })
+      setImportLoading(false)
+
+      if (!result) return
+      setImportOpen(false)
+      refreshGrid()
+      return
+    }
+
     if (!importFile) {
       setImportError('Selecciona o arrastra un archivo Excel antes de importar.')
       return
@@ -296,7 +329,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
     setImportError('')
     setImportLoading(true)
-    const result = await itemsRest.import({ file: importFile, mode: importMode })
+    const result = await itemsRest.import({ file: importFile, mode: importMode, imagesZip: importImagesZip })
     setImportLoading(false)
 
     if (!result) return
@@ -591,6 +624,14 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 onChange={(e) => selectImportFile(e.target.files?.[0])}
               />
 
+              <input
+                ref={importZipInputRef}
+                type='file'
+                accept='.zip'
+                hidden
+                onChange={(e) => selectImagesZip(e.target.files?.[0])}
+              />
+
               <button
                 type='button'
                 className={`wfi-drop ${importDragging ? 'drag' : ''}`}
@@ -616,6 +657,32 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 </div>
               </button>
 
+              <button
+                type='button'
+                className={`wfi-drop ${importDragging ? 'drag' : ''}`}
+                style={{ minHeight: 110 }}
+                onClick={() => importZipInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setImportDragging(true) }}
+                onDragLeave={() => setImportDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setImportDragging(false)
+                  selectImagesZip(e.dataTransfer.files?.[0])
+                }}
+              >
+                <div>
+                  <i className='mdi mdi-folder-zip-outline'></i>
+                  <strong>Zip de imagenes opcional</strong>
+                  <span>Nombres esperados: CODIGO.png o CODIGO-1.jpg, CODIGO-2.jpg.</span>
+                  {importImagesZip && (
+                    <div className='wfi-file-pill'>
+                      <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
+                      <span>{importImagesZip.name}</span>
+                    </div>
+                  )}
+                </div>
+              </button>
+
               <div>
                 <label className='form-label'>Tipo de carga</label>
                 <div className='wfi-mode-grid'>
@@ -628,6 +695,11 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                     <input type='radio' name='import-mode' value='upsert' checked={importMode === 'upsert'} onChange={(e) => setImportMode(e.target.value)} />
                     <b>Agregado parcial</b>
                     <span>Busca por SKU: si existe lo actualiza, si no existe lo agrega como nuevo item.</span>
+                  </label>
+                  <label className={`wfi-mode ${importMode === 'images' ? 'on' : ''}`}>
+                    <input type='radio' name='import-mode' value='images' checked={importMode === 'images'} onChange={(e) => setImportMode(e.target.value)} />
+                    <b>Solo imagenes</b>
+                    <span>No modifica productos. Solo reemplaza galerias cuando el nombre del archivo coincide claramente con un SKU existente.</span>
                   </label>
                 </div>
               </div>

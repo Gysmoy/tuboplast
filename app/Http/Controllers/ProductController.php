@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class ProductController extends BasicController
@@ -23,10 +24,15 @@ class ProductController extends BasicController
 
     public function setReactViewProperties(Request $request)
     {
+        $relations = ['category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType'];
+        if (Schema::hasTable('item_images')) {
+            $relations[] = 'images';
+        }
+
         $item = Item::query()
             ->where('status', true)
             ->where('slug', $this->slug)
-            ->with('category', 'productSegment', 'productSegments', 'productLine', 'productClassification', 'productType')
+            ->with($relations)
             ->first();
 
         if (!$item) {
@@ -74,7 +80,22 @@ class ProductController extends BasicController
 
     private function imageUrl(Item $item): string
     {
-        return $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png';
+        return $this->publicImageUrl($item->image);
+    }
+
+    private function publicImageUrl(?string $path): string
+    {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return '/assets/img/items/item-1.png';
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://', '/assets/', '/storage/'])) {
+            return $path;
+        }
+
+        return '/storage/' . ltrim($path, '/');
     }
 
     private function shortPressure(?string $pressure): string
@@ -138,6 +159,18 @@ class ProductController extends BasicController
         $classification = $item->productClassification->name ?? $item->classification;
         $type = $item->productType->name ?? $item->type;
         $image = $this->imageUrl($item);
+        $gallery = $item->relationLoaded('images')
+            ? $item->images
+                ->pluck('path')
+                ->filter()
+                ->map(fn ($path) => $this->publicImageUrl($path))
+                ->values()
+                ->all()
+            : [];
+
+        if (!count($gallery)) {
+            $gallery = [$image];
+        }
 
         $diameters = is_array($item->diameters) ? $item->diameters : [];
         $diameterLabel = $item->nominal_diameter ?: ($item->diameter ?: $this->diameterLabel($diameters));
@@ -190,7 +223,7 @@ class ProductController extends BasicController
             'title' => $item->title,
             'description' => $item->description ?: 'Producto fabricado bajo los estándares de calidad de Tuboplast.',
             'image' => $image,
-            'gallery' => [$image],
+            'gallery' => $gallery,
             'unitPrice' => $price,
             'price' => $this->moneyLabel($price, $item->currency),
             'currency' => strtoupper($item->currency ?: 'PEN'),

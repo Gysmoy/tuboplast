@@ -11,11 +11,12 @@ const notify = ({ title, body, type }) => {
 class ItemsRest extends BasicRest {
   path = 'items'
 
-  import = async ({ file, mode }) => {
+  import = async ({ file, mode, imagesZip = null }) => {
     try {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('mode', mode)
+      if (imagesZip) formData.append('images_zip', imagesZip)
 
       const res = await fetch(`/api/${this.path}/import`, {
         method: 'POST',
@@ -36,9 +37,47 @@ class ItemsRest extends BasicRest {
         `${data.created ?? 0} creados`,
         `${data.updated ?? 0} actualizados`,
         `${data.skipped ?? 0} omitidos`,
-      ].join(' · ')
+        `${data.images_associated ?? 0} imagenes asociadas`,
+        `${data.images_ignored ?? 0} imagenes ignoradas`,
+      ].join(' - ')
 
       notify({ title: 'Carga masiva completada', body, type: 'success' })
+      return result
+    } catch (error) {
+      notify({ title: 'Error', body: error.message, type: 'danger' })
+      return null
+    }
+  }
+
+  importImages = async ({ imagesZip }) => {
+    try {
+      const formData = new FormData()
+      formData.append('images_zip', imagesZip)
+
+      const res = await fetch(`/api/${this.path}/import-images`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'X-Xsrf-Token': decodeURIComponent(Cookies.get('XSRF-TOKEN'))
+        },
+        body: formData
+      })
+
+      const result = await res.json()
+      if (!res.ok || result?.status !== 200) {
+        throw new Error(result?.message || 'Ocurrio un error inesperado')
+      }
+
+      const data = result.data || {}
+      const body = [
+        `${data.matched_items ?? 0} productos con coincidencia`,
+        `${data.images_associated ?? 0} imagenes asociadas`,
+        `${data.images_ignored ?? 0} imagenes ignoradas`,
+        `${data.not_found ?? 0} codigos sin producto`,
+        `${data.ambiguous ?? 0} codigos ambiguos`,
+      ].join(' - ')
+
+      notify({ title: 'Carga de imagenes completada', body, type: 'success' })
       return result
     } catch (error) {
       notify({ title: 'Error', body: error.message, type: 'danger' })
