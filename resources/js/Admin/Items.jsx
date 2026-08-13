@@ -67,6 +67,18 @@ const ARCHIVE_PATTERN = /\.(zip|rar)$/i
 const ARCHIVE_MAX_MB = 100
 const USE_OPTIONS = ['AGUA FRIA', 'AGUA POTABLE', 'DESAGUE', 'ALCANTARILLADO', 'ELECTRICO']
 const CURRENCY_OPTIONS = [{ value: 'PEN', label: 'PEN (S/)' }, { value: 'USD', label: 'USD ($)' }]
+const ITEM_FALLBACK_IMAGE = '/assets/img/items/item-1.png'
+
+const itemImagePath = (item) => item?.image || item?.images?.[0]?.path || ''
+const itemImageUrl = (item) => {
+  const image = itemImagePath(item)
+  if (!image) return ITEM_FALLBACK_IMAGE
+  if (/^(https?:)?\/\//.test(image) || image.startsWith('/')) return image
+  return `/storage/${image}`
+}
+const onItemImageError = (event) => {
+  if (!event.target.src.endsWith(ITEM_FALLBACK_IMAGE)) event.target.src = ITEM_FALLBACK_IMAGE
+}
 
 const toOptions = (values, emptyLabel) => [{ value: '', label: emptyLabel }, ...values.map((v) => ({ value: v, label: v }))]
 
@@ -233,9 +245,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
     if (imageRef.current) imageRef.current.value = ''
     if (imageRef.current?.image) {
-      imageRef.current.image.src = data?.image
-        ? `/storage/${data.image}`
-        : '/assets/img/items/item-1.png'
+      imageRef.current.image.src = itemImageUrl(data)
     }
   }
 
@@ -435,7 +445,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
         columns={[
           {
             key: 'image', header: 'Imagen', filterable: false, sortable: false, width: 90,
-            render: (d) => <img src={d.image ? `/storage/${d.image}` : '/assets/img/items/item-1.png'} alt={d.title} className='wfi-thumb' />,
+            render: (d) => <img src={itemImageUrl(d)} alt={d.title} className='wfi-thumb' onError={onItemImageError} />,
           },
           {
             key: 'title', header: 'Producto', field: 'title', filterFields: ['title', 'sku'], width: 280,
@@ -540,7 +550,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                     </div>
                   </div>
                   <div className='col-md-6'>
-                    <ImageFormGroup eRef={imageRef} label='Imagen' required={!dataLoaded} aspect='4/3' fit='cover' onError='/assets/img/items/item-1.png' />
+                    <ImageFormGroup eRef={imageRef} label='Imagen' required={!dataLoaded} aspect='4/3' fit='cover' onError={ITEM_FALLBACK_IMAGE} />
                     <div className='form-group mb-2'>
                       <label className='form-label'>Ficha técnica PDF</label>
                       <input ref={technicalSheetRef} type='file' className='form-control' accept='application/pdf' />
