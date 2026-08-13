@@ -395,14 +395,16 @@ class ItemController extends BasicController
 
             $imageCode = $this->imageLookupCodeFromRow($norm, $sku);
             $imageKey = $this->imagePackageKey($imageCode);
+            $sheetCode = $this->sheetLookupCodeFromRow($norm, $sku);
+            $sheetKey = $this->imagePackageKey($sheetCode);
             if (!empty($imageGroups[$imageKey])) {
                 $imagesAssociated += $this->replaceItemImages($item, $imageGroups[$imageKey]);
                 $matchedImageSkus[$imageKey] = true;
             }
 
-            if (!empty($sheetGroups[$imageKey])) {
-                $sheetsAssociated += $this->replaceItemSheet($item, $sheetGroups[$imageKey][0]);
-                $matchedSheetSkus[$imageKey] = true;
+            if (!empty($sheetGroups[$sheetKey])) {
+                $sheetsAssociated += $this->replaceItemSheet($item, $sheetGroups[$sheetKey][0]);
+                $matchedSheetSkus[$sheetKey] = true;
             }
         }
 
@@ -453,6 +455,11 @@ class ItemController extends BasicController
         return $this->stringOrNull($this->getImportValue($norm, 'CODIGO IMAGEN'))
             ?? $this->stringOrNull($this->getImportValue($norm, 'IMAGEN'))
             ?? $sku;
+    }
+
+    private function sheetLookupCodeFromRow(array $norm, string $sku): string
+    {
+        return $this->stringOrNull($this->getImportValue($norm, 'FICHA')) ?? $sku;
     }
 
     private function replaceImagesForExistingItems(array $imageGroups, int $initialIgnored): array
