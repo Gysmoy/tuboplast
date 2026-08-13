@@ -450,7 +450,9 @@ class ItemController extends BasicController
 
     private function imageLookupCodeFromRow(array $norm, string $sku): string
     {
-        return $this->stringOrNull($this->getImportValue($norm, 'CODIGO IMAGEN')) ?? $sku;
+        return $this->stringOrNull($this->getImportValue($norm, 'CODIGO IMAGEN'))
+            ?? $this->stringOrNull($this->getImportValue($norm, 'IMAGEN'))
+            ?? $sku;
     }
 
     private function replaceImagesForExistingItems(array $imageGroups, int $initialIgnored): array

@@ -8,6 +8,25 @@ const notify = ({ title, body, type }) => {
   return toast(title, { description: body })
 }
 
+const parseJsonResponse = async (res) => {
+  const text = await res.text()
+  const contentType = res.headers.get('content-type') || ''
+
+  if (contentType.includes('application/json')) {
+    return JSON.parse(text)
+  }
+
+  if (text.trim().startsWith('<')) {
+    throw new Error('El servidor devolvio HTML en vez de JSON. Revisa si el archivo supera el limite de carga, si la sesion vencio o si ocurrio un error 500.')
+  }
+
+  try {
+    return JSON.parse(text)
+  } catch {
+    throw new Error(text || 'El servidor devolvio una respuesta invalida.')
+  }
+}
+
 class ItemsRest extends BasicRest {
   path = 'items'
 
@@ -28,7 +47,7 @@ class ItemsRest extends BasicRest {
         body: formData
       })
 
-      const result = await res.json()
+      const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
         throw new Error(result?.message || 'Ocurrio un error inesperado')
       }
@@ -66,7 +85,7 @@ class ItemsRest extends BasicRest {
         body: formData
       })
 
-      const result = await res.json()
+      const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
         throw new Error(result?.message || 'Ocurrio un error inesperado')
       }
@@ -102,7 +121,7 @@ class ItemsRest extends BasicRest {
         body: formData
       })
 
-      const result = await res.json()
+      const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
         throw new Error(result?.message || 'Ocurrio un error inesperado')
       }
@@ -160,7 +179,7 @@ class ItemsRest extends BasicRest {
         body: formData
       })
 
-      const result = await res.json()
+      const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
         throw new Error(result?.message || 'Ocurrio un error inesperado')
       }
