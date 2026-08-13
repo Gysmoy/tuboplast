@@ -46,8 +46,10 @@ const ITEMS_CSS = `
 .wfi-drop span{display:block;color:#7d8798;font-size:12px;margin-top:4px;}
 .wfi-file-pill{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #dce5f0;color:#0f2540;font-size:12px;font-weight:600;max-width:100%;}
 .wfi-file-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wfi-drop-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:640px){.wfi-drop-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .wfi-mode-grid{display:grid;grid-template-columns:1fr;gap:10px;}
-@media(min-width:768px){.wfi-mode-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+@media(min-width:640px){.wfi-mode-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .wfi-mode{position:relative;border:1px solid #e2eaf4;border-radius:12px;padding:12px 12px 12px 42px;cursor:pointer;min-height:106px;transition:border-color .2s,box-shadow .2s,background .2s;}
 .wfi-mode:hover{border-color:#b9c8da;background:#fbfdff;}
 .wfi-mode.on{border-color:#004991;box-shadow:0 0 0 3px rgba(0,73,145,.08);background:#f8fbff;}
@@ -61,6 +63,8 @@ const ITEMS_CSS = `
 .wfi-multi input{accent-color:#004991;}
 `
 
+const ARCHIVE_PATTERN = /\.(zip|rar)$/i
+const ARCHIVE_MAX_MB = 100
 const USE_OPTIONS = ['AGUA FRIA', 'AGUA POTABLE', 'DESAGUE', 'ALCANTARILLADO', 'ELECTRICO']
 const CURRENCY_OPTIONS = [{ value: 'PEN', label: 'PEN (S/)' }, { value: 'USD', label: 'USD ($)' }]
 
@@ -160,7 +164,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const [importImagesZip, setImportImagesZip] = useState(null)
   const [importSheetsZip, setImportSheetsZip] = useState(null)
   const [importMode, setImportMode] = useState('upsert')
-  const [importDragging, setImportDragging] = useState(false)
+  const [importDragging, setImportDragging] = useState(null)
   const [importLoading, setImportLoading] = useState(false)
   const [importError, setImportError] = useState('')
   const [selects, setSelects] = useState({
@@ -268,7 +272,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     setImportSheetsZip(null)
     setImportMode('upsert')
     setImportError('')
-    setImportDragging(false)
+    setImportDragging(null)
     setImportOpen(true)
     if (importInputRef.current) importInputRef.current.value = ''
     if (importZipInputRef.current) importZipInputRef.current.value = ''
@@ -279,7 +283,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     if (importLoading) return
     setImportOpen(false)
     setImportError('')
-    setImportDragging(false)
+    setImportDragging(null)
   }
 
   const selectImportFile = (file) => {
@@ -295,66 +299,29 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     setImportFile(file)
   }
 
-  const selectImagesZip = (file) => {
+  const selectArchive = (file, setter, subject) => {
     if (!file) return
-    const name = file.name || ''
-    if (!/\.zip$/i.test(name)) {
-      setImportImagesZip(null)
-      setImportError('Selecciona un archivo .zip para las imagenes.')
+    if (!ARCHIVE_PATTERN.test(file.name || '')) {
+      setter(null)
+      setImportError(`Selecciona un archivo .zip o .rar para ${subject}.`)
+      return
+    }
+    if (file.size > ARCHIVE_MAX_MB * 1024 * 1024) {
+      setter(null)
+      setImportError(`El comprimido de ${subject} supera los ${ARCHIVE_MAX_MB} MB permitidos.`)
       return
     }
     setImportError('')
-    setImportImagesZip(file)
+    setter(file)
   }
 
-  const selectSheetsZip = (file) => {
-    if (!file) return
-    const name = file.name || ''
-    if (!/\.zip$/i.test(name)) {
-      setImportSheetsZip(null)
-      setImportError('Selecciona un archivo .zip para las fichas tecnicas.')
-      return
-    }
-    setImportError('')
-    setImportSheetsZip(file)
-  }
+  const selectImagesZip = (file) => selectArchive(file, setImportImagesZip, 'las imagenes')
+
+  const selectSheetsZip = (file) => selectArchive(file, setImportSheetsZip, 'las fichas tecnicas')
 
   const onImportSubmit = async (e) => {
     e.preventDefault()
     if (importLoading) return
-    if (importMode === 'images') {
-      if (!importImagesZip) {
-        setImportError('Selecciona el zip de imagenes antes de cargar.')
-        return
-      }
-
-      setImportError('')
-      setImportLoading(true)
-      const result = await itemsRest.importImages({ imagesZip: importImagesZip })
-      setImportLoading(false)
-
-      if (!result) return
-      setImportOpen(false)
-      refreshGrid()
-      return
-    }
-
-    if (importMode === 'sheets') {
-      if (!importSheetsZip) {
-        setImportError('Selecciona el zip de fichas tecnicas antes de cargar.')
-        return
-      }
-
-      setImportError('')
-      setImportLoading(true)
-      const result = await itemsRest.importSheets({ sheetsZip: importSheetsZip })
-      setImportLoading(false)
-
-      if (!result) return
-      setImportOpen(false)
-      refreshGrid()
-      return
-    }
 
     if (!importFile) {
       setImportError('Selecciona o arrastra un archivo Excel antes de importar.')
@@ -684,7 +651,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
               <input
                 ref={importZipInputRef}
                 type='file'
-                accept='.zip'
+                accept='.zip,.rar'
                 hidden
                 onChange={(e) => selectImagesZip(e.target.files?.[0])}
               />
@@ -692,20 +659,20 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
               <input
                 ref={importSheetsZipInputRef}
                 type='file'
-                accept='.zip'
+                accept='.zip,.rar'
                 hidden
                 onChange={(e) => selectSheetsZip(e.target.files?.[0])}
               />
 
               <button
                 type='button'
-                className={`wfi-drop ${importDragging ? 'drag' : ''}`}
+                className={`wfi-drop ${importDragging === 'excel' ? 'drag' : ''}`}
                 onClick={() => importInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setImportDragging(true) }}
-                onDragLeave={() => setImportDragging(false)}
+                onDragOver={(e) => { e.preventDefault(); setImportDragging('excel') }}
+                onDragLeave={() => setImportDragging(null)}
                 onDrop={(e) => {
                   e.preventDefault()
-                  setImportDragging(false)
+                  setImportDragging(null)
                   selectImportFile(e.dataTransfer.files?.[0])
                 }}
               >
@@ -722,57 +689,59 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 </div>
               </button>
 
-              <button
-                type='button'
-                className={`wfi-drop ${importDragging ? 'drag' : ''}`}
-                style={{ minHeight: 110 }}
-                onClick={() => importZipInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setImportDragging(true) }}
-                onDragLeave={() => setImportDragging(false)}
-                onDrop={(e) => {
-                  e.preventDefault()
-                  setImportDragging(false)
-                  selectImagesZip(e.dataTransfer.files?.[0])
-                }}
-              >
-                <div>
-                  <i className='mdi mdi-folder-zip-outline'></i>
-                  <strong>Zip de imagenes opcional</strong>
-                  <span>Nombres esperados: CODIGO.png o CODIGO-1.jpg. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
-                  {importImagesZip && (
-                    <div className='wfi-file-pill'>
-                      <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
-                      <span>{importImagesZip.name}</span>
-                    </div>
-                  )}
-                </div>
-              </button>
+              <div className='wfi-drop-grid'>
+                <button
+                  type='button'
+                  className={`wfi-drop ${importDragging === 'images' ? 'drag' : ''}`}
+                  style={{ minHeight: 128, padding: 18 }}
+                  onClick={() => importZipInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setImportDragging('images') }}
+                  onDragLeave={() => setImportDragging(null)}
+                  onDrop={(e) => {
+                    e.preventDefault()
+                    setImportDragging(null)
+                    selectImagesZip(e.dataTransfer.files?.[0])
+                  }}
+                >
+                  <div>
+                    <i className='mdi mdi-folder-zip-outline'></i>
+                    <strong>Comprimido de imagenes opcional</strong>
+                    <span>.zip o .rar hasta {ARCHIVE_MAX_MB} MB. Nombres esperados: CODIGO.png o CODIGO-1.jpg. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
+                    {importImagesZip && (
+                      <div className='wfi-file-pill'>
+                        <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
+                        <span>{importImagesZip.name}</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
 
-              <button
-                type='button'
-                className={`wfi-drop ${importDragging ? 'drag' : ''}`}
-                style={{ minHeight: 110 }}
-                onClick={() => importSheetsZipInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setImportDragging(true) }}
-                onDragLeave={() => setImportDragging(false)}
-                onDrop={(e) => {
-                  e.preventDefault()
-                  setImportDragging(false)
-                  selectSheetsZip(e.dataTransfer.files?.[0])
-                }}
-              >
-                <div>
-                  <i className='mdi mdi-file-pdf-box'></i>
-                  <strong>Zip de fichas técnicas opcional</strong>
-                  <span>Nombres esperados: CODIGO.pdf. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
-                  {importSheetsZip && (
-                    <div className='wfi-file-pill'>
-                      <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
-                      <span>{importSheetsZip.name}</span>
-                    </div>
-                  )}
-                </div>
-              </button>
+                <button
+                  type='button'
+                  className={`wfi-drop ${importDragging === 'sheets' ? 'drag' : ''}`}
+                  style={{ minHeight: 128, padding: 18 }}
+                  onClick={() => importSheetsZipInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setImportDragging('sheets') }}
+                  onDragLeave={() => setImportDragging(null)}
+                  onDrop={(e) => {
+                    e.preventDefault()
+                    setImportDragging(null)
+                    selectSheetsZip(e.dataTransfer.files?.[0])
+                  }}
+                >
+                  <div>
+                    <i className='mdi mdi-file-pdf-box'></i>
+                    <strong>Comprimido de fichas técnicas opcional</strong>
+                    <span>.zip o .rar hasta {ARCHIVE_MAX_MB} MB. Nombres esperados: CODIGO.pdf. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
+                    {importSheetsZip && (
+                      <div className='wfi-file-pill'>
+                        <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
+                        <span>{importSheetsZip.name}</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
+              </div>
 
               <div>
                 <label className='form-label'>Tipo de carga</label>
@@ -786,16 +755,6 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                     <input type='radio' name='import-mode' value='upsert' checked={importMode === 'upsert'} onChange={(e) => setImportMode(e.target.value)} />
                     <b>Agregado parcial</b>
                     <span>Busca por SKU: si existe lo actualiza, si no existe lo agrega como nuevo item.</span>
-                  </label>
-                  <label className={`wfi-mode ${importMode === 'images' ? 'on' : ''}`}>
-                    <input type='radio' name='import-mode' value='images' checked={importMode === 'images'} onChange={(e) => setImportMode(e.target.value)} />
-                    <b>Solo imagenes</b>
-                    <span>No modifica productos. Solo reemplaza galerias cuando el archivo coincide con un SKU existente.</span>
-                  </label>
-                  <label className={`wfi-mode ${importMode === 'sheets' ? 'on' : ''}`}>
-                    <input type='radio' name='import-mode' value='sheets' checked={importMode === 'sheets'} onChange={(e) => setImportMode(e.target.value)} />
-                    <b>Solo fichas</b>
-                    <span>No modifica productos. Solo reemplaza la ficha PDF cuando coincide con un SKU existente.</span>
                   </label>
                 </div>
               </div>

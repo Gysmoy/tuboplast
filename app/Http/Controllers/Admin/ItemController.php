@@ -11,6 +11,7 @@ use App\Models\ProductLine;
 use App\Models\ProductSegment;
 use App\Models\ProductType;
 use Exception;
+use FilesystemIterator;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
@@ -19,7 +20,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use SoDe\Extend\Response;
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
 use ZipArchive;
 
 class ItemController extends BasicController
@@ -225,8 +230,8 @@ class ItemController extends BasicController
             $request->validate([
                 'file' => 'required|file|max:20480',
                 'mode' => 'required|in:replace,upsert',
-                'images_zip' => 'nullable|file|mimes:zip|max:51200',
-                'sheets_zip' => 'nullable|file|mimes:zip|max:51200',
+                'images_zip' => 'nullable|file|max:102400',
+                'sheets_zip' => 'nullable|file|max:102400',
             ]);
 
             $file = $request->file('file');
@@ -272,7 +277,7 @@ class ItemController extends BasicController
 
         try {
             $request->validate([
-                'images_zip' => 'required|file|mimes:zip|max:51200',
+                'images_zip' => 'required|file|max:102400',
             ]);
 
             if (!Schema::hasTable('item_images')) {
@@ -283,7 +288,7 @@ class ItemController extends BasicController
             $imageGroups = $imagePackage['groups'] ?? [];
 
             if (!count($imageGroups)) {
-                throw new Exception('No se encontraron imagenes validas dentro del zip.');
+                throw new Exception('No se encontraron imagenes validas dentro del comprimido.');
             }
 
             $this->filesPendingDeletion = [];
@@ -310,14 +315,14 @@ class ItemController extends BasicController
 
         try {
             $request->validate([
-                'sheets_zip' => 'required|file|mimes:zip|max:51200',
+                'sheets_zip' => 'required|file|max:102400',
             ]);
 
             $sheetPackage = $this->readSheetPackage($request->file('sheets_zip')->getRealPath());
             $sheetGroups = $sheetPackage['groups'] ?? [];
 
             if (!count($sheetGroups)) {
-                throw new Exception('No se encontraron fichas tecnicas PDF validas dentro del zip.');
+                throw new Exception('No se encontraron fichas tecnicas PDF validas dentro del comprimido.');
             }
 
             $this->filesPendingDeletion = [];
@@ -1209,66 +1214,67 @@ class ItemController extends BasicController
 
     private function readImagePackage(string $path): array
     {
-        $zip = new ZipArchive();
+        return $this->readArchivePackage($path, 'imagenes', ['jpg', 'jpeg', 'png', 'webp']);
+    }
 
-        if ($zip->open($path) !== true) {
-            throw new Exception('No se pudo abrir el zip de imagenes.');
-        }
+    private function readSheetPackage(string $path): array
+    {
+        return $this->readArchivePackage($path, 'fichas tecnicas', ['pdf']);
+    }
 
+    /**
+     * Agrupa por SKU el contenido de un comprimido (.zip o .rar), quedandose solo
+     * con los archivos cuya extension esta en $allowed.
+     */
+    private function readArchivePackage(string $path, string $label, array $allowed): array
+    {
         $groups = [];
         $ignored = 0;
         $errors = [];
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
 
-        try {
-            for ($i = 0; $i < $zip->numFiles; $i++) {
-                $entry = $zip->statIndex($i);
-                $name = str_replace('\\', '/', $entry['name'] ?? '');
-                $basename = basename($name);
+        foreach ($this->archiveEntries($path, $label) as $entry) {
+            $basename = basename(str_replace('\\', '/', $entry['name']));
 
-                if ($basename === '' || str_ends_with($name, '/')) {
-                    continue;
-                }
-
-                $extension = mb_strtolower(pathinfo($basename, PATHINFO_EXTENSION));
-                $filename = pathinfo($basename, PATHINFO_FILENAME);
-
-                if (!in_array($extension, $allowed, true)) {
-                    $ignored++;
-                    continue;
-                }
-
-                if (!preg_match('/^(.+?)(?:-(\d+))?$/', $filename, $matches)) {
-                    $ignored++;
-                    continue;
-                }
-
-                $content = $zip->getFromIndex($i);
-                if ($content === false || $content === '') {
-                    $ignored++;
-                    continue;
-                }
-
-                $sku = trim($matches[1]);
-                if ($sku === '') {
-                    $ignored++;
-                    continue;
-                }
-
-                $order = isset($matches[2]) ? (int) $matches[2] : 0;
-                $groups[$this->imagePackageKey($sku)][] = [
-                    'original' => $basename,
-                    'extension' => $extension,
-                    'order' => $order,
-                    'content' => $content,
-                ];
+            if ($basename === '' || str_starts_with($basename, '.')) {
+                continue;
             }
-        } finally {
-            $zip->close();
+
+            $extension = mb_strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+            $filename = pathinfo($basename, PATHINFO_FILENAME);
+
+            if (!in_array($extension, $allowed, true)) {
+                $ignored++;
+                continue;
+            }
+
+            if (!preg_match('/^(.+?)(?:-(\d+))?$/', $filename, $matches)) {
+                $ignored++;
+                continue;
+            }
+
+            $content = $entry['content'];
+            if ($content === false || $content === null || $content === '') {
+                $ignored++;
+                continue;
+            }
+
+            $sku = trim($matches[1]);
+            if ($sku === '') {
+                $ignored++;
+                continue;
+            }
+
+            $order = isset($matches[2]) ? (int) $matches[2] : 0;
+            $groups[$this->imagePackageKey($sku)][] = [
+                'original' => $basename,
+                'extension' => $extension,
+                'order' => $order,
+                'content' => $content,
+            ];
         }
 
-        foreach ($groups as &$images) {
-            usort($images, function ($a, $b) {
+        foreach ($groups as &$files) {
+            usort($files, function ($a, $b) {
                 if ($a['order'] === $b['order']) {
                     return strnatcasecmp($a['original'], $b['original']);
                 }
@@ -1280,76 +1286,142 @@ class ItemController extends BasicController
         return compact('groups', 'ignored', 'errors');
     }
 
-    private function readSheetPackage(string $path): array
+    /**
+     * Recorre un comprimido detectando el formato por firma binaria, no por extension:
+     * el archivo temporal de PHP no conserva el nombre original.
+     */
+    private function archiveEntries(string $path, string $label): iterable
+    {
+        $handle = @fopen($path, 'rb');
+
+        if ($handle === false) {
+            throw new Exception("No se pudo leer el comprimido de {$label}.");
+        }
+
+        $magic = (string) fread($handle, 8);
+        fclose($handle);
+
+        if (str_starts_with($magic, "Rar!\x1A\x07")) {
+            return $this->rarEntries($path, $label);
+        }
+
+        if (str_starts_with($magic, "PK\x03\x04") || str_starts_with($magic, "PK\x05\x06") || str_starts_with($magic, "PK\x07\x08")) {
+            return $this->zipEntries($path, $label);
+        }
+
+        throw new Exception("El paquete de {$label} debe ser un archivo .zip o .rar valido.");
+    }
+
+    private function zipEntries(string $path, string $label): iterable
     {
         $zip = new ZipArchive();
 
         if ($zip->open($path) !== true) {
-            throw new Exception('No se pudo abrir el zip de fichas tecnicas.');
+            throw new Exception("No se pudo abrir el zip de {$label}.");
         }
-
-        $groups = [];
-        $ignored = 0;
-        $errors = [];
 
         try {
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $entry = $zip->statIndex($i);
                 $name = str_replace('\\', '/', $entry['name'] ?? '');
-                $basename = basename($name);
 
-                if ($basename === '' || str_ends_with($name, '/')) {
+                if ($name === '' || str_ends_with($name, '/')) {
                     continue;
                 }
 
-                $extension = mb_strtolower(pathinfo($basename, PATHINFO_EXTENSION));
-                $filename = pathinfo($basename, PATHINFO_FILENAME);
-
-                if ($extension !== 'pdf') {
-                    $ignored++;
-                    continue;
-                }
-
-                if (!preg_match('/^(.+?)(?:-(\d+))?$/', $filename, $matches)) {
-                    $ignored++;
-                    continue;
-                }
-
-                $content = $zip->getFromIndex($i);
-                if ($content === false || $content === '') {
-                    $ignored++;
-                    continue;
-                }
-
-                $sku = trim($matches[1]);
-                if ($sku === '') {
-                    $ignored++;
-                    continue;
-                }
-
-                $order = isset($matches[2]) ? (int) $matches[2] : 0;
-                $groups[$this->imagePackageKey($sku)][] = [
-                    'original' => $basename,
-                    'extension' => $extension,
-                    'order' => $order,
-                    'content' => $content,
-                ];
+                yield ['name' => $name, 'content' => $zip->getFromIndex($i)];
             }
         } finally {
             $zip->close();
         }
+    }
 
-        foreach ($groups as &$sheets) {
-            usort($sheets, function ($a, $b) {
-                if ($a['order'] === $b['order']) {
-                    return strnatcasecmp($a['original'], $b['original']);
+    private function rarEntries(string $path, string $label): iterable
+    {
+        $directory = $this->makeTempDirectory();
+
+        try {
+            $this->extractRar($path, $directory, $label);
+
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS)
+            );
+
+            foreach ($files as $file) {
+                if (!$file->isFile()) {
+                    continue;
                 }
 
-                return $a['order'] <=> $b['order'];
-            });
+                yield ['name' => $file->getFilename(), 'content' => @file_get_contents($file->getPathname())];
+            }
+        } finally {
+            $this->deleteDirectory($directory);
+        }
+    }
+
+    /**
+     * PHP no descomprime RAR de forma nativa: se delega en el primer binario disponible.
+     */
+    private function extractRar(string $path, string $target, string $label): void
+    {
+        $finder = new ExecutableFinder();
+
+        $candidates = [
+            'unrar' => ['x', '-y', '-inul', '-o+', $path, $target . DIRECTORY_SEPARATOR],
+            'bsdtar' => ['-x', '-f', $path, '-C', $target],
+            '7zz' => ['x', '-y', '-o' . $target, $path],
+            '7z' => ['x', '-y', '-o' . $target, $path],
+        ];
+
+        foreach ($candidates as $binary => $arguments) {
+            $executable = $finder->find($binary);
+
+            if (!$executable) {
+                continue;
+            }
+
+            $process = new Process(array_merge([$executable], $arguments));
+            $process->setTimeout(300);
+            $process->run();
+
+            if ($process->isSuccessful()) {
+                return;
+            }
+
+            $detail = trim($process->getErrorOutput() ?: $process->getOutput());
+            throw new Exception("No se pudo descomprimir el rar de {$label}." . ($detail ? " {$detail}" : ''));
         }
 
-        return compact('groups', 'ignored', 'errors');
+        throw new Exception("El servidor no tiene instalado un extractor de RAR (unrar, bsdtar o 7z). Sube el paquete de {$label} en formato .zip.");
+    }
+
+    private function makeTempDirectory(): string
+    {
+        $directory = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'tuboplast-rar-' . Str::random(12);
+
+        if (!mkdir($directory, 0775, true) && !is_dir($directory)) {
+            throw new Exception('No se pudo crear el directorio temporal para descomprimir.');
+        }
+
+        return $directory;
+    }
+
+    private function deleteDirectory(string $directory): void
+    {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        $items = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($items as $item) {
+            $item->isDir() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+        }
+
+        @rmdir($directory);
     }
 
     private function imagePackageKey(string $sku): string

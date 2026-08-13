@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
   zip \
   unzip \
   libzip-dev \
+  libarchive-tools \
+  p7zip-full \
   && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # 2. Clear cache
