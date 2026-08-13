@@ -247,6 +247,7 @@ const HeroProductCard = ({ item }) => {
 const HeroSlide = ({ slide, priority = false }) => {
   const metrics = heroMetrics(slide);
   const buttons = heroButtons(slide);
+  const usesBakedOverlay = (slide.image_path || slide.image_url || '').includes('hero-obras-alto-rendimiento');
 
   return (
     <div className="relative overflow-hidden">
@@ -260,10 +261,14 @@ const HeroSlide = ({ slide, priority = false }) => {
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/82 to-white/70" />
+      <div className={`absolute inset-0 ${
+        usesBakedOverlay
+          ? 'bg-gradient-to-r from-white/35 via-white/20 to-white/10'
+          : 'bg-gradient-to-r from-white/90 via-white/82 to-white/70'
+      }`} />
 
       <div className="relative mx-auto grid w-full max-w-site gap-8 px-4 pb-12 pt-10 sm:gap-10 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:pb-32 lg:pt-20">
-        <div className="max-w-2xl space-y-5 sm:space-y-7 lg:space-y-8">
+        <div className="max-w-2xl space-y-5 sm:pl-12 sm:space-y-7 lg:space-y-8 lg:pl-16 xl:pl-20">
           <span data-hero-line className="block h-1 w-16 bg-secondary" />
           <h1
             data-hero-title
@@ -421,27 +426,10 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
                 Industrial.
               </h2>
 
-              <div className="grid gap-8 lg:grid-cols-2">
+              <div className="max-w-md">
                 <p className="text-sm text-white/75">
-                  Tuboplast es el referente peruano. Tuboplast es la primera fábrica 100% peruana especializada en la fabricación de tuberías y conexiones de PVC y HDPE. No solo fabricamos tuberías; diseñamos la infraestructura del mañana con ingeniería de precisión y materiales de vanguardia.
+                  Tuboplast es la primera fábrica 100% peruana. No solo fabricamos tuberías; diseñamos la infraestructura del mañana con ingeniería de precisión y materiales de vanguardia.
                 </p>
-
-                <ul className="space-y-9 text-sm">
-                  <li className="grid grid-cols-5 gap-6">
-                    <span className="mt-2 h-1 w-full bg-secondary" />
-                    <div className="col-span-4">
-                      <b className="block uppercase text-white">Experiencia</b>
-                      <span className="block text-white/75">Más de 60 años liderando el mercado nacional.</span>
-                    </div>
-                  </li>
-                  <li className="grid grid-cols-5 gap-6">
-                    <span className="mt-2 h-1 w-full bg-white/25" />
-                    <div className="col-span-4">
-                      <b className="block uppercase text-white">Tecnología</b>
-                      <span className="block text-white/75">Moderno laboratorio de Control de Calidad</span>
-                    </div>
-                  </li>
-                </ul>
               </div>
             </div>
 
@@ -458,15 +446,15 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
 
           <div className="relative z-[1] mt-6 aspect-[4/3] w-full rounded-[20px] shadow-[0_30px_90px_rgba(15,23,42,0.22)] sm:aspect-video lg:absolute lg:right-0 lg:-top-10 lg:mt-0 lg:h-[75%] lg:w-[calc(40%+80px)] lg:aspect-auto">
             <img
-              src="https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&w=1200&q=80"
-              alt="Planta industrial"
+              src="/assets/img/home/planta-tuberias-produccion.jpg"
+              alt="Planta de producción de tuberías Tuboplast"
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover rounded-2xl"
             />
             <div className="absolute bottom-4 left-4 rounded-lg bg-secondary px-5 py-4 text-primary shadow-[0_24px_60px_rgba(0,0,0,0.18)] sm:bottom-6 sm:left-6 sm:px-8 sm:py-6 lg:-bottom-40 lg:left-10 lg:px-10 lg:py-10">
-              <p className="font-title text-4xl font-black sm:text-5xl lg:text-6xl">30+</p>
-              <p className="text-sm font-medium uppercase">Años forjando <br /> el Perú</p>
+              <p className="font-title text-4xl font-black sm:text-5xl lg:text-6xl">60+</p>
+              <p className="text-sm font-medium uppercase">AÑOS CONSTRUYENDO <br /> EL PERÚ</p>
             </div>
           </div>
 

@@ -463,26 +463,13 @@ const DistributorsScreen = ({ distributors = [] }) => {
 
   return (
     <main>
-      <section className="relative overflow-hidden bg-white">
+      <section className="overflow-hidden bg-primary">
+        <h1 className="sr-only">Ubica a nuestros distribuidores a nivel nacional</h1>
         <img
-          src="/assets/img/sliders/banner-tuboplast.webp"
-          alt="Red de distribuidores autorizados Tuboplast en todo el Perú"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          src="/assets/img/distributors/banner-distribuidores.png"
+          alt="Ubica a nuestros distribuidores a nivel nacional"
+          className="block h-auto w-full"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/15" />
-        <div className="relative mx-auto flex w-full max-w-site items-center px-4 py-14 sm:py-20 lg:py-24">
-          <div className="max-w-2xl">
-            <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
-              Red de distribución nacional
-            </span>
-            <h1 className="mt-6 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl lg:text-6xl">
-              Encuentra tu distribuidor más cercano
-            </h1>
-            <p className="mt-5 max-w-lg text-base leading-relaxed text-darkmuted sm:text-lg">
-              Localiza puntos de venta autorizados Tuboplast en todo el Perú y asegura la calidad técnica de tus proyectos.
-            </p>
-          </div>
-        </div>
       </section>
 
       <section className="mx-auto w-full max-w-site px-4 pb-12 pt-8 sm:pb-16 lg:pt-10">
