@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import Base from './Components/Tailwind/Base';
 import ThankYouModal from './Components/Tailwind/ThankYouModal';
@@ -396,13 +396,16 @@ const ClubScreen = () => {
 
   return (
     <main>
-      <section className="relative aspect-[1006/273] overflow-hidden bg-white">
-        <img
-          src="/assets/img/club/club-experto-hero.png"
-          alt="Profesional de construcción en una planta industrial"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-transparent" />
+      <section className="bg-silver/40 py-6 sm:py-8 lg:py-10">
+        <div className="mx-auto w-full max-w-site px-4">
+          <div className="relative aspect-[1006/273] overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
+            <img
+              src="/assets/img/club/club-experto-hero.png"
+              alt="Profesional de construcción en una planta industrial"
+              className="absolute inset-0 h-full w-full object-cover object-center md:object-contain"
+            />
+          </div>
+        </div>
         <div className="hidden">
           <div className="hidden max-w-3xl">
             <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
@@ -521,7 +524,7 @@ const ClubScreen = () => {
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#897f00]">{testimonial.role}</p>
                 </div>
               </div>
-              <p className="mt-5 text-sm leading-relaxed text-darkmuted">“{testimonial.quote}”</p>
+              <p className="mt-5 text-sm leading-relaxed text-darkmuted">â€œ{testimonial.quote}â€</p>
             </article>
           ))}
         </div>
