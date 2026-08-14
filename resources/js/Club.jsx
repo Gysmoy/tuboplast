@@ -491,8 +491,8 @@ const ClubScreen = () => {
             </button>
           </div>
           <img
-            src="/assets/img/club/club-experto-hero.png"
-            alt="Tu aliado en construcción - Experto Tuboplast"
+            src="/assets/img/club/club-experto-cta.png"
+            alt="Club Experto Tuboplast, beneficios que construyen tu futuro"
             loading="lazy"
             decoding="async"
             className="hidden"
