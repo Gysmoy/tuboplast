@@ -400,8 +400,8 @@ const ClubScreen = () => {
         <div className="mx-auto w-full max-w-site px-4">
           <div className="overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
             <img
-              src="/assets/img/club/club-experto-cta.png"
-              alt="Club Experto Tuboplast, beneficios que construyen tu futuro"
+              src="/assets/img/club/club-experto-hero.png"
+              alt="Tu aliado en construcción - Experto Tuboplast"
               className="block h-auto w-full"
             />
           </div>
@@ -491,8 +491,8 @@ const ClubScreen = () => {
             </button>
           </div>
           <img
-            src="/assets/img/club/club-experto-cta.png"
-            alt="Maestro del Club Experto Tuboplast"
+            src="/assets/img/club/club-experto-hero.png"
+            alt="Tu aliado en construcción - Experto Tuboplast"
             loading="lazy"
             decoding="async"
             className="hidden"
