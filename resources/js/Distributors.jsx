@@ -593,13 +593,17 @@ const DistributorsScreen = ({ distributors = [] }) => {
 
   return (
     <main>
-      <section className="overflow-hidden bg-primary">
-        <h1 className="sr-only">Ubica a nuestros distribuidores a nivel nacional</h1>
-        <img
-          src="/assets/img/distributors/banner-distribuidores.png"
-          alt="Ubica a nuestros distribuidores a nivel nacional"
-          className="block h-auto w-full"
-        />
+      <section className="bg-silver/40 py-6 sm:py-8 lg:py-10">
+        <div className="mx-auto w-full max-w-site px-4">
+          <div className="overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
+            <h1 className="sr-only">Ubica a nuestros distribuidores a nivel nacional</h1>
+            <img
+              src="/assets/img/distributors/banner-distribuidores.png"
+              alt="Ubica a nuestros distribuidores a nivel nacional"
+              className="block h-auto w-full"
+            />
+          </div>
+        </div>
       </section>
 
       <section className="mx-auto w-full max-w-site px-4 pb-12 pt-8 sm:pb-16 lg:pt-10">
