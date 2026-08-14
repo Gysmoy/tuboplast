@@ -207,14 +207,16 @@ const BlogScreen = ({ blog = {} }) => {
 
   return (
     <main className="bg-white">
-      <section className="relative aspect-[1012/266] overflow-hidden bg-primary">
-        <img
-          src={heroImage}
-          alt="Realiza tus cotizaciones con facilidad"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-transparent" />
-        <div className="absolute inset-0 bg-transparent" />
+      <section className="bg-silver/40 py-6 sm:py-8 lg:py-10">
+        <div className="mx-auto w-full max-w-site px-4">
+          <div className="relative aspect-[1012/266] overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
+            <img
+              src={heroImage}
+              alt="Realiza tus cotizaciones con facilidad"
+              className="absolute inset-0 h-full w-full object-cover object-center md:object-contain"
+            />
+          </div>
+        </div>
 
         <div className="hidden">
           <div className="max-w-xl space-y-5">

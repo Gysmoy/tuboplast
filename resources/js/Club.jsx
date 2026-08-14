@@ -398,11 +398,11 @@ const ClubScreen = () => {
     <main>
       <section className="bg-silver/40 py-6 sm:py-8 lg:py-10">
         <div className="mx-auto w-full max-w-site px-4">
-          <div className="relative aspect-[1006/273] overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
+          <div className="overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
             <img
-              src="/assets/img/club/club-experto-hero.png"
-              alt="Profesional de construcción en una planta industrial"
-              className="absolute inset-0 h-full w-full object-cover object-center md:object-contain"
+              src="/assets/img/club/club-experto-cta.png"
+              alt="Club Experto Tuboplast, beneficios que construyen tu futuro"
+              className="block h-auto w-full"
             />
           </div>
         </div>

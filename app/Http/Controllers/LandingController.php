@@ -646,7 +646,7 @@ class LandingController extends BasicController
                     'title' => $slider->title,
                     'description' => $slider->description,
                     'image_path' => $slider->image,
-                    'image_url' => $slider->image ? '/storage/' . $slider->image : null,
+                    'image_url' => $this->sliderImageUrl($slider->image),
                     'primary_button_text' => $slider->primary_button_text,
                     'primary_button_link' => $slider->primary_button_link,
                     'secondary_button_text' => $slider->secondary_button_text,
@@ -666,6 +666,27 @@ class LandingController extends BasicController
             })
             ->values()
             ->all();
+    }
+
+    private function sliderImageUrl(?string $path): ?string
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        $path = ltrim($path, '/');
+
+        if (Storage::disk('public')->exists($path)) {
+            return '/storage/' . $path;
+        }
+
+        $assetPath = 'assets/img/' . $path;
+
+        if (file_exists(public_path($assetPath))) {
+            return '/' . $assetPath;
+        }
+
+        return '/storage/' . $path;
     }
 
     private function normalizeExpertCategories(): array
