@@ -12,20 +12,20 @@ const CONTACT_LOCATION = {
 };
 
 const serviceOptions = [
-  'CotizaciÃ³n de proyecto',
-  'AsesorÃ­a tÃ©cnica',
-  'DistribuciÃ³n y ferreterÃ­as',
+  'Cotización de proyecto',
+  'Asesoría técnica',
+  'Distribución y ferreterías',
   'Certificaciones y calidad',
   'Otro',
 ];
 
-const SEDE_FALLBACK_ADDRESS = 'Calle MarÃ­a Curie 313, Ate, Lima';
+const SEDE_FALLBACK_ADDRESS = 'Calle María Curie 313, Ate, Lima';
 
-// Canales fijos (telÃ©fono/WhatsApp). La sede se arma dinÃ¡micamente desde la BD.
+// Canales fijos (teléfono/WhatsApp). La sede se arma dinámicamente desde la BD.
 const phoneChannels = [
   {
     icon: 'mdi-phone-outline',
-    label: 'Central telefÃ³nica',
+    label: 'Central telefónica',
     value: '(01) 326-1146',
     href: 'tel:+5113261146',
   },
@@ -92,7 +92,7 @@ const ServiceDropdown = ({ onChange, value }) => {
         onClick={() => setIsOpen((current) => !current)}
         className="mt-2 flex w-full items-center justify-between gap-3 border-b border-slate-300 bg-transparent px-3 py-2 text-left text-dark outline-none transition hover:border-primary sm:text-base"
       >
-        <span className={value ? '' : 'text-muted'}>{value || 'Selecciona una opciÃ³n'}</span>
+        <span className={value ? '' : 'text-muted'}>{value || 'Selecciona una opción'}</span>
         <i className={`mdi mdi-chevron-down text-lg text-primary transition ${isOpen ? 'rotate-180' : ''}`}></i>
       </button>
       {isOpen && (
@@ -205,7 +205,7 @@ const ContactMap = ({ location = CONTACT_LOCATION }) => {
         rel="noreferrer"
         className="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#003b7a]"
       >
-        CÃ³mo llegar
+        Cómo llegar
         <i className="mdi mdi-arrow-right"></i>
       </a>
     </div>
@@ -237,7 +237,7 @@ const ContactSidebar = ({ channels }) => (
     </div>
 
     <div className="mt-6 border-t border-slate-200 pt-6">
-      <p className="text-xs font-bold uppercase tracking-[0.1em] text-primary">SÃ­guenos en redes</p>
+      <p className="text-xs font-bold uppercase tracking-[0.1em] text-primary">Síguenos en redes</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {socialLinks.map((social) => (
           <a
@@ -263,9 +263,9 @@ const ContactSidebar = ({ channels }) => (
           <i className="mdi mdi-check-decagram"></i>
         </span>
         <div>
-          <p className="font-bold">AtenciÃ³n de especialistas</p>
+          <p className="font-bold">Atención de especialistas</p>
           <p className="mt-1 text-sm leading-relaxed text-white/75">
-            Nuestro equipo de ingenierÃ­a valida tus requerimientos tÃ©cnicos.
+            Nuestro equipo de ingeniería valida tus requerimientos técnicos.
           </p>
         </div>
       </div>
@@ -313,7 +313,7 @@ const ContactForm = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'No pudimos enviar tu consulta. Revisa los datos e intÃ©ntalo nuevamente.');
+        throw new Error(result.message || 'No pudimos enviar tu consulta. Revisa los datos e inténtalo nuevamente.');
       }
 
       setForm({ business: '', celular: '', ruc: '', email: '', message: '', name: '', service: '' });
@@ -344,12 +344,12 @@ const ContactForm = () => {
         <Field
           label="Empresa"
           name="business"
-          placeholder="Nombre de su organizaciÃ³n"
+          placeholder="Nombre de su organización"
           value={form.business}
           onChange={updateField}
         />
         <Field
-          label="Correo electrÃ³nico"
+          label="Correo electrónico"
           name="email"
           type="email"
           placeholder="correo@ejemplo.com"
@@ -362,7 +362,7 @@ const ContactForm = () => {
           name="celular"
           inputMode="numeric"
           maxLength={9}
-          placeholder="9 dÃ­gitos"
+          placeholder="9 dígitos"
           value={form.celular}
           onChange={updateField}
           required
@@ -389,7 +389,7 @@ const ContactForm = () => {
         </span>
         <textarea
           name="message"
-          placeholder="CuÃ©ntenos sobre su requerimiento..."
+          placeholder="Cuéntenos sobre su requerimiento..."
           value={form.message}
           onChange={updateField}
           required
@@ -418,7 +418,7 @@ const ContactForm = () => {
       </div>
       </form>
       <ThankYouModal
-        description="Nuestro equipo tÃ©cnico revisarÃ¡ tu consulta y se comunicarÃ¡ contigo pronto."
+        description="Nuestro equipo técnico revisará tu consulta y se comunicará contigo pronto."
         eyebrow="Solicitud enviada"
         isOpen={isThankYouOpen}
         onClose={() => setIsThankYouOpen(false)}
@@ -449,7 +449,7 @@ const ContactScreen = ({ branches = [] }) => {
       <section className="relative overflow-hidden bg-white">
         <img
           src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1800&q=85"
-          alt="Proyecto de infraestructura en construcciÃ³n"
+          alt="Proyecto de infraestructura en construcción"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/45" />
@@ -459,7 +459,7 @@ const ContactScreen = ({ branches = [] }) => {
             Estamos para asesorarte
           </h1>
           <p className="mt-4 max-w-3xl text-lg leading-relaxed text-darkmuted sm:text-xl">
-            Contamos con un equipo tÃ©cnico especializado listo para brindar soluciones precisas a tus proyectos de infraestructura y saneamiento en todo el PerÃº.
+            Contamos con un equipo técnico especializado listo para brindar soluciones precisas a tus proyectos de infraestructura y saneamiento en todo el Perú.
           </p>
         </div>
       </section>

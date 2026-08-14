@@ -80,7 +80,7 @@ class LandingController extends BasicController
             $properties['facets'] = $this->catalogFacetsForRequest($request);
 
             $this->seo = [
-                'description' => 'CatÃ¡logo Tuboplast: tuberÃ­as y conexiones de PVC para agua frÃ­a, desagÃ¼e, instalaciones elÃ©ctricas, agua potable y alcantarillado. Filtra por segmento, lÃ­nea, tipo y diÃ¡metro.',
+                'description' => 'Catálogo Tuboplast: tuberías y conexiones de PVC para agua fría, desagüe, instalaciones eléctricas, agua potable y alcantarillado. Filtra por segmento, línea, tipo y diámetro.',
                 'url' => route('catalog'),
             ];
         }
@@ -131,11 +131,11 @@ class LandingController extends BasicController
         }
 
         $sectionTitles = [
-            'Catalog' => 'CatÃ¡logo de productos',
-            'Blog' => 'Blog tÃ©cnico',
-            'AboutFamilia' => 'Nosotros Â· Familia e historia',
-            'AboutPolitica' => 'PolÃ­tica del Sistema de GestiÃ³n Integrado',
-            'Contact' => 'Contacto y asesorÃ­a tÃ©cnica',
+            'Catalog' => 'Catálogo de productos',
+            'Blog' => 'Blog técnico',
+            'AboutFamilia' => 'Nosotros · Familia e historia',
+            'AboutPolitica' => 'Política del Sistema de Gestión Integrado',
+            'Contact' => 'Contacto y asesoría técnica',
             'Distributors' => 'Distribuidores autorizados',
             'Club' => 'Club Experto Tuboplast',
         ];
@@ -276,7 +276,7 @@ class LandingController extends BasicController
 
     private function catalogFacets(): array
     {
-        // Cacheado para que siga siendo barato aunque el catÃ¡logo crezca a miles de productos.
+        // Cacheado para que siga siendo barato aunque el catálogo crezca a miles de productos.
         return Cache::remember('tuboplast.catalog.facets', now()->addMinutes(10), function () {
             return [
                 'segment' => $this->segmentFacet(),
@@ -550,10 +550,10 @@ class LandingController extends BasicController
 
         $aliases = [
             'Agricultura' => ['Agricultura', 'AGRICULTURA'],
-            'Mineria' => ['Mineria', 'MinerÃ­a', 'MINERIA', 'MINERÃA'],
+            'Mineria' => ['Mineria', 'Minería', 'MINERIA', 'MINERÍA'],
             'Tubos' => ['Tubos', 'TUBOS', 'Tubo', 'TUBO'],
-            'Conexiones' => ['Conexiones', 'CONEXIONES', 'Conexion', 'ConexiÃ³n', 'CONEXION', 'CONEXIÃ“N', 'Anillos', 'ANILLOS'],
-            'Sistema Simple Presion' => ['Sistema Simple Presion', 'Sistema Simple PresiÃ³n', 'SISTEMA SIMPLE PRESION', 'SISTEMA SIMPLE PRESIÃ“N'],
+            'Conexiones' => ['Conexiones', 'CONEXIONES', 'Conexion', 'Conexión', 'CONEXION', 'CONEXIÓN', 'Anillos', 'ANILLOS'],
+            'Sistema Simple Presion' => ['Sistema Simple Presion', 'Sistema Simple Presión', 'SISTEMA SIMPLE PRESION', 'SISTEMA SIMPLE PRESIÓN'],
             'Sistema Union Flexible (UF)' => ['Sistema Union Flexible (UF)', 'Sistema Union Flexible', 'SISTEMA UNION FLEXIBLE', 'SISTEMA UNION FLEXIBLE (UF)'],
         ];
 
@@ -598,7 +598,7 @@ class LandingController extends BasicController
         $diameters = is_array($item->diameters) ? $item->diameters : [];
         $segments = $item->productSegments->pluck('name')->filter()->values();
         $segmentLabel = $segments->isNotEmpty()
-            ? $segments->join(' Â· ')
+            ? $segments->join(' · ')
             : ($item->productSegment->name ?? $item->segment);
 
         return [
@@ -955,7 +955,7 @@ class LandingController extends BasicController
 
         if (!$this->hasValidUbigeo($validated)) {
             throw ValidationException::withMessages([
-                'district' => 'Selecciona una ubicaciÃ³n vÃ¡lida.',
+                'district' => 'Selecciona una ubicación válida.',
             ]);
         }
 
@@ -1067,7 +1067,7 @@ class LandingController extends BasicController
 
         if (!$this->hasValidUbigeo($validated)) {
             throw ValidationException::withMessages([
-                'district' => 'Selecciona una ubicaciÃ³n vÃ¡lida.',
+                'district' => 'Selecciona una ubicación válida.',
             ]);
         }
 
@@ -1105,7 +1105,7 @@ class LandingController extends BasicController
 
         return response()->json([
             'status' => 200,
-            'message' => 'Tu cotizaciÃ³n fue registrada correctamente.',
+            'message' => 'Tu cotización fue registrada correctamente.',
             'data' => [
                 'id' => $quote->id,
                 'code' => $quote->code,

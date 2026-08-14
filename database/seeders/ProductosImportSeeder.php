@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
  * Importa el catálogo nuevo desde database/data/productos.json.
  *
  * Las claves del JSON vienen con acentos (y a veces con mojibake UTF-8 como
- * "DescripciÃ³n de Producto"); por eso cada fila se re-indexa con una clave
+ * "Descripción de Producto"); por eso cada fila se re-indexa con una clave
  * normalizada (solo a-z0-9) para que el mapeo no dependa de la codificación.
  *
  * Uso:  php artisan db:seed --class=Database\\Seeders\\ProductosImportSeeder
