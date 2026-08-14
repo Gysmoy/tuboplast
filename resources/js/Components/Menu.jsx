@@ -4,9 +4,10 @@ import MenuItem from './MenuItem'
 import MenuItemContainer from './MenuItemContainer'
 import LaravelSession from '../Utils/LaravelSession'
 
-const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuotesCount = 0 }) => {
+const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadDistributorRequestsCount = 0, unreadQuotesCount = 0 }) => {
   const [messagesBadge, setMessagesBadge] = useState(Number(unreadMessagesCount) || 0)
   const [clubBadge, setClubBadge] = useState(Number(unreadClubCount) || 0)
+  const [distributorRequestsBadge, setDistributorRequestsBadge] = useState(Number(unreadDistributorRequestsCount) || 0)
   const [quotesBadge, setQuotesBadge] = useState(Number(unreadQuotesCount) || 0)
   const mainRole = LaravelSession.roles?.[0] ?? { name: 'User' }
   const avatarImage = LaravelSession.image || session?.image
@@ -21,6 +22,10 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
   useEffect(() => {
     setClubBadge(Number(unreadClubCount) || 0)
   }, [unreadClubCount])
+
+  useEffect(() => {
+    setDistributorRequestsBadge(Number(unreadDistributorRequestsCount) || 0)
+  }, [unreadDistributorRequestsCount])
 
   useEffect(() => {
     setQuotesBadge(Number(unreadQuotesCount) || 0)
@@ -42,6 +47,15 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
 
     window.addEventListener('club:seen', decreaseClubBadge)
     return () => window.removeEventListener('club:seen', decreaseClubBadge)
+  }, [])
+
+  useEffect(() => {
+    const decreaseDistributorRequestsBadge = () => {
+      setDistributorRequestsBadge((current) => Math.max(0, current - 1))
+    }
+
+    window.addEventListener('distributor-requests:seen', decreaseDistributorRequestsBadge)
+    return () => window.removeEventListener('distributor-requests:seen', decreaseDistributorRequestsBadge)
   }, [])
 
   useEffect(() => {
@@ -146,6 +160,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadQuo
         <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
         <MenuItem href="/admin/quotes" icon='ti ti-receipt-2' badge={quotesBadge}>Cotizaciones</MenuItem>
         <MenuItem href="/admin/club" icon='ti ti-users-group' badge={clubBadge}>Club experto</MenuItem>
+        <MenuItem href="/admin/distributor-requests" icon='ti ti-truck-delivery' badge={distributorRequestsBadge}>Solicitudes distribuidor</MenuItem>
         <MenuItem href="/admin/messages" icon='ti ti-message-dots' badge={messagesBadge}>Mensajes</MenuItem>
 
         <li className="side-nav-title mt-2">Catalogo</li>

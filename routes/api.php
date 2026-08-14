@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
+use App\Http\Controllers\Admin\DistributorRequestController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -44,6 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::post('club/paginate', [ClubController::class, 'paginate']);
     Route::patch('club/seen', [ClubController::class, 'seen']);
     Route::delete('club/{id}', [ClubController::class, 'delete']);
+    Route::post('distributor-requests/paginate', [DistributorRequestController::class, 'paginate']);
+    Route::patch('distributor-requests/seen', [DistributorRequestController::class, 'seen']);
+    Route::delete('distributor-requests/{id}', [DistributorRequestController::class, 'delete']);
     Route::post('quotes/paginate', [QuoteController::class, 'paginate']);
     Route::patch('quotes/seen', [QuoteController::class, 'seen']);
     Route::patch('quotes/state', [QuoteController::class, 'changeState']);

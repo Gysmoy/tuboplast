@@ -10,6 +10,7 @@ use App\Models\BlogPage;
 use App\Models\Message;
 use App\Models\Item;
 use App\Models\Category;
+use App\Models\DistributorRequest;
 use App\Models\ProductClassification;
 use App\Models\ProductFamily;
 use App\Models\ProductLine;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class LandingController extends BasicController
@@ -78,7 +80,7 @@ class LandingController extends BasicController
             $properties['facets'] = $this->catalogFacetsForRequest($request);
 
             $this->seo = [
-                'description' => 'Catálogo Tuboplast: tuberías y conexiones de PVC para agua fría, desagüe, instalaciones eléctricas, agua potable y alcantarillado. Filtra por segmento, línea, tipo y diámetro.',
+                'description' => 'CatÃ¡logo Tuboplast: tuberÃ­as y conexiones de PVC para agua frÃ­a, desagÃ¼e, instalaciones elÃ©ctricas, agua potable y alcantarillado. Filtra por segmento, lÃ­nea, tipo y diÃ¡metro.',
                 'url' => route('catalog'),
             ];
         }
@@ -129,11 +131,11 @@ class LandingController extends BasicController
         }
 
         $sectionTitles = [
-            'Catalog' => 'Catálogo de productos',
-            'Blog' => 'Blog técnico',
-            'AboutFamilia' => 'Nosotros · Familia e historia',
-            'AboutPolitica' => 'Política del Sistema de Gestión Integrado',
-            'Contact' => 'Contacto y asesoría técnica',
+            'Catalog' => 'CatÃ¡logo de productos',
+            'Blog' => 'Blog tÃ©cnico',
+            'AboutFamilia' => 'Nosotros Â· Familia e historia',
+            'AboutPolitica' => 'PolÃ­tica del Sistema de GestiÃ³n Integrado',
+            'Contact' => 'Contacto y asesorÃ­a tÃ©cnica',
             'Distributors' => 'Distribuidores autorizados',
             'Club' => 'Club Experto Tuboplast',
         ];
@@ -274,7 +276,7 @@ class LandingController extends BasicController
 
     private function catalogFacets(): array
     {
-        // Cacheado para que siga siendo barato aunque el catálogo crezca a miles de productos.
+        // Cacheado para que siga siendo barato aunque el catÃ¡logo crezca a miles de productos.
         return Cache::remember('tuboplast.catalog.facets', now()->addMinutes(10), function () {
             return [
                 'segment' => $this->segmentFacet(),
@@ -548,10 +550,10 @@ class LandingController extends BasicController
 
         $aliases = [
             'Agricultura' => ['Agricultura', 'AGRICULTURA'],
-            'Mineria' => ['Mineria', 'Minería', 'MINERIA', 'MINERÍA'],
+            'Mineria' => ['Mineria', 'MinerÃ­a', 'MINERIA', 'MINERÃA'],
             'Tubos' => ['Tubos', 'TUBOS', 'Tubo', 'TUBO'],
-            'Conexiones' => ['Conexiones', 'CONEXIONES', 'Conexion', 'Conexión', 'CONEXION', 'CONEXIÓN', 'Anillos', 'ANILLOS'],
-            'Sistema Simple Presion' => ['Sistema Simple Presion', 'Sistema Simple Presión', 'SISTEMA SIMPLE PRESION', 'SISTEMA SIMPLE PRESIÓN'],
+            'Conexiones' => ['Conexiones', 'CONEXIONES', 'Conexion', 'ConexiÃ³n', 'CONEXION', 'CONEXIÃ“N', 'Anillos', 'ANILLOS'],
+            'Sistema Simple Presion' => ['Sistema Simple Presion', 'Sistema Simple PresiÃ³n', 'SISTEMA SIMPLE PRESION', 'SISTEMA SIMPLE PRESIÃ“N'],
             'Sistema Union Flexible (UF)' => ['Sistema Union Flexible (UF)', 'Sistema Union Flexible', 'SISTEMA UNION FLEXIBLE', 'SISTEMA UNION FLEXIBLE (UF)'],
         ];
 
@@ -596,7 +598,7 @@ class LandingController extends BasicController
         $diameters = is_array($item->diameters) ? $item->diameters : [];
         $segments = $item->productSegments->pluck('name')->filter()->values();
         $segmentLabel = $segments->isNotEmpty()
-            ? $segments->join(' · ')
+            ? $segments->join(' Â· ')
             : ($item->productSegment->name ?? $item->segment);
 
         return [
@@ -885,16 +887,30 @@ class LandingController extends BasicController
 
     public function storeContact(Request $request)
     {
+        $source = $request->input('source', 'landing');
+        $requiresBusinessData = in_array($source, ['contact', 'distributor'], true);
+        $requiresLocation = $source === 'distributor';
+
         $validated = $request->validate([
             'business' => 'nullable|string|max:160',
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:180',
-            'celular' => 'required|digits:9',
-            'ruc' => 'nullable|digits:11',
+            'celular' => [Rule::requiredIf($requiresBusinessData), 'nullable', 'digits:9'],
+            'ruc' => [Rule::requiredIf($requiresBusinessData), 'nullable', 'digits:11'],
+            'department' => [Rule::requiredIf($requiresLocation), 'nullable', 'string', 'max:120'],
+            'province' => [Rule::requiredIf($requiresLocation), 'nullable', 'string', 'max:120'],
+            'district' => [Rule::requiredIf($requiresLocation), 'nullable', 'string', 'max:120'],
+            'ubigeo' => [Rule::requiredIf($requiresLocation), 'nullable', 'string', 'max:12'],
             'service' => 'nullable|string|max:160',
             'source' => 'nullable|string|max:60',
             'message' => 'required|string|max:2000',
         ]);
+
+        if ($requiresLocation && !$this->hasValidUbigeo($validated)) {
+            throw ValidationException::withMessages([
+                'district' => 'Selecciona una ubicación válida.',
+            ]);
+        }
 
         $tracking = $this->detectClientTracking($request);
 
@@ -904,6 +920,10 @@ class LandingController extends BasicController
             'email' => $validated['email'],
             'celular' => $validated['celular'],
             'ruc' => $validated['ruc'] ?? null,
+            'department' => $validated['department'] ?? null,
+            'province' => $validated['province'] ?? null,
+            'district' => $validated['district'] ?? null,
+            'ubigeo' => $validated['ubigeo'] ?? null,
             'service' => $validated['service'] ?? null,
             'source' => $validated['source'] ?? 'landing',
             'message' => $validated['message'],
@@ -935,7 +955,7 @@ class LandingController extends BasicController
 
         if (!$this->hasValidUbigeo($validated)) {
             throw ValidationException::withMessages([
-                'district' => 'Selecciona una ubicación válida.',
+                'district' => 'Selecciona una ubicaciÃ³n vÃ¡lida.',
             ]);
         }
 
@@ -961,13 +981,58 @@ class LandingController extends BasicController
         ]);
     }
 
+    public function storeDistributorRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'business' => 'required|string|max:160',
+            'name' => 'required|string|max:120',
+            'email' => 'required|email|max:180',
+            'celular' => 'required|digits:9',
+            'ruc' => 'required|digits:11',
+            'service' => 'required|string|max:160',
+            'department' => 'required|string|max:120',
+            'province' => 'required|string|max:120',
+            'district' => 'required|string|max:120',
+            'ubigeo' => 'required|string|max:12',
+            'message' => 'nullable|string|max:2000',
+        ]);
+
+        if (!$this->hasValidUbigeo($validated)) {
+            throw ValidationException::withMessages([
+                'district' => 'Selecciona una ubicación válida.',
+            ]);
+        }
+
+        DistributorRequest::create([
+            'business' => $validated['business'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'celular' => $validated['celular'],
+            'ruc' => $validated['ruc'],
+            'service' => $validated['service'],
+            'department' => $validated['department'],
+            'province' => $validated['province'],
+            'district' => $validated['district'],
+            'ubigeo' => $validated['ubigeo'],
+            'message' => $validated['message'] ?? 'Solicitud para ser parte de la red de distribuidores Tuboplast.',
+            ...$this->detectClientTracking($request),
+            'seen' => false,
+            'status' => true,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Gracias. Tu solicitud fue registrada correctamente.',
+        ]);
+    }
+
     public function storeQuote(Request $request)
     {
         $validated = $request->validate([
             'accepted' => 'accepted',
             'name' => 'required|string|max:120',
             'business' => 'nullable|string|max:160',
-            'ruc' => 'nullable|digits:11',
+            'ruc' => 'required|digits:11',
             'email' => 'required|email|max:180',
             'phone_prefix' => 'nullable|string|max:8',
             'phone' => 'nullable|string|max:30',
@@ -1002,7 +1067,7 @@ class LandingController extends BasicController
 
         if (!$this->hasValidUbigeo($validated)) {
             throw ValidationException::withMessages([
-                'district' => 'Selecciona una ubicación válida.',
+                'district' => 'Selecciona una ubicaciÃ³n vÃ¡lida.',
             ]);
         }
 
@@ -1040,7 +1105,7 @@ class LandingController extends BasicController
 
         return response()->json([
             'status' => 200,
-            'message' => 'Tu cotización fue registrada correctamente.',
+            'message' => 'Tu cotizaciÃ³n fue registrada correctamente.',
             'data' => [
                 'id' => $quote->id,
                 'code' => $quote->code,
@@ -1064,7 +1129,7 @@ class LandingController extends BasicController
         if (preg_match('/[\d.]+\s*bar/i', $pressure, $m)) return $m[0];
         if (preg_match('/Sn\d[\w.-]*/i', $pressure, $m)) return strtoupper($m[0]);
 
-        return mb_strlen($pressure) > 16 ? (mb_substr($pressure, 0, 14) . '…') : $pressure;
+        return mb_strlen($pressure) > 16 ? (mb_substr($pressure, 0, 14) . 'â€¦') : $pressure;
     }
 
     private function diameterLabel(array $diameters): string
@@ -1077,7 +1142,7 @@ class LandingController extends BasicController
             return $diameters[0];
         }
 
-        return $diameters[0] . ' – ' . end($diameters);
+        return $diameters[0] . ' â€“ ' . end($diameters);
     }
 
     private function hasValidUbigeo(array $data): bool

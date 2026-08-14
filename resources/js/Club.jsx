@@ -396,15 +396,15 @@ const ClubScreen = () => {
 
   return (
     <main>
-      <section className="relative min-h-[430px] overflow-hidden bg-white">
+      <section className="relative aspect-[1006/273] overflow-hidden bg-white">
         <img
-          src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1800&q=85"
+          src="/assets/img/club/club-experto-hero.png"
           alt="Profesional de construcción en una planta industrial"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/15" />
-        <div className="relative mx-auto flex min-h-[430px] w-full max-w-site items-center px-4 py-12 sm:py-16">
-          <div className="max-w-3xl">
+        <div className="absolute inset-0 bg-transparent" />
+        <div className="hidden">
+          <div className="hidden max-w-3xl">
             <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
               Comunidad profesional
             </span>
@@ -453,9 +453,23 @@ const ClubScreen = () => {
       </section>
 
       <section className="mx-auto w-full max-w-site px-4 py-10 sm:py-14">
-        <div className="relative overflow-hidden rounded-2xl bg-secondary px-6 py-8 text-primary shadow-sm sm:px-10 sm:py-10 lg:min-h-[360px] lg:px-16 lg:py-14">
-          <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full border-[34px] border-white/20" />
-          <div className="relative z-10 max-w-2xl lg:max-w-[56%]">
+        <div className="relative overflow-hidden rounded-lg bg-primary text-primary shadow-sm ring-1 ring-black/5">
+          <button
+            type="button"
+            onClick={scrollToRegistration}
+            className="block w-full text-left"
+            aria-label="Ir al formulario del Club Experto Tuboplast"
+          >
+            <img
+              src="/assets/img/club/club-experto-cta.png"
+              alt="Club Experto Tuboplast, beneficios que construyen tu futuro"
+              loading="lazy"
+              decoding="async"
+              className="h-auto w-full object-cover"
+            />
+          </button>
+          <div className="hidden absolute -right-16 -top-16 h-64 w-64 rounded-full border-[34px] border-white/20" />
+          <div className="hidden relative z-10 max-w-2xl lg:max-w-[56%]">
             <span className="block h-1 w-16 bg-primary" />
             <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em]">Exclusivo para maestros</p>
             <h2 className="mt-5 font-title text-4xl font-medium leading-tight sm:text-5xl lg:text-6xl">
@@ -474,11 +488,11 @@ const ClubScreen = () => {
             </button>
           </div>
           <img
-            src="/assets/img/landing/club-expert.webp"
+            src="/assets/img/club/club-experto-cta.png"
             alt="Maestro del Club Experto Tuboplast"
             loading="lazy"
             decoding="async"
-            className="relative -mb-8 ml-auto mt-8 max-h-[300px] w-auto object-contain sm:-mb-10 lg:absolute lg:bottom-0 lg:right-8 lg:mt-0 lg:max-h-[390px]"
+            className="hidden"
           />
         </div>
       </section>

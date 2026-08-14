@@ -134,8 +134,13 @@ const MessageInbox = ({ badgeEvent, rest, title, icon = 'ti ti-message-dots', co
                       <Detail label='Nombre' value={selected.name} />
                       <Detail label='Correo electrónico' value={selected.email} />
                       <Detail label='Empresa' value={selected.business} />
+                      <Detail label='Celular' value={selected.celular} />
+                      <Detail label='RUC' value={selected.ruc} />
                       <Detail label='Motivo de consulta' value={selected.service} />
                       <Detail label='Origen' value={selected.source} />
+                      <Detail label='Departamento' value={selected.department} />
+                      <Detail label='Provincia' value={selected.province} />
+                      <Detail label='Distrito' value={selected.district} />
                       <Detail label='Fecha' value={selected.created_at ? moment(selected.created_at).format('LLL') : '-'} />
                       <Detail full label='Mensaje' value={selected.message} />
                     </div>

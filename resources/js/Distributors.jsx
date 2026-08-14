@@ -4,6 +4,8 @@ import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
 import Global from './Utils/Global';
 import { loadGoogleMapsApi } from './Utils/googleMaps';
+import ThankYouModal from './Components/Tailwind/ThankYouModal';
+import { fetchUbigeoRows, getDepartments, getDistricts, getProvinces } from './Utils/ubigeo';
 
 const DEFAULT_CENTER = { lat: -12.104889, lng: -77.036412 };
 
@@ -143,6 +145,35 @@ const Dropdown = ({
     </div>
   );
 };
+
+const Field = ({
+  inputMode,
+  label,
+  maxLength,
+  name,
+  onChange,
+  placeholder,
+  required = false,
+  type = 'text',
+  value,
+}) => (
+  <label className="block">
+    <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
+      {label}
+    </span>
+    <input
+      inputMode={inputMode}
+      maxLength={maxLength}
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      required={required}
+      type={type}
+      value={value}
+      className="mt-2 w-full border-b border-slate-300 bg-transparent px-3 py-3 text-sm text-dark outline-none transition placeholder:text-muted focus:border-primary"
+    />
+  </label>
+);
 
 const MapLegend = () => (
   <div className="absolute right-4 top-4 z-10 rounded-lg bg-white/95 p-4 text-[10px] text-darkmuted shadow-lg sm:right-6 sm:top-6 sm:min-w-40">
@@ -392,6 +423,7 @@ const DistributorCard = ({ distributor, isSelected, onSelect }) => {
 
 const DistributorsScreen = ({ distributors = [] }) => {
   const mapSectionRef = useRef(null);
+  const formSectionRef = useRef(null);
   const normalizedDistributors = useMemo(() => {
     const seenLocations = new Set();
 
@@ -413,6 +445,22 @@ const DistributorsScreen = ({ distributors = [] }) => {
   const [district, setDistrict] = useState('');
   const [sort, setSort] = useState('featured');
   const [selectedId, setSelectedId] = useState(normalizedDistributors[0]?.id ?? null);
+  const [ubigeoRows, setUbigeoRows] = useState([]);
+  const [leadForm, setLeadForm] = useState({
+    business: '',
+    celular: '',
+    department: '',
+    district: '',
+    email: '',
+    name: '',
+    province: '',
+    ruc: '',
+    service: '',
+    ubigeo: '',
+  });
+  const [leadFeedback, setLeadFeedback] = useState({ type: '', message: '' });
+  const [isLeadSending, setIsLeadSending] = useState(false);
+  const [isThankYouOpen, setIsThankYouOpen] = useState(false);
 
   const sortEs = (a, b) => a.localeCompare(b, 'es');
   // Solo departamentos/provincias/distritos donde hay distribuidores.
@@ -428,6 +476,9 @@ const DistributorsScreen = ({ distributors = [] }) => {
     () => [...new Set(normalizedDistributors.filter((d) => (!department || d.department === department) && (!province || d.province === province)).map((d) => d.district).filter(Boolean))].sort(sortEs),
     [normalizedDistributors, department, province],
   );
+  const leadDepartments = useMemo(() => getDepartments(ubigeoRows), [ubigeoRows]);
+  const leadProvinces = useMemo(() => getProvinces(ubigeoRows, leadForm.department), [ubigeoRows, leadForm.department]);
+  const leadDistricts = useMemo(() => getDistricts(ubigeoRows, leadForm.department, leadForm.province), [ubigeoRows, leadForm.department, leadForm.province]);
   const filteredDistributors = useMemo(() => {
     const filtered = normalizedDistributors.filter((distributor) => (
       (!department || distributor.department === department)
@@ -448,6 +499,12 @@ const DistributorsScreen = ({ distributors = [] }) => {
     }
   }, [filteredDistributors, selectedId]);
 
+  useEffect(() => {
+    fetchUbigeoRows()
+      .then(setUbigeoRows)
+      .catch(() => setUbigeoRows([]));
+  }, []);
+
   const selectDistributorFromCard = (id) => {
     setSelectedId(id);
 
@@ -459,6 +516,79 @@ const DistributorsScreen = ({ distributors = [] }) => {
         block: 'start',
       });
     });
+  };
+
+  const scrollToLeadForm = () => {
+    formSectionRef.current?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  };
+
+  const updateLeadField = (event) => {
+    const { name, value } = event.target;
+    setLeadForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const resetLeadForm = () => {
+    setLeadForm({
+      business: '',
+      celular: '',
+      department: '',
+      district: '',
+      email: '',
+      name: '',
+      province: '',
+      ruc: '',
+      service: '',
+      ubigeo: '',
+    });
+  };
+
+  const submitLeadForm = async (event) => {
+    event.preventDefault();
+    if (isLeadSending) return;
+
+    setLeadFeedback({ type: '', message: '' });
+
+    if (!leadForm.service || !leadForm.department || !leadForm.province || !leadForm.district || !leadForm.ubigeo) {
+      setLeadFeedback({
+        type: 'error',
+        message: 'Selecciona motivo de consulta, departamento, provincia y distrito.',
+      });
+      return;
+    }
+
+    setIsLeadSending(true);
+
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+      const response = await fetch('/landing/distributor-request', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+        },
+        body: JSON.stringify({
+          ...leadForm,
+          message: 'Solicitud para ser parte de la red de distribuidores Tuboplast.',
+          service: leadForm.service || 'Quiero ser distribuidor',
+        }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'No pudimos enviar tu solicitud. Revisa los datos e inténtalo nuevamente.');
+      }
+
+      resetLeadForm();
+      setIsThankYouOpen(true);
+    } catch (error) {
+      setLeadFeedback({ type: 'error', message: error.message });
+    } finally {
+      setIsLeadSending(false);
+    }
   };
 
   return (
@@ -577,16 +707,96 @@ const DistributorsScreen = ({ distributors = [] }) => {
               </h2>
               <p className="mt-3 text-xl font-regular">Únete a la red de soluciones en PVC líder en el mercado peruano.</p>
             </div>
-            <a
-              href="/contact"
+            <button
+              type="button"
+              onClick={scrollToLeadForm}
               className="inline-flex shrink-0 items-center justify-center gap-3 self-start rounded-full bg-primary px-7 py-3.5 font-medium text-white shadow-md transition hover:bg-[#003b7a] lg:self-auto"
             >
               Solicitar información
               <i className="mdi mdi-arrow-right text-lg"></i>
-            </a>
+            </button>
           </div>
         </div>
       </section>
+
+      <section ref={formSectionRef} className="mx-auto w-full max-w-site scroll-mt-24 px-4 pb-12 sm:pb-16 lg:pb-20">
+        <form onSubmit={submitLeadForm} className="rounded-2xl bg-white p-5 shadow-md ring-1 ring-slate-200/70 sm:p-8 lg:p-10">
+          <div className="mb-7">
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">Solicitud de distribución</p>
+            <h2 className="mt-3 font-title text-3xl font-medium text-primary">Sé parte de nuestra red</h2>
+          </div>
+
+          <div className="grid gap-x-7 gap-y-6 md:grid-cols-2">
+            <Field label="Nombre completo" name="name" placeholder="Nombre y apellido" value={leadForm.name} onChange={updateLeadField} required />
+            <Field label="Empresa" name="business" placeholder="Nombre de su organización" value={leadForm.business} onChange={updateLeadField} required />
+            <Field label="Correo electrónico" name="email" type="email" placeholder="correo@ejemplo.com" value={leadForm.email} onChange={updateLeadField} required />
+            <Field label="Celular" name="celular" inputMode="numeric" maxLength={9} placeholder="9 dígitos" value={leadForm.celular} onChange={updateLeadField} required />
+            <Field label="RUC" name="ruc" inputMode="numeric" maxLength={11} placeholder="11 dígitos" value={leadForm.ruc} onChange={updateLeadField} required />
+            <Dropdown
+              id="lead-service-dropdown"
+              label="Motivo de consulta"
+              placeholder="Selecciona una opción"
+              value={leadForm.service}
+              options={[
+                { label: 'Quiero ser distribuidor', value: 'Quiero ser distribuidor' },
+                { label: 'Solicitar información comercial', value: 'Solicitar información comercial' },
+              ]}
+              onChange={(service) => setLeadForm((current) => ({ ...current, service }))}
+            />
+            <Dropdown
+              id="lead-department-dropdown"
+              label="Departamento"
+              placeholder="Selecciona un departamento"
+              value={leadForm.department}
+              options={leadDepartments.map((item) => ({ label: item, value: item }))}
+              onChange={(nextDepartment) => setLeadForm((current) => ({ ...current, department: nextDepartment, province: '', district: '', ubigeo: '' }))}
+            />
+            <Dropdown
+              disabled={!leadForm.department}
+              id="lead-province-dropdown"
+              label="Provincia"
+              placeholder="Selecciona una provincia"
+              value={leadForm.province}
+              options={leadProvinces.map((item) => ({ label: item, value: item }))}
+              onChange={(nextProvince) => setLeadForm((current) => ({ ...current, province: nextProvince, district: '', ubigeo: '' }))}
+            />
+            <Dropdown
+              disabled={!leadForm.province}
+              id="lead-district-dropdown"
+              label="Distrito"
+              placeholder="Selecciona un distrito"
+              value={leadForm.district}
+              options={leadDistricts.map((item) => ({ label: item.district, value: item.district }))}
+              onChange={(nextDistrict) => {
+                const selected = leadDistricts.find((item) => item.district === nextDistrict);
+                setLeadForm((current) => ({ ...current, district: nextDistrict, ubigeo: selected?.ubigeo || '' }));
+              }}
+            />
+          </div>
+
+          <div className="mt-7 flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <p role="status" className={`text-sm ${leadFeedback.type === 'error' ? 'text-red-600' : 'text-emerald-700'}`}>
+              {leadFeedback.message}
+            </p>
+            <button
+              type="submit"
+              disabled={isLeadSending}
+              className="inline-flex shrink-0 items-center justify-center gap-3 rounded-full bg-primary px-8 py-3.5 font-title font-bold text-white shadow-md transition hover:bg-[#003b7a] disabled:cursor-wait disabled:opacity-60"
+            >
+              {isLeadSending ? 'Enviando...' : 'Enviar solicitud'}
+              <i className="mdi mdi-arrow-right text-lg"></i>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <ThankYouModal
+        description="Recibimos tu solicitud. Nuestro equipo comercial revisará tus datos y se comunicará contigo pronto."
+        eyebrow="Distribuidores Tuboplast"
+        isOpen={isThankYouOpen}
+        onClose={() => setIsThankYouOpen(false)}
+        title="Solicitud enviada"
+      />
     </main>
   );
 };

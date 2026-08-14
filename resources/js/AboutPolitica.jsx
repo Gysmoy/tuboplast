@@ -5,34 +5,34 @@ import CreateReactScript from './Utils/CreateReactScript'
 
 const defaultAbout = {
   policy_eyebrow: 'Excelencia Industrial',
-  policy_title: 'Politica del Sistema de Gestion Integrado',
+  policy_title: 'Política del Sistema de Gestión Integrado',
   policy_scope_eyebrow: 'Familia e historia',
   policy_scope_title: 'Alcance',
   policy_scope_paragraph_1:
-    'Fabricacion, comercializacion, capacitacion en obra, atencion al cliente, asistencia tecnica, almacenamiento, distribucion y despacho de tubos y conexiones de PVC-U (policloruro de vinilo no plastificado) para instalaciones de canalizaciones electricas, abastecimiento de agua, fluidos a presion, desague y sistemas de drenaje y alcantarillado.',
+    'Fabricación, comercialización, capacitación en obra, atención al cliente, asistencia técnica, almacenamiento, distribución y despacho de tubos y conexiones de PVC-U (policloruro de vinilo no plastificado) para instalaciones de canalizaciones eléctricas, abastecimiento de agua, fluidos a presión, desagüe y sistemas de drenaje y alcantarillado.',
   policy_scope_paragraph_2:
-    'Fabricacion, comercializacion, atencion al cliente, asistencia tecnica, almacenamiento, distribucion y despacho de tubos y conexiones de polietileno. Procesos realizados en el local industrial ubicado en calle Maria Curie 313 - Urbanizacion Industrial Santa Rosa, Distrito de Ate. Lima - Peru.',
+    'Fabricación, comercialización, atención al cliente, asistencia técnica, almacenamiento, distribución y despacho de tubos y conexiones de polietileno. Procesos realizados en el local industrial ubicado en calle María Curie 313 - Urbanización Industrial Santa Rosa, Distrito de Ate. Lima-Perú.',
   policy_commitment_text: 'Compromiso con calidad, seguridad, medio ambiente y mejora continua.',
   policy_description:
-    'En TUBOPLAST nos dedicamos a la fabricacion de tuberias, accesorios de PVC y polietileno, y estamos comprometidos con la satisfaccion de nuestros clientes para lo cual ponemos a su disposicion nuestros recursos humanos y materiales, ofrecemos un excelente trato personalizado; garantizamos y aseguramos que todo producto brindado cumplira con los requisitos acordados con el cliente.',
+    'En TUBOPLAST nos dedicamos a la fabricación de tuberías, accesorios de PVC y polietileno, y estamos comprometidos con la satisfacción de nuestros clientes para lo cual ponemos a su disposición nuestros recursos humanos y materiales, ofrecemos un excelente trato personalizado; garantizamos y aseguramos que todo producto brindado cumplirá con los requisitos acordados con el cliente.',
   policy_bullets: [
-    'Fomentar y ejecutar acciones para garantizar que sus operaciones se realicen aplicando estandares de seguridad apropiados, para el control y mitigacion de los riesgos.',
+    'Fomentar y ejecutar acciones para garantizar que sus operaciones se realicen aplicando estándares de seguridad apropiados, para el control y mitigación de los riesgos.',
     'Controlar y mitigar nuestros aspectos ambientales significativos.',
-    'Mejorar continuamente nuestros procesos, desempeno ambiental y nuestro sistema de gestion integrado.',
+    'Mejorar continuamente nuestros procesos, desempeño ambiental y nuestro sistema de gestión integrado.',
     'Sensibilizar, capacitar y entrenar a nuestros colaboradores, a fin de desarrollar una cultura preventiva y promover el cumplimiento de las normas, reglamentos y procedimientos.',
-    'Prevenir la contaminacion ambiental.',
-    'Cumplir con la legislacion vigente y otros requisitos relacionados a la fabricacion de tuberias y accesorios de PVC, respecto a la seguridad, salud ocupacional y ambiental.',
+    'Prevenir la contaminación ambiental.',
+    'Cumplir con la legislación vigente y otros requisitos relacionados a la fabricación de tuberías y accesorios de PVC, respecto a la seguridad, salud ocupacional y ambiental.',
   ],
-  policy_certifications_title: 'Certificaciones de los Sistemas de Gestion',
+  policy_certifications_title: 'Certificaciones de los Sistemas de Gestión',
   certifications: [
     {
       title: 'ISO 9001',
-      description: 'Gestion de calidad y mejora continua en procesos industriales.',
+      description: 'Gestión de calidad y mejora continua en procesos industriales.',
       image_fallback: '/assets/img/about/certificates/iso-9001.svg',
     },
     {
       title: 'ISO 14001',
-      description: 'Compromiso con la gestion ambiental y el uso responsable de recursos.',
+      description: 'Compromiso con la gestión ambiental y el uso responsable de recursos.',
       image_fallback: '/assets/img/about/certificates/iso-14001.svg',
     },
     {
@@ -60,7 +60,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
       image_fallback: fallback.image_fallback,
     }
   })
-  const policyImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '/assets/img/landing/club-expert.webp')
+  const policyImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '/assets/img/about/control-calidad-sgi.png')
   const policyScopeEyebrow = about.policy_scope_eyebrow || defaultAbout.policy_scope_eyebrow
   const policyScopeTitle = about.policy_scope_title || defaultAbout.policy_scope_title
   const policyScopeParagraph1 = about.policy_scope_paragraph_1 || defaultAbout.policy_scope_paragraph_1
@@ -125,7 +125,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
             <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>
               {policyScopeEyebrow}
             </p>
-            <h2 className='font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>Nuestra politica</h2>
+            <h2 className='font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>Nuestra política</h2>
             <p className='text-sm leading-relaxed text-darkmuted'>
               {policyStatement}
             </p>
@@ -196,7 +196,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
 
 CreateReactScript((el, properties) => {
   createRoot(el).render(
-    <Base title='Nosotros - Politica'>
+    <Base title='Nosotros - Política'>
       <AboutPoliticaScreen about={properties.about} />
     </Base>,
   )

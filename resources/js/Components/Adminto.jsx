@@ -6,7 +6,7 @@ import Footer from './Footer'
 import { AdmintoProvider } from './AdmintoContext'
 
 const Adminto = ({ ...properties }) => {
-  const { session, children, title, can, unreadMessagesCount, unreadClubCount, unreadQuotesCount } = properties
+  const { session, children, title, can, unreadMessagesCount, unreadClubCount, unreadDistributorRequestsCount, unreadQuotesCount } = properties
 
   useEffect(() => {
     const app = new App
@@ -23,6 +23,7 @@ const Adminto = ({ ...properties }) => {
         can={can}
         unreadMessagesCount={unreadMessagesCount}
         unreadClubCount={unreadClubCount}
+        unreadDistributorRequestsCount={unreadDistributorRequestsCount}
         unreadQuotesCount={unreadQuotesCount}
       />
       <NavBar session={session} title={title} can={can} />

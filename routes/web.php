@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DistribuidorController;
+use App\Http\Controllers\Admin\DistributorRequestController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -50,6 +51,7 @@ Route::get('/item/{slug}', [ProductController::class, 'show'])->name('products.s
 Route::get('/privacy-policy', [LandingController::class, 'reactView']);
 Route::post('/landing/contact', [LandingController::class, 'storeContact'])->name('landing.contact');
 Route::post('/landing/club', [LandingController::class, 'storeClub'])->name('landing.club');
+Route::post('/landing/distributor-request', [LandingController::class, 'storeDistributorRequest'])->name('landing.distributor-request');
 Route::post('/landing/quote', [LandingController::class, 'storeQuote'])->name('landing.quote');
 
 Route::middleware('guest')->group(function () {
@@ -84,6 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/contacts', [ContactController::class, 'reactView'])->name('admin.contacts');
     Route::get('/admin/quotes', [QuoteController::class, 'reactView'])->name('admin.quotes');
     Route::get('/admin/club', [ClubController::class, 'reactView'])->name('admin.club');
+    Route::get('/admin/distributor-requests', [DistributorRequestController::class, 'reactView'])->name('admin.distributor-requests');
     Route::get('/admin/messages', [MessageController::class, 'reactView'])->name('admin.messages');
     Route::get('/admin/account', [AccountController::class, 'reactView'])->name('admin.account');
     Route::get('/admin/roles', [RoleController::class, 'reactView'])->name('admin.roles');

@@ -53,7 +53,7 @@ const AboutNav = ({ variant = 'default' }) => {
             aria-expanded={isOpen}
             aria-controls='about-tabs-menu'
           >
-            <span className='text-sm font-semibold leading-tight sm:text-[1rem]'>Familia Tuboplast</span>
+            <span className='text-sm font-semibold leading-tight sm:text-[1rem]'>Somos Tuboplast</span>
             <i className={`mdi mdi-chevron-down text-xl transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
           </button>
 

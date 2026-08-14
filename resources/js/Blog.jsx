@@ -151,7 +151,7 @@ const BlogScreen = ({ blog = {} }) => {
     category: post.category,
     detail_url: postUrl(post, index),
   }));
-  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/sliders/banner-tuboplast.webp');
+  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/blog/blog-cotizaciones-banner.png');
   const heroBadge = blog.hero_badge || 'Blog Tuboplast';
   const heroTitle = blog.hero_title || 'Construyendo el futuro';
   const heroDescription = blog.hero_description || 'Explora las ultimas innovaciones tecnicas, proyectos emblematicos y consejos de ingenieria para el mercado peruano.';
@@ -207,16 +207,16 @@ const BlogScreen = ({ blog = {} }) => {
 
   return (
     <main className="bg-white">
-      <section className="relative overflow-hidden">
+      <section className="relative aspect-[1012/266] overflow-hidden bg-primary">
         <img
           src={heroImage}
-          alt="Obra en construccion"
+          alt="Realiza tus cotizaciones con facilidad"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/92 to-white/35" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/50" />
+        <div className="absolute inset-0 bg-transparent" />
+        <div className="absolute inset-0 bg-transparent" />
 
-        <div className="relative mx-auto flex min-h-[340px] w-full max-w-site items-center px-4 py-12 sm:min-h-[420px] sm:py-16 lg:min-h-[500px]">
+        <div className="hidden">
           <div className="max-w-xl space-y-5">
             <span className="block h-1 w-12 bg-secondary" />
             <div className="space-y-4">

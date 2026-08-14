@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Classes\dxResponse;
 use App\Models\dxDataGrid;
 use App\Models\ClubExpert;
+use App\Models\DistributorRequest;
 use App\Models\Message;
 use App\Models\Quote;
 use App\Models\User;
@@ -129,6 +130,7 @@ class BasicController extends Controller
     $eurPrice = null;
     $unreadMessagesCount = 0;
     $unreadClubCount = 0;
+    $unreadDistributorRequestsCount = 0;
     $unreadQuotesCount = 0;
 
     if (Auth::check()) {
@@ -152,6 +154,13 @@ class BasicController extends Controller
             ->where('seen', false)
             ->count();
         }
+
+        if (Schema::hasTable('distributor_requests')) {
+          $unreadDistributorRequestsCount = DistributorRequest::query()
+            ->whereNotNull('status')
+            ->where('seen', false)
+            ->count();
+        }
       }
 
       if (Schema::hasTable('quotes')) {
@@ -166,6 +175,7 @@ class BasicController extends Controller
       'session' => $userJpa,
       'unreadMessagesCount' => $unreadMessagesCount,
       'unreadClubCount' => $unreadClubCount,
+      'unreadDistributorRequestsCount' => $unreadDistributorRequestsCount,
       'unreadQuotesCount' => $unreadQuotesCount,
       'global' => [
         'PUBLIC_RSA_KEY' => self::$publicRsaKey,

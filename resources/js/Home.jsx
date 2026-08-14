@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+﻿import { useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -21,7 +21,6 @@ const carouselProps = (lgPerView) => ({
     1024: { slidesPerView: lgPerView, spaceBetween: 24 },
   },
 });
-
 // Duplica el arreglo hasta tener al menos `min` slides para que el loop
 // funcione aunque vengan pocos elementos (4 -> 8).
 const loopSafe = (arr, min) => {
@@ -32,16 +31,16 @@ const loopSafe = (arr, min) => {
 
 const strengths = [
   {
-    title: 'Línea Completa',
-    description: 'Contamos con tuberías de ½ "hasta 24" ofreciendo una vida útil estimada de más de 50 años.',
+    title: 'LÃ­nea Completa',
+    description: 'Contamos con tuberÃ­as de Â½ "hasta 24" ofreciendo una vida Ãºtil estimada de mÃ¡s de 50 aÃ±os.',
   },
   {
     title: 'Durabilidad Extrema',
-    description: 'Formulación química avanzada para resistir la corrosión y condiciones climáticas severas en todo el territorio nacional.',
+    description: 'FormulaciÃ³n quÃ­mica avanzada para resistir la corrosiÃ³n y condiciones climÃ¡ticas severas en todo el territorio nacional.',
   },
   {
     title: 'Soporte en Obra',
-    description: 'Asesoría técnica especializada para el diseño e instalación de sistemas complejos.',
+    description: 'AsesorÃ­a tÃ©cnica especializada para el diseÃ±o e instalaciÃ³n de sistemas complejos.',
   },
 ];
 
@@ -57,12 +56,12 @@ const categories = [
       '/assets/img/categories/category-2.webp',
   },
   {
-    title: 'Minería e Industria',
+    title: 'MinerÃ­a e Industria',
     image:
       '/assets/img/categories/category-3.webp',
   },
   {
-    title: 'Agrícola',
+    title: 'AgrÃ­cola',
     image:
       '/assets/img/categories/category-4.webp',
   },
@@ -70,7 +69,7 @@ const categories = [
 
 const defaultExpertCategories = [
   {
-    title: 'Edificación',
+    title: 'EdificaciÃ³n',
     image: '/assets/img/categories/category-1.webp',
     href: '/catalog?segment%5B%5D=Edificaciones',
   },
@@ -80,7 +79,7 @@ const defaultExpertCategories = [
     href: '/catalog?segment%5B%5D=Saneamiento',
   },
   {
-    title: 'Minería',
+    title: 'MinerÃ­a',
     image: '/assets/img/categories/category-3.webp',
     href: '/catalog?segment%5B%5D=Mineria',
   },
@@ -93,8 +92,8 @@ const defaultExpertCategories = [
 
 const recommendations = [
   {
-    category: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
+    category: 'TuberÃ­a PVC-U',
+    title: 'TuberÃ­a Agua SP Clase 15 NTP 399.002 3/4" x 5m',
     image: '/assets/img/items/item-1.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
@@ -102,8 +101,8 @@ const recommendations = [
     diameter: '3/4"',
   },
   {
-    category: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 NTP 399.002 3/4" x 5m',
+    category: 'TuberÃ­a PVC-U',
+    title: 'TuberÃ­a Agua SP Clase 15 NTP 399.002 3/4" x 5m',
     image: '/assets/img/items/item-2.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
@@ -111,8 +110,8 @@ const recommendations = [
     diameter: '3/4"',
   },
   {
-    category: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 MTP 398.002 3/4 x 5m',
+    category: 'TuberÃ­a PVC-U',
+    title: 'TuberÃ­a Agua SP Clase 15 MTP 398.002 3/4 x 5m',
     image: '/assets/img/items/item-3.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
@@ -120,8 +119,8 @@ const recommendations = [
     diameter: '3/4"',
   },
   {
-    category: 'Tubería PVC-U',
-    title: 'Tubería Agua SP Clase 15 MTP 980.002 3/4 x 5m',
+    category: 'TuberÃ­a PVC-U',
+    title: 'TuberÃ­a Agua SP Clase 15 MTP 980.002 3/4 x 5m',
     image: '/assets/img/items/item-4.webp',
     price: 'S/ 28.30',
     currency: 'PEN',
@@ -133,22 +132,22 @@ const recommendations = [
 const defaultBlogPosts = [
   {
     category: 'Etiqueta',
-    title: 'Cómo instalar tuberías CPVC en proyectos de agua caliente sin errores',
-    description: 'Guía paso a paso para una instalación segura, duradera y certificada. Todo lo que el maestro profesional necesita saber...',
+    title: 'CÃ³mo instalar tuberÃ­as CPVC en proyectos de agua caliente sin errores',
+    description: 'GuÃ­a paso a paso para una instalaciÃ³n segura, duradera y certificada. Todo lo que el maestro profesional necesita saber...',
     image:
       'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1000&q=80',
   },
   {
     category: 'Productos',
-    title: 'Tubería PVC-U vs HDPE: ¿cuál elegir según el tipo de proyecto?',
-    description: 'Comparamos resistencia, costo y aplicación para que tomes la mejor decisión técnica en cada obra...',
+    title: 'TuberÃ­a PVC-U vs HDPE: Â¿cuÃ¡l elegir segÃºn el tipo de proyecto?',
+    description: 'Comparamos resistencia, costo y aplicaciÃ³n para que tomes la mejor decisiÃ³n tÃ©cnica en cada obra...',
     image:
       'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80',
   },
   {
     category: 'Industria',
-    title: 'Infraestructura hídrica en el Perú: los retos del sector construcción en 2025',
-    description: 'Analizamos el panorama actual del sector, las normativas vigentes y cómo Tuboplast lidera la respuesta...',
+    title: 'Infraestructura hÃ­drica en el PerÃº: los retos del sector construcciÃ³n en 2025',
+    description: 'Analizamos el panorama actual del sector, las normativas vigentes y cÃ³mo Tuboplast lidera la respuesta...',
     image:
       'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80',
   },
@@ -267,8 +266,8 @@ const HeroSlide = ({ slide, priority = false }) => {
           : 'bg-gradient-to-r from-white/90 via-white/82 to-white/70'
       }`} />
 
-      <div className="relative mx-auto grid w-full max-w-site gap-8 px-4 pb-12 pt-10 sm:gap-10 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:pb-32 lg:pt-20">
-        <div className="max-w-2xl space-y-5 sm:pl-12 sm:space-y-7 lg:space-y-8 lg:pl-16 xl:pl-20">
+      <div className="relative mx-auto grid w-full max-w-site gap-8 px-16 pb-12 pt-10 sm:gap-10 sm:px-20 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:px-24 lg:pb-32 lg:pt-20 xl:px-4">
+        <div className="max-w-2xl space-y-5 sm:pl-8 sm:space-y-7 lg:space-y-8 lg:pl-12 xl:pl-20">
           <span data-hero-line className="block h-1 w-16 bg-secondary" />
           <h1
             data-hero-title
@@ -328,7 +327,7 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
   const newsletter = {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
     title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
-    description: blog.newsletter_description || 'Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.',
+    description: blog.newsletter_description || 'Tips de instalaciÃ³n, nuevos productos y actualizaciones exclusivas para profesionales.',
     placeholder: blog.newsletter_placeholder || 'Correo electronico',
     buttonLabel: blog.newsletter_button_label || 'Quiero suscribirme',
   };
@@ -421,7 +420,7 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
 
               <h2 className="font-title text-4xl sm:text-5xl lg:text-7xl">
                 Seis <br />
-                décadas de <br />
+                dÃ©cadas de <br />
                 <span className="text-secondary">Excelencia</span> <br />
                 Industrial.
               </h2>
@@ -431,16 +430,6 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
                   Tuboplast es la primera fábrica 100% peruana. No solo fabricamos tuberías; diseñamos la infraestructura del mañana con ingeniería de precisión y materiales de vanguardia.
                 </p>
               </div>
-            </div>
-
-            <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8 lg:mt-auto lg:pt-14">
-              <a href="/about" className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-3 font-title text-sm font-medium text-primary shadow-sm sm:gap-4 sm:text-base">
-                Especificaciones Técnicas
-                <i className="mdi mdi-arrow-right text-xl leading-none"></i>
-              </a>
-              <p className="text-sm uppercase text-white/45">
-                Partner Estratégico de <br /> Confianza
-              </p>
             </div>
           </article>
 
@@ -529,7 +518,7 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
             <p className="text-xs uppercase text-primary">Exclusivo para maestros</p>
             <h3 className="font-title text-4xl leading-tight text-primary sm:text-5xl lg:text-7xl lg:leading-normal">Club Experto Tuboplast</h3>
             <p className="text-base text-primary sm:text-lg lg:text-xl">
-              Únete a nuestra comunidad y accede a capacitaciones certificadas, descuentos exclusivos y soporte prioritario.
+              Ãšnete a nuestra comunidad y accede a capacitaciones certificadas, descuentos exclusivos y soporte prioritario.
             </p>
             <a href="/club#registro-club" className="inline-flex rounded-full bg-primary px-8 py-3.5 font-title font-medium text-white">
               Registrarme ahora <i className="mdi mdi-arrow-right ms-2"></i>

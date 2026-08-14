@@ -6,6 +6,7 @@ use App\Http\Controllers\BasicController;
 use App\Models\Item;
 use App\Models\Slider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SliderController extends BasicController
 {
@@ -62,6 +63,14 @@ class SliderController extends BasicController
             : 1;
 
         if ($request->hasFile('image')) {
+            $current = $request->input('id')
+                ? Slider::query()->find($request->input('id'))
+                : null;
+
+            if ($current?->image) {
+                Storage::disk('public')->delete($current->image);
+            }
+
             $validated['image'] = $request->file('image')->store('sliders', 'public');
         } else {
             unset($validated['image']);
