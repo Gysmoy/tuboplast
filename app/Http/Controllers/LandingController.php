@@ -656,6 +656,7 @@ class LandingController extends BasicController
                     'image_path' => $slider->image,
                     'image_url' => $this->sliderImageUrl($slider->image),
                     'display_mode' => $slider->display_mode ?? 'image_with_text',
+                    'overlay_opacity' => Schema::hasColumn('sliders', 'overlay_opacity') ? (int) ($slider->overlay_opacity ?? 85) : 85,
                     'primary_button_text' => $slider->primary_button_text,
                     'primary_button_link' => $slider->primary_button_link,
                     'secondary_button_text' => $slider->secondary_button_text,

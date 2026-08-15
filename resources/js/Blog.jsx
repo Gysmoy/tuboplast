@@ -223,6 +223,7 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
           description={heroDescription}
           eyebrow={heroBadge}
           imageOnly={isHeroImageOnly}
+          overlayOpacity={heroBanner.overlay_opacity}
         />
 
         <div className="hidden">

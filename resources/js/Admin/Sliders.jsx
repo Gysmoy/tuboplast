@@ -56,6 +56,9 @@ const SLIDERS_CSS = `
 .wfs-err{display:flex;align-items:center;gap:8px;background:#fcebeb;color:#b42318;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:500;}
 .wfs-item-preview{border:1px solid #eef2f8;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;background:#f8fbff;}
 .wfs-item-preview img{width:74px;height:58px;object-fit:cover;border-radius:9px;background:#fff;border:1px solid #eef2f8;}
+.wfs-range{width:100%;accent-color:#004991;}
+.wfs-range-row{display:flex;align-items:center;gap:12px;padding-top:6px;}
+.wfs-range-value{min-width:46px;text-align:center;border-radius:999px;background:#e6effa;color:#004991;font-size:12px;font-weight:700;padding:4px 8px;}
 `
 
 const itemImage = (item) => item?.image ? `/storage/${item.image}` : FALLBACK_ITEM_IMAGE
@@ -98,6 +101,7 @@ const Sliders = ({ items = [] }) => {
   const [placement, setPlacement] = useState('home')
   const [itemId, setItemId] = useState('')
   const [displayMode, setDisplayMode] = useState('image_with_text')
+  const [overlayOpacity, setOverlayOpacity] = useState(85)
   const [status, setStatus] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formError, setFormError] = useState('')
@@ -127,6 +131,7 @@ const Sliders = ({ items = [] }) => {
     setPlacement('home')
     setItemId('')
     setDisplayMode('image_with_text')
+    setOverlayOpacity(85)
     setStatus(true)
     setFormError('')
     setIsModalOpen(false)
@@ -164,6 +169,7 @@ const Sliders = ({ items = [] }) => {
     setPlacement(data?.placement || 'home')
     setItemId(data?.item_id ? String(data.item_id) : '')
     setDisplayMode(data?.display_mode || 'image_with_text')
+    setOverlayOpacity(Number.isFinite(Number(data?.overlay_opacity)) ? Number(data.overlay_opacity) : 85)
     setStatus(data?.status == null ? true : data.status === true || data.status === 1 || data.status === '1')
 
     if (imageRef.current) imageRef.current.value = ''
@@ -203,6 +209,7 @@ const Sliders = ({ items = [] }) => {
       title: titleRef.current.value,
       description: descriptionRef.current.value,
       display_mode: displayMode,
+      overlay_opacity: overlayOpacity,
       primary_button_text: primaryButtonTextRef.current.value,
       primary_button_link: primaryButtonLinkRef.current.value,
       secondary_button_text: secondaryButtonTextRef.current.value,
@@ -357,6 +364,24 @@ const Sliders = ({ items = [] }) => {
                       <FieldSelect col='col-md-3' label='Modo' value={displayMode} options={DISPLAY_MODE_OPTIONS} onChange={setDisplayMode} />
                       <InputFormGroup col='col-md-3' eRef={sortOrderRef} label='Orden' type='number' />
                     </div>
+                    {displayMode === 'image_with_text' && (
+                      <div className='form-group mb-2'>
+                        <label className='form-label'>Desvanecimiento</label>
+                        <div className='wfs-range-row'>
+                          <input
+                            className='wfs-range'
+                            type='range'
+                            min='0'
+                            max='100'
+                            step='5'
+                            value={overlayOpacity}
+                            onChange={(event) => setOverlayOpacity(Number(event.target.value))}
+                          />
+                          <span className='wfs-range-value'>{overlayOpacity}%</span>
+                        </div>
+                        <small className='text-muted'>0% muestra mas imagen, 100% aclara mas el lado del texto.</small>
+                      </div>
+                    )}
                     <TextareaFormGroup eRef={descriptionRef} label='Descripcion' rows={4} />
                     <div className='d-flex align-items-center gap-2 mt-1'>
                       <SwitchFormGroup id='slider-form-status' checked={status} noMargin onChange={() => setStatus((current) => !current)} />

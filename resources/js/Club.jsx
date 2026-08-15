@@ -414,6 +414,7 @@ const ClubScreen = ({ banners = {} }) => {
           description={primaryDescription}
           eyebrow="Comunidad profesional"
           imageOnly={isPrimaryImageOnly}
+          overlayOpacity={primaryBanner.overlay_opacity}
         />
         <div className="hidden">
           <div className="hidden max-w-3xl">
@@ -484,6 +485,7 @@ const ClubScreen = ({ banners = {} }) => {
             description={secondaryDescription}
             eyebrow="Exclusivo para maestros"
             imageOnly={isSecondaryImageOnly}
+            overlayOpacity={secondaryBanner.overlay_opacity}
           />
           <div className="hidden absolute -right-16 -top-16 h-64 w-64 rounded-full border-[34px] border-white/20" />
           <div className="hidden relative z-10 max-w-2xl lg:max-w-[56%]">

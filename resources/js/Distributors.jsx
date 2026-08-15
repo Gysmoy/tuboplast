@@ -605,6 +605,7 @@ const DistributorsScreen = ({ distributors = [], banners = {} }) => {
         description={heroDescription}
         eyebrow="Red de distribucion nacional"
         imageOnly={isHeroImageOnly}
+        overlayOpacity={heroBanner.overlay_opacity}
       />
 
       <section className="mx-auto w-full max-w-site px-4 pt-3 pb-12 sm:pt-4 sm:pb-16 lg:pt-4">

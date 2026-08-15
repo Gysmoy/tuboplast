@@ -55,6 +55,7 @@ class SliderController extends BasicController
             'title' => 'required|string|max:180',
             'description' => 'nullable|string|max:2000',
             'display_mode' => 'nullable|in:image_only,image_with_text',
+            'overlay_opacity' => 'nullable|integer|min:0|max:100',
             'primary_button_text' => 'nullable|string|max:120',
             'primary_button_link' => 'nullable|string|max:500',
             'secondary_button_text' => 'nullable|string|max:120',
@@ -69,6 +70,7 @@ class SliderController extends BasicController
         ]);
 
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
+        $validated['overlay_opacity'] = (int) ($validated['overlay_opacity'] ?? 85);
         $validated['placement'] = $validated['placement'] ?? 'home';
         $validated['display_mode'] = $validated['display_mode'] ?? 'image_with_text';
         $validated['status'] = array_key_exists('status', $validated)

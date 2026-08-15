@@ -22,6 +22,7 @@ class SlidersRest extends BasicRest {
         'title',
         'description',
         'display_mode',
+        'overlay_opacity',
         'primary_button_text',
         'primary_button_link',
         'secondary_button_text',

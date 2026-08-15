@@ -1,6 +1,15 @@
-const overlayClassName = 'absolute inset-0 bg-[linear-gradient(100deg,#f7fbff_0%,#f7fbff_34%,rgba(247,251,255,0.94)_42%,rgba(247,251,255,0.76)_50%,rgba(247,251,255,0.48)_58%,rgba(247,251,255,0.22)_66%,rgba(247,251,255,0)_78%)]';
-
 const contentGlowClassName = 'absolute -left-28 -right-10 -top-16 -bottom-10 rounded-3xl bg-[#f7fbff]/90 blur-2xl';
+
+const clampOpacity = (value) => Math.max(0, Math.min(100, Number(value ?? 85))) / 100;
+
+const overlayStyle = (value) => {
+  const opacity = clampOpacity(value);
+  const alpha = (multiplier) => Math.min(1, opacity * multiplier).toFixed(2);
+
+  return {
+    background: `linear-gradient(100deg, rgba(247,251,255,${alpha(1.12)}) 0%, rgba(247,251,255,${alpha(1.1)}) 34%, rgba(247,251,255,${alpha(1)}) 42%, rgba(247,251,255,${alpha(0.78)}) 50%, rgba(247,251,255,${alpha(0.5)}) 58%, rgba(247,251,255,${alpha(0.26)}) 66%, rgba(247,251,255,0) 78%)`,
+  };
+};
 
 const EditableHeroBanner = ({
   image,
@@ -10,6 +19,7 @@ const EditableHeroBanner = ({
   imageOnly = false,
   imageAlt = '',
   topSlot = null,
+  overlayOpacity = 85,
   children,
   className = '',
   contentClassName = '',
@@ -41,7 +51,7 @@ const EditableHeroBanner = ({
             decoding="async"
             className={`absolute inset-0 h-full w-full object-cover object-center ${imageClassName}`}
           />
-          <div className={overlayClassName} />
+          <div className="absolute inset-0" style={overlayStyle(overlayOpacity)} />
           <div className="editable-hero-inner relative mx-auto flex min-h-[300px] w-full max-w-site items-center px-4 py-12 sm:min-h-[360px] lg:min-h-[390px]">
             <div className={`relative max-w-[31rem] ${contentClassName}`}>
               <div className={contentGlowClassName} aria-hidden="true" />

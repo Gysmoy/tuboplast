@@ -16,6 +16,7 @@ class Slider extends Model
         'description',
         'image',
         'display_mode',
+        'overlay_opacity',
         'primary_button_text',
         'primary_button_link',
         'secondary_button_text',
@@ -30,6 +31,7 @@ class Slider extends Model
 
     protected $casts = [
         'item_id' => 'integer',
+        'overlay_opacity' => 'integer',
         'sort_order' => 'integer',
         'status' => 'boolean',
     ];

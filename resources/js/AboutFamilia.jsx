@@ -63,6 +63,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
         description={familyHeroDescription}
         eyebrow='Trayectoria & Experiencia'
         imageOnly={isHeroImageOnly}
+        overlayOpacity={heroBanner.overlay_opacity}
         className='[&_.editable-hero-inner]:pt-4 [&_.editable-hero-inner]:pb-8 [&_.editable-hero-inner]:sm:pt-5 [&_.editable-hero-inner]:sm:pb-10 [&_.editable-hero-inner]:lg:pt-6 [&_.editable-hero-inner]:lg:pb-12'
         imageClassName='object-[70%_center]'
         topSlot={<AboutNav variant='overlay' />}

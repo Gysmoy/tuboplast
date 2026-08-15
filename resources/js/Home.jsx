@@ -205,6 +205,20 @@ const heroButtons = (slide) => [
   },
 ].filter((button) => button.text);
 
+const clampOverlayOpacity = (value) => Math.max(0, Math.min(100, Number(value ?? 85))) / 100;
+
+const heroOverlayStyle = (slide) => {
+  const opacity = clampOverlayOpacity(slide.overlay_opacity);
+  const usesBakedOverlay = (slide.image_path || slide.image_url || '').includes('hero-obras-alto-rendimiento');
+  const alpha = (multiplier) => Math.min(1, opacity * multiplier).toFixed(2);
+
+  return {
+    background: usesBakedOverlay
+      ? `linear-gradient(100deg, rgba(247,251,255,${alpha(1)}) 0%, rgba(247,251,255,${alpha(0.78)}) 34%, rgba(247,251,255,${alpha(0.42)}) 56%, rgba(247,251,255,${alpha(0.1)}) 78%)`
+      : `linear-gradient(100deg, rgba(247,251,255,${alpha(1.12)}) 0%, rgba(247,251,255,${alpha(1.1)}) 34%, rgba(247,251,255,${alpha(0.85)}) 50%, rgba(247,251,255,${alpha(0.45)}) 66%, rgba(247,251,255,${alpha(0.14)}) 84%)`,
+  };
+};
+
 const HeroProductCard = ({ item }) => {
   const product = item || defaultHeroItem;
 
@@ -248,7 +262,6 @@ const HeroSlide = ({ slide, priority = false }) => {
   const metrics = heroMetrics(slide);
   const buttons = heroButtons(slide);
   const isImageOnly = slide.display_mode === 'image_only';
-  const usesBakedOverlay = (slide.image_path || slide.image_url || '').includes('hero-obras-alto-rendimiento');
 
   if (isImageOnly) {
     return (
@@ -279,11 +292,7 @@ const HeroSlide = ({ slide, priority = false }) => {
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className={`absolute inset-0 ${
-        usesBakedOverlay
-          ? 'bg-[linear-gradient(100deg,rgba(247,251,255,0.86)_0%,rgba(247,251,255,0.68)_34%,rgba(247,251,255,0.36)_56%,rgba(247,251,255,0.08)_78%)]'
-          : 'bg-[linear-gradient(100deg,#f7fbff_0%,rgba(247,251,255,0.94)_34%,rgba(247,251,255,0.72)_50%,rgba(247,251,255,0.38)_66%,rgba(247,251,255,0.12)_84%)]'
-      }`} />
+      <div className="absolute inset-0" style={heroOverlayStyle(slide)} />
 
       <div className="relative mx-auto grid w-full max-w-site gap-8 px-16 pb-12 pt-10 sm:gap-10 sm:px-20 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:px-24 lg:pb-32 lg:pt-20 xl:px-4">
         <div className="max-w-2xl space-y-5 sm:pl-8 sm:space-y-7 lg:space-y-8 lg:pl-12 xl:pl-20">
@@ -429,8 +438,8 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
         </div>
       </section>
 
-      <section id="nosotros" className="mx-auto my-12 w-full max-w-site px-4 sm:my-16 lg:my-20">
-        <div data-reveal className="relative lg:min-h-[760px]">
+      <section id="nosotros" className="mx-auto my-12 w-full max-w-site px-4 sm:my-16 lg:my-16">
+        <div data-reveal className="relative lg:min-h-[560px]">
           <article className="relative flex w-full flex-col rounded-[22px] bg-primary p-6 text-white sm:p-8 lg:w-3/5 lg:p-14 lg:pr-32">
             <div className="space-y-6 sm:space-y-8">
               <span className="text-xs uppercase text-secondary border-b-2 border-white/20 pb-2">
