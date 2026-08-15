@@ -82,21 +82,25 @@ const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
         </div>
       </EditableHeroBanner>
 
-      <section className='mx-auto w-full max-w-site px-4 py-12 sm:py-16 lg:py-20'>
+      <section className='mx-auto w-full max-w-site px-4 pb-12 pt-5 sm:py-16 lg:py-20'>
         <div className='grid min-w-0 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:items-center xl:gap-14'>
           <div className='relative mx-auto w-full max-w-[28rem] min-w-0 lg:max-w-none'>
+            <div className='absolute -top-6 left-4 z-10 hidden rounded-2xl bg-secondary px-7 py-5 text-primary shadow-xl sm:block lg:-top-10 lg:left-6 lg:px-8 lg:py-7 xl:-left-10'>
+              <p className='font-title text-4xl font-black leading-none sm:text-5xl'>{about.family_metric_value || defaultAbout.family_metric_value}</p>
+              <p className='mt-2 max-w-[9rem] text-xs font-bold uppercase tracking-[0.18em]'>{about.family_metric_label || defaultAbout.family_metric_label}</p>
+            </div>
             <img
               src={familyImage}
               alt='Tuboplast en produccion'
               className='h-[360px] w-full rounded-2xl object-cover shadow-[0_22px_45px_rgba(15,23,42,0.18)] sm:h-[500px] lg:h-[440px] xl:h-[500px]'
             />
-            <div className='absolute -top-6 left-4 z-10 rounded-2xl bg-secondary px-7 py-5 text-primary shadow-xl lg:-top-10 lg:left-6 lg:px-8 lg:py-7 xl:-left-10'>
-              <p className='font-title text-4xl font-black leading-none sm:text-5xl'>{about.family_metric_value || defaultAbout.family_metric_value}</p>
-              <p className='mt-2 max-w-[9rem] text-xs font-bold uppercase tracking-[0.18em]'>{about.family_metric_label || defaultAbout.family_metric_label}</p>
-            </div>
           </div>
 
           <div className='min-w-0 space-y-8'>
+            <div className='w-fit rounded-2xl bg-secondary px-6 py-5 text-primary shadow-xl sm:hidden'>
+              <p className='font-title text-4xl font-black leading-none'>{about.family_metric_value || defaultAbout.family_metric_value}</p>
+              <p className='mt-2 max-w-[9rem] text-xs font-bold uppercase tracking-[0.18em]'>{about.family_metric_label || defaultAbout.family_metric_label}</p>
+            </div>
             <div className='space-y-4'>
               <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>{about.family_eyebrow || defaultAbout.family_eyebrow}</p>
               <h2 className='font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>

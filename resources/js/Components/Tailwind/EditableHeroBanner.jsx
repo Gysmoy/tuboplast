@@ -42,7 +42,7 @@ const EditableHeroBanner = ({
   return (
     <section className={`bg-white ${className}`}>
       <div className="w-full">
-        <div className="relative min-h-[430px] overflow-hidden bg-white sm:min-h-[360px] lg:min-h-[390px]">
+        <div className="relative min-h-[300px] overflow-hidden bg-white sm:min-h-[360px] lg:min-h-[390px]">
           <h1 className="sr-only">{title}</h1>
           <img
             src={image}
@@ -52,7 +52,7 @@ const EditableHeroBanner = ({
             className={`absolute inset-0 h-full w-full object-cover object-center ${imageClassName}`}
           />
           <div className="absolute inset-0" style={overlayStyle(overlayOpacity)} />
-          <div className="editable-hero-inner relative mx-auto flex min-h-[430px] w-full max-w-site items-center px-4 py-12 sm:min-h-[360px] lg:min-h-[390px]">
+          <div className="editable-hero-inner relative mx-auto flex min-h-[300px] w-full max-w-site items-center px-4 py-12 sm:min-h-[360px] lg:min-h-[390px]">
             <div className={`relative max-w-[31rem] ${contentClassName}`}>
               <div className={contentGlowClassName} aria-hidden="true" />
               <div className="relative">
