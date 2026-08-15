@@ -18,6 +18,7 @@ class BlogRest extends BasicRest {
       formData.append('status', '1')
 
       const scalarFields = [
+        'hero_display_mode',
         'hero_badge',
         'hero_title',
         'hero_description',

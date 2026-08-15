@@ -11,7 +11,9 @@ class AboutPage extends Model
 
     protected $fillable = [
         'family_image',
+        'family_hero_display_mode',
         'policy_image',
+        'policy_hero_display_mode',
         'hero_badge',
         'hero_title',
         'hero_description',
@@ -69,7 +71,9 @@ class AboutPage extends Model
     {
         return [
             'family_image' => null,
+            'family_hero_display_mode' => 'image_with_text',
             'policy_image' => null,
+            'policy_hero_display_mode' => 'image_with_text',
             'hero_badge' => 'Nosotros',
             'hero_title' => 'Construimos infraestructura confiable para el futuro',
             'hero_description' => 'Tuboplast es una empresa peruana especializada en tuberias y conexiones de PVC y HDPE, con foco en calidad, respaldo tecnico y soluciones duraderas.',

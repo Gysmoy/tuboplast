@@ -11,6 +11,7 @@ class BlogPage extends Model
 
     protected $fillable = [
         'hero_image',
+        'hero_display_mode',
         'hero_badge',
         'hero_title',
         'hero_description',
@@ -35,6 +36,7 @@ class BlogPage extends Model
     {
         return [
             'hero_image' => null,
+            'hero_display_mode' => 'image_only',
             'hero_badge' => 'Blog Tuboplast',
             'hero_title' => 'Contenido técnico para instalaciones confiables',
             'hero_description' => 'Guías prácticas, criterios de instalación y recomendaciones técnicas para trabajar con tuberías PVC en proyectos residenciales, comerciales e industriales.',

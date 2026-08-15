@@ -9,6 +9,10 @@ const PUBLIC_STORAGE = '/storage/'
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024
 const MAX_CERT_PDF_SIZE = 50 * 1024 * 1024
 const IMAGE_FALLBACK = '/assets/img/landing/bg-main.png'
+const DISPLAY_MODE_OPTIONS = [
+  { value: 'image_only', label: 'Solo imagen' },
+  { value: 'image_with_text', label: 'Imagen con texto' },
+]
 
 const ABOUT_CSS = `
 .wba{--pri:#004991;}
@@ -98,6 +102,17 @@ const FormField = ({ label, value, onChange, col = 'col-12', type = 'text', plac
   </div>
 )
 
+const SelectField = ({ label, value, onChange, col = 'col-12', options = [] }) => (
+  <div className={col}>
+    <label className='form-label'>{label}</label>
+    <select className='form-control' value={value || ''} onChange={onChange}>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>{option.label}</option>
+      ))}
+    </select>
+  </div>
+)
+
 const SubHeading = ({ children }) => (
   <div className='col-12'><p className='wba-sub-h'>{children}</p></div>
 )
@@ -140,9 +155,11 @@ const About = ({ about: initialAbout = {} }) => {
   const initialForm = useMemo(() => ({
     ...initialAbout,
     family_image: initialAbout.family_image || '',
+    family_hero_display_mode: initialAbout.family_hero_display_mode || 'image_with_text',
     family_image_file: null,
     family_image_preview: getFamilyImagePreview(initialAbout),
     policy_image: initialAbout.policy_image || '',
+    policy_hero_display_mode: initialAbout.policy_hero_display_mode || 'image_with_text',
     policy_image_file: null,
     policy_image_preview: getPolicyImagePreview(initialAbout),
     family_values: Array.isArray(initialAbout.family_values) && initialAbout.family_values.length
@@ -252,9 +269,11 @@ const About = ({ about: initialAbout = {} }) => {
       setForm({
         ...result.data,
         family_image: result.data.family_image || '',
+        family_hero_display_mode: result.data.family_hero_display_mode || 'image_with_text',
         family_image_file: null,
         family_image_preview: previousForm.family_image_file instanceof File && previousForm.family_image_preview ? previousForm.family_image_preview : getFamilyImagePreview(result.data),
         policy_image: result.data.policy_image || '',
+        policy_hero_display_mode: result.data.policy_hero_display_mode || 'image_with_text',
         policy_image_file: null,
         policy_image_preview: previousForm.policy_image_file instanceof File && previousForm.policy_image_preview ? previousForm.policy_image_preview : getPolicyImagePreview(result.data),
         family_values: Array.isArray(result.data.family_values) ? result.data.family_values : [],
@@ -322,6 +341,7 @@ const About = ({ about: initialAbout = {} }) => {
 
             <SectionCard title='Familia e historia' subtitle='Texto principal de la sección' icon='mdi-text-box-outline'>
               <div className='row g-3'>
+                <SelectField col='col-md-4' label='Modo de portada' value={form.family_hero_display_mode} options={DISPLAY_MODE_OPTIONS} onChange={(e) => updateField('family_hero_display_mode', e.target.value)} />
                 <FormField col='col-md-4' label='Etiqueta' value={form.family_eyebrow} onChange={(e) => updateField('family_eyebrow', e.target.value)} />
                 <FormField col='col-md-8' label='Título' value={form.family_title} onChange={(e) => updateField('family_title', e.target.value)} />
                 <FormField col='col-12' label='Texto principal' textarea value={form.family_lead} onChange={(e) => updateField('family_lead', e.target.value)} />
@@ -376,6 +396,7 @@ const About = ({ about: initialAbout = {} }) => {
 
             <SectionCard title='Política del SGI' subtitle='Encabezado, alcance y descripción' icon='mdi-shield-check-outline'>
               <div className='row g-3'>
+                <SelectField col='col-md-4' label='Modo de portada' value={form.policy_hero_display_mode} options={DISPLAY_MODE_OPTIONS} onChange={(e) => updateField('policy_hero_display_mode', e.target.value)} />
                 <FormField col='col-md-4' label='Etiqueta' value={form.policy_eyebrow} onChange={(e) => updateField('policy_eyebrow', e.target.value)} />
                 <FormField col='col-md-8' label='Título' value={form.policy_title} onChange={(e) => updateField('policy_title', e.target.value)} />
                 <FormField col='col-12' label='Texto de compromiso' value={form.policy_commitment_text} onChange={(e) => updateField('policy_commitment_text', e.target.value)} />

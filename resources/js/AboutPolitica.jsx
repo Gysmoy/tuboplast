@@ -43,9 +43,15 @@ const defaultAbout = {
   ],
 }
 
-const AboutPoliticaScreen = ({ about = defaultAbout }) => {
+const displayModes = {
+  imageOnly: 'image_only',
+  imageWithText: 'image_with_text',
+}
+
+const AboutPoliticaScreen = ({ about = defaultAbout, banners = {} }) => {
+  const heroBanner = banners.about_policy || {}
   const policyEyebrow = about.policy_eyebrow || defaultAbout.policy_eyebrow
-  const policyTitle = about.policy_title || defaultAbout.policy_title
+  const policyTitle = heroBanner.title || about.policy_title || defaultAbout.policy_title
   const policyBullets = Array.isArray(about.policy_bullets) && about.policy_bullets.length
     ? about.policy_bullets
     : defaultAbout.policy_bullets
@@ -61,26 +67,29 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
     }
   })
   const policyImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '/assets/img/about/control-calidad-sgi.png')
+  const policyHeroImage = heroBanner.image_url || '/assets/img/landing/bg-main.webp'
+  const heroDisplayMode = heroBanner.display_mode || about.policy_hero_display_mode || displayModes.imageWithText
+  const isHeroImageOnly = heroDisplayMode === displayModes.imageOnly
   const policyScopeEyebrow = about.policy_scope_eyebrow || defaultAbout.policy_scope_eyebrow
   const policyScopeTitle = about.policy_scope_title || defaultAbout.policy_scope_title
   const policyScopeParagraph1 = about.policy_scope_paragraph_1 || defaultAbout.policy_scope_paragraph_1
   const policyScopeParagraph2 = about.policy_scope_paragraph_2 || defaultAbout.policy_scope_paragraph_2
-  const policyCommitmentText = about.policy_commitment_text || defaultAbout.policy_commitment_text
+  const policyCommitmentText = heroBanner.description || about.policy_commitment_text || defaultAbout.policy_commitment_text
   const policyStatement = about.policy_description || defaultAbout.policy_description
   const policyCertificationsTitle = about.policy_certifications_title || defaultAbout.policy_certifications_title
 
   return (
     <main className='bg-white'>
-      <section className='relative overflow-hidden'>
+      <section className={`relative overflow-hidden ${isHeroImageOnly ? 'mx-auto my-8 aspect-[1012/266] w-[calc(100%-2rem)] max-w-site rounded-lg shadow-sm ring-1 ring-black/5 sm:my-10' : ''}`}>
         <img
-          src='/assets/img/landing/bg-main.webp'
+          src={policyHeroImage}
           alt='Planta industrial Tuboplast'
           decoding='async'
-          className='absolute inset-0 h-full w-full object-cover object-center grayscale'
+          className={`absolute inset-0 h-full w-full object-center ${isHeroImageOnly ? 'object-contain' : 'object-cover grayscale'}`}
         />
-        <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30' />
+        {!isHeroImageOnly && <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30' />}
 
-        <div className='relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28'>
+        <div className={`relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28 ${isHeroImageOnly ? 'hidden' : ''}`}>
           <AboutNav variant='overlay' />
 
           <div className='mt-8 max-w-3xl space-y-5 sm:mt-10 lg:mt-12'>
@@ -197,7 +206,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout }) => {
 CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title='Nosotros - Política'>
-      <AboutPoliticaScreen about={properties.about} />
+      <AboutPoliticaScreen about={properties.about} banners={properties.banners} />
     </Base>,
   )
 })

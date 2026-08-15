@@ -171,6 +171,7 @@ const defaultHeroSlides = [
     title: 'Tuboplast',
     description: 'Expertos en tuberias y conexiones de PVC para proyectos profesionales.',
     image_url: '/assets/img/sliders/hero-home.webp',
+    display_mode: 'image_with_text',
     primary_button_text: 'Ver catalogo',
     primary_button_link: '/catalog',
     secondary_button_text: 'Contactar',
@@ -246,7 +247,25 @@ const HeroProductCard = ({ item }) => {
 const HeroSlide = ({ slide, priority = false }) => {
   const metrics = heroMetrics(slide);
   const buttons = heroButtons(slide);
+  const isImageOnly = slide.display_mode === 'image_only';
   const usesBakedOverlay = (slide.image_path || slide.image_url || '').includes('hero-obras-alto-rendimiento');
+
+  if (isImageOnly) {
+    return (
+      <div className="overflow-hidden bg-white">
+        <img
+          src={slide.image_url || '/assets/img/sliders/hero-home.webp'}
+          alt={slide.title || 'Tuboplast'}
+          width={1672}
+          height={941}
+          fetchPriority={priority ? 'high' : 'auto'}
+          loading={priority ? undefined : 'lazy'}
+          decoding="async"
+          className="block h-auto w-full"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="relative overflow-hidden">

@@ -17,9 +17,11 @@ class SlidersRest extends BasicRest {
       if (slider.id) formData.append('id', slider.id)
 
       const fields = [
+        'placement',
         'item_id',
         'title',
         'description',
+        'display_mode',
         'primary_button_text',
         'primary_button_link',
         'secondary_button_text',

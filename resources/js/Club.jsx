@@ -228,7 +228,7 @@ const RegistrationForm = () => {
 
   return (
     <>
-      <section id="registro-club" className="mx-auto w-full max-w-site px-4 py-10 sm:py-14 lg:py-16">
+      <section id="registro-club" className="mx-auto w-full max-w-site px-4 pt-3 pb-10 sm:pt-4 sm:pb-14 lg:pt-4 lg:pb-16">
       <div className="rounded-2xl bg-[#f7f7f7] shadow-sm ring-1 ring-slate-200/70 lg:grid lg:grid-cols-[300px_minmax(0,1fr)]">
         <aside className="flex flex-col bg-primary p-6 text-white sm:p-8 rounded-l-2xl">
           <h2 className="font-title text-2xl font-medium">Regístrate hoy</h2>
@@ -389,21 +389,41 @@ const RegistrationForm = () => {
   );
 };
 
-const ClubScreen = () => {
+const ClubScreen = ({ banners = {} }) => {
+  const primaryBanner = banners.club_primary || {};
+  const secondaryBanner = banners.club_secondary || {};
+  const primaryImage = primaryBanner.image_url || '/assets/img/club/club-experto-cta.png';
+  const secondaryImage = secondaryBanner.image_url || '/assets/img/club/club-experto-hero.png';
+  const primaryTitle = primaryBanner.title || 'Club Experto Tuboplast';
+  const primaryDescription = primaryBanner.description || 'Beneficios que construyen tu futuro.';
+  const secondaryTitle = secondaryBanner.title || 'Tu aliado en construcción';
+  const secondaryDescription = secondaryBanner.description || 'Experto Tuboplast.';
+  const isPrimaryImageOnly = (primaryBanner.display_mode || 'image_only') === 'image_only';
+  const isSecondaryImageOnly = (secondaryBanner.display_mode || 'image_only') === 'image_only';
   const scrollToRegistration = () => {
     document.getElementById('registro-club')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
     <main>
-      <section className="bg-silver/40 py-6 sm:py-8 lg:py-10">
+      <section className="bg-silver/40 pt-3 pb-2 sm:pt-4 sm:pb-3 lg:pt-5 lg:pb-3">
         <div className="mx-auto w-full max-w-site px-4">
-          <div className="overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
+          <div className={`relative overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5 ${isPrimaryImageOnly ? '' : 'aspect-[1012/266]'}`}>
             <img
-              src="/assets/img/club/club-experto-hero.png"
-              alt="Tu aliado en construcción - Experto Tuboplast"
-              className="block h-auto w-full"
+              src={primaryImage}
+              alt={isPrimaryImageOnly ? primaryTitle : ''}
+              className={isPrimaryImageOnly ? 'block h-auto w-full' : 'absolute inset-0 h-full w-full object-cover object-center'}
             />
+            {!isPrimaryImageOnly && (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/15" />
+                <div className="relative max-w-xl px-6 py-8 sm:px-10 lg:px-16">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Comunidad profesional</p>
+                  <h1 className="mt-4 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl">{primaryTitle}</h1>
+                  <p className="mt-4 text-sm leading-relaxed text-darkmuted sm:text-base">{primaryDescription}</p>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="hidden">
@@ -456,20 +476,30 @@ const ClubScreen = () => {
       </section>
 
       <section className="mx-auto w-full max-w-site px-4 py-10 sm:py-14">
-        <div className="relative overflow-hidden rounded-lg bg-primary text-primary shadow-sm ring-1 ring-black/5">
+        <div className={`relative overflow-hidden rounded-lg bg-primary text-primary shadow-sm ring-1 ring-black/5 ${isSecondaryImageOnly ? '' : 'aspect-[1012/266]'}`}>
           <button
             type="button"
             onClick={scrollToRegistration}
-            className="block w-full text-left"
+            className={isSecondaryImageOnly ? 'block w-full text-left' : 'block h-full w-full text-left'}
             aria-label="Ir al formulario del Club Experto Tuboplast"
           >
             <img
-              src="/assets/img/club/club-experto-cta.png"
-              alt="Club Experto Tuboplast, beneficios que construyen tu futuro"
+              src={secondaryImage}
+              alt={isSecondaryImageOnly ? secondaryTitle : ''}
               loading="lazy"
               decoding="async"
-              className="h-auto w-full object-cover"
+              className={isSecondaryImageOnly ? 'h-auto w-full object-cover' : 'absolute inset-0 h-full w-full object-cover object-center'}
             />
+            {!isSecondaryImageOnly && (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/15" />
+                <div className="relative max-w-xl px-6 py-8 sm:px-10 lg:px-16">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Exclusivo para maestros</p>
+                  <h2 className="mt-4 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl">{secondaryTitle}</h2>
+                  <p className="mt-4 text-sm leading-relaxed text-darkmuted sm:text-base">{secondaryDescription}</p>
+                </div>
+              </>
+            )}
           </button>
           <div className="hidden absolute -right-16 -top-16 h-64 w-64 rounded-full border-[34px] border-white/20" />
           <div className="hidden relative z-10 max-w-2xl lg:max-w-[56%]">
@@ -491,8 +521,8 @@ const ClubScreen = () => {
             </button>
           </div>
           <img
-            src="/assets/img/club/club-experto-cta.png"
-            alt="Club Experto Tuboplast, beneficios que construyen tu futuro"
+            src={secondaryImage}
+            alt="Tu aliado en construcción - Experto Tuboplast"
             loading="lazy"
             decoding="async"
             className="hidden"
@@ -533,10 +563,10 @@ const ClubScreen = () => {
   );
 };
 
-CreateReactScript((el) => {
+CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title="Club experto">
-      <ClubScreen />
+      <ClubScreen banners={properties.banners} />
     </Base>,
   );
 });

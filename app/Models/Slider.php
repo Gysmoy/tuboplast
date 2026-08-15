@@ -10,10 +10,12 @@ class Slider extends Model
     use HasFactory;
 
     protected $fillable = [
+        'placement',
         'item_id',
         'title',
         'description',
         'image',
+        'display_mode',
         'primary_button_text',
         'primary_button_link',
         'secondary_button_text',

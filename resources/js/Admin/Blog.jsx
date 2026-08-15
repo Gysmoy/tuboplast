@@ -9,6 +9,10 @@ import QuillFormGroup from '../Components/Form/QuillFormGroup.jsx'
 const blogRest = new BlogRest()
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024
 const IMAGE_FALLBACK = '/assets/img/landing/bg-main.png'
+const DISPLAY_MODE_OPTIONS = [
+  { value: 'image_only', label: 'Solo imagen' },
+  { value: 'image_with_text', label: 'Imagen con texto' },
+]
 
 const BLOG_CSS = `
 .wbl{--pri:#004991;}
@@ -95,10 +99,22 @@ const Field = ({ label, value, onChange, col = 'col-12', type = 'text', placehol
   </div>
 )
 
+const SelectField = ({ label, value, onChange, col = 'col-12', options = [] }) => (
+  <div className={col}>
+    <label className='form-label'>{label}</label>
+    <select className='form-control' value={value || ''} onChange={onChange}>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>{option.label}</option>
+      ))}
+    </select>
+  </div>
+)
+
 const Blog = ({ blog: initialBlog = {} }) => {
   const initialForm = useMemo(() => ({
     ...initialBlog,
     hero_image: initialBlog.hero_image || '',
+    hero_display_mode: initialBlog.hero_display_mode || 'image_only',
     hero_image_file: null,
     hero_image_preview: getHeroPreview(initialBlog),
     hero_badge: initialBlog.hero_badge || 'Blog Tuboplast',
@@ -180,6 +196,7 @@ const Blog = ({ blog: initialBlog = {} }) => {
     setForm({
       ...result.data,
       hero_image: result.data.hero_image || '',
+      hero_display_mode: result.data.hero_display_mode || 'image_only',
       hero_image_file: null,
       hero_image_preview:
         targetForm.hero_image_file instanceof File && targetForm.hero_image_preview
@@ -244,6 +261,7 @@ const Blog = ({ blog: initialBlog = {} }) => {
   const openConfig = () => {
     setConfigDraft({
       hero_image_file: null,
+      hero_display_mode: form.hero_display_mode || 'image_only',
       hero_image_preview: form.hero_image_preview,
       hero_badge: form.hero_badge,
       hero_title: form.hero_title,
@@ -466,6 +484,14 @@ const Blog = ({ blog: initialBlog = {} }) => {
                     <div className='col-lg-5'>
                       <label className='form-label'>Cambiar imagen</label>
                       <input type='file' className='form-control' accept='image/*' onChange={onHeroImageChange} />
+                      <div className='mt-3'>
+                        <SelectField
+                          label='Modo de portada'
+                          value={configDraft.hero_display_mode}
+                          options={DISPLAY_MODE_OPTIONS}
+                          onChange={(e) => setCfg('hero_display_mode', e.target.value)}
+                        />
+                      </div>
                       <small className='wbl-sub d-block mt-2'>Imagen horizontal (16:9). Máx 4 MB.</small>
                     </div>
                   </div>

@@ -38,13 +38,14 @@ class LandingController extends BasicController
     {
         $aboutData = $this->normalizeAboutPage(AboutPage::current());
         $blogData = $this->normalizeBlogPage(BlogPage::current());
-        $sliderData = $this->normalizeSliders();
+        $sliderData = $this->normalizeSliders('home');
 
         $properties = [
             'token' => csrf_token(),
             'about' => $aboutData,
             'blog' => $blogData,
             'sliders' => $sliderData,
+            'banners' => $this->normalizePageBanners(),
             'expertCategories' => $this->normalizeExpertCategories(),
         ];
 
@@ -628,25 +629,33 @@ class LandingController extends BasicController
         ];
     }
 
-    private function normalizeSliders(): array
+    private function normalizeSliders(?string $placement = 'home'): array
     {
         if (!Schema::hasTable('sliders')) {
             return [];
         }
 
-        return Slider::query()
+        $query = Slider::query()
             ->where('status', true)
-            ->with('item.category')
+            ->with('item.category');
+
+        if ($placement && Schema::hasColumn('sliders', 'placement')) {
+            $query->where('placement', $placement);
+        }
+
+        return $query
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get()
             ->map(function (Slider $slider) {
                 return [
                     'id' => $slider->id,
+                    'placement' => $slider->placement ?? 'home',
                     'title' => $slider->title,
                     'description' => $slider->description,
                     'image_path' => $slider->image,
                     'image_url' => $this->sliderImageUrl($slider->image),
+                    'display_mode' => $slider->display_mode ?? 'image_with_text',
                     'primary_button_text' => $slider->primary_button_text,
                     'primary_button_link' => $slider->primary_button_link,
                     'secondary_button_text' => $slider->secondary_button_text,
@@ -666,6 +675,26 @@ class LandingController extends BasicController
             })
             ->values()
             ->all();
+    }
+
+    private function normalizePageBanners(): array
+    {
+        $placements = [
+            'blog',
+            'about_family',
+            'about_policy',
+            'distributors',
+            'club_primary',
+            'club_secondary',
+        ];
+
+        $banners = [];
+
+        foreach ($placements as $placement) {
+            $banners[$placement] = $this->normalizeSliders($placement)[0] ?? null;
+        }
+
+        return $banners;
     }
 
     private function sliderImageUrl(?string $path): ?string

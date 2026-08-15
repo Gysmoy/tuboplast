@@ -421,7 +421,12 @@ const DistributorCard = ({ distributor, isSelected, onSelect }) => {
   );
 };
 
-const DistributorsScreen = ({ distributors = [] }) => {
+const DistributorsScreen = ({ distributors = [], banners = {} }) => {
+  const heroBanner = banners.distributors || {};
+  const heroImage = heroBanner.image_url || '/assets/img/distributors/banner-distribuidores.png';
+  const heroTitle = heroBanner.title || 'Ubica a nuestros distribuidores a nivel nacional';
+  const heroDescription = heroBanner.description || 'Encuentra puntos de venta autorizados Tuboplast en todo el Peru.';
+  const isHeroImageOnly = (heroBanner.display_mode || 'image_only') === 'image_only';
   const mapSectionRef = useRef(null);
   const formSectionRef = useRef(null);
   const normalizedDistributors = useMemo(() => {
@@ -593,20 +598,32 @@ const DistributorsScreen = ({ distributors = [] }) => {
 
   return (
     <main>
-      <section className="bg-silver/40 py-6 sm:py-8 lg:py-10">
-        <div className="mx-auto w-full max-w-site px-4">
-          <div className="overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5">
-            <h1 className="sr-only">Ubica a nuestros distribuidores a nivel nacional</h1>
+      <section className={`${isHeroImageOnly ? 'bg-silver/40 pt-3 pb-2 sm:pt-4 sm:pb-3 lg:pt-5 lg:pb-3' : 'bg-silver/40'}`}>
+        <div className={isHeroImageOnly ? 'mx-auto w-full max-w-site px-4' : 'w-full'}>
+          <div className={`relative overflow-hidden bg-primary shadow-sm ring-1 ring-black/5 ${isHeroImageOnly ? 'rounded-lg' : 'aspect-[1012/266]'}`}>
+            <h1 className="sr-only">{heroTitle}</h1>
             <img
-              src="/assets/img/distributors/banner-distribuidores.png"
-              alt="Ubica a nuestros distribuidores a nivel nacional"
-              className="block h-auto w-full"
+              src={heroImage}
+              alt={isHeroImageOnly ? heroTitle : ''}
+              className={isHeroImageOnly ? 'block h-auto w-full' : 'absolute inset-0 h-full w-full object-cover object-center'}
             />
+            {!isHeroImageOnly && (
+              <>
+                <div className="absolute inset-0 bg-[linear-gradient(100deg,#fff_0%,#fff_36%,rgba(255,255,255,0.98)_45%,rgba(255,255,255,0.86)_55%,rgba(255,255,255,0.58)_66%,rgba(255,255,255,0.24)_79%,rgba(255,255,255,0)_96%)]" />
+                <div className="relative mx-auto flex h-full w-full max-w-site items-center px-4">
+                  <div className="max-w-xl">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Red de distribución nacional</p>
+                  <h2 className="mt-4 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl">{heroTitle}</h2>
+                    <p className="mt-4 text-sm leading-relaxed text-darkmuted sm:text-base">{heroDescription}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-site px-4 pb-12 pt-8 sm:pb-16 lg:pt-10">
+      <section className="mx-auto w-full max-w-site px-4 pt-3 pb-12 sm:pt-4 sm:pb-16 lg:pt-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">Filtra por ubicación</p>
 
@@ -808,7 +825,7 @@ const DistributorsScreen = ({ distributors = [] }) => {
 CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title="Distribuidores">
-      <DistributorsScreen distributors={properties.distributors} />
+      <DistributorsScreen distributors={properties.distributors} banners={properties.banners} />
     </Base>,
   );
 });

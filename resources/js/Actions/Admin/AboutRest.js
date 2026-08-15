@@ -19,6 +19,7 @@ class AboutRest extends BasicRest {
 
       const scalarFields = [
         'family_eyebrow',
+        'family_hero_display_mode',
         'family_title',
         'family_lead',
         'family_paragraph_1',
@@ -36,6 +37,7 @@ class AboutRest extends BasicRest {
         'vision_title',
         'vision_text',
         'policy_eyebrow',
+        'policy_hero_display_mode',
         'policy_title',
         'policy_scope_eyebrow',
         'policy_scope_title',

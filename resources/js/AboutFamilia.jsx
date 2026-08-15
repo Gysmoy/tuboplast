@@ -39,23 +39,34 @@ const defaultAbout = {
   ],
 }
 
-const AboutFamiliaScreen = ({ about = defaultAbout }) => {
+const displayModes = {
+  imageOnly: 'image_only',
+  imageWithText: 'image_with_text',
+}
+
+const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
+  const heroBanner = banners.about_family || {}
   const familyValues = Array.isArray(about.family_values) && about.family_values.length ? about.family_values : defaultAbout.family_values
   const familyImage = about.family_image_url || (about.family_image ? `/about/media/${about.family_image}` : '/assets/img/landing/club-expert.webp')
+  const familyHeroImage = heroBanner.image_url || '/assets/img/about/red-distribucion-banner.png'
+  const familyHeroTitle = heroBanner.title || 'Estamos presentes desde 1966'
+  const familyHeroDescription = heroBanner.description || 'Lideres en soluciones para edificaciones, infraestructura, mineria, agricultura y mas.'
+  const heroDisplayMode = heroBanner.display_mode || about.family_hero_display_mode || displayModes.imageWithText
+  const isHeroImageOnly = heroDisplayMode === displayModes.imageOnly
 
   return (
     <main className='overflow-x-hidden bg-white'>
-      <section className='relative overflow-hidden'>
+      <section className={`relative overflow-hidden ${isHeroImageOnly ? 'mx-auto my-8 aspect-[1012/266] w-[calc(100%-2rem)] max-w-site rounded-lg shadow-sm ring-1 ring-black/5 sm:my-10' : ''}`}>
         <img
-          src='/assets/img/about/red-distribucion-banner.png'
+          src={familyHeroImage}
           alt=''
           aria-hidden='true'
           decoding='async'
-          className='absolute inset-0 h-full w-full object-cover object-[70%_center]'
+          className={`absolute inset-0 h-full w-full ${isHeroImageOnly ? 'object-contain object-center' : 'object-cover object-[70%_center]'}`}
         />
-        <div className='absolute inset-0 bg-gradient-to-r from-white via-white/95 via-45% to-white/20' />
+        {!isHeroImageOnly && <div className='absolute inset-0 bg-gradient-to-r from-white via-white/95 via-45% to-white/20' />}
 
-        <div className='relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28'>
+        <div className={`relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28 ${isHeroImageOnly ? 'hidden' : ''}`}>
           <AboutNav variant='overlay' />
 
           <div className='mt-8 max-w-xl space-y-5 sm:mt-10 sm:max-w-3xl lg:mt-12'>
@@ -63,11 +74,11 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
               Trayectoria & Experiencia
             </p>
             <h1 className='max-w-2xl font-title text-4xl font-medium leading-[1.05] tracking-tight text-primary sm:text-5xl lg:text-6xl'>
-              Estamos presentes desde 1966
+              {familyHeroTitle}
             </h1>
             <div className='flex items-center gap-4 text-sm leading-relaxed text-darkmuted sm:text-base'>
               <span className='h-1 w-10 shrink-0 bg-secondary' />
-              <p className='max-w-xl'>Líderes en soluciones para edificaciones, infraestructura, minería, agricultura y más.</p>
+              <p className='max-w-xl'>{familyHeroDescription}</p>
             </div>
           </div>
         </div>
@@ -167,7 +178,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout }) => {
 CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title='Nosotros - Familia'>
-      <AboutFamiliaScreen about={properties.about} />
+      <AboutFamiliaScreen about={properties.about} banners={properties.banners} />
     </Base>,
   )
 })

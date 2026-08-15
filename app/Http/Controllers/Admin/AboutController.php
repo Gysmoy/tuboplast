@@ -45,6 +45,7 @@ class AboutController extends BasicController
             'family_image_existing' => 'nullable|string|max:255',
             'policy_image_file' => 'nullable|image|max:4096',
             'policy_image_existing' => 'nullable|string|max:255',
+            'family_hero_display_mode' => 'nullable|in:image_only,image_with_text',
             'family_eyebrow' => 'nullable|string|max:120',
             'family_title' => 'nullable|string|max:255',
             'family_lead' => 'nullable|string|max:2000',
@@ -64,6 +65,7 @@ class AboutController extends BasicController
             'vision_text' => 'nullable|string|max:2000',
             'family_values' => 'nullable|array',
             'family_values.*' => 'nullable|string|max:120',
+            'policy_hero_display_mode' => 'nullable|in:image_only,image_with_text',
             'policy_eyebrow' => 'nullable|string|max:120',
             'policy_title' => 'nullable|string|max:255',
             'policy_scope_eyebrow' => 'nullable|string|max:120',
@@ -89,6 +91,7 @@ class AboutController extends BasicController
         $current = AboutPage::current();
         $payload = [
             'id' => 1,
+            'family_hero_display_mode' => $validated['family_hero_display_mode'] ?? 'image_with_text',
             'family_eyebrow' => $validated['family_eyebrow'] ?? null,
             'family_title' => $validated['family_title'] ?? null,
             'family_lead' => $validated['family_lead'] ?? null,
@@ -107,6 +110,7 @@ class AboutController extends BasicController
             'vision_title' => $validated['vision_title'] ?? null,
             'vision_text' => $validated['vision_text'] ?? null,
             'family_values' => array_values(array_filter($validated['family_values'] ?? [], fn ($item) => filled($item))),
+            'policy_hero_display_mode' => $validated['policy_hero_display_mode'] ?? 'image_with_text',
             'policy_eyebrow' => $validated['policy_eyebrow'] ?? null,
             'policy_title' => $validated['policy_title'] ?? null,
             'policy_scope_eyebrow' => $validated['policy_scope_eyebrow'] ?? null,

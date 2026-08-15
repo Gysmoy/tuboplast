@@ -27,6 +27,7 @@ class BlogController extends BasicController
         $validated = $request->validate([
             'hero_image_file' => 'nullable|image|max:4096',
             'hero_image_existing' => 'nullable|string|max:255',
+            'hero_display_mode' => 'nullable|in:image_only,image_with_text',
             'hero_badge' => 'nullable|string|max:120',
             'hero_title' => 'nullable|string|max:255',
             'hero_description' => 'nullable|string|max:2000',
@@ -63,6 +64,7 @@ class BlogController extends BasicController
 
         $payload = [
             'id' => 1,
+            'hero_display_mode' => $validated['hero_display_mode'] ?? 'image_only',
             'hero_badge' => $validated['hero_badge'] ?? null,
             'hero_title' => $validated['hero_title'] ?? null,
             'hero_description' => $validated['hero_description'] ?? null,

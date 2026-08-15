@@ -14,6 +14,19 @@ import SlidersRest from '../Actions/Admin/SlidersRest.js'
 const slidersRest = new SlidersRest()
 const FALLBACK_SLIDER_IMAGE = '/assets/img/sliders/hero-home.webp'
 const FALLBACK_ITEM_IMAGE = '/assets/img/items/item-1.png'
+const DISPLAY_MODE_OPTIONS = [
+  { value: 'image_only', label: 'Solo imagen' },
+  { value: 'image_with_text', label: 'Imagen con texto' },
+]
+const PLACEMENT_OPTIONS = [
+  { value: 'home', label: 'Inicio' },
+  { value: 'blog', label: 'Blog' },
+  { value: 'about_family', label: 'Nosotros - Familia' },
+  { value: 'about_policy', label: 'Nosotros - Política SGI' },
+  { value: 'distributors', label: 'Distribuidores' },
+  { value: 'club_primary', label: 'Club experto - Principal' },
+  { value: 'club_secondary', label: 'Club experto - Secundario' },
+]
 
 const SLIDERS_CSS = `
 .wfs-act{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:0;font-size:13px;transition:filter .15s;}
@@ -46,6 +59,13 @@ const SLIDERS_CSS = `
 `
 
 const itemImage = (item) => item?.image ? `/storage/${item.image}` : FALLBACK_ITEM_IMAGE
+const sliderImage = (path) => {
+  if (!path) return FALLBACK_SLIDER_IMAGE
+  if (/^https?:\/\//.test(path) || path.startsWith('/')) return path
+  if (path.startsWith('assets/')) return `/${path}`
+  if (/^(blog|distributors|club|about|landing)\//.test(path)) return `/assets/img/${path}`
+  return `/storage/${path}`
+}
 
 const FieldSelect = ({ col = 'col-md-6', label, value, options, onChange }) => (
   <div className={`form-group ${col} mb-2`}>
@@ -75,7 +95,9 @@ const Sliders = ({ items = [] }) => {
 
   const [loading, setLoading] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(null)
+  const [placement, setPlacement] = useState('home')
   const [itemId, setItemId] = useState('')
+  const [displayMode, setDisplayMode] = useState('image_with_text')
   const [status, setStatus] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formError, setFormError] = useState('')
@@ -102,7 +124,9 @@ const Sliders = ({ items = [] }) => {
 
   const resetForm = () => {
     setDataLoaded(null)
+    setPlacement('home')
     setItemId('')
+    setDisplayMode('image_with_text')
     setStatus(true)
     setFormError('')
     setIsModalOpen(false)
@@ -137,12 +161,14 @@ const Sliders = ({ items = [] }) => {
     setRef(metricTwoValueRef, data?.metric_two_value)
     setRef(metricTwoLabelRef, data?.metric_two_label)
     setRef(sortOrderRef, data?.sort_order ?? 0)
+    setPlacement(data?.placement || 'home')
     setItemId(data?.item_id ? String(data.item_id) : '')
+    setDisplayMode(data?.display_mode || 'image_with_text')
     setStatus(data?.status == null ? true : data.status === true || data.status === 1 || data.status === '1')
 
     if (imageRef.current) imageRef.current.value = ''
     if (imageRef.current?.image) {
-      imageRef.current.image.src = data?.image ? `/storage/${data.image}` : FALLBACK_SLIDER_IMAGE
+      imageRef.current.image.src = sliderImage(data?.image)
     }
   }
 
@@ -172,9 +198,11 @@ const Sliders = ({ items = [] }) => {
 
     const slider = {
       id: dataLoaded?.id,
+      placement,
       item_id: itemId || '',
       title: titleRef.current.value,
       description: descriptionRef.current.value,
+      display_mode: displayMode,
       primary_button_text: primaryButtonTextRef.current.value,
       primary_button_link: primaryButtonLinkRef.current.value,
       secondary_button_text: secondaryButtonTextRef.current.value,
@@ -206,7 +234,7 @@ const Sliders = ({ items = [] }) => {
   const columns = [
     {
       key: 'image', header: 'Imagen', filterable: false, sortable: false, width: 96,
-      render: (d) => <img src={d.image ? `/storage/${d.image}` : FALLBACK_SLIDER_IMAGE} alt={d.title} className='wfs-thumb' />,
+      render: (d) => <img src={sliderImage(d.image)} alt={d.title} className='wfs-thumb' />,
     },
     {
       key: 'title', header: 'Contenido', field: 'title', filterFields: ['title', 'description'], width: 310,
@@ -215,6 +243,23 @@ const Sliders = ({ items = [] }) => {
           <span className='fw-semibold d-block'>{d.title}</span>
           <small className='text-muted d-block line-clamp-2'>{d.description || 'Sin descripcion'}</small>
         </>
+      ),
+    },
+    {
+      key: 'placement', header: 'Ubicación', field: 'placement', width: 190,
+      filterOptions: PLACEMENT_OPTIONS,
+      render: (d) => (
+        <span className='wfs-chip'>
+          {PLACEMENT_OPTIONS.find((option) => option.value === (d.placement || 'home'))?.label || d.placement || 'Inicio'}
+        </span>
+      ),
+    },
+    {
+      key: 'display_mode', header: 'Modo', filterable: false, sortable: false, width: 150,
+      render: (d) => (
+        <span className='wfs-chip'>
+          {d.display_mode === 'image_only' ? 'Solo imagen' : 'Imagen con texto'}
+        </span>
       ),
     },
     {
@@ -307,8 +352,10 @@ const Sliders = ({ items = [] }) => {
                   </div>
                   <div className='col-md-7'>
                     <div className='row'>
-                      <InputFormGroup col='col-md-8' eRef={titleRef} label='Titulo' required />
-                      <InputFormGroup col='col-md-4' eRef={sortOrderRef} label='Orden' type='number' />
+                      <InputFormGroup col='col-md-3' eRef={titleRef} label='Titulo' required />
+                      <FieldSelect col='col-md-3' label='Ubicación' value={placement} options={PLACEMENT_OPTIONS} onChange={setPlacement} />
+                      <FieldSelect col='col-md-3' label='Modo' value={displayMode} options={DISPLAY_MODE_OPTIONS} onChange={setDisplayMode} />
+                      <InputFormGroup col='col-md-3' eRef={sortOrderRef} label='Orden' type='number' />
                     </div>
                     <TextareaFormGroup eRef={descriptionRef} label='Descripcion' rows={4} />
                     <div className='d-flex align-items-center gap-2 mt-1'>

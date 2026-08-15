@@ -13,6 +13,15 @@ class SliderController extends BasicController
     public $reactView = 'Admin/Sliders';
     public $model = Slider::class;
     public $with4get = ['item.category'];
+    private array $placements = [
+        'home',
+        'blog',
+        'about_family',
+        'about_policy',
+        'distributors',
+        'club_primary',
+        'club_secondary',
+    ];
 
     public function setPaginationInstance(string $model)
     {
@@ -41,9 +50,11 @@ class SliderController extends BasicController
     public function beforeSave(Request $request)
     {
         $validated = $request->validate([
+            'placement' => 'nullable|in:' . implode(',', $this->placements),
             'item_id' => 'nullable|integer|exists:items,id',
             'title' => 'required|string|max:180',
             'description' => 'nullable|string|max:2000',
+            'display_mode' => 'nullable|in:image_only,image_with_text',
             'primary_button_text' => 'nullable|string|max:120',
             'primary_button_link' => 'nullable|string|max:500',
             'secondary_button_text' => 'nullable|string|max:120',
@@ -58,6 +69,8 @@ class SliderController extends BasicController
         ]);
 
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
+        $validated['placement'] = $validated['placement'] ?? 'home';
+        $validated['display_mode'] = $validated['display_mode'] ?? 'image_with_text';
         $validated['status'] = array_key_exists('status', $validated)
             ? (in_array($validated['status'], [true, 'true', 1, '1', 'on'], true) ? 1 : 0)
             : 1;
