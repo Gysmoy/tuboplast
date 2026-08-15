@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import Base from './Components/Tailwind/Base'
 import AboutNav from './Components/Tailwind/AboutNav'
+import EditableHeroBanner from './Components/Tailwind/EditableHeroBanner'
 import CreateReactScript from './Utils/CreateReactScript'
 
 const defaultAbout = {
@@ -56,20 +57,17 @@ const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
 
   return (
     <main className='overflow-x-hidden bg-white'>
-      <section className={`relative overflow-hidden ${isHeroImageOnly ? 'mx-auto my-8 aspect-[1012/266] w-[calc(100%-2rem)] max-w-site rounded-lg shadow-sm ring-1 ring-black/5 sm:my-10' : ''}`}>
-        <img
-          src={familyHeroImage}
-          alt=''
-          aria-hidden='true'
-          decoding='async'
-          className={`absolute inset-0 h-full w-full ${isHeroImageOnly ? 'object-contain object-center' : 'object-cover object-[70%_center]'}`}
-        />
-        {!isHeroImageOnly && <div className='absolute inset-0 bg-gradient-to-r from-white via-white/95 via-45% to-white/20' />}
-
-        <div className={`relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28 ${isHeroImageOnly ? 'hidden' : ''}`}>
-          <AboutNav variant='overlay' />
-
-          <div className='mt-8 max-w-xl space-y-5 sm:mt-10 sm:max-w-3xl lg:mt-12'>
+      <EditableHeroBanner
+        image={familyHeroImage}
+        title={familyHeroTitle}
+        description={familyHeroDescription}
+        eyebrow='Trayectoria & Experiencia'
+        imageOnly={isHeroImageOnly}
+        className='[&_.editable-hero-inner]:pt-4 [&_.editable-hero-inner]:pb-8 [&_.editable-hero-inner]:sm:pt-5 [&_.editable-hero-inner]:sm:pb-10 [&_.editable-hero-inner]:lg:pt-6 [&_.editable-hero-inner]:lg:pb-12'
+        imageClassName='object-[70%_center]'
+        topSlot={<AboutNav variant='overlay' />}
+      >
+        <div className='mt-4 max-w-xl space-y-3 sm:mt-5 sm:max-w-3xl lg:mt-6'>
             <p className='text-xs font-bold uppercase tracking-[0.28em] text-primary sm:text-sm'>
               Trayectoria & Experiencia
             </p>
@@ -80,9 +78,8 @@ const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
               <span className='h-1 w-10 shrink-0 bg-secondary' />
               <p className='max-w-xl'>{familyHeroDescription}</p>
             </div>
-          </div>
         </div>
-      </section>
+      </EditableHeroBanner>
 
       <section className='mx-auto w-full max-w-site px-4 py-12 sm:py-16 lg:py-20'>
         <div className='grid min-w-0 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:items-center xl:gap-14'>

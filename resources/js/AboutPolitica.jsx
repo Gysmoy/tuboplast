@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import Base from './Components/Tailwind/Base'
 import AboutNav from './Components/Tailwind/AboutNav'
+import EditableHeroBanner from './Components/Tailwind/EditableHeroBanner'
 import CreateReactScript from './Utils/CreateReactScript'
 
 const defaultAbout = {
@@ -80,19 +81,18 @@ const AboutPoliticaScreen = ({ about = defaultAbout, banners = {} }) => {
 
   return (
     <main className='bg-white'>
-      <section className={`relative overflow-hidden ${isHeroImageOnly ? 'mx-auto my-8 aspect-[1012/266] w-[calc(100%-2rem)] max-w-site rounded-lg shadow-sm ring-1 ring-black/5 sm:my-10' : ''}`}>
-        <img
-          src={policyHeroImage}
-          alt='Planta industrial Tuboplast'
-          decoding='async'
-          className={`absolute inset-0 h-full w-full object-center ${isHeroImageOnly ? 'object-contain' : 'object-cover grayscale'}`}
-        />
-        {!isHeroImageOnly && <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30' />}
-
-        <div className={`relative mx-auto w-full max-w-site px-4 py-14 sm:py-20 lg:py-28 ${isHeroImageOnly ? 'hidden' : ''}`}>
-          <AboutNav variant='overlay' />
-
-          <div className='mt-8 max-w-3xl space-y-5 sm:mt-10 lg:mt-12'>
+      <EditableHeroBanner
+        image={policyHeroImage}
+        title={policyTitle}
+        description={policyCommitmentText}
+        eyebrow={policyEyebrow}
+        imageOnly={isHeroImageOnly}
+        className='[&_.editable-hero-inner]:pt-4 [&_.editable-hero-inner]:pb-8 [&_.editable-hero-inner]:sm:pt-5 [&_.editable-hero-inner]:sm:pb-10 [&_.editable-hero-inner]:lg:pt-6 [&_.editable-hero-inner]:lg:pb-12'
+        imageClassName='grayscale'
+        contentClassName='max-w-3xl'
+        topSlot={<AboutNav variant='overlay' />}
+      >
+        <div className='mt-4 max-w-3xl space-y-3 sm:mt-5 lg:mt-6'>
             <p className='text-xs font-bold uppercase tracking-[0.28em] text-primary sm:text-sm'>
               {policyEyebrow}
             </p>
@@ -103,9 +103,8 @@ const AboutPoliticaScreen = ({ about = defaultAbout, banners = {} }) => {
               <span className='h-1 w-10 shrink-0 bg-secondary' />
               <p>{policyCommitmentText}</p>
             </div>
-          </div>
         </div>
-      </section>
+      </EditableHeroBanner>
 
       <section className='mx-auto w-full max-w-site px-4 py-12 sm:py-16 lg:py-20'>
         <div className='grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center'>

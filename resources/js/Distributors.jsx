@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
+import EditableHeroBanner from './Components/Tailwind/EditableHeroBanner';
 import Global from './Utils/Global';
 import { loadGoogleMapsApi } from './Utils/googleMaps';
 import ThankYouModal from './Components/Tailwind/ThankYouModal';
@@ -424,8 +425,8 @@ const DistributorCard = ({ distributor, isSelected, onSelect }) => {
 const DistributorsScreen = ({ distributors = [], banners = {} }) => {
   const heroBanner = banners.distributors || {};
   const heroImage = heroBanner.image_url || '/assets/img/distributors/banner-distribuidores.png';
-  const heroTitle = heroBanner.title || 'Ubica a nuestros distribuidores a nivel nacional';
-  const heroDescription = heroBanner.description || 'Encuentra puntos de venta autorizados Tuboplast en todo el Peru.';
+  const heroTitle = heroBanner.title || 'Encuentra tu distribuidor mas cercano';
+  const heroDescription = heroBanner.description || 'Localiza puntos de venta autorizados Tuboplast en todo el Peru y asegura la calidad tecnica de tus proyectos.';
   const isHeroImageOnly = (heroBanner.display_mode || 'image_only') === 'image_only';
   const mapSectionRef = useRef(null);
   const formSectionRef = useRef(null);
@@ -598,30 +599,13 @@ const DistributorsScreen = ({ distributors = [], banners = {} }) => {
 
   return (
     <main>
-      <section className={`${isHeroImageOnly ? 'bg-silver/40 pt-3 pb-2 sm:pt-4 sm:pb-3 lg:pt-5 lg:pb-3' : 'bg-silver/40'}`}>
-        <div className={isHeroImageOnly ? 'mx-auto w-full max-w-site px-4' : 'w-full'}>
-          <div className={`relative overflow-hidden bg-primary shadow-sm ring-1 ring-black/5 ${isHeroImageOnly ? 'rounded-lg' : 'aspect-[1012/266]'}`}>
-            <h1 className="sr-only">{heroTitle}</h1>
-            <img
-              src={heroImage}
-              alt={isHeroImageOnly ? heroTitle : ''}
-              className={isHeroImageOnly ? 'block h-auto w-full' : 'absolute inset-0 h-full w-full object-cover object-center'}
-            />
-            {!isHeroImageOnly && (
-              <>
-                <div className="absolute inset-0 bg-[linear-gradient(100deg,#fff_0%,#fff_36%,rgba(255,255,255,0.98)_45%,rgba(255,255,255,0.86)_55%,rgba(255,255,255,0.58)_66%,rgba(255,255,255,0.24)_79%,rgba(255,255,255,0)_96%)]" />
-                <div className="relative mx-auto flex h-full w-full max-w-site items-center px-4">
-                  <div className="max-w-xl">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Red de distribución nacional</p>
-                  <h2 className="mt-4 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl">{heroTitle}</h2>
-                    <p className="mt-4 text-sm leading-relaxed text-darkmuted sm:text-base">{heroDescription}</p>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
+      <EditableHeroBanner
+        image={heroImage}
+        title={heroTitle}
+        description={heroDescription}
+        eyebrow="Red de distribucion nacional"
+        imageOnly={isHeroImageOnly}
+      />
 
       <section className="mx-auto w-full max-w-site px-4 pt-3 pb-12 sm:pt-4 sm:pb-16 lg:pt-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

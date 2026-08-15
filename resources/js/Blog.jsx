@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { useEffect, useMemo, useState } from 'react';
 import Base from './Components/Tailwind/Base';
 import CreateReactScript from './Utils/CreateReactScript';
+import EditableHeroBanner from './Components/Tailwind/EditableHeroBanner';
 
 const defaultPosts = [
   {
@@ -215,32 +216,14 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
 
   return (
     <main className="bg-white">
-      <section className="bg-silver/40 pt-3 pb-2 sm:pt-4 sm:pb-3 lg:pt-5 lg:pb-3">
-        <div className="mx-auto w-full max-w-site px-4">
-          <div className={`relative aspect-[1012/266] overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5 ${isHeroImageOnly ? '' : 'grid items-center'}`}>
-            <img
-              src={heroImage}
-              alt="Realiza tus cotizaciones con facilidad"
-              className="absolute inset-0 h-full w-full object-cover object-center md:object-contain"
-            />
-            {!isHeroImageOnly && (
-              <>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/20" />
-                <div className="relative max-w-xl px-6 py-8 sm:px-10 lg:px-16">
-                  <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
-                    {heroBadge}
-                  </span>
-                  <h1 className="mt-4 font-title text-3xl font-medium leading-tight text-primary sm:text-4xl lg:text-5xl">
-                    {heroTitle}
-                  </h1>
-                  <p className="mt-3 max-w-md text-sm leading-relaxed text-darkmuted sm:text-base">
-                    {heroDescription}
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+      <>
+        <EditableHeroBanner
+          image={heroImage}
+          title={heroTitle}
+          description={heroDescription}
+          eyebrow={heroBadge}
+          imageOnly={isHeroImageOnly}
+        />
 
         <div className="hidden">
           <div className="max-w-xl space-y-5">
@@ -257,7 +240,7 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
             </div>
           </div>
         </div>
-      </section>
+      </>
 
       <section className="mx-auto w-full max-w-site px-4 pt-3 pb-12 sm:pt-4 sm:pb-16 lg:pt-4 lg:pb-20">
         <div className="mb-8 sm:mb-10">

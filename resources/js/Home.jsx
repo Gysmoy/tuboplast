@@ -281,8 +281,8 @@ const HeroSlide = ({ slide, priority = false }) => {
       />
       <div className={`absolute inset-0 ${
         usesBakedOverlay
-          ? 'bg-gradient-to-r from-white/35 via-white/20 to-white/10'
-          : 'bg-gradient-to-r from-white/90 via-white/82 to-white/70'
+          ? 'bg-[linear-gradient(100deg,rgba(247,251,255,0.86)_0%,rgba(247,251,255,0.68)_34%,rgba(247,251,255,0.36)_56%,rgba(247,251,255,0.08)_78%)]'
+          : 'bg-[linear-gradient(100deg,#f7fbff_0%,rgba(247,251,255,0.94)_34%,rgba(247,251,255,0.72)_50%,rgba(247,251,255,0.38)_66%,rgba(247,251,255,0.12)_84%)]'
       }`} />
 
       <div className="relative mx-auto grid w-full max-w-site gap-8 px-16 pb-12 pt-10 sm:gap-10 sm:px-20 sm:pb-16 sm:pt-14 lg:grid-cols-[1fr_390px] lg:items-center lg:px-24 lg:pb-32 lg:pt-20 xl:px-4">

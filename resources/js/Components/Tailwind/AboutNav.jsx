@@ -43,7 +43,7 @@ const AboutNav = ({ variant = 'default' }) => {
   }, [])
 
   return (
-    <div className={isOverlay ? 'absolute left-4 top-5 z-20' : 'border-b border-slate-200 bg-white'}>
+    <div className={isOverlay ? 'relative z-20' : 'border-b border-slate-200 bg-white'}>
       <div className={isOverlay ? 'w-[12.75rem] sm:w-[15rem]' : 'mx-auto w-full max-w-site px-4 py-3 sm:py-4'}>
         <div ref={dropdownRef} className='relative w-full'>
           <button

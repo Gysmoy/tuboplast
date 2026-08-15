@@ -1,6 +1,7 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import Base from './Components/Tailwind/Base';
+import EditableHeroBanner from './Components/Tailwind/EditableHeroBanner';
 import ThankYouModal from './Components/Tailwind/ThankYouModal';
 import CreateReactScript from './Utils/CreateReactScript';
 import { fetchUbigeoRows, getDepartments, getDistricts, getProvinces } from './Utils/ubigeo';
@@ -406,26 +407,14 @@ const ClubScreen = ({ banners = {} }) => {
 
   return (
     <main>
-      <section className="bg-silver/40 pt-3 pb-2 sm:pt-4 sm:pb-3 lg:pt-5 lg:pb-3">
-        <div className="mx-auto w-full max-w-site px-4">
-          <div className={`relative overflow-hidden rounded-lg bg-primary shadow-sm ring-1 ring-black/5 ${isPrimaryImageOnly ? '' : 'aspect-[1012/266]'}`}>
-            <img
-              src={primaryImage}
-              alt={isPrimaryImageOnly ? primaryTitle : ''}
-              className={isPrimaryImageOnly ? 'block h-auto w-full' : 'absolute inset-0 h-full w-full object-cover object-center'}
-            />
-            {!isPrimaryImageOnly && (
-              <>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/15" />
-                <div className="relative max-w-xl px-6 py-8 sm:px-10 lg:px-16">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Comunidad profesional</p>
-                  <h1 className="mt-4 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl">{primaryTitle}</h1>
-                  <p className="mt-4 text-sm leading-relaxed text-darkmuted sm:text-base">{primaryDescription}</p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+      <>
+        <EditableHeroBanner
+          image={primaryImage}
+          title={primaryTitle}
+          description={primaryDescription}
+          eyebrow="Comunidad profesional"
+          imageOnly={isPrimaryImageOnly}
+        />
         <div className="hidden">
           <div className="hidden max-w-3xl">
             <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
@@ -447,7 +436,7 @@ const ClubScreen = ({ banners = {} }) => {
             </button>
           </div>
         </div>
-      </section>
+      </>
 
       <RegistrationForm />
 
@@ -476,31 +465,26 @@ const ClubScreen = ({ banners = {} }) => {
       </section>
 
       <section className="mx-auto w-full max-w-site px-4 py-10 sm:py-14">
-        <div className={`relative overflow-hidden rounded-lg bg-primary text-primary shadow-sm ring-1 ring-black/5 ${isSecondaryImageOnly ? '' : 'aspect-[1012/266]'}`}>
-          <button
-            type="button"
-            onClick={scrollToRegistration}
-            className={isSecondaryImageOnly ? 'block w-full text-left' : 'block h-full w-full text-left'}
-            aria-label="Ir al formulario del Club Experto Tuboplast"
-          >
-            <img
-              src={secondaryImage}
-              alt={isSecondaryImageOnly ? secondaryTitle : ''}
-              loading="lazy"
-              decoding="async"
-              className={isSecondaryImageOnly ? 'h-auto w-full object-cover' : 'absolute inset-0 h-full w-full object-cover object-center'}
-            />
-            {!isSecondaryImageOnly && (
-              <>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/15" />
-                <div className="relative max-w-xl px-6 py-8 sm:px-10 lg:px-16">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Exclusivo para maestros</p>
-                  <h2 className="mt-4 font-title text-4xl font-medium leading-tight text-primary sm:text-5xl">{secondaryTitle}</h2>
-                  <p className="mt-4 text-sm leading-relaxed text-darkmuted sm:text-base">{secondaryDescription}</p>
-                </div>
-              </>
-            )}
-          </button>
+        <div
+          className="relative overflow-hidden text-primary"
+          role="button"
+          tabIndex={0}
+          aria-label="Ir al formulario del Club Experto Tuboplast"
+          onClick={scrollToRegistration}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              scrollToRegistration();
+            }
+          }}
+        >
+          <EditableHeroBanner
+            image={secondaryImage}
+            title={secondaryTitle}
+            description={secondaryDescription}
+            eyebrow="Exclusivo para maestros"
+            imageOnly={isSecondaryImageOnly}
+          />
           <div className="hidden absolute -right-16 -top-16 h-64 w-64 rounded-full border-[34px] border-white/20" />
           <div className="hidden relative z-10 max-w-2xl lg:max-w-[56%]">
             <span className="block h-1 w-16 bg-primary" />
