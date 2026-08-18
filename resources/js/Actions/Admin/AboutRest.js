@@ -26,6 +26,7 @@ class AboutRest extends BasicRest {
         'family_paragraph_2',
         'family_metric_value',
         'family_metric_label',
+        'timeline_sort_direction',
         'family_aside_1_title',
         'family_aside_1_text',
         'family_aside_2_title',
@@ -70,6 +71,18 @@ class AboutRest extends BasicRest {
         formData.append(`policy_bullets[${index}]`, item ?? '')
       })
 
+      ;(about.milestones ?? []).forEach((item, index) => {
+        formData.append(`milestones[${index}][year]`, item.year ?? '')
+        formData.append(`milestones[${index}][title]`, item.title ?? '')
+        formData.append(`milestones[${index}][text]`, item.text ?? '')
+        formData.append(`milestones[${index}][image]`, item.image ?? '')
+        formData.append(`milestones[${index}][image_path]`, item.image_path ?? '')
+
+        if (item.image_file instanceof File) {
+          formData.append(`milestones[${index}][image_file]`, item.image_file)
+        }
+      })
+
       ;(about.certifications ?? []).forEach((item, index) => {
         formData.append(`certifications[${index}][title]`, item.title ?? '')
         formData.append(`certifications[${index}][description]`, item.description ?? '')
@@ -97,7 +110,7 @@ class AboutRest extends BasicRest {
 
       const result = await res.json()
       if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrio un error inesperado')
+        throw new Error(result?.message || 'Ocurrió un error inesperado')
       }
 
       notify({

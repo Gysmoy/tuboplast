@@ -21,6 +21,16 @@ class AboutController extends BasicController
         $data = $about->toArray();
         $data['family_image_url'] = $about->family_image ? route('about.media', ['path' => $about->family_image]) : null;
         $data['policy_image_url'] = $about->policy_image ? route('about.media', ['path' => $about->policy_image]) : null;
+        $data['milestones'] = array_map(function ($item) {
+            return [
+                'year' => $item['year'] ?? '',
+                'title' => $item['title'] ?? '',
+                'text' => $item['text'] ?? '',
+                'image' => $item['image'] ?? null,
+                'image_path' => $item['image_path'] ?? null,
+                'image_url' => !empty($item['image_path']) ? route('about.media', ['path' => $item['image_path']]) : null,
+            ];
+        }, is_array($data['milestones'] ?? null) ? $data['milestones'] : []);
 
         $data['certifications'] = array_map(function ($item) {
             return [
@@ -65,6 +75,14 @@ class AboutController extends BasicController
             'vision_text' => 'nullable|string|max:2000',
             'family_values' => 'nullable|array',
             'family_values.*' => 'nullable|string|max:120',
+            'milestones' => 'nullable|array',
+            'milestones.*.year' => 'nullable|string|max:40',
+            'milestones.*.title' => 'nullable|string|max:180',
+            'milestones.*.text' => 'nullable|string|max:2000',
+            'milestones.*.image' => 'nullable|string|max:255',
+            'milestones.*.image_path' => 'nullable|string|max:255',
+            'milestones.*.image_file' => 'nullable|image|max:4096',
+            'timeline_sort_direction' => 'nullable|in:asc,desc',
             'policy_hero_display_mode' => 'nullable|in:image_only,image_with_text',
             'policy_eyebrow' => 'nullable|string|max:120',
             'policy_title' => 'nullable|string|max:255',
@@ -110,6 +128,8 @@ class AboutController extends BasicController
             'vision_title' => $validated['vision_title'] ?? null,
             'vision_text' => $validated['vision_text'] ?? null,
             'family_values' => array_values(array_filter($validated['family_values'] ?? [], fn ($item) => filled($item))),
+            'milestones' => [],
+            'timeline_sort_direction' => $validated['timeline_sort_direction'] ?? 'asc',
             'policy_hero_display_mode' => $validated['policy_hero_display_mode'] ?? 'image_with_text',
             'policy_eyebrow' => $validated['policy_eyebrow'] ?? null,
             'policy_title' => $validated['policy_title'] ?? null,
@@ -138,6 +158,40 @@ class AboutController extends BasicController
         } else {
             $payload['policy_image'] = $validated['policy_image_existing'] ?? $current->policy_image ?? null;
         }
+
+        $milestones = $validated['milestones'] ?? [];
+        $currentMilestones = is_array($current->milestones ?? null) ? $current->milestones : [];
+        $normalizedMilestones = [];
+
+        foreach ($milestones as $index => $milestone) {
+            $existing = $currentMilestones[$index] ?? [];
+            $imagePath = $milestone['image_path'] ?? ($existing['image_path'] ?? null);
+            $assetImage = $milestone['image'] ?? ($existing['image'] ?? null);
+
+            if ($request->hasFile("milestones.$index.image_file")) {
+                $this->deletePublicFile($milestone['image_path'] ?? ($existing['image_path'] ?? null));
+                $imagePath = $this->storePublicFile($request->file("milestones.$index.image_file"), 'about/timeline');
+                $assetImage = null;
+            }
+
+            if (!filled($milestone['year'] ?? null) && !filled($milestone['title'] ?? null) && !filled($milestone['text'] ?? null)) {
+                continue;
+            }
+
+            $normalizedMilestones[] = [
+                'year' => $milestone['year'] ?? '',
+                'title' => $milestone['title'] ?? '',
+                'text' => $milestone['text'] ?? '',
+                'image' => $assetImage,
+                'image_path' => $imagePath,
+            ];
+        }
+
+        usort($normalizedMilestones, fn ($a, $b) => (int) $a['year'] <=> (int) $b['year']);
+        if (($payload['timeline_sort_direction'] ?? 'asc') === 'desc') {
+            $normalizedMilestones = array_reverse($normalizedMilestones);
+        }
+        $payload['milestones'] = $normalizedMilestones;
 
         $certifications = $validated['certifications'] ?? [];
         $currentCertifications = is_array($current->certifications ?? null) ? $current->certifications : [];
@@ -186,6 +240,16 @@ class AboutController extends BasicController
             $data = $jpa->toArray();
             $data['family_image_url'] = $jpa->family_image ? route('about.media', ['path' => $jpa->family_image]) : null;
             $data['policy_image_url'] = $jpa->policy_image ? route('about.media', ['path' => $jpa->policy_image]) : null;
+            $data['milestones'] = array_map(function ($item) {
+                return [
+                    'year' => $item['year'] ?? '',
+                    'title' => $item['title'] ?? '',
+                    'text' => $item['text'] ?? '',
+                    'image' => $item['image'] ?? null,
+                    'image_path' => $item['image_path'] ?? null,
+                    'image_url' => !empty($item['image_path']) ? route('about.media', ['path' => $item['image_path']]) : null,
+                ];
+            }, is_array($data['milestones'] ?? null) ? $data['milestones'] : []);
             $data['certifications'] = array_map(function ($item) {
                 return [
                     'title' => $item['title'] ?? '',

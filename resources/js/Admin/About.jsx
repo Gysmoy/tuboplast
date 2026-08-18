@@ -9,9 +9,23 @@ const PUBLIC_STORAGE = '/storage/'
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024
 const MAX_CERT_PDF_SIZE = 50 * 1024 * 1024
 const IMAGE_FALLBACK = '/assets/img/landing/bg-main.png'
+const TIMELINE_IMAGE_FALLBACK = '/assets/img/about/timeline/1966.jpg'
 const DISPLAY_MODE_OPTIONS = [
   { value: 'image_only', label: 'Solo imagen' },
   { value: 'image_with_text', label: 'Imagen con texto' },
+]
+
+const DEFAULT_TIMELINE = [
+  { year: '2020', title: 'Compromiso con el desarrollo del Perú', text: 'TUBOPLAST seguirá contribuyendo de forma activa y permanente en el crecimiento del sector constructor en el Perú y el desarrollo de la sociedad peruana.', image: 'assets/img/about/timeline/2020.jpg' },
+  { year: '2012', title: 'Actualización de norma técnica', text: 'TUBOPLAST participó de forma activa en la Actualización de la Nueva Norma Técnica Peruana (NTP) ISO 1452 para redes de agua que reemplazó a la NTP ISO 4422.', image: 'assets/img/about/timeline/2012.jpg' },
+  { year: '2008', title: 'Certificacion ISO 14001', text: 'TUBOPLAST obtuvo la Certificacion Internacional a la Gestion Ambiental ISO 14001.', image: 'assets/img/about/timeline/2008.png' },
+  { year: '2007', title: 'Certificacion ISO 9001', text: 'TUBOPLAST obtuvo la Certificacion Internacional a la Gestion de la Calidad ISO 9001.', image: 'assets/img/about/timeline/2007.png' },
+  { year: '2003', title: 'Sello de Calidad SEDAPAL', text: 'SEDAPAL otorgo a TUBOPLAST su Sello de Calidad Categoria A por la Calidad de sus productos, la Calidad de su Organizacion y Atencion al Cliente.', image: 'assets/img/about/timeline/2003.jpg' },
+  { year: '1994', title: 'Creación de normas técnicas peruanas', text: 'TUBOPLAST participó de forma activa en la creación de la nueva Norma Técnica Peruana (NTP) ISO 4435 para redes de alcantarillado y la NTP ISO 4422 para redes de agua.', image: 'assets/img/about/timeline/1994.jpg' },
+  { year: '1993', title: 'Impulso al saneamiento', text: 'TUBOPLAST reemplaza las tuberías de alcantarillado de concreto simple normalizado por tuberías de PVC y contribuye al desarrollo del sector saneamiento en el Perú.', image: 'assets/img/about/timeline/1993.jpg' },
+  { year: '1987', title: 'Redes de agua potable en PVC', text: 'TUBOPLAST sustituye las redes de impulsión, conducción y aducción de asbesto cemento por tuberías de PVC para agua potable.', image: 'assets/img/about/timeline/1987.jpg' },
+  { year: '1984', title: 'PVC en redes de distribución', text: 'TUBOPLAST presenta por primera vez en el Perú la alternativa de uso de tuberías PVC en redes de distribución que conforman las urbanizaciones.', image: 'assets/img/about/timeline/1984.jpg' },
+  { year: '1966', title: 'Fundación de Tuboplast', text: 'TUBOPLAST, fundada el 18 de octubre de 1966, es una empresa pionera en la introducción de las tuberías de PVC en el Perú.', image: 'assets/img/about/timeline/1966.jpg' },
 ]
 
 const ABOUT_CSS = `
@@ -46,6 +60,9 @@ const ABOUT_CSS = `
 .wba-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50rem;font-size:11px;font-weight:600;background:#e6effa;color:var(--pri);}
 .wba-badge.ok{background:#e1f5ee;color:#0f6e56;}
 .wba-badge.no{background:#f1efe8;color:#8a8780;}
+.wba-sort{display:inline-flex;align-items:center;gap:4px;border:1px solid #dce5f0;border-radius:8px;background:#f8fafc;padding:3px;}
+.wba-sort button{height:26px;border:0;border-radius:6px;background:transparent;color:#6b7485;font-size:11px;font-weight:600;padding:0 9px;line-height:1;transition:.15s;}
+.wba-sort button.active{background:#fff;color:var(--pri);box-shadow:0 1px 3px rgba(15,37,64,.08);}
 `
 
 const onImgError = (e) => { if (!e.target.src.endsWith(IMAGE_FALLBACK)) e.target.src = IMAGE_FALLBACK }
@@ -69,6 +86,27 @@ const normalizeCertifications = (items) => {
 
 const getFamilyImagePreview = (about) => about?.family_image_url || (about?.family_image ? `${PUBLIC_STORAGE}${about.family_image}` : '')
 const getPolicyImagePreview = (about) => about?.policy_image_url || (about?.policy_image ? `${PUBLIC_STORAGE}${about.policy_image}` : '')
+
+const createTimelineItem = () => ({
+  year: '', title: '', text: '', image: '', image_path: '', image_file: null, image_preview: '',
+})
+
+const getTimelineImagePreview = (item) => {
+  if (item?.image_url) return item.image_url
+  if (item?.image_path) return `/about/media/${item.image_path}`
+  if (item?.image?.startsWith('/')) return item.image
+  if (item?.image) return `/${item.image}`
+  return ''
+}
+
+const normalizeTimeline = (items) => {
+  const source = Array.isArray(items) && items.length > 3 ? items : DEFAULT_TIMELINE
+  return source.map((item) => ({
+    ...createTimelineItem(),
+    ...item,
+    image_preview: getTimelineImagePreview(item),
+  })).sort((a, b) => Number(a.year) - Number(b.year))
+}
 
 // ----------------------------------------------------------------- UI helpers
 const SectionCard = ({ title, subtitle, icon, actions, children, col = 'col-12' }) => (
@@ -165,12 +203,15 @@ const About = ({ about: initialAbout = {} }) => {
     family_values: Array.isArray(initialAbout.family_values) && initialAbout.family_values.length
       ? initialAbout.family_values
       : ['Integridad', 'Respeto', 'Responsabilidad', 'Puntualidad', 'Compromiso', 'Confianza', 'Perseverancia'],
+    milestones: normalizeTimeline(initialAbout.milestones),
+    timeline_sort_direction: initialAbout.timeline_sort_direction || 'asc',
     policy_bullets: Array.isArray(initialAbout.policy_bullets) && initialAbout.policy_bullets.length ? initialAbout.policy_bullets : [],
     certifications: normalizeCertifications(initialAbout.certifications),
   }), [initialAbout])
 
   const [form, setForm] = useState(initialForm)
   const [saving, setSaving] = useState(false)
+  const [savingOrder, setSavingOrder] = useState(false)
   const [activeSection, setActiveSection] = useState('family')
   const [alert, setAlert] = useState(null)
 
@@ -198,6 +239,26 @@ const About = ({ about: initialAbout = {} }) => {
       const next = [...(current.certifications ?? [])]
       next[index] = { ...next[index], [field]: value }
       return { ...current, certifications: next }
+    })
+  }
+
+  const updateTimelineItem = (index, field, value) => {
+    setForm((current) => {
+      const next = [...(current.milestones ?? [])]
+      next[index] = { ...next[index], [field]: value }
+      return { ...current, milestones: next }
+    })
+  }
+
+  const moveTimelineItem = (index, direction) => {
+    setForm((current) => {
+      const next = [...(current.milestones ?? [])]
+      const target = index + direction
+      if (target < 0 || target >= next.length) return current
+      const item = next[index]
+      next[index] = next[target]
+      next[target] = item
+      return { ...current, milestones: next }
     })
   }
 
@@ -233,6 +294,14 @@ const About = ({ about: initialAbout = {} }) => {
     if (!validateFile(file, MAX_IMAGE_SIZE, `La imagen de la certificación ${index + 1}`)) { event.target.value = ''; return }
     updateCertification(index, 'image_file', file)
     updateCertification(index, 'image_preview', URL.createObjectURL(file))
+  }
+
+  const onTimelineImageChange = (index, event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    if (!validateFile(file, MAX_IMAGE_SIZE, `La imagen del hito ${index + 1}`)) { event.target.value = ''; return }
+    updateTimelineItem(index, 'image_file', file)
+    updateTimelineItem(index, 'image_preview', URL.createObjectURL(file))
   }
 
   const onCertificationPdfChange = (index, event) => {
@@ -276,6 +345,8 @@ const About = ({ about: initialAbout = {} }) => {
         policy_hero_display_mode: result.data.policy_hero_display_mode || 'image_with_text',
         policy_image_file: null,
         policy_image_preview: previousForm.policy_image_file instanceof File && previousForm.policy_image_preview ? previousForm.policy_image_preview : getPolicyImagePreview(result.data),
+        milestones: normalizeTimeline(result.data.milestones),
+        timeline_sort_direction: result.data.timeline_sort_direction || 'asc',
         family_values: Array.isArray(result.data.family_values) ? result.data.family_values : [],
         policy_bullets: Array.isArray(result.data.policy_bullets) ? result.data.policy_bullets : [],
         certifications,
@@ -286,6 +357,30 @@ const About = ({ about: initialAbout = {} }) => {
     }
 
     setSaving(false)
+  }
+
+  const saveTimelineOrder = async (direction) => {
+    if (savingOrder || direction === form.timeline_sort_direction) return
+
+    const nextForm = { ...form, timeline_sort_direction: direction }
+    setSavingOrder(true)
+    setAlert(null)
+    setForm(nextForm)
+
+    const result = await aboutRest.save(nextForm)
+    if (result?.data) {
+      setForm((current) => ({
+        ...current,
+        timeline_sort_direction: result.data.timeline_sort_direction || direction,
+        milestones: normalizeTimeline(result.data.milestones),
+      }))
+      showAlert('Orden actualizado correctamente.', 'success')
+    } else {
+      setForm((current) => ({ ...current, timeline_sort_direction: form.timeline_sort_direction }))
+      showAlert('No se pudo actualizar el orden. Inténtalo nuevamente.')
+    }
+
+    setSavingOrder(false)
   }
 
   const isFamily = activeSection === 'family'
@@ -373,6 +468,61 @@ const About = ({ about: initialAbout = {} }) => {
                 <FormField col='col-md-5' label='Etiqueta' value={form.vision_eyebrow} onChange={(e) => updateField('vision_eyebrow', e.target.value)} />
                 <FormField col='col-md-7' label='Título' value={form.vision_title} onChange={(e) => updateField('vision_title', e.target.value)} />
                 <FormField col='col-12' label='Texto' textarea rows={4} value={form.vision_text} onChange={(e) => updateField('vision_text', e.target.value)} />
+              </div>
+            </SectionCard>
+
+            <SectionCard title='Eventos' subtitle='Tabla de eventos de la línea de tiempo. Se ordenan automáticamente por año.' icon='mdi-timeline-clock-outline'>
+              <div className='d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2 mb-3'>
+                <div className='d-flex align-items-center gap-2 ms-lg-auto order-lg-2'>
+                  <span className='wba-sub' style={{ fontSize: 11 }}>Orden</span>
+                  <div className='wba-sort' role='group' aria-label='Orden de eventos'>
+                    <button type='button' disabled={savingOrder} className={form.timeline_sort_direction === 'asc' ? 'active' : ''} onClick={() => saveTimelineOrder('asc')}>Asc.</button>
+                    <button type='button' disabled={savingOrder} className={form.timeline_sort_direction === 'desc' ? 'active' : ''} onClick={() => saveTimelineOrder('desc')}>Desc.</button>
+                  </div>
+                  {savingOrder ? <span className='spinner-border spinner-border-sm text-primary' style={{ width: 12, height: 12 }}></span> : null}
+                </div>
+                <button type='button' className='wba-btn soft sm order-lg-1' onClick={() => addValue('milestones', createTimelineItem)}>
+                  <i className='mdi mdi-plus'></i>Agregar evento
+                </button>
+              </div>
+              <div className='table-responsive'>
+                <table className='table table-sm align-middle mb-0'>
+                  <thead>
+                    <tr>
+                      <th style={{ width: 92 }}>Año</th>
+                      <th style={{ minWidth: 190 }}>Título</th>
+                      <th style={{ minWidth: 280 }}>Descripción</th>
+                      <th style={{ width: 210 }}>Imagen</th>
+                      <th style={{ width: 52 }}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(form.milestones ?? []).map((item, index) => (
+                      <tr key={`timeline-${index}`}>
+                        <td>
+                          <input className='form-control form-control-sm' value={item.year || ''} placeholder='1966' onChange={(e) => updateTimelineItem(index, 'year', e.target.value)} />
+                        </td>
+                        <td>
+                          <input className='form-control form-control-sm' value={item.title || ''} placeholder='Nombre del evento' onChange={(e) => updateTimelineItem(index, 'title', e.target.value)} />
+                        </td>
+                        <td>
+                          <textarea className='form-control form-control-sm' rows={2} value={item.text || ''} placeholder='Descripción del evento' onChange={(e) => updateTimelineItem(index, 'text', e.target.value)} />
+                        </td>
+                        <td>
+                          <div className='d-flex align-items-center gap-2'>
+                            <div className='wba-media flex-shrink-0' style={{ width: 78 }}>
+                              <img src={item.image_preview || TIMELINE_IMAGE_FALLBACK} alt={item.title || `Evento ${index + 1}`} className='w-100 d-block' style={{ aspectRatio: '16/10', objectFit: 'contain', background: '#fff' }} onError={onImgError} />
+                            </div>
+                            <input type='file' className='form-control form-control-sm' accept='image/*' onChange={(e) => onTimelineImageChange(index, e)} />
+                          </div>
+                        </td>
+                        <td className='text-end'>
+                          <button type='button' className='wba-btn del sm' style={{ width: 34, padding: 0 }} title='Quitar' disabled={(form.milestones ?? []).length <= 1} onClick={() => removeValue('milestones', index, 1, createTimelineItem)}><i className='mdi mdi-trash-can'></i></button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </SectionCard>
 

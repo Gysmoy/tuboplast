@@ -1,8 +1,14 @@
 import { createRoot } from 'react-dom/client'
+import { useRef } from 'react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Base from './Components/Tailwind/Base'
 import AboutNav from './Components/Tailwind/AboutNav'
 import EditableHeroBanner from './Components/Tailwind/EditableHeroBanner'
 import CreateReactScript from './Utils/CreateReactScript'
+
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 const defaultAbout = {
   family_eyebrow: 'Familia e historia',
@@ -21,6 +27,7 @@ const defaultAbout = {
   vision_title: 'Visión',
   vision_text: 'Ser una empresa de nivel mundial, contribuyendo a mejorar la calidad de vida de las personas y fortaleciendo los 51 años de experiencia ganados en el mercado de soluciones conductivas para los servicios básicos.',
   family_values: ['Integridad', 'Respeto', 'Responsabilidad', 'Puntualidad', 'Compromiso', 'Confianza', 'Perseverancia'],
+  timeline_sort_direction: 'asc',
   milestones: [
     {
       year: '1966',
@@ -45,13 +52,188 @@ const displayModes = {
   imageWithText: 'image_with_text',
 }
 
+const timelineMilestones = [
+  {
+    year: '2020',
+    title: 'Compromiso con el desarrollo del Perú',
+    text: 'TUBOPLAST seguirá contribuyendo, al igual que a lo largo de estos 55 años, de forma activa y permanente en el crecimiento del sector constructor en el Perú y el desarrollo de la sociedad peruana.',
+    image: '/assets/img/about/timeline/2020.jpg',
+  },
+  {
+    year: '2012',
+    title: 'Actualización de norma técnica',
+    text: 'TUBOPLAST participó de forma activa en la Actualización de la Nueva Norma Técnica Peruana (NTP) ISO 1452 para redes de agua que reemplazó a la NTP ISO 4422.',
+    image: '/assets/img/about/timeline/2012.jpg',
+  },
+  {
+    year: '2008',
+    title: 'Certificación ISO 14001',
+    text: 'TUBOPLAST obtuvo la Certificación Internacional a la Gestión Ambiental ISO 14001.',
+    image: '/assets/img/about/timeline/2008.png',
+    imageFit: 'contain',
+  },
+  {
+    year: '2007',
+    title: 'Certificación ISO 9001',
+    text: 'TUBOPLAST obtuvo la Certificación Internacional a la Gestión de la Calidad ISO 9001.',
+    image: '/assets/img/about/timeline/2007.png',
+    imageFit: 'contain',
+  },
+  {
+    year: '2003',
+    title: 'Sello de Calidad SEDAPAL',
+    text: 'SEDAPAL otorgó a TUBOPLAST su "Sello de Calidad" - Categoría "A" por la Calidad de sus productos, la Calidad de su Organización y Atención al Cliente.',
+    image: '/assets/img/about/timeline/2003.jpg',
+  },
+  {
+    year: '1994',
+    title: 'Creación de normas técnicas peruanas',
+    text: 'TUBOPLAST participó de forma activa en la creación de la nueva Norma Técnica Peruana (NTP) ISO 4435 para redes de alcantarillado y la NTP ISO 4422 para redes de agua, junto con el Comité Técnico Peruano de Normalización ante Indecopi.',
+    image: '/assets/img/about/timeline/1994.jpg',
+  },
+  {
+    year: '1993',
+    title: 'Impulso al saneamiento',
+    text: 'TUBOPLAST reemplaza las tuberías de alcantarillado de concreto simple normalizado por tuberías de PVC y contribuye de esta manera al desarrollo y crecimiento del sector saneamiento en el Perú.',
+    image: '/assets/img/about/timeline/1993.jpg',
+  },
+  {
+    year: '1987',
+    title: 'Redes de agua potable en PVC',
+    text: 'TUBOPLAST sustituye las redes de impulsión, conducción y aducción de asbesto cemento por tuberías de PVC para agua potable (tuberías de 12" a 24").',
+    image: '/assets/img/about/timeline/1987.jpg',
+  },
+  {
+    year: '1984',
+    title: 'PVC en redes de distribución',
+    text: 'TUBOPLAST presenta por primera vez en el Perú la alternativa de uso de tuberías PVC en redes de distribución que conforman las urbanizaciones (tuberías de 6" a 10").',
+    image: '/assets/img/about/timeline/1984.jpg',
+  },
+  {
+    year: '1966',
+    title: 'Fundación de Tuboplast',
+    text: 'TUBOPLAST, fundada el 18 de octubre de 1966, es una empresa pionera en la introducción de las tuberías de PVC en el Perú que sustituyeron las "cañerías" de fierro galvanizado, que se utilizaban en las viviendas.',
+    image: '/assets/img/about/timeline/1966.jpg',
+  },
+]
+
+const getTimelineImageSrc = (item) => {
+  if (item.image_url) return item.image_url
+  if (item.image_path) return `/about/media/${item.image_path}`
+  if (item.image?.startsWith('/')) return item.image
+  if (item.image) return `/${item.image}`
+  return ''
+}
+
+const sortTimelineByYear = (items, direction = 'asc') => {
+  const sorted = [...items].sort((a, b) => Number(a.year) - Number(b.year))
+  return direction === 'desc' ? sorted.reverse() : sorted
+}
+
+const TimelineSection = ({ milestones = [], sortDirection = 'asc' }) => {
+  const timelineRef = useRef(null)
+  const normalizedMilestones = Array.isArray(milestones) && milestones.length > 3 ? milestones : timelineMilestones
+  const timelineItems = sortTimelineByYear(normalizedMilestones, sortDirection)
+
+  useGSAP(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (reduceMotion) return
+
+    gsap.from('.timeline-line', {
+      scaleY: 0,
+      transformOrigin: 'top center',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.timeline-track',
+        start: 'top 78%',
+        end: 'bottom 70%',
+        scrub: true,
+      },
+    })
+
+    gsap.from('.timeline-item', {
+      autoAlpha: 0,
+      y: 34,
+      duration: 0.7,
+      ease: 'power3.out',
+      stagger: 0.12,
+      scrollTrigger: {
+        trigger: '.timeline-track',
+        start: 'top 76%',
+        once: true,
+      },
+    })
+
+    gsap.from('.timeline-dot', {
+      autoAlpha: 0,
+      scale: 0,
+      duration: 0.42,
+      ease: 'back.out(1.8)',
+      stagger: 0.1,
+      scrollTrigger: {
+        trigger: '.timeline-track',
+        start: 'top 76%',
+        once: true,
+      },
+    })
+
+  }, { scope: timelineRef })
+
+  return (
+    <section ref={timelineRef} className='mx-auto w-full max-w-site px-4 pb-12 sm:pb-16 lg:pb-20'>
+      <div className='mx-auto max-w-6xl border-t border-slate-200 pt-12 sm:pt-14'>
+        <div className='mb-10 text-center'>
+          <p className='text-xs font-bold uppercase tracking-[0.24em] text-primary'>Historia de Tuboplast</p>
+          <h2 className='mt-3 font-title text-3xl font-medium leading-tight text-primary sm:text-4xl'>
+            Línea de tiempo
+          </h2>
+        </div>
+
+        <div className='timeline-track relative mx-auto max-w-6xl'>
+          <div className='timeline-line absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-primary/35' />
+
+          <div className='space-y-6 sm:space-y-8'>
+            {timelineItems.map((item, index) => {
+              const isLeft = index % 2 === 0
+
+              return (
+                <article
+                  key={`${item.year}-${item.title}-${index}`}
+                  className={`timeline-item relative grid min-w-0 grid-cols-2 gap-5 sm:gap-10 lg:gap-14 ${isLeft ? '' : '[&_.timeline-content]:col-start-2'}`}
+                >
+                  <div className='timeline-dot absolute left-1/2 top-1.5 z-10 h-3 w-3 -translate-x-1/2 rounded-full bg-primary ring-8 ring-white' />
+
+                  <div className={`timeline-content group min-w-0 rounded-xl px-0 py-1 transition duration-500 hover:-translate-y-0.5 ${isLeft ? 'sm:text-right' : ''}`}>
+                    <p className='font-title text-2xl font-medium leading-none text-primary transition duration-500 group-hover:scale-[1.03] group-hover:text-[#003b7a] sm:text-3xl'>{item.year}</p>
+                    <h3 className='mt-3 text-base font-bold text-dark transition duration-500 group-hover:text-primary sm:text-lg'>{item.title}</h3>
+                    <p className='mt-2 text-sm leading-relaxed text-darkmuted transition duration-500 group-hover:text-slate-700 sm:text-base'>{item.text}</p>
+                    {(item.image || item.image_path || item.image_url) ? (
+                      <img
+                        src={getTimelineImageSrc(item)}
+                        alt={item.title}
+                        className={`mt-4 h-auto w-full max-w-[22rem] object-contain drop-shadow-[0_14px_22px_rgba(15,23,42,0.16)] transition duration-500 hover:-translate-y-1 hover:scale-[1.02] hover:drop-shadow-[0_18px_28px_rgba(15,23,42,0.2)] sm:max-w-[24rem] ${isLeft ? 'ml-auto' : ''}`}
+                      />
+                    ) : null}
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
   const heroBanner = banners.about_family || {}
   const familyValues = Array.isArray(about.family_values) && about.family_values.length ? about.family_values : defaultAbout.family_values
+  const milestones = Array.isArray(about.milestones) && about.milestones.length > 3 ? about.milestones : timelineMilestones
   const familyImage = about.family_image_url || (about.family_image ? `/about/media/${about.family_image}` : '/assets/img/landing/club-expert.webp')
   const familyHeroImage = heroBanner.image_url || '/assets/img/about/red-distribucion-banner.png'
   const familyHeroTitle = heroBanner.title || 'Estamos presentes desde 1966'
-  const familyHeroDescription = heroBanner.description || 'Lideres en soluciones para edificaciones, infraestructura, mineria, agricultura y mas.'
+  const familyHeroDescription = heroBanner.description || 'Líderes en soluciones para edificaciones, infraestructura, minería, agricultura y más.'
   const heroDisplayMode = heroBanner.display_mode || about.family_hero_display_mode || displayModes.imageWithText
   const isHeroImageOnly = heroDisplayMode === displayModes.imageOnly
 
@@ -136,6 +318,8 @@ const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
           </div>
         </div>
       </section>
+
+      <TimelineSection milestones={milestones} sortDirection={about.timeline_sort_direction || defaultAbout.timeline_sort_direction} />
 
       <section className='bg-[#f6f7f9] py-12 sm:py-16'>
         <div className='mx-auto w-full max-w-site px-4'>

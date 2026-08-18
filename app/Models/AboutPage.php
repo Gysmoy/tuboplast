@@ -21,6 +21,7 @@ class AboutPage extends Model
         'hero_secondary_label',
         'hero_cards',
         'milestones',
+        'timeline_sort_direction',
         'values',
         'commitment_eyebrow',
         'commitment_title',
@@ -76,14 +77,14 @@ class AboutPage extends Model
             'policy_hero_display_mode' => 'image_with_text',
             'hero_badge' => 'Nosotros',
             'hero_title' => 'Construimos infraestructura confiable para el futuro',
-            'hero_description' => 'Tuboplast es una empresa peruana especializada en tuberias y conexiones de PVC y HDPE, con foco en calidad, respaldo tecnico y soluciones duraderas.',
+            'hero_description' => 'Tuboplast es una empresa peruana especializada en tuberías y conexiones de PVC y HDPE, con foco en calidad, respaldo técnico y soluciones duraderas.',
             'hero_primary_label' => 'Ver catalogo',
             'hero_secondary_label' => 'Hablemos de tu proyecto',
             'hero_cards' => [
                 [
                     'label' => 'Trayectoria',
                     'value' => '60+',
-                    'description' => 'Anios de experiencia respaldando proyectos en el pais.',
+                    'description' => 'Años de experiencia respaldando proyectos en el país.',
                 ],
                 [
                     'label' => 'Cobertura',
@@ -93,7 +94,7 @@ class AboutPage extends Model
                 [
                     'label' => 'Especialidad',
                     'value' => 'PVC-U y HDPE',
-                    'description' => 'Soluciones para edificaciones, infraestructura, mineria e industria con respaldo tecnico.',
+                    'description' => 'Soluciones para edificaciones, infraestructura, minería e industria con respaldo técnico.',
                 ],
             ],
             'milestones' => [
@@ -113,10 +114,11 @@ class AboutPage extends Model
                     'text' => 'Seguimos fortaleciendo procesos, calidad y soporte técnico para responder a nuevas exigencias del mercado.',
                 ],
             ],
+            'timeline_sort_direction' => 'asc',
             'values' => [
                 [
                     'title' => 'Experiencia',
-                    'text' => 'Mas de seis decadas desarrollando soluciones de conduccion para diferentes sectores.',
+                    'text' => 'Más de seis décadas desarrollando soluciones de conducción para diferentes sectores.',
                 ],
                 [
                     'title' => 'Calidad',
@@ -124,16 +126,16 @@ class AboutPage extends Model
                 ],
                 [
                     'title' => 'Soporte',
-                    'text' => 'Asesoria tecnica cercana para especificacion, instalacion y seguimiento.',
+                    'text' => 'Asesoría técnica cercana para especificación, instalación y seguimiento.',
                 ],
                 [
                     'title' => 'Cobertura',
-                    'text' => 'Red de atencion para proyectos en distintas regiones del pais.',
+                    'text' => 'Red de atención para proyectos en distintas regiones del país.',
                 ],
             ],
             'commitment_eyebrow' => 'Compromiso',
-            'commitment_title' => 'Acompanamos cada etapa de la obra con respaldo tecnico',
-            'commitment_description' => 'Nuestra prioridad es entregar productos consistentes y una experiencia de atencion que ayude a tomar mejores decisiones en proyecto, compra e instalacion.',
+            'commitment_title' => 'Acompañamos cada etapa de la obra con respaldo técnico',
+            'commitment_description' => 'Nuestra prioridad es entregar productos consistentes y una experiencia de atención que ayude a tomar mejores decisiones en proyecto, compra e instalación.',
             'family_eyebrow' => 'Familia e historia',
             'family_title' => 'Somos Tuboplast',
             'family_lead' => "La primera fábrica 100% peruana con más de 60 años en la industria de la construcción, fabricando tuberías y conexiones de PVC y HDPE con todas las líneas completas desde 1/2\" hasta 24\".",

@@ -1278,6 +1278,16 @@ class LandingController extends BasicController
         $aboutData = $about->toArray();
         $aboutData['family_image_url'] = $about->family_image ? route('about.media', ['path' => $about->family_image]) : null;
         $aboutData['policy_image_url'] = $about->policy_image ? route('about.media', ['path' => $about->policy_image]) : null;
+        $aboutData['milestones'] = array_map(function ($item) {
+            return [
+                'year' => $item['year'] ?? '',
+                'title' => $item['title'] ?? '',
+                'text' => $item['text'] ?? '',
+                'image' => $item['image'] ?? null,
+                'image_path' => $item['image_path'] ?? null,
+                'image_url' => !empty($item['image_path']) ? route('about.media', ['path' => $item['image_path']]) : null,
+            ];
+        }, is_array($aboutData['milestones'] ?? null) ? $aboutData['milestones'] : []);
         $aboutData['certifications'] = array_map(function ($item) {
             return [
                 'title' => $item['title'] ?? '',
