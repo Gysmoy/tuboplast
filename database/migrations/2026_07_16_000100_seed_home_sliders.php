@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     private array $titles = [
-        'Expertos en Tuberias y Conexiones de PVC',
+        'Expertos en Tuberías y Conexiones de PVC',
         'Soluciones PVC para Obras de Alto Rendimiento',
     ];
 
@@ -32,11 +32,11 @@ return new class extends Migration
             [
                 'item_id' => $firstItemId,
                 'title' => $this->titles[0],
-                'description' => 'Mas de 60 anos fabricando sistemas de conduccion confiables para los sectores de Edificaciones, Infraestructura, Mineria e Industria y Agricola en todo el Peru.',
+                'description' => 'Más de 60 años fabricando sistemas de conducción confiables para los sectores de Edificaciones, Infraestructura, Minería e Industria y Agrícola en todo el Perú.',
                 'image' => 'sliders/hero-home.webp',
-                'primary_button_text' => 'Ver catalogo',
+                'primary_button_text' => 'Ver catálogo',
                 'primary_button_link' => '/catalog',
-                'secondary_button_text' => 'Solicitar cotizacion',
+                'secondary_button_text' => 'Solicitar cotización',
                 'secondary_button_link' => '/contact',
                 'metric_one_value' => '60+',
                 'metric_one_label' => 'Anos de trayectoria',
@@ -50,16 +50,16 @@ return new class extends Migration
             [
                 'item_id' => $secondItemId,
                 'title' => $this->titles[1],
-                'description' => 'Linea completa de tuberias y conexiones para agua, desague, saneamiento e infraestructura con soporte tecnico especializado.',
+                'description' => 'Línea completa de tuberías y conexiones para agua, desagüe, saneamiento e infraestructura con soporte técnico especializado.',
                 'image' => 'sliders/banner-tuboplast.webp',
                 'primary_button_text' => 'Explorar productos',
                 'primary_button_link' => '/catalog',
                 'secondary_button_text' => 'Hablar con un asesor',
                 'secondary_button_link' => '/contact',
                 'metric_one_value' => '24"',
-                'metric_one_label' => 'Linea completa',
+                'metric_one_label' => 'Línea completa',
                 'metric_two_value' => '50+',
-                'metric_two_label' => 'Anos de vida util',
+                'metric_two_label' => 'Anos de vida útil',
                 'sort_order' => 2,
                 'status' => true,
                 'created_at' => $now,
@@ -99,3 +99,4 @@ return new class extends Migration
         }
     }
 };
+

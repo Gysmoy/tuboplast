@@ -213,9 +213,9 @@ class BasicController extends Controller
     $appName = env('APP_NAME', 'Tuboplast');
 
     $defaults = [
-      'title' => $appName . ' | Expertos en Tuberias y Conexiones de PVC',
-      'description' => 'Tuboplast es el fabricante peruano de tuberias y conexiones de PVC y HDPE para agua, desague, saneamiento, instalaciones electricas e infraestructura. Calidad certificada y asesoria tecnica a nivel nacional.',
-      'keywords' => 'tuboplast, tuberias pvc, conexiones pvc, accesorios pvc, tuberias agua, tuberias desague, tuberias electricas, hdpe, saneamiento, alcantarillado, catalogo tuboplast, peru',
+      'title' => $appName . ' | Expertos en Tuberías y Conexiones de PVC',
+      'description' => 'Tuboplast es el fabricante peruano de tuberías y conexiones de PVC y HDPE para agua, desagüe, saneamiento, instalaciones eléctricas e infraestructura. Calidad certificada y asesoría técnica a nivel nacional.',
+      'keywords' => 'tuboplast, tuberías pvc, conexiones pvc, accesorios pvc, tuberías agua, tuberías desagüe, tuberías eléctricas, hdpe, saneamiento, alcantarillado, catálogo tuboplast, peru',
       'image' => url('/assets/img/icons/og-image.jpg'),
       'url' => url()->current(),
       'type' => 'website',
@@ -466,3 +466,4 @@ class BasicController extends Controller
     }
   }
 }
+

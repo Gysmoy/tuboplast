@@ -122,7 +122,7 @@ class ItemController extends BasicController
             'color' => 'nullable|string|max:60',
             'brand' => 'nullable|string|max:120',
             'unit' => 'nullable|string|max:20',
-            'masterpack' => 'nullable|integer|min:0',
+            'másterpack' => 'nullable|integer|min:0',
             'pieces' => 'nullable|string|max:20',
             'origin_country' => 'nullable|string|max:120',
             'description' => 'nullable|string|max:2000',
@@ -261,7 +261,7 @@ class ItemController extends BasicController
             Cache::forget('tuboplast.catalog.facets');
 
             $response->status = 200;
-            $response->message = 'Carga masiva completada';
+            $response->message = 'Carga másiva completada';
             $response->data = $result;
         } catch (\Throwable $th) {
             $response->status = 400;
@@ -322,7 +322,7 @@ class ItemController extends BasicController
             $sheetGroups = $sheetPackage['groups'] ?? [];
 
             if (!count($sheetGroups)) {
-                throw new Exception('No se encontraron fichas tecnicas PDF validas dentro del comprimido.');
+                throw new Exception('No se encontraron fichas técnicas PDF validas dentro del comprimido.');
             }
 
             $this->filesPendingDeletion = [];
@@ -330,7 +330,7 @@ class ItemController extends BasicController
             $this->deletePendingFiles();
 
             $response->status = 200;
-            $response->message = 'Carga de fichas tecnicas completada';
+            $response->message = 'Carga de fichas técnicas completada';
             $response->data = $result;
         } catch (\Throwable $th) {
             $response->status = 400;
@@ -494,7 +494,7 @@ class ItemController extends BasicController
             if ($candidates->count() > 1) {
                 $ambiguous++;
                 $imagesIgnored += count($images);
-                $this->pushImportError($errors, "Codigo de imagen {$skuKey} coincide con mas de un producto.");
+                $this->pushImportError($errors, "Codigo de imagen {$skuKey} coincide con más de un producto.");
                 continue;
             }
 
@@ -572,7 +572,7 @@ class ItemController extends BasicController
         $classification = $classificationName ? $this->resolveTaxonomy(ProductClassification::class, $classificationName, $taxonomyCache) : null;
         $family = $familyName ? $this->resolveTaxonomy(ProductFamily::class, $familyName, $taxonomyCache) : null;
         $type = $typeName ? $this->resolveTaxonomy(ProductType::class, $typeName, $taxonomyCache) : null;
-        $nominal = $this->stringOrNull($this->getImportValue($norm, 'Diametro Nominal del Producto'));
+        $nominal = $this->stringOrNull($this->getImportValue($norm, 'Diámetro Nominal del Producto'));
 
         $currency = mb_strtoupper((string) ($this->getImportValue($norm, 'Moneda') ?? 'PEN'));
         $currency = in_array($currency, ['PEN', 'USD'], true) ? $currency : 'PEN';
@@ -595,7 +595,7 @@ class ItemController extends BasicController
             'color' => $this->stringOrNull($this->getImportValue($norm, 'Color')),
             'brand' => $this->stringOrNull($this->getImportValue($norm, 'Marca')),
             'unit' => $this->stringOrNull($this->getImportValue($norm, 'Unidad de Medida')),
-            'masterpack' => $this->intOrNull($this->getImportValue($norm, 'Masterpack')),
+            'másterpack' => $this->intOrNull($this->getImportValue($norm, 'Másterpack')),
             'pieces' => $this->stringOrNull($this->getImportValue($norm, 'Numero de piezas')),
             'origin_country' => $this->stringOrNull($this->getImportValue($norm, 'Pais de origen')),
             'sku' => $sku,
@@ -635,7 +635,7 @@ class ItemController extends BasicController
 
         $category = Category::firstOrCreate(
             ['name' => $line],
-            ['description' => "Linea de productos: {$line}", 'status' => 1]
+            ['description' => "Línea de productos: {$line}", 'status' => 1]
         );
 
         if ($category->status === null) {
@@ -714,17 +714,17 @@ class ItemController extends BasicController
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
-            'desague' => 'Desague',
-            'electrico' => 'Electrico',
+            'desague' => 'Desagüe',
+            'electrico' => 'Eléctrico',
             'anillosdecaucho' => 'Anillos de Caucho',
             'claseliviana' => 'Clase Liviana',
             'clasepesada' => 'Clase Pesada',
             'sap' => 'SAP',
             'sel' => 'SEL',
             'sistemaroscado' => 'Sistema Roscado',
-            'sistemasimplepresion' => 'Sistema Simple Presion',
-            'sistemaunionflexible' => 'Sistema Union Flexible (UF)',
-            'sistemaunionflexibleuf' => 'Sistema Union Flexible (UF)',
+            'sistemasimplepresion' => 'Sistema Simple Presión',
+            'sistemauniónflexible' => 'Sistema Unión Flexible (UF)',
+            'sistemauniónflexibleuf' => 'Sistema Unión Flexible (UF)',
         ];
 
         return $aliases[$lookup] ?? Str::of($value)->lower()->title()->toString();
@@ -823,7 +823,7 @@ class ItemController extends BasicController
             $sheetXml = $zip->getFromName($sheetPath);
 
             if ($sheetXml === false) {
-                throw new Exception('No se encontro una hoja valida dentro del Excel.');
+                throw new Exception('No se encontró una hoja valida dentro del Excel.');
             }
 
             $xml = simplexml_load_string($sheetXml);
@@ -831,11 +831,11 @@ class ItemController extends BasicController
                 throw new Exception('No se pudo leer la hoja del Excel.');
             }
 
-            $xml->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+            $xml->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
             $rows = [];
 
             foreach ($xml->xpath('//s:sheetData/s:row') ?: [] as $row) {
-                $row->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+                $row->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
                 $values = [];
                 $nextColumn = 0;
 
@@ -889,7 +889,7 @@ class ItemController extends BasicController
             return [];
         }
 
-        $xml->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        $xml->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
         $strings = [];
 
         foreach ($xml->xpath('//s:si') ?: [] as $node) {
@@ -915,19 +915,19 @@ class ItemController extends BasicController
             return 'xl/worksheets/sheet1.xml';
         }
 
-        $workbook->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        $workbook->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
         $firstSheet = ($workbook->xpath('//s:sheets/s:sheet') ?: [])[0] ?? null;
         if ($firstSheet === null) {
             return 'xl/worksheets/sheet1.xml';
         }
 
         $relationId = (string) $firstSheet
-            ->attributes('http://schemas.openxmlformats.org/officeDocument/2006/relationships')['id'];
+            ->attributes('http://schemás.openxmlformats.org/officeDocument/2006/relationships')['id'];
         if (!$relationId) {
             return 'xl/worksheets/sheet1.xml';
         }
 
-        $rels->registerXPathNamespace('r', 'http://schemas.openxmlformats.org/package/2006/relationships');
+        $rels->registerXPathNamespace('r', 'http://schemás.openxmlformats.org/package/2006/relationships');
         foreach ($rels->xpath('//r:Relationship') ?: [] as $relationship) {
             if ((string) $relationship['Id'] !== $relationId) {
                 continue;
@@ -955,7 +955,7 @@ class ItemController extends BasicController
             return null;
         }
 
-        $workbook->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        $workbook->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
         $targetRelationId = null;
 
         foreach ($workbook->xpath('//s:sheets/s:sheet') ?: [] as $sheet) {
@@ -964,7 +964,7 @@ class ItemController extends BasicController
             }
 
             $targetRelationId = (string) $sheet
-                ->attributes('http://schemas.openxmlformats.org/officeDocument/2006/relationships')['id'];
+                ->attributes('http://schemás.openxmlformats.org/officeDocument/2006/relationships')['id'];
             break;
         }
 
@@ -972,7 +972,7 @@ class ItemController extends BasicController
             return null;
         }
 
-        $rels->registerXPathNamespace('r', 'http://schemas.openxmlformats.org/package/2006/relationships');
+        $rels->registerXPathNamespace('r', 'http://schemás.openxmlformats.org/package/2006/relationships');
         foreach ($rels->xpath('//r:Relationship') ?: [] as $relationship) {
             if ((string) $relationship['Id'] === $targetRelationId) {
                 return $this->resolveXlsxPath((string) $relationship['Target']);
@@ -1000,7 +1000,7 @@ class ItemController extends BasicController
     private function readXlsxCellValue(\SimpleXMLElement $cell, array $sharedStrings)
     {
         $type = (string) $cell['t'];
-        $cell->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        $cell->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
 
         if ($type === 'inlineStr') {
             return $this->xmlText($cell);
@@ -1026,7 +1026,7 @@ class ItemController extends BasicController
 
     private function xmlText(\SimpleXMLElement $node): string
     {
-        $node->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        $node->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
         $parts = [];
 
         foreach ($node->xpath('.//s:t') ?: [] as $textNode) {
@@ -1219,7 +1219,7 @@ class ItemController extends BasicController
 
     private function readSheetPackage(string $path): array
     {
-        return $this->readArchivePackage($path, 'fichas tecnicas', ['pdf']);
+        return $this->readArchivePackage($path, 'fichas técnicas', ['pdf']);
     }
 
     /**
@@ -1484,14 +1484,14 @@ class ItemController extends BasicController
             if ($candidates->isEmpty()) {
                 $notFound++;
                 $sheetsIgnored += count($sheets);
-                $this->pushImportError($errors, "No existe producto para la ficha tecnica {$skuKey}.");
+                $this->pushImportError($errors, "No existe producto para la ficha técnica {$skuKey}.");
                 continue;
             }
 
             if ($candidates->count() > 1) {
                 $ambiguous++;
                 $sheetsIgnored += count($sheets);
-                $this->pushImportError($errors, "Ficha tecnica {$skuKey} coincide con mas de un producto.");
+                $this->pushImportError($errors, "Ficha técnica {$skuKey} coincide con más de un producto.");
                 continue;
             }
 
@@ -1508,7 +1508,7 @@ class ItemController extends BasicController
         }
 
         if ($matched === 0) {
-            throw new Exception('No se cargo ninguna ficha tecnica: ningun nombre de archivo coincide claramente con un SKU existente.');
+            throw new Exception('No se cargo ninguna ficha técnica: ningun nombre de archivo coincide claramente con un SKU existente.');
         }
 
         return [
@@ -1616,3 +1616,4 @@ class ItemController extends BasicController
         return ltrim($path, '/');
     }
 }
+

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import Base from './Components/Tailwind/Base';
 import EditableHeroBanner from './Components/Tailwind/EditableHeroBanner';
@@ -18,7 +18,7 @@ const specialtyOptions = [
 const benefits = [
   {
     icon: 'mdi-school-outline',
-    title: 'Capacitaciones certificadas',
+    title: 'Capacitaciónes certificadas',
     description: 'Acceso gratuito a seminarios técnicos y certificaciones con validez oficial para potenciar tu CV.',
   },
   {
@@ -556,3 +556,4 @@ CreateReactScript((el, properties) => {
     </Base>,
   );
 });
+

@@ -42,7 +42,7 @@ return new class extends Migration
 
         $first = DB::table('sliders')
             ->where('sort_order', 1)
-            ->orWhere('title', 'Expertos en Tuberias y Conexiones de PVC')
+            ->orWhere('title', 'Expertos en Tuberías y Conexiones de PVC')
             ->first();
 
         if ($first) {

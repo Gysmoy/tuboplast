@@ -105,6 +105,7 @@ class LandingController extends BasicController
                     'phone' => $row->phone,
                     'phone_prefix' => $row->phone_prefix,
                     'hours' => $row->business_hours,
+                    'type' => $row->distributor_type,
                     'highlighted' => (bool) $row->featured,
                     'latitude' => $row->latitude,
                     'longitude' => $row->longitude,
@@ -200,16 +201,46 @@ class LandingController extends BasicController
             return;
         }
 
-        $query->where(function ($where) use ($term) {
-            $where->where('title', 'like', "%{$term}%")
-                ->orWhere('sku', 'like', "%{$term}%")
-                ->orWhere('classification', 'like', "%{$term}%")
-                ->orWhere('family', 'like', "%{$term}%")
-                ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                ->orWhereHas('productFamily', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
-        });
+        $this->applyCatalogSearchTerms($query, $term);
+    }
+
+    private function searchTerms(string $term): array
+    {
+        return collect(preg_split('/\s+/', mb_strtolower(trim($term))) ?: [])
+            ->filter(fn ($word) => mb_strlen($word) >= 2)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function applyCatalogSearchTerms($query, string $term): void
+    {
+        $terms = $this->searchTerms($term);
+        if (!$terms) {
+            return;
+        }
+
+        foreach ($terms as $word) {
+            $query->where(function ($where) use ($word) {
+                $like = "%{$word}%";
+
+                $where->where('title', 'like', $like)
+                    ->orWhere('sku', 'like', $like)
+                    ->orWhere('classification', 'like', $like)
+                    ->orWhere('family', 'like', $like)
+                    ->orWhere('type', 'like', $like)
+                    ->orWhere('segment', 'like', $like)
+                    ->orWhere('diameter', 'like', $like)
+                    ->orWhere('nominal_diameter', 'like', $like)
+                    ->orWhere('pressure', 'like', $like)
+                    ->orWhereHas('productSegments', fn ($c) => $c->where('name', 'like', $like))
+                    ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', $like))
+                    ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', $like))
+                    ->orWhereHas('productFamily', fn ($c) => $c->where('name', 'like', $like))
+                    ->orWhereHas('productType', fn ($c) => $c->where('name', 'like', $like))
+                    ->orWhereHas('category', fn ($c) => $c->where('name', 'like', $like));
+            });
+        }
     }
 
     private function applyCatalogFilters($query, Request $request, ?string $until = null): void
@@ -523,17 +554,17 @@ class LandingController extends BasicController
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
-            'desague' => 'Desague',
-            'electrico' => 'Electrico',
+            'desague' => 'Desagüe',
+            'electrico' => 'Eléctrico',
             'anillosdecaucho' => 'Anillos de Caucho',
             'claseliviana' => 'Clase Liviana',
             'clasepesada' => 'Clase Pesada',
             'sap' => 'SAP',
             'sel' => 'SEL',
             'sistemaroscado' => 'Sistema Roscado',
-            'sistemasimplepresion' => 'Sistema Simple Presion',
-            'sistemaunionflexible' => 'Sistema Union Flexible (UF)',
-            'sistemaunionflexibleuf' => 'Sistema Union Flexible (UF)',
+            'sistemasimplepresion' => 'Sistema Simple Presión',
+            'sistemauniónflexible' => 'Sistema Unión Flexible (UF)',
+            'sistemauniónflexibleuf' => 'Sistema Unión Flexible (UF)',
             'tubo' => 'Tubos',
             'tubos' => 'Tubos',
             'conexion' => 'Conexiones',
@@ -551,11 +582,11 @@ class LandingController extends BasicController
 
         $aliases = [
             'Agricultura' => ['Agricultura', 'AGRICULTURA'],
-            'Mineria' => ['Mineria', 'Minería', 'MINERIA', 'MINERÍA'],
+            'Minería' => ['Mineria', 'Minería', 'MINERIA', 'MINERÍA'],
             'Tubos' => ['Tubos', 'TUBOS', 'Tubo', 'TUBO'],
             'Conexiones' => ['Conexiones', 'CONEXIONES', 'Conexion', 'Conexión', 'CONEXION', 'CONEXIÓN', 'Anillos', 'ANILLOS'],
             'Sistema Simple Presion' => ['Sistema Simple Presion', 'Sistema Simple Presión', 'SISTEMA SIMPLE PRESION', 'SISTEMA SIMPLE PRESIÓN'],
-            'Sistema Union Flexible (UF)' => ['Sistema Union Flexible (UF)', 'Sistema Union Flexible', 'SISTEMA UNION FLEXIBLE', 'SISTEMA UNION FLEXIBLE (UF)'],
+            'Sistema Unión Flexible (UF)' => ['Sistema Unión Flexible (UF)', 'Sistema Unión Flexible', 'SISTEMA UNION FLEXIBLE', 'SISTEMA UNION FLEXIBLE (UF)'],
         ];
 
         return $aliases[$canonical] ?? [$canonical, (string) $value];
@@ -797,26 +828,19 @@ class LandingController extends BasicController
             return response()->json(['data' => []]);
         }
 
-        $items = Item::query()
+        $query = Item::query()
             ->where('status', true)
             ->with('category')
-            ->with('productSegments', 'productLine', 'productClassification', 'productFamily', 'productType')
-            ->where(function ($query) use ($term) {
-                $query->where('title', 'like', "%{$term}%")
-                    ->orWhere('sku', 'like', "%{$term}%")
-                    ->orWhere('classification', 'like', "%{$term}%")
-                    ->orWhere('family', 'like', "%{$term}%")
-                    ->orWhereHas('productLine', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                    ->orWhereHas('productClassification', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                    ->orWhereHas('productFamily', fn ($c) => $c->where('name', 'like', "%{$term}%"))
-                    ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$term}%"));
-            })
+            ->with('productSegments', 'productLine', 'productClassification', 'productFamily', 'productType');
+
+        $this->applyCatalogSearchTerms($query, $term);
+
+        $items = $query
             ->orderByDesc('views')
             ->orderBy('title')
             ->limit(8)
             ->get()
             ->map(function ($item) {
-                $price = $item->price !== null ? (float) $item->price : null;
 
                 return [
                     'id' => $item->id,
@@ -824,7 +848,6 @@ class LandingController extends BasicController
                     'categoryLabel' => $item->productLine->name ?? $item->category->name ?? 'Producto',
                     'type' => $item->productType->name ?? $item->type,
                     'image' => $item->image ? '/storage/' . $item->image : '/assets/img/items/item-1.png',
-                    'price' => $this->moneyLabel($price, $item->currency),
                     'detailUrl' => $item->slug
                         ? route('products.show', ['slug' => $item->slug])
                         : route('catalog'),
@@ -900,7 +923,7 @@ class LandingController extends BasicController
         return parent::reactView($request);
     }
 
-    public function aboutPoliticaView(Request $request)
+    public function aboutPolíticaView(Request $request)
     {
         $this->reactView = 'AboutPolitica';
 
@@ -1173,7 +1196,7 @@ class LandingController extends BasicController
 
         $low = mb_strtolower($pressure);
         if (str_contains($low, 'no aplica')) return 'No aplica';
-        if (str_contains($low, 'gravedad') || str_contains($low, 'sin presion')) return 'Gravedad';
+        if (str_contains($low, 'gravedad') || str_contains($low, 'sin presión')) return 'Gravedad';
         if (str_contains($low, 'roscado')) return 'Roscado';
         if (preg_match('/PN-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
         if (preg_match('/C-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
@@ -1383,3 +1406,4 @@ class LandingController extends BasicController
         return null;
     }
 }
+

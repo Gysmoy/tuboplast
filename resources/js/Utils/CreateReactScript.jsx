@@ -13,7 +13,7 @@ const CreateReactScript = (render) => {
       const page = pages[`../${name}.jsx`]
 
       if (!page) {
-        throw new Error(`No se encontro la pagina React: ${name}`)
+        throw new Error(`No se encontró la página React: ${name}`)
       }
 
       return page()
@@ -76,3 +76,4 @@ const CreateReactScript = (render) => {
 }
 
 export default CreateReactScript
+

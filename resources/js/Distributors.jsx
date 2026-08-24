@@ -24,9 +24,10 @@ const normalizeDistributor = (distributor) => ({
   address: distributor.address,
   phone: [distributor.phone_prefix, distributor.phone].filter(Boolean).join(' ') || 'Consultar disponibilidad',
   hours: distributor.hours ?? 'Atención previa coordinación',
+  type: distributor.type || (distributor.highlighted ? 'distributor' : 'point_of_sale'),
   latitude: toCoordinate(distributor.latitude),
   longitude: toCoordinate(distributor.longitude),
-  highlighted: Boolean(distributor.highlighted),
+  highlighted: (distributor.type || (distributor.highlighted ? 'distributor' : 'point_of_sale')) === 'distributor',
 });
 
 const directionsUrl = (distributor) => {
@@ -181,7 +182,7 @@ const MapLegend = () => (
     <p className="mb-3 text-xs font-bold text-primary">Leyenda</p>
     <p className="flex items-center gap-2">
       <span className="h-3 w-3 rounded-full bg-secondary" />
-      Distribuidor oro
+      Distribuidor
     </p>
     <p className="mt-2 flex items-center gap-2">
       <span className="h-3 w-3 rounded-full bg-primary" />
@@ -198,7 +199,7 @@ const FallbackMap = ({ distributors, onSelect, selectedId }) => (
     <div className="absolute left-[42%] top-0 h-[120%] w-7 rotate-[14deg] bg-white/75 shadow-sm" />
     <div className="absolute left-[63%] top-0 h-[120%] w-5 -rotate-[12deg] bg-white/70 shadow-sm" />
     <div className="absolute left-[78%] top-0 h-[120%] w-4 rotate-[5deg] bg-white/65 shadow-sm" />
-    <div className="absolute inset-0 opacity-45 [background-image:repeating-linear-gradient(0deg,transparent,transparent_31px,#94a3b8_32px,#94a3b8_33px),repeating-linear-gradient(90deg,transparent,transparent_46px,#94a3b8_47px,#94a3b8_48px)]" />
+    <div className="absolute inset-0 opacity-45 [background-image:repeating-línear-gradient(0deg,transparent,transparent_31px,#94a3b8_32px,#94a3b8_33px),repeating-línear-gradient(90deg,transparent,transparent_46px,#94a3b8_47px,#94a3b8_48px)]" />
     <span className="absolute left-[46%] top-[36%] text-lg font-bold uppercase tracking-[0.12em] text-slate-500/80">Miraflores</span>
     <span className="absolute bottom-[12%] right-[18%] text-base font-bold uppercase tracking-[0.12em] text-slate-500/75">Barranco</span>
     <span className="absolute bottom-[28%] left-[8%] text-sm font-bold text-teal-700/75">Costa Verde</span>
@@ -371,11 +372,9 @@ const DistributorCard = ({ distributor, isSelected, onSelect }) => {
       <button type="button" onClick={() => onSelect(distributor.id)} className="w-full text-left space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            {distributor.highlighted && (
-              <span className="mb-4 inline-block rounded-full bg-secondary px-3 py-1 text-[9px] font-bold uppercase text-primary">
-                Destacado
-              </span>
-            )}
+            <span className={`mb-4 inline-block rounded-full px-3 py-1 text-[9px] font-bold uppercase ${distributor.highlighted ? 'bg-secondary text-primary' : 'bg-silver text-primary'}`}>
+              {distributor.highlighted ? 'Distribuidor' : 'Punto de venta'}
+            </span>
             <h3 className="font-title text-xl font-bold text-primary">{distributor.name}</h3>
           </div>
           {distributor.highlighted && <i className="mdi mdi-check-decagram-outline text-3xl text-primary"></i>}
@@ -425,8 +424,8 @@ const DistributorCard = ({ distributor, isSelected, onSelect }) => {
 const DistributorsScreen = ({ distributors = [], banners = {} }) => {
   const heroBanner = banners.distributors || {};
   const heroImage = heroBanner.image_url || '/assets/img/distributors/banner-distribuidores.png';
-  const heroTitle = heroBanner.title || 'Encuentra tu distribuidor mas cercano';
-  const heroDescription = heroBanner.description || 'Localiza puntos de venta autorizados Tuboplast en todo el Peru y asegura la calidad tecnica de tus proyectos.';
+  const heroTitle = heroBanner.title || 'Encuentra tu distribuidor más cercaño';
+  const heroDescription = heroBanner.description || 'Localiza puntos de venta autorizados Tuboplast en todo el Perú y asegura la calidad técnica de tus proyectos.';
   const isHeroImageOnly = (heroBanner.display_mode || 'image_only') === 'image_only';
   const mapSectionRef = useRef(null);
   const formSectionRef = useRef(null);
@@ -603,7 +602,7 @@ const DistributorsScreen = ({ distributors = [], banners = {} }) => {
         image={heroImage}
         title={heroTitle}
         description={heroDescription}
-        eyebrow="Red de distribucion nacional"
+        eyebrow="Red de distribución nacional"
         imageOnly={isHeroImageOnly}
         overlayOpacity={heroBanner.overlay_opacity}
       />
@@ -667,7 +666,7 @@ const DistributorsScreen = ({ distributors = [], banners = {} }) => {
                   placeholder="Ordenar"
                   value={sort}
                   options={[
-                    { label: 'Destacados', value: 'featured' },
+                    { label: 'Distribuidores primero', value: 'featured' },
                     { label: 'Por nombre', value: 'name' },
                   ]}
                   onChange={setSort}
@@ -814,3 +813,4 @@ CreateReactScript((el, properties) => {
     </Base>,
   );
 });
+

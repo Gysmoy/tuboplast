@@ -191,7 +191,7 @@ const ProductTaxonomyPage = ({ path, title, singular, icon = 'ti ti-list-details
       <ConfirmModal
         open={!!confirmTarget}
         title={`Eliminar ${singular}`}
-        message={confirmTarget ? `Se eliminara "${confirmTarget.name}". Esta accion no se puede deshacer.` : ''}
+        message={confirmTarget ? `Se eliminará "${confirmTarget.name}". Esta acción no se puede deshacer.` : ''}
         confirmLabel='Eliminar'
         variant='danger'
         loading={deleting}
@@ -203,3 +203,4 @@ const ProductTaxonomyPage = ({ path, title, singular, icon = 'ti ti-list-details
 }
 
 export default ProductTaxonomyPage
+

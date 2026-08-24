@@ -63,7 +63,7 @@ class RoleController extends BasicController
                 ->count();
 
             if ($validCount !== count($permissionIds)) {
-                throw new \Exception('Uno o mas permisos no son validos');
+                throw new \Exception('Uno o mas permisos no son válidos');
             }
         }
 

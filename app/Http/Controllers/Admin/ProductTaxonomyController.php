@@ -152,7 +152,7 @@ class ProductTaxonomyController extends BasicController
                 'Saneamiento',
                 'Infraestructura',
                 'Agricultura',
-                'Mineria',
+                'Minería',
             ],
             ProductLine::class => [
                 'Agua Fria',
@@ -161,16 +161,16 @@ class ProductTaxonomyController extends BasicController
                 'Desague',
                 'Electrico',
                 'PE (HDPE)',
-                'Conduccion de agua a Presion',
+                'Conduccion de agua a Presión',
             ],
             ProductClassification::class => [
-                'Sistema Simple Presion',
+                'Sistema Simple Presión',
                 'Sistema Roscado',
                 'Clase Liviana',
                 'Clase Pesada',
                 'SEL',
                 'SAP',
-                'Sistema Union Flexible (UF)',
+                'Sistema Unión Flexible (UF)',
                 'Sistema Termofusion',
             ],
             ProductFamily::class => Item::query()
@@ -336,17 +336,17 @@ class ProductTaxonomyController extends BasicController
             'aguafria' => 'Agua Fria',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
-            'desague' => 'Desague',
-            'electrico' => 'Electrico',
+            'desague' => 'Desagüe',
+            'electrico' => 'Eléctrico',
             'anillosdecaucho' => 'Anillos de Caucho',
             'claseliviana' => 'Clase Liviana',
             'clasepesada' => 'Clase Pesada',
             'sap' => 'SAP',
             'sel' => 'SEL',
             'sistemaroscado' => 'Sistema Roscado',
-            'sistemasimplepresion' => 'Sistema Simple Presion',
-            'sistemaunionflexible' => 'Sistema Union Flexible (UF)',
-            'sistemaunionflexibleuf' => 'Sistema Union Flexible (UF)',
+            'sistemasimplepresion' => 'Sistema Simple Presión',
+            'sistemauniónflexible' => 'Sistema Unión Flexible (UF)',
+            'sistemauniónflexibleuf' => 'Sistema Unión Flexible (UF)',
             'sistematermofusion' => 'Sistema Termofusion',
             'tubo' => 'Tubos',
             'tubos' => 'Tubos',
@@ -366,16 +366,16 @@ class ProductTaxonomyController extends BasicController
             if (str_contains($key, 'aguafria')) return 'Agua Fria';
             if (str_contains($key, 'aguapotable')) return 'Agua Potable';
             if (str_contains($key, 'alcantarillado')) return 'Alcantarillado';
-            if (str_contains($key, 'desague')) return 'Desague';
-            if (str_contains($key, 'electrico') || str_contains($key, 'elctrico')) return 'Electrico';
+            if (str_contains($key, 'desagüe')) return 'Desague';
+            if (str_contains($key, 'eléctrico') || str_contains($key, 'elctrico')) return 'Electrico';
             if (str_contains($key, 'hdpe')) return 'PE (HDPE)';
-            if (str_contains($key, 'conducciondeaguaapresion')) return 'Conduccion de agua a Presion';
+            if (str_contains($key, 'conduccióndeaguaapresión')) return 'Conduccion de agua a Presión';
         }
 
         if ($this->model === ProductClassification::class) {
             if (str_contains($key, 'sistemaroscado') || preg_match('/(^|pvc)r(aguafria)?$/', $key)) return 'Sistema Roscado';
-            if (str_contains($key, 'sistemasimplepresion') || str_contains($key, 'sp')) return 'Sistema Simple Presion';
-            if (str_contains($key, 'sistemaunionflexible') || str_contains($key, 'uf')) return 'Sistema Union Flexible (UF)';
+            if (str_contains($key, 'sistemasimplepresion') || str_contains($key, 'sp')) return 'Sistema Simple Presión';
+            if (str_contains($key, 'sistemauniónflexible') || str_contains($key, 'uf')) return 'Sistema Unión Flexible (UF)';
             if (str_contains($key, 'sistematermofusion') || str_contains($key, 'termofusion')) return 'Sistema Termofusion';
             if (str_contains($key, 'claseliviana') || str_contains($key, 'clasel') || str_contains($key, 'salcl')) return 'Clase Liviana';
             if (str_contains($key, 'clasepesada') || str_contains($key, 'clasep') || str_contains($key, 'salcp')) return 'Clase Pesada';
@@ -387,3 +387,4 @@ class ProductTaxonomyController extends BasicController
         return Str::of($value)->lower()->title()->toString();
     }
 }
+

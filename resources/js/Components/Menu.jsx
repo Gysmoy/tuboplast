@@ -158,17 +158,17 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadDis
 
       <ul className="side-nav">
         <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
-        <MenuItem href="/admin/quotes" icon='ti ti-receipt-2' badge={quotesBadge}>Cotizaciones</MenuItem>
+        <MenuItem href="/admin/quotes" icon='ti ti-receipt-2' badge={quotesBadge}>Cotizaciónes</MenuItem>
         <MenuItem href="/admin/club" icon='ti ti-users-group' badge={clubBadge}>Club experto</MenuItem>
         <MenuItem href="/admin/distributor-requests" icon='ti ti-truck-delivery' badge={distributorRequestsBadge}>Solicitudes distribuidor</MenuItem>
         <MenuItem href="/admin/messages" icon='ti ti-message-dots' badge={messagesBadge}>Mensajes</MenuItem>
 
-        <li className="side-nav-title mt-2">Catalogo</li>
+        <li className="side-nav-title mt-2">Catálogo</li>
         <MenuItem href="/admin/items" icon='ti ti-package'>Items</MenuItem>
         <MenuItemContainer title='Caracteristicas' icon='ti ti-list-tree'>
           <MenuItem href="/admin/product-segments" icon='ti ti-layers-subtract'>Segmentos</MenuItem>
-          <MenuItem href="/admin/product-lines" icon='ti ti-route'>Lineas de producto</MenuItem>
-          <MenuItem href="/admin/product-classifications" icon='ti ti-list-details'>Clasificaciones</MenuItem>
+          <MenuItem href="/admin/product-lines" icon='ti ti-route'>Líneas de producto</MenuItem>
+          <MenuItem href="/admin/product-classifications" icon='ti ti-list-details'>Clasificaciónes</MenuItem>
           <MenuItem href="/admin/product-families" icon='ti ti-folders'>Familias</MenuItem>
           <MenuItem href="/admin/product-types" icon='ti ti-tags'>Tipos</MenuItem>
         </MenuItemContainer>
@@ -196,3 +196,4 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadDis
 }
 
 export default Menu
+

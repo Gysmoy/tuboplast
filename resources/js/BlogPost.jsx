@@ -20,18 +20,18 @@ const slugify = (value, index) => {
 
 const detailTemplates = [
   {
-    eyebrow: 'Innovacion tecnica',
+    eyebrow: 'Innovación técnica',
     author: 'Ing. Roberto Sanchez',
     role: 'Director Tecnico',
     published: '15 de Octubre, 2026',
     readTime: '12 min de lectura',
     lead:
-      'La industria de conduccion hidrica en el Peru esta entrando en una nueva etapa, marcada por eficiencia, control de calidad y soluciones de mayor vida util.',
+      'La industria de conducción hídrica en el Perú esta entrando en una nueva etapa, marcada por eficiencia, control de calidad y soluciones de mayor vida útil.',
     sections: [
       {
         title: 'Nuevos Estandares de Manufactura',
         paragraphs: [
-          'La implementacion de tecnologias de extrusión y control dimensional mas precisas permite alcanzar tuberias mas consistentes, con mejor respuesta mecanica y mejor comportamiento frente a la presion interna.',
+          'La implementación de tecnologías de extrusión y control dimensional más precisas permite alcanzar tuberías más consistentes, con mejor respuesta mecánica y mejor comportamiento frente a la presión interna.',
           'En Tuboplast, estos avances se traducen en piezas pensadas para obras exigentes, donde la confiabilidad operativa no puede dejar espacio a la improvisacion.',
         ],
       },
@@ -39,53 +39,53 @@ const detailTemplates = [
         title: 'Sustentabilidad y Economia Circular',
         paragraphs: [
           'El desarrollo industrial moderno ya no solo busca rendimiento. Tambien exige eficiencia energetica, menor desperdicio de material y procesos responsables con el entorno.',
-          'La circularidad aplicada al PVC permite avanzar hacia sistemas mas sostenibles sin comprometer la integridad estructural del producto final.',
+          'La circularidad aplicada al PVC permite avanzar hacia sistemas más sostenibles sin comprometer la integridad estructural del producto final.',
         ],
       },
       {
         title: 'Contribucion a la Infraestructura Nacional',
         paragraphs: [
-          'Desde proyectos de saneamiento hasta redes de distribucion industrial, la precision del material influye directamente en la continuidad del servicio y en el costo total de operacion.',
+          'Desde proyectos de saneamiento hasta redes de distribución industrial, la precisión del material influye directamente en la continuidad del servicio y en el costo total de operación.',
           'Por eso, cada mejora de manufactura impacta de forma real en el desarrollo de la infraestructura peruana y en la durabilidad de las obras ejecutadas.',
         ],
       },
     ],
     highlight:
-      'Una tuberia bien fabricada no solo transporta agua: sostiene la confiabilidad de toda una red de infraestructura.',
+      'Una tubería bien fabricada no solo transporta agua: sostiene la confiabilidad de toda una red de infraestructura.',
   },
   {
-    eyebrow: 'Capacitacion tecnica',
+    eyebrow: 'Capacitación técnica',
     author: 'Equipo de Soporte',
     role: 'Asesoria de Aplicacion',
     published: '03 de Septiembre, 2026',
     readTime: '9 min de lectura',
     lead:
-      'Instalar correctamente es tan importante como fabricar bien. Una union bien ejecutada puede marcar la diferencia entre una obra segura y un problema futuro.',
+      'Instalar correctamente es tan importante como fabricar bien. Una unión bien ejecutada puede marcar la diferencia entre una obra segura y un problema futuro.',
     sections: [
       {
         title: 'Preparacion y Corte',
         paragraphs: [
-          'La limpieza del corte, la calibracion de la herramienta y la verificacion de tolerancias son pasos basicos que evitan fugas y desalineaciones.',
+          'La limpieza del corte, la calibracion de la herramienta y la verificacion de tolerancias son pasos básicos que evitan fugas y desalíneaciones.',
           'Un proceso cuidadoso mejora la continuidad del flujo y reduce tiempos de mantenimiento posterior.',
         ],
       },
       {
         title: 'Pegado y Tiempos de Curado',
         paragraphs: [
-          'Respetar los tiempos de secado y curado no es un detalle menor. Es una condicion necesaria para asegurar una union resistente y durable.',
-          'La capacitacion tecnica debe reforzar estas practicas en cada obra para estandarizar la calidad de instalacion.',
+          'Respetar los tiempos de secado y curado no es un detalle menor. Es una condicion necesaria para asegurar una unión resistente y durable.',
+          'La capacitacion técnica debe reforzar estas prácticas en cada obra para estandarizar la calidad de instalación.',
         ],
       },
       {
         title: 'Control en Obra',
         paragraphs: [
-          'Supervisar cada union, cada accesorio y cada tramo instalado ayuda a prevenir retrabajos y garantiza que el sistema opere con el comportamiento esperado.',
-          'La supervisión tecnica es una inversion que protege el proyecto a largo plazo.',
+          'Supervisar cada unión, cada accesorio y cada tramo instalado ayuda a prevenir retrabajos y garantiza que el sistema opere con el comportamiento esperado.',
+          'La supervisión técnica es una inversion que protege el proyecto a largo plazo.',
         ],
       },
     ],
     highlight:
-      'La instalacion correcta no es un paso final: es parte del rendimiento total del sistema.',
+      'La instalación correcta no es un paso final: es parte del rendimiento total del sistema.',
   },
   {
     eyebrow: 'Industria',
@@ -94,7 +94,7 @@ const detailTemplates = [
     published: '18 de Julio, 2026',
     readTime: '7 min de lectura',
     lead:
-      'Los retos de la infraestructura hidrica exigen materiales consistentes, soporte tecnico cercano y capacidad de respuesta en proyectos de gran escala.',
+      'Los retos de la infraestructura hídrica exigen materiales consistentes, soporte técnico cercaño y capacidad de respuesta en proyectos de gran escala.',
     sections: [
       {
         title: 'Demanda y Cobertura Nacional',
@@ -106,14 +106,14 @@ const detailTemplates = [
       {
         title: 'Respaldo Tecnico para Proyectos',
         paragraphs: [
-          'La asesoria tecnica permite escoger la solucion adecuada segun el tipo de obra, el caudal requerido y las condiciones de instalacion.',
-          'Ese acompanamiento reduce riesgos y mejora la eficiencia en la toma de decisiones del cliente.',
+          'La asesoría técnica permite escoger la solución adecuada según el tipo de obra, el caudal requerido y las condiciones de instalación.',
+          'Ese acompanamiento reduce riesgos y mejora la eficiencia en la toma de decisiónes del cliente.',
         ],
       },
       {
         title: 'Una Industria en Evolucion',
         paragraphs: [
-          'La modernizacion del sector construccion en 2026 exige empresas que no solo vendan producto, sino que aporten conocimiento y continuidad operativa.',
+          'La modernización del sector construcción en 2026 exige empresas que no solo vendan producto, sino que aporten conocimiento y continuidad operativa.',
           'La industria avanza cuando la calidad del material acompaña a la calidad del proyecto.',
         ],
       },
@@ -134,12 +134,12 @@ const buildFallbackDetail = (post) => ({
     {
       title: post.title || 'Articulo',
       paragraphs: [
-        post.description || 'Este articulo comparte informacion tecnica y contexto util para proyectos de infraestructura y conduccion hidrica.',
-        'Mantendremos este contenido alineado al estilo editorial del blog para ofrecer una lectura clara, cercana y util para el sector.',
+        post.description || 'Este artículo comparte información técnica y contexto útil para proyectos de infraestructura y conducción hídrica.',
+        'Mantendremos este contenido alíneado al estilo editorial del blog para ofrecer una lectura clara, cercana y útil para el sector.',
       ],
     },
   ],
-  highlight: 'Cada articulo del blog esta pensado para aportar criterio tecnico y contexto de valor.',
+  highlight: 'Cada artículo del blog está pensado para aportar criterio técnico y contexto de valor.',
 });
 
 const contentWrapperClasses =
@@ -249,7 +249,7 @@ const renderCustomContent = (content) =>
 
 const NewsletterCard = ({ newsletter = {} }) => (
   <aside className="overflow-hidden rounded-2xl bg-primary text-white shadow-[0_10px_30px_rgba(0,59,122,0.22)]">
-    <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6">
+    <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),línear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6">
       {newsletter.eyebrow ? <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-secondary">{newsletter.eyebrow}</p> : null}
       <h3 className="max-w-[14ch] font-title text-2xl leading-tight">
         {newsletter.title}
@@ -301,7 +301,7 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
     title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
     description: blog.newsletter_description || 'Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.',
-    placeholder: blog.newsletter_placeholder || 'Correo electronico',
+    placeholder: blog.newsletter_placeholder || 'Correo electrónico',
     buttonLabel: blog.newsletter_button_label || 'Suscribirme ahora',
   };
 
@@ -402,3 +402,4 @@ CreateReactScript((el, properties) => {
     </Base>,
   );
 });
+

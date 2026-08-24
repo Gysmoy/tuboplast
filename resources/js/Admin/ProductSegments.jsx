@@ -207,7 +207,7 @@ const ProductSegments = (properties) => {
                     <InputFormGroup eRef={featuredOrderRef} label='Orden home' type='number' min='0' />
                     <div className='d-flex align-items-center gap-4 flex-wrap'>
                       <SwitchFormGroup label='Destacado home' checked={featured} onChange={() => setFeatured((current) => !current)} refreshable={featured} />
-                      <SwitchFormGroup label='Activo catalogo' checked={status} onChange={() => setStatus((current) => !current)} refreshable={status} />
+                      <SwitchFormGroup label='Activo catálogo' checked={status} onChange={() => setStatus((current) => !current)} refreshable={status} />
                     </div>
                   </div>
                 </div>
@@ -229,7 +229,7 @@ const ProductSegments = (properties) => {
       <ConfirmModal
         open={!!confirmTarget}
         title='Eliminar segmento'
-        message={confirmTarget ? `Se eliminara "${confirmTarget.name}". Esta accion no se puede deshacer.` : ''}
+        message={confirmTarget ? `Se eliminará "${confirmTarget.name}". Esta acción no se puede deshacer.` : ''}
         confirmLabel='Eliminar'
         variant='danger'
         loading={deleting}
@@ -243,3 +243,4 @@ const ProductSegments = (properties) => {
 CreateReactScript((el, properties) => {
   createRoot(el).render(<ProductSegments {...properties} />)
 })
+

@@ -73,7 +73,7 @@ const Contacts = ({ can }) => {
         <p className='mb-0 text-muted'>{dataLoaded?.name || ''}</p>
       </div>
       <div className='mb-2'>
-        <h6 className='mt-0 mb-1'>Correo electronico</h6>
+        <h6 className='mt-0 mb-1'>Correo electrónico</h6>
         <p className='mb-0 text-muted'>{dataLoaded?.email || ''}</p>
       </div>
       <div className='mb-2'>
@@ -99,3 +99,4 @@ CreateReactScript((el, properties) => {
     </Adminto>
   );
 })
+

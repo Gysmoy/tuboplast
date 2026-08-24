@@ -90,7 +90,7 @@ const TechnicalSpecifications = ({ groups }) => (
   <section className="mt-20 sm:mt-24">
     <div>
       <h2 className="font-title text-3xl font-medium text-primary">
-        Especificaciones tecnicas
+        Especificaciones técnicas
       </h2>
       <span className="mt-4 block h-1 w-12 bg-secondary" />
     </div>
@@ -363,7 +363,7 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
                   </span>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-darkmuted">
-                  Respaldo directo de fabrica por 50 anos contra defectos de fabricacion
+                  Respaldo directo de fábrica por 50 años contra defectos de fabricación
                   en condiciones normales de uso.
                 </p>
               </div>
@@ -414,3 +414,4 @@ CreateReactScript((el, properties) => {
     </Base>,
   );
 });
+

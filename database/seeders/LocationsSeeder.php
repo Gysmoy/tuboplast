@@ -53,6 +53,7 @@ class LocationsSeeder extends Seeder
                 'phone_prefix' => $r['phone_prefix'] ?? '+51',
                 'business_hours' => $r['business_hours'] ?? null,
                 'featured' => !empty($r['featured']),
+                'distributor_type' => !empty($r['featured']) ? 'distributor' : 'point_of_sale',
                 'latitude' => $r['latitude'] ?? null,
                 'longitude' => $r['longitude'] ?? null,
                 'status' => true,

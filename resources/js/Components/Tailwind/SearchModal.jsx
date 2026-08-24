@@ -121,7 +121,6 @@ const SearchModal = ({ isOpen, onClose }) => {
                         {[item.categoryLabel, item.type].filter(Boolean).join(' · ')}
                       </span>
                     </span>
-                    {item.price && <span className="shrink-0 text-sm font-bold text-darkmuted">{item.price}</span>}
                     <i className="mdi mdi-arrow-right shrink-0 text-muted"></i>
                   </a>
                 </li>
@@ -150,3 +149,4 @@ const SearchModal = ({ isOpen, onClose }) => {
 };
 
 export default SearchModal;
+

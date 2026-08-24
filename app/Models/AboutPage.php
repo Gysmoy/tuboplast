@@ -78,7 +78,7 @@ class AboutPage extends Model
             'hero_badge' => 'Nosotros',
             'hero_title' => 'Construimos infraestructura confiable para el futuro',
             'hero_description' => 'Tuboplast es una empresa peruana especializada en tuberías y conexiones de PVC y HDPE, con foco en calidad, respaldo técnico y soluciones duraderas.',
-            'hero_primary_label' => 'Ver catalogo',
+            'hero_primary_label' => 'Ver catálogo',
             'hero_secondary_label' => 'Hablemos de tu proyecto',
             'hero_cards' => [
                 [
@@ -135,7 +135,7 @@ class AboutPage extends Model
             ],
             'commitment_eyebrow' => 'Compromiso',
             'commitment_title' => 'Acompañamos cada etapa de la obra con respaldo técnico',
-            'commitment_description' => 'Nuestra prioridad es entregar productos consistentes y una experiencia de atención que ayude a tomar mejores decisiones en proyecto, compra e instalación.',
+            'commitment_description' => 'Nuestra prioridad es entregar productos consistentes y una experiencia de atención que ayude a tomar mejores decisiónes en proyecto, compra e instalación.',
             'family_eyebrow' => 'Familia e historia',
             'family_title' => 'Somos Tuboplast',
             'family_lead' => "La primera fábrica 100% peruana con más de 60 años en la industria de la construcción, fabricando tuberías y conexiones de PVC y HDPE con todas las líneas completas desde 1/2\" hasta 24\".",
@@ -170,12 +170,12 @@ class AboutPage extends Model
             'policy_scope_paragraph_2' => 'Fabricación, comercialización, atención al cliente, asistencia técnica, almacenamiento, distribución y despacho de tubos y conexiones de polietileno. Procesos realizados en el local industrial ubicado en calle María Curie 313 - Urbanización Industrial Santa Rosa, Distrito de Ate. Lima-Perú.',
             'policy_commitment_text' => 'Compromiso con calidad, seguridad, medio ambiente y mejora continua.',
             'policy_certifications_title' => 'Certificaciones de los Sistemas de Gestión',
-            'policy_description' => 'En TUBOPLAST nos dedicamos a la fabricación de tuberías, accesorios de PVC y polietileno, y estamos comprometidos con la satisfacción de nuestros clientes para lo cual ponemos a su disposición nuestros recursos humanos y materiales, ofrecemos un excelente trato personalizado; garantizamos y aseguramos que todo producto brindado cumplirá con los requisitos acordados con el cliente.',
+            'policy_description' => 'En TUBOPLAST nos dedicamos a la fabricación de tuberías, accesorios de PVC y polietileno, y estamos comprometidos con la satisfacción de nuestros clientes para lo cual ponemos a su disposición nuestros recursos humaños y materiales, ofrecemos un excelente trato personalizado; garantizamos y aseguramos que todo producto brindado cumplirá con los requisitos acordados con el cliente.',
             'policy_bullets' => [
-                'Fomentar y ejecutar acciones para garantizar que sus operaciones se realicen aplicando estándares de seguridad apropiados, para el control y mitigación de los riesgos.',
+                'Fomentar y ejecutar acciónes para garantizar que sus operaciónes se realicen aplicando estándares de seguridad apropiados, para el control y mitigación de los riesgos.',
                 'Controlar y mitigar nuestros aspectos ambientales significativos.',
                 'Mejorar continuamente nuestros procesos, desempeño ambiental y nuestro sistema de gestión integrado.',
-                'Sensibilizar, capacitar y entrenar a nuestros colaboradores, a fin de desarrollar una cultura preventiva y promover el cumplimiento de las normas, reglamentos y procedimientos.',
+                'Sensibilizar, capacitar y entrenar a nuestros colaboradores, a fin de desarrollar una cultura preventiva y promover el cumplimiento de las normás, reglamentos y procedimientos.',
                 'Prevenir la contaminación ambiental.',
                 'Cumplir con la legislación vigente y otros requisitos relacionados a la fabricación de tuberías y accesorios de PVC, respecto a la seguridad, salud ocupacional y ambiental.',
             ],
@@ -190,7 +190,7 @@ class AboutPage extends Model
                 ],
                 [
                     'title' => 'ISO 45001',
-                    'description' => 'Seguridad y salud en el trabajo como prioridad operacional.',
+                    'description' => 'Seguridad y salud en el trabajo como prioridad operaciónal.',
                 ],
             ],
             'status' => true,
@@ -202,3 +202,4 @@ class AboutPage extends Model
         return self::query()->firstOrCreate(['id' => 1], self::defaults());
     }
 }
+

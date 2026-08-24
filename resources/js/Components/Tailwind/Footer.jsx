@@ -9,18 +9,18 @@ const Footer = () => {
         <div className="max-w-md space-y-4">
           <img src="/assets/img/logo.svg" alt={Global.APP_NAME} className="h-10" />
           <p className="text-xs leading-relaxed text-muted">
-            Lideres en la fabricacion de sistemas de tuberias de PVC para el sector construccion, mineria y saneamiento.
+            Líderes en la fabricación de sistemas de tuberías de PVC para el sector construcción, minería y saneamiento.
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-10 md:grid-cols-4 lg:gap-x-12">
           <div className="space-y-3">
-            <p className="text-sm font-bold text-primary">Categorias</p>
+            <p className="text-sm font-bold text-primary">Categorías</p>
             <div className="space-y-3 text-xs text-muted">
               <a href={catalogLink('Edificaciones')} className="block transition hover:text-primary">Edificaciones</a>
               <a href={catalogLink('Infraestructura')} className="block transition hover:text-primary">Infraestructura</a>
-              <a href={catalogLink('Mineria')} className="block transition hover:text-primary">Mineria e industria</a>
-              <a href={catalogLink('Agricultura')} className="block transition hover:text-primary">Agricola</a>
+              <a href={catalogLink('Minería')} className="block transition hover:text-primary">Minería e industria</a>
+              <a href={catalogLink('Agricultura')} className="block transition hover:text-primary">Agrícola</a>
             </div>
           </div>
 
@@ -54,7 +54,7 @@ const Footer = () => {
 
           <div className="col-span-2 max-w-md space-y-3 md:col-span-1">
             <p className="text-sm font-bold text-primary">Suscripciones</p>
-            <p className="text-xs leading-relaxed text-muted">Recibe nuestro catalogo actualizado y novedades tecnicas.</p>
+            <p className="text-xs leading-relaxed text-muted">Recibe nuestro catálogo actualizado y novedades técnicas.</p>
             <div className="flex overflow-hidden rounded-full border border-silver">
               <input
                 className="min-w-0 flex-1 border-none bg-white px-5 py-3.5 text-xs outline-none"
@@ -106,3 +106,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

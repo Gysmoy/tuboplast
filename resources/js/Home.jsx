@@ -1,4 +1,4 @@
-﻿import { useRef } from 'react';
+import { useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -81,7 +81,7 @@ const defaultExpertCategories = [
   {
     title: 'Minería',
     image: '/assets/img/categories/category-3.webp',
-    href: '/catalog?segment%5B%5D=Mineria',
+    href: '/catalog?segment%5B%5D=Minería',
   },
   {
     title: 'Agricultura',
@@ -147,7 +147,7 @@ const defaultBlogPosts = [
   {
     category: 'Industria',
     title: 'Infraestructura hídrica en el Perú: los retos del sector construcción en 2025',
-    description: 'Analizamos el panorama actual del sector, las normativas vigentes y cómo Tuboplast lidera la respuesta...',
+    description: 'Analizamos el pañorama actual del sector, las normativas vigentes y cómo Tuboplast lidera la respuesta...',
     image:
       'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80',
   },
@@ -155,8 +155,8 @@ const defaultBlogPosts = [
 
 const defaultHeroItem = {
   categoryLabel: 'destacado',
-  title: 'Tuberia de Alta Presion Clase 15',
-  description: 'Uso industrial y civil en conduccion de agua con alta resistencia al impacto y presion.',
+  title: 'Tubería de Alta Presión Clase 15',
+  description: 'Uso industrial y civil en conducción de agua con alta resistencia al impacto y presión.',
   image: '/assets/img/items/item-1.webp',
   detailUrl: '/catalog',
   specOneLabel: 'Material',
@@ -169,10 +169,10 @@ const defaultHeroSlides = [
   {
     id: 'default-home-hero',
     title: 'Tuboplast',
-    description: 'Expertos en tuberias y conexiones de PVC para proyectos profesionales.',
+    description: 'Expertos en tuberías y conexiones de PVC para proyectos profesionales.',
     image_url: '/assets/img/sliders/hero-home.webp',
     display_mode: 'image_with_text',
-    primary_button_text: 'Ver catalogo',
+    primary_button_text: 'Ver catálogo',
     primary_button_link: '/catalog',
     secondary_button_text: 'Contactar',
     secondary_button_link: '/contact',
@@ -214,8 +214,8 @@ const heroOverlayStyle = (slide) => {
 
   return {
     background: usesBakedOverlay
-      ? `linear-gradient(100deg, rgba(247,251,255,${alpha(1)}) 0%, rgba(247,251,255,${alpha(0.78)}) 34%, rgba(247,251,255,${alpha(0.42)}) 56%, rgba(247,251,255,${alpha(0.1)}) 78%)`
-      : `linear-gradient(100deg, rgba(247,251,255,${alpha(1.12)}) 0%, rgba(247,251,255,${alpha(1.1)}) 34%, rgba(247,251,255,${alpha(0.85)}) 50%, rgba(247,251,255,${alpha(0.45)}) 66%, rgba(247,251,255,${alpha(0.14)}) 84%)`,
+      ? `línear-gradient(100deg, rgba(247,251,255,${alpha(1)}) 0%, rgba(247,251,255,${alpha(0.78)}) 34%, rgba(247,251,255,${alpha(0.42)}) 56%, rgba(247,251,255,${alpha(0.1)}) 78%)`
+      : `línear-gradient(100deg, rgba(247,251,255,${alpha(1.12)}) 0%, rgba(247,251,255,${alpha(1.1)}) 34%, rgba(247,251,255,${alpha(0.85)}) 50%, rgba(247,251,255,${alpha(0.45)}) 66%, rgba(247,251,255,${alpha(0.14)}) 84%)`,
   };
 };
 
@@ -252,7 +252,7 @@ const HeroProductCard = ({ item }) => {
         href={product.detailUrl || product.detail_url || '/catalog'}
         className="block w-full rounded-full border border-silver p-4 font-bold font-title text-primary transition-colors hover:bg-silver"
       >
-        Especificaciones Tecnicas
+        Especificaciones Técnicas
       </a>
     </article>
   );
@@ -356,7 +356,7 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
     title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
     description: blog.newsletter_description || 'Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.',
-    placeholder: blog.newsletter_placeholder || 'Correo electronico',
+    placeholder: blog.newsletter_placeholder || 'Correo electrónico',
     buttonLabel: blog.newsletter_button_label || 'Quiero suscribirme',
   };
 
@@ -463,7 +463,7 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
 
           <div className="relative z-[1] mt-6 aspect-[4/3] w-full rounded-[20px] shadow-[0_30px_90px_rgba(15,23,42,0.22)] sm:aspect-video lg:absolute lg:right-0 lg:-top-10 lg:mt-0 lg:h-[75%] lg:w-[calc(40%+80px)] lg:aspect-auto">
             <img
-              src="/assets/img/home/planta-tuberias-produccion.jpg"
+              src="/assets/img/home/planta-tuberías-produccion.jpg"
               alt="Planta de producción de tuberías Tuboplast"
               loading="lazy"
               decoding="async"
@@ -625,3 +625,4 @@ CreateReactScript((el, properties) => {
     <HomeScreen {...properties} />
   </Base>);
 });
+

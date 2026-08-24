@@ -24,6 +24,7 @@ class Distribuidor extends Model
         'phone_prefix',
         'business_hours',
         'featured',
+        'distributor_type',
         'latitude',
         'longitude',
         'status',
@@ -36,4 +37,3 @@ class Distribuidor extends Model
         'longitude' => 'float',
     ];
 }
-

@@ -38,13 +38,17 @@ const PLACE_CSS = `
 .wfd-close:hover{background:#f4f8fd;color:#0f2540;}
 .wfd-modal .form-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#8a93a6;margin-bottom:3px;}
 .wfd-err{display:flex;align-items:center;gap:8px;background:#fcebeb;color:#b42318;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:500;}
-.wfd-tg{display:inline-flex;align-items:center;gap:10px;cursor:pointer;border:0;background:none;padding:0;}
-.wfd-tg-track{width:42px;height:24px;border-radius:50rem;background:#cdd6e4;position:relative;transition:background .2s;flex-shrink:0;}
-.wfd-tg-track.on{background:#16a34a;}
-.wfd-tg-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.2);}
-.wfd-tg-track.on .wfd-tg-knob{left:21px;}
-.wfd-tg-txt{font-size:13px;color:#1f2a44;font-weight:500;}
 `
+
+const DISTRIBUTOR_TYPES = [
+  { value: 'point_of_sale', label: 'Punto de venta' },
+  { value: 'distributor', label: 'Distribuidor' },
+]
+
+const getDistributorType = (data = {}) => {
+  if (data.distributor_type) return data.distributor_type
+  return data.featured ? 'distributor' : 'point_of_sale'
+}
 
 const toCoordinate = (value) => {
   const parsed = Number(value)
@@ -92,7 +96,7 @@ const Distributors = ({ gmapsApiKey }) => {
   const [district, setDistrict] = useState('')
   const [ubigeo, setUbigeo] = useState('')
   const [status, setStatus] = useState(true)
-  const [featured, setFeatured] = useState(false)
+  const [distributorType, setDistributorType] = useState('point_of_sale')
   const [phonePrefix, setPhonePrefix] = useState('+51')
   const [prefixes, setPrefixes] = useState([])
   const [latitude, setLatitude] = useState('')
@@ -212,7 +216,7 @@ const Distributors = ({ gmapsApiKey }) => {
     setDistrict('')
     setUbigeo('')
     setStatus(true)
-    setFeatured(false)
+    setDistributorType('point_of_sale')
     setPhonePrefix('+51')
     setLatitude('')
     setLongitude('')
@@ -235,7 +239,7 @@ const Distributors = ({ gmapsApiKey }) => {
     setDistrict(data?.district || '')
     setUbigeo(data?.ubigeo || '')
     setStatus(data?.status == null ? true : data.status === true || data.status === 1 || data.status === '1')
-    setFeatured(Boolean(data?.featured))
+    setDistributorType(getDistributorType(data))
     setPhonePrefix(data?.phone_prefix || '+51')
     setLatitude(formatCoordinate(data?.latitude))
     setLongitude(formatCoordinate(data?.longitude))
@@ -322,7 +326,7 @@ const Distributors = ({ gmapsApiKey }) => {
       phone: phoneRef.current.value,
       phone_prefix: phonePrefix,
       business_hours: businessHoursRef.current.value,
-      featured,
+      distributor_type: distributorType,
       latitude: Number(latitude),
       longitude: Number(longitude),
       status,
@@ -337,7 +341,20 @@ const Distributors = ({ gmapsApiKey }) => {
   const columns = [
     {
       key: 'name', header: 'Distribuidor', field: 'name', filterFields: ['name', 'address'], nowrap: true,
-      render: (d) => (<><span className='fw-semibold d-block'>{d.name || 'Sin nombre'}{d.featured ? <span className='wfd-chip ms-2' style={{ background: '#fff4d6', color: '#854f0b' }}>Destacado</span> : null}</span><small className='text-muted'>{[d.phone_prefix, d.phone].filter(Boolean).join(' ') || 'Sin teléfono'}</small></>),
+      render: (d) => {
+        const isDistributor = getDistributorType(d) === 'distributor'
+        return (
+          <>
+            <span className='fw-semibold d-block'>
+              {d.name || 'Sin nombre'}
+              <span className='wfd-chip ms-2' style={isDistributor ? { background: '#fff4d6', color: '#854f0b' } : undefined}>
+                {isDistributor ? 'Distribuidor' : 'Punto de venta'}
+              </span>
+            </span>
+            <small className='text-muted'>{[d.phone_prefix, d.phone].filter(Boolean).join(' ') || 'Sin teléfono'}</small>
+          </>
+        )
+      },
     },
     { key: 'department', header: 'Departamento', field: 'department', nowrap: true, render: (d) => <span>{d.department}</span> },
     { key: 'province', header: 'Provincia', field: 'province', nowrap: true, render: (d) => <span>{d.province}</span> },
@@ -398,7 +415,7 @@ const Distributors = ({ gmapsApiKey }) => {
               <div className='wfd-sec'>
                 <h4><i className='mdi mdi-store me-1' style={{ color: '#004991' }}></i>Datos del distribuidor</h4>
                 <div className='row'>
-                  <InputFormGroup col='col-md-4' eRef={nameRef} label='Nombre comercial' placeholder='Ej. Comercial Marsano' />
+                  <InputFormGroup col='col-md-4' eRef={nameRef} label='Nombre comercial' placeholder='Ej. Comercial Marsaño' />
                   <InputFormGroup col='col-md-4' eRef={rucRef} label='RUC' placeholder='11 dígitos' maxLength={11} />
                   <InputFormGroup col='col-md-4' eRef={businessHoursRef} label='Horario' placeholder='Lun - Sáb: 08:00 - 19:00' />
                   <div className='form-group col-md-6 mb-2'>
@@ -410,12 +427,14 @@ const Distributors = ({ gmapsApiKey }) => {
                       <input ref={phoneRef} className='form-control' placeholder='000 000 000' />
                     </div>
                   </div>
-                  <div className='col-md-6 mt-1'>
-                    <label className='form-label d-block'>Destacado</label>
-                    <button type='button' className='wfd-tg' onClick={() => setFeatured((v) => !v)}>
-                      <span className={`wfd-tg-track ${featured ? 'on' : ''}`}><span className='wfd-tg-knob'></span></span>
-                      <span className='wfd-tg-txt'>{featured ? 'Sí, aparece primero en la web' : 'No destacado'}</span>
-                    </button>
+                  <div className='form-group col-md-6 mb-2'>
+                    <label className='form-label'>Tipo de punto</label>
+                    <CustomDropdown
+                      value={distributorType}
+                      options={DISTRIBUTOR_TYPES}
+                      onChange={setDistributorType}
+                      placeholder='Seleccionar tipo'
+                    />
                   </div>
                 </div>
               </div>
@@ -489,3 +508,4 @@ CreateReactScript((el, properties) => {
     </Adminto>
   )
 })
+

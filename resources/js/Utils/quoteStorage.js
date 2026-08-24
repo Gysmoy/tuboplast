@@ -157,10 +157,10 @@ export const buildTechnicalSheetText = (product, quantity = 1) => {
     : '';
 
   return [
-    `Ficha tecnica: ${product.title}`,
+    `Ficha técnica: ${product.title}`,
     `SKU: ${product.sku ?? '-'}`,
     `Cantidad solicitada: ${quantity}`,
-    `Categoria: ${product.categoryLabel ?? product.category ?? '-'}`,
+    `Categoría: ${product.categoryLabel ?? product.category ?? '-'}`,
     `Precio unitario: ${formatProductPrice(product)}`,
     '',
     'Descripcion',
@@ -169,7 +169,7 @@ export const buildTechnicalSheetText = (product, quantity = 1) => {
     'Resumen',
     summaryLines || '-',
     '',
-    'Especificaciones tecnicas',
+    'Especificaciones técnicas',
     specLines || '-',
     '',
     `Norma: ${product.standard ?? '-'}`,
@@ -206,7 +206,7 @@ const getSpecRows = (product) => {
 };
 
 const formatFileName = (value) => (
-  `${(value ?? 'ficha-tecnica')
+  `${(value ?? 'ficha-técnica')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')}.pdf`
@@ -231,7 +231,7 @@ export const downloadTechnicalSheet = (product, quantity = 1) => {
   doc.text('Tuboplast', left, 14);
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
-  doc.text('Ficha tecnica del producto', left, 22);
+  doc.text('Ficha técnica del producto', left, 22);
 
   doc.setTextColor(15, 23, 42);
   cursorY = 42;
@@ -245,7 +245,7 @@ export const downloadTechnicalSheet = (product, quantity = 1) => {
   doc.setTextColor(100, 116, 139);
   doc.text(`Cantidad solicitada: ${quantity}`, left, cursorY + 7);
   doc.text(`SKU: ${product.sku ?? '-'}`, left, cursorY + 13);
-  doc.text(`Categoria: ${product.categoryLabel ?? product.category ?? '-'}`, left, cursorY + 19);
+  doc.text(`Categoría: ${product.categoryLabel ?? product.category ?? '-'}`, left, cursorY + 19);
   doc.text(
     `Precio unitario: ${formatProductPrice(product)}`,
     left,
@@ -452,7 +452,7 @@ const loadImageData = (src) => new Promise((resolve) => {
   }
 
   const image = new Image();
-  image.crossOrigin = 'anonymous';
+  image.crossOrigin = 'añonymous';
 
   image.onload = () => {
     try {
@@ -729,7 +729,7 @@ const buildQuotePdf = async (customer, items, meta = {}) => {
 };
 
 const quoteFileName = (customer, meta) => (
-  formatFileName(`cotizacion-${meta.code || customer.business || customer.name || 'cotizacion'}`)
+  formatFileName(`cotización-${meta.code || customer.business || customer.name || 'cotización'}`)
 );
 
 export const downloadQuotePdf = async (customer, items, meta = {}) => {
@@ -757,3 +757,4 @@ export const openQuotePdf = async (customer, items, meta = {}, targetWindow = nu
 
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 };
+

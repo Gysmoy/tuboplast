@@ -120,11 +120,11 @@ const Blog = ({ blog: initialBlog = {} }) => {
     hero_badge: initialBlog.hero_badge || 'Blog Tuboplast',
     hero_title: initialBlog.hero_title || 'Construyendo el futuro',
     hero_description: initialBlog.hero_description || '',
-    section_title: initialBlog.section_title || 'Ultimas actualizaciones',
+    section_title: initialBlog.section_title || 'Ultimás actualizaciones',
     newsletter_eyebrow: initialBlog.newsletter_eyebrow || 'Newsletter',
     newsletter_title: initialBlog.newsletter_title || 'Se el primero en saber',
     newsletter_description: initialBlog.newsletter_description || '',
-    newsletter_placeholder: initialBlog.newsletter_placeholder || 'Correo electronico',
+    newsletter_placeholder: initialBlog.newsletter_placeholder || 'Correo electrónico',
     newsletter_button_label: initialBlog.newsletter_button_label || 'Suscribirme ahora',
     posts: normalizePosts(initialBlog.posts),
     most_read: Array.isArray(initialBlog.most_read) ? initialBlog.most_read : [],
@@ -551,3 +551,4 @@ CreateReactScript((el, properties) => {
     </Adminto>
   )
 })
+

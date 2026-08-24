@@ -379,7 +379,7 @@ const Sliders = ({ items = [] }) => {
                           />
                           <span className='wfs-range-value'>{overlayOpacity}%</span>
                         </div>
-                        <small className='text-muted'>0% muestra mas imagen, 100% aclara mas el lado del texto.</small>
+                        <small className='text-muted'>0% muestra más imagen, 100% aclara más el lado del texto.</small>
                       </div>
                     )}
                     <TextareaFormGroup eRef={descriptionRef} label='Descripcion' rows={4} />
@@ -394,10 +394,10 @@ const Sliders = ({ items = [] }) => {
               <div className='wfs-sec'>
                 <h4><i className='mdi mdi-gesture-tap-button me-1' style={{ color: '#004991' }}></i>Botones</h4>
                 <div className='row'>
-                  <InputFormGroup col='col-md-3' eRef={primaryButtonTextRef} label='Texto boton 1' placeholder='Ver catalogo' />
-                  <InputFormGroup col='col-md-3' eRef={primaryButtonLinkRef} label='Enlace boton 1' placeholder='/catalog' />
-                  <InputFormGroup col='col-md-3' eRef={secondaryButtonTextRef} label='Texto boton 2' placeholder='Solicitar cotizacion' />
-                  <InputFormGroup col='col-md-3' eRef={secondaryButtonLinkRef} label='Enlace boton 2' placeholder='/contact' />
+                  <InputFormGroup col='col-md-3' eRef={primaryButtonTextRef} label='Texto botón 1' placeholder='Ver catálogo' />
+                  <InputFormGroup col='col-md-3' eRef={primaryButtonLinkRef} label='Enlace botón 1' placeholder='/catalog' />
+                  <InputFormGroup col='col-md-3' eRef={secondaryButtonTextRef} label='Texto botón 2' placeholder='Solicitar cotización' />
+                  <InputFormGroup col='col-md-3' eRef={secondaryButtonLinkRef} label='Enlace botón 2' placeholder='/contact' />
                 </div>
               </div>
 
@@ -443,7 +443,7 @@ const Sliders = ({ items = [] }) => {
       <ConfirmModal
         open={!!confirmTarget}
         title='Eliminar slider'
-        message={confirmTarget ? `Se eliminara "${confirmTarget.title}". Esta accion no se puede deshacer.` : ''}
+        message={confirmTarget ? `Se eliminará "${confirmTarget.title}". Esta acción no se puede deshacer.` : ''}
         confirmLabel='Eliminar'
         variant='danger'
         loading={deleting}
@@ -461,3 +461,4 @@ CreateReactScript((el, properties) => {
     </Adminto>
   )
 })
+

@@ -5,6 +5,7 @@ import ProductTaxonomyPage from './ProductTaxonomyPage.jsx'
 
 CreateReactScript((el, properties) => {
   createRoot(el).render(
-    <ProductTaxonomyPage {...properties} path='product-lines' title='Lineas de producto' singular='linea de producto' icon='ti ti-route' />
+    <ProductTaxonomyPage {...properties} path='product-lines' title='Líneas de producto' singular='línea de producto' icon='ti ti-route' />
   )
 })
+

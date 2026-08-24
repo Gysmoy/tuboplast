@@ -33,12 +33,14 @@ class DistribuidorController extends BasicController
             'phone_prefix' => 'nullable|string|max:8',
             'business_hours' => 'nullable|string|max:120',
             'featured' => 'nullable',
+            'distributor_type' => 'nullable|string|max:40',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'status' => 'nullable',
         ]);
 
-        $validated['featured'] = in_array($request->input('featured'), [true, 'true', 1, '1', 'on'], true) ? 1 : 0;
+        $validated['distributor_type'] = $validated['distributor_type'] ?? 'point_of_sale';
+        $validated['featured'] = $validated['distributor_type'] === 'distributor' ? 1 : 0;
 
         if (array_key_exists('status', $validated)) {
             $validated['status'] = in_array($validated['status'], [true, 'true', 1, '1', 'on'], true) ? 1 : 0;

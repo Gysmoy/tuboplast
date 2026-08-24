@@ -214,7 +214,7 @@ const Home = ({ dashboard, filter }) => {
     const options = {
       chart: { type: 'line', height: 340, toolbar: { show: false }, fontFamily: 'inherit' },
       series: [
-        { name: 'Cantidad de cotizaciones', type: 'column', data: d.chart.qty },
+        { name: 'Cantidad de cotizaciónes', type: 'column', data: d.chart.qty },
         { name: 'Monto cotizado (S/)', type: 'line', data: d.chart.amount },
       ],
       stroke: { width: [0, 3], curve: 'smooth' },
@@ -300,7 +300,7 @@ const Home = ({ dashboard, filter }) => {
         <div className='col-12 col-xl-8'>
           <div className='wfd-card'>
             <div className='d-flex align-items-center justify-content-between mb-3'>
-              <h2 className='wfd-h2'>Tendencia de cotizaciones</h2>
+              <h2 className='wfd-h2'>Tendencia de cotizaciónes</h2>
               <span className='wfd-badge brand text-capitalize'>{d.month_label}</span>
             </div>
             <div ref={chartRef} />
@@ -325,7 +325,7 @@ const Home = ({ dashboard, filter }) => {
         {/* Embudo */}
         <div className='col-12'>
           <div className='wfd-card'>
-            <h2 className='wfd-h2 mb-3'>Embudo de cotizaciones</h2>
+            <h2 className='wfd-h2 mb-3'>Embudo de cotizaciónes</h2>
             <div className='row g-3'>
               {d.funnel.map((item) => (
                 <div key={item.stage} className='col-12 col-md-4'>
@@ -344,13 +344,13 @@ const Home = ({ dashboard, filter }) => {
           </div>
         </div>
 
-        {/* Últimas cotizaciones */}
+        {/* Últimas cotizaciónes */}
         <div className='col-12'>
           <div className='wfd-card'>
             <div className='d-flex align-items-center gap-3 mb-3'>
               <div className='wfd-iconbox amber'><i className='ti ti-file-invoice'></i></div>
               <div>
-                <h2 className='wfd-h2'>Últimas cotizaciones</h2>
+                <h2 className='wfd-h2'>Últimas cotizaciónes</h2>
                 <p className='wfd-sub'>Las <b>{d.latest_quotes.length}</b> más recientes del periodo</p>
               </div>
             </div>
@@ -383,7 +383,7 @@ const Home = ({ dashboard, filter }) => {
                       <td className='text-end' style={{ color: '#8a93a6', whiteSpace: 'nowrap' }}>{quote.date}</td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={7} className='text-center py-4' style={{ color: '#9aa3b3' }}>Sin cotizaciones en este periodo</td></tr>
+                    <tr><td colSpan={7} className='text-center py-4' style={{ color: '#9aa3b3' }}>Sin cotizaciónes en este periodo</td></tr>
                   )}
                 </tbody>
               </table>

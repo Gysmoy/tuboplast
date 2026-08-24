@@ -9,9 +9,9 @@ return new class extends Migration
     private array $banners = [
         [
             'placement' => 'blog',
-            'title' => 'Realiza tus cotizaciones con facilidad',
-            'description' => 'Ultimas actualizaciones del blog Tuboplast.',
-            'image' => 'blog/blog-cotizaciones-banner.png',
+            'title' => 'Realiza tus cotizaciónes con facilidad',
+            'description' => 'Ultimás actualizaciones del blog Tuboplast.',
+            'image' => 'blog/blog-cotizaciónes-banner.png',
             'display_mode' => 'image_only',
             'sort_order' => 1,
         ],
@@ -33,7 +33,7 @@ return new class extends Migration
         ],
         [
             'placement' => 'club_secondary',
-            'title' => 'Tu aliado en construccion',
+            'title' => 'Tu aliado en construcción',
             'description' => 'Experto Tuboplast.',
             'image' => 'club/club-experto-hero.png',
             'display_mode' => 'image_only',
@@ -42,14 +42,14 @@ return new class extends Migration
         [
             'placement' => 'about_family',
             'title' => 'Estamos presentes desde 1966',
-            'description' => 'Lideres en soluciones para edificaciones, infraestructura, mineria, agricultura y mas.',
-            'image' => 'about/red-distribucion-banner.png',
+            'description' => 'Líderes en soluciones para edificaciones, infraestructura, minería, agricultura y más.',
+            'image' => 'about/red-distribución-banner.png',
             'display_mode' => 'image_only',
             'sort_order' => 1,
         ],
         [
             'placement' => 'about_policy',
-            'title' => 'Politica del Sistema de Gestion Integrado',
+            'title' => 'Política del Sistema de Gestión Integrado',
             'description' => 'Compromiso con calidad, seguridad, medio ambiente y mejora continua.',
             'image' => 'landing/bg-main.webp',
             'display_mode' => 'image_with_text',
@@ -87,3 +87,4 @@ return new class extends Migration
             ->delete();
     }
 };
+

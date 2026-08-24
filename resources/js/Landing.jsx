@@ -11,12 +11,12 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 const services = [
   {
     title: 'Software a Medida',
-    copy: 'Desarrollamos plataformas alineadas a tus procesos para resolver cuellos de botella y escalar operaciones.',
+    copy: 'Desarrollamos plataformás alíneadas a tus procesos para resolver cuellos de botella y escalar operaciónes.',
     icon: Code2,
   },
   {
     title: 'Aplicaciones Web',
-    copy: 'Construimos aplicaciones web seguras, rapidas y con excelente experiencia de usuario.',
+    copy: 'Construimos aplicaciónes web seguras, rapidas y con excelente experiencia de usuario.',
     icon: LayoutTemplate,
   },
   {
@@ -26,7 +26,7 @@ const services = [
   },
   {
     title: 'Integraciones con IA',
-    copy: 'Integramos asistentes inteligentes y analitica para acelerar soporte, ventas y decisiones.',
+    copy: 'Integramos asistentes inteligentes y analitica para acelerar soporte, ventas y decisiónes.',
     icon: Bot,
   },
   {
@@ -65,13 +65,13 @@ const fallbackWorkSlides = [
 const statsSlides = [
   {
     value: '85%',
-    text: 'de las interacciones con clientes seran gestionadas sin intervencion humana.',
+    text: 'de las interacciónes con clientes seran gestionadas sin intervencion humana.',
     strong: 'Listo para liderar tu industria?',
   },
   {
     value: '73%',
     text: 'de los usuarios define su confianza en una empresa por la experiencia digital inicial.',
-    strong: 'La primera impresion digital decide conversiones.',
+    strong: 'La primera impresión digital decide conversiones.',
   },
   {
     value: '64%',
@@ -96,7 +96,7 @@ const impact = [
   {
     title: 'Crecimiento',
     accent: 'Digital',
-    text: 'Impulsamos resultados con tecnologia a medida, procesos optimizados y una estrategia digital sostenible.',
+    text: 'Impulsamos resultados con tecnología a medida, procesos optimizados y una estrategia digital sostenible.',
     image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=900&q=80',
   },
 ];
@@ -346,7 +346,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
             tu <span className="text-[#ff0a78]">crecimiento</span>
           </h1>
           <p data-hero-copy className="mx-auto mt-6 max-w-2xl text-base text-slate-300 md:text-xl">
-            En xPlain creamos software a medida para empresas que quieren operar mejor, vender mas y escalar con tecnologia confiable.
+            En xPlain creamos software a medida para empresas que quieren operar mejor, vender más y escalar con tecnología confiable.
           </p>
           <button
             data-hero-cta
@@ -354,7 +354,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
             onClick={scrollToContact}
             className="mt-8 rounded-lg bg-[#ff0a78] px-8 py-3 text-lg font-bold shadow-[0_0_30px_rgba(255,10,120,0.5)] transition hover:scale-105 hover:bg-[#ff2d8f]"
           >
-            Quiero mi solucion a medida
+            Quiero mi solución a medida
           </button>
         </section>
 
@@ -367,7 +367,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
                 <article
                   data-service-card
                   key={service.title}
-                  className="rounded-xl border border-white/20 bg-[linear-gradient(145deg,rgba(255,255,255,0.14),rgba(5,9,18,0.82)_45%)] p-5 opacity-100 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
+                  className="rounded-xl border border-white/20 bg-[línear-gradient(145deg,rgba(255,255,255,0.14),rgba(5,9,18,0.82)_45%)] p-5 opacity-100 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
                 >
                   <div className="ml-auto flex h-9 w-9 items-center justify-center rounded-md border border-[#ff0a78]/50 bg-[#ff0a78]/20 text-[#ff4fa5]">
                     <Icon size={18} strokeWidth={2} />
@@ -530,7 +530,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
             {impact.map((card) => (
               <article
                 key={card.title}
-                className="rounded-2xl border border-white/20 bg-[linear-gradient(150deg,rgba(255,255,255,0.12),rgba(7,12,22,0.82)_52%)] p-4 transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
+                className="rounded-2xl border border-white/20 bg-[línear-gradient(150deg,rgba(255,255,255,0.12),rgba(7,12,22,0.82)_52%)] p-4 transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
               >
                 <img className="h-40 w-full rounded-lg object-cover" src={card.image} alt={card.title} />
                 <div className="pt-4">
@@ -541,7 +541,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
                   </h3>
                   <p className="mt-3 text-sm text-slate-300">{card.text}</p>
                   <button type="button" onClick={scrollToContact} className="mt-5 w-32 rounded-md bg-[#ff0a78] px-4 py-2 text-sm font-bold transition hover:bg-[#ff2d8f]">
-                    Leer mas
+                    Leer más
                   </button>
                 </div>
               </article>
@@ -597,7 +597,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
                   id="message"
                   name="message"
                   className="h-36 w-full rounded-xl border border-white/60 bg-transparent px-4 py-3 text-sm outline-none ring-[#ff0a78] placeholder:text-white/45 focus:ring-2"
-                  placeholder="cuentanos sobre tu proyecto..."
+                  placeholder="cuentaños sobre tu proyecto..."
                   value={contactForm.message}
                   onChange={onContactChange}
                   disabled={contactSending}
@@ -659,7 +659,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
               onClick={scrollToContact}
               className="mt-4 rounded-md bg-[#ff0a78] px-5 py-2 text-sm font-bold text-white transition hover:bg-[#ff2d8f]"
             >
-              Contactanos
+              Contactaños
             </button>
           </div>
 
@@ -690,7 +690,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
           role="presentation"
         >
           <div
-            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/25 bg-[linear-gradient(160deg,rgba(255,255,255,0.15),rgba(7,12,22,0.92)_60%)] p-6 text-center shadow-[0_0_55px_rgba(255,10,120,0.2)]"
+            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/25 bg-[línear-gradient(160deg,rgba(255,255,255,0.15),rgba(7,12,22,0.92)_60%)] p-6 text-center shadow-[0_0_55px_rgba(255,10,120,0.2)]"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -743,3 +743,4 @@ const LandingScreen = ({ projects = [], token = '' }) => {
 CreateReactScript((el, properties) => {
   createRoot(el).render(<LandingScreen {...properties} />);
 });
+

@@ -138,7 +138,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const colorRef = useRef()
   const brandRef = useRef()
   const unitRef = useRef()
-  const masterpackRef = useRef()
+  const másterpackRef = useRef()
   const piecesRef = useRef()
   const originCountryRef = useRef()
   const nominalDiameterRef = useRef()
@@ -205,7 +205,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     set(colorRef, data?.color)
     set(brandRef, data?.brand)
     set(unitRef, data?.unit)
-    set(masterpackRef, data?.masterpack)
+    set(másterpackRef, data?.másterpack)
     set(piecesRef, data?.pieces)
     set(originCountryRef, data?.origin_country)
     set(nominalDiameterRef, data?.nominal_diameter || data?.diameter)
@@ -327,7 +327,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
   const selectImagesZip = (file) => selectArchive(file, setImportImagesZip, 'las imagenes')
 
-  const selectSheetsZip = (file) => selectArchive(file, setImportSheetsZip, 'las fichas tecnicas')
+  const selectSheetsZip = (file) => selectArchive(file, setImportSheetsZip, 'las fichas técnicas')
 
   const onImportSubmit = async (e) => {
     e.preventDefault()
@@ -378,7 +378,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       color: colorRef.current.value,
       brand: brandRef.current.value,
       unit: unitRef.current.value,
-      masterpack: masterpackRef.current.value,
+      másterpack: másterpackRef.current.value,
       pieces: piecesRef.current.value,
       origin_country: originCountryRef.current.value,
       price: priceRef.current.value,
@@ -438,7 +438,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
         minWidth={1080}
         headerActions={(
           <>
-            <button type='button' className='wfi-btn soft' onClick={openImport}><i className='mdi mdi-upload'></i> Carga masiva</button>
+            <button type='button' className='wfi-btn soft' onClick={openImport}><i className='mdi mdi-upload'></i> Carga másiva</button>
             <button type='button' className='wfi-btn' onClick={() => onModalOpen(null)}><i className='mdi mdi-plus'></i> Nuevo item</button>
           </>
         )}
@@ -541,11 +541,11 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                       <FieldSelect label='Uso' value={selects.use_type} placeholder='Sin uso' options={toOptions(USE_OPTIONS, 'Sin uso')} onChange={(v) => setSelect('use_type', v)} />
                     </div>
                     <div className='row'>
-                      <FieldSelect label='Linea de producto' value={selects.product_line_id} placeholder='Sin linea'
-                        options={[{ value: '', label: 'Sin linea' }, ...lines.map((c) => ({ value: String(c.id), label: c.name }))]}
+                      <FieldSelect label='Línea de producto' value={selects.product_line_id} placeholder='Sin línea'
+                        options={[{ value: '', label: 'Sin línea' }, ...lines.map((c) => ({ value: String(c.id), label: c.name }))]}
                         onChange={(v) => setSelect('product_line_id', v)} />
-                      <FieldSelect label='Clasificacion' value={selects.product_classification_id} placeholder='Sin clasificacion'
-                        options={[{ value: '', label: 'Sin clasificacion' }, ...classifications.map((c) => ({ value: String(c.id), label: c.name }))]}
+                      <FieldSelect label='Clasificación' value={selects.product_classification_id} placeholder='Sin clasificación'
+                        options={[{ value: '', label: 'Sin clasificación' }, ...classifications.map((c) => ({ value: String(c.id), label: c.name }))]}
                         onChange={(v) => setSelect('product_classification_id', v)} />
                     </div>
                   </div>
@@ -576,7 +576,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 </div>
                 <div className='row'>
                   <InputFormGroup col='col-md-3' eRef={unitRef} label='Unidad de medida' placeholder='UN' />
-                  <InputFormGroup col='col-md-3' eRef={masterpackRef} label='Masterpack' type='number' />
+                  <InputFormGroup col='col-md-3' eRef={másterpackRef} label='Másterpack' type='number' />
                   <InputFormGroup col='col-md-3' eRef={piecesRef} label='N° de piezas' />
                   <InputFormGroup col='col-md-3' eRef={originCountryRef} label='País de origen' placeholder='Perú' />
                 </div>
@@ -642,7 +642,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
             <div className='wfi-modal-head'>
               <h3 className='wfi-h2' style={{ fontSize: 16 }}>
                 <i className='mdi mdi-file-excel-outline me-1' style={{ color: '#004991' }}></i>
-                Carga masiva de items
+                Carga másiva de items
               </h3>
               <button type='button' className='wfi-close' onClick={closeImport}><i className='mdi mdi-close'></i></button>
             </div>
@@ -810,3 +810,4 @@ CreateReactScript((el, properties) => {
     </Adminto>
   )
 })
+

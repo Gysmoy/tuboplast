@@ -103,7 +103,7 @@ class ProductController extends BasicController
         if (!$pressure) return '-';
         $low = mb_strtolower($pressure);
         if (str_contains($low, 'no aplica')) return 'No aplica';
-        if (str_contains($low, 'gravedad') || str_contains($low, 'sin presion')) return 'Gravedad';
+        if (str_contains($low, 'gravedad') || str_contains($low, 'sin presión')) return 'Gravedad';
         if (str_contains($low, 'roscado')) return 'Roscado';
         if (preg_match('/PN-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
         if (preg_match('/C-?[\d.]+/i', $pressure, $m)) return strtoupper($m[0]);
@@ -191,7 +191,7 @@ class ProductController extends BasicController
 
         $logisticItems = array_values(array_filter([
             $this->spec('Unidad de medida', $item->unit),
-            $item->masterpack ? $this->spec('Masterpack', (string) $item->masterpack) : null,
+            $item->másterpack ? $this->spec('Másterpack', (string) $item->másterpack) : null,
             $this->spec('N° de piezas', $item->pieces),
             $this->spec('Tipo de empaque', $item->package_type),
             $this->spec('País de origen', $item->origin_country),
@@ -282,3 +282,4 @@ class ProductController extends BasicController
             ->all();
     }
 }
+

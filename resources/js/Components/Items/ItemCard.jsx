@@ -108,14 +108,14 @@ const ItemCard = ({ product, showPrice = false }) => {
               <p className="truncate text-xs font-bold text-primary">{product.use ?? product.pressure ?? '-'}</p>
             </div>
             <div className="rounded-lg bg-white/60 p-2">
-              <span className="block text-[10px] uppercase text-muted">Diametro</span>
+              <span className="block text-[10px] uppercase text-muted">Diámetro</span>
               <p className="truncate text-xs font-bold text-primary">{product.diameter}</p>
             </div>
             <button
               ref={cartButtonRef}
               type="button"
               onClick={handleAddToQuote}
-              aria-label={`Agregar ${product.title} a la cotizacion`}
+              aria-label={`Agregar ${product.title} a la cotización`}
               className="relative z-20 hidden h-11 w-11 place-items-center self-stretch rounded-lg bg-primary text-white transition hover:bg-[#003b7a] sm:grid"
             >
               <i className="mdi mdi-cart-plus text-xl"></i>
@@ -125,7 +125,7 @@ const ItemCard = ({ product, showPrice = false }) => {
           <button
             type="button"
             onClick={handleAddToQuote}
-            aria-label={`Agregar ${product.title} a la cotizacion`}
+            aria-label={`Agregar ${product.title} a la cotización`}
             className="relative z-20 mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-bold text-white transition hover:bg-[#003b7a] sm:hidden"
           >
             <i className="mdi mdi-cart-plus text-base"></i>
@@ -144,3 +144,4 @@ const ItemCard = ({ product, showPrice = false }) => {
 };
 
 export default ItemCard;
+
