@@ -43,7 +43,7 @@ return new class extends Migration
             'placement' => 'about_family',
             'title' => 'Estamos presentes desde 1966',
             'description' => 'Líderes en soluciones para edificaciones, infraestructura, minería, agricultura y más.',
-            'image' => 'about/red-distribución-banner.png',
+            'image' => 'about/red-distribucion-banner.png',
             'display_mode' => 'image_only',
             'sort_order' => 1,
         ],

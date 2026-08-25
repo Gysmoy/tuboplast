@@ -216,7 +216,7 @@ class BasicController extends Controller
       'title' => $appName . ' | Expertos en Tuberías y Conexiones de PVC',
       'description' => 'Tuboplast es el fabricante peruano de tuberías y conexiones de PVC y HDPE para agua, desagüe, saneamiento, instalaciones eléctricas e infraestructura. Calidad certificada y asesoría técnica a nivel nacional.',
       'keywords' => 'tuboplast, tuberías pvc, conexiones pvc, accesorios pvc, tuberías agua, tuberías desagüe, tuberías eléctricas, hdpe, saneamiento, alcantarillado, catálogo tuboplast, peru',
-      'image' => url('/assets/img/icons/og-image.jpg'),
+      'image' => url('/assets/img/icons/icon-512.png'),
       'url' => url()->current(),
       'type' => 'website',
       'site_name' => $appName,

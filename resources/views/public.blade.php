@@ -15,7 +15,7 @@
         $seo = $seo ?? [];
         $seoTitle = $seo['title'] ?? (env('APP_NAME', 'Tuboplast') . ' | Expertos en Tuberias y Conexiones de PVC');
         $seoDescription = $seo['description'] ?? 'Tuberias y conexiones de PVC para proyectos residenciales e industriales.';
-        $seoImage = $seo['image'] ?? asset('/assets/img/icons/og-image.jpg');
+        $seoImage = $seo['image'] ?? asset('/assets/img/icons/icon-512.png');
         $seoUrl = $seo['url'] ?? url()->current();
         $seoType = $seo['type'] ?? 'website';
         $seoSiteName = $seo['site_name'] ?? env('APP_NAME', 'Tuboplast');

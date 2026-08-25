@@ -465,7 +465,7 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
 
           <div className="relative z-[1] mt-6 aspect-[4/3] w-full rounded-[20px] shadow-[0_30px_90px_rgba(15,23,42,0.22)] sm:aspect-video lg:absolute lg:right-0 lg:-top-10 lg:mt-0 lg:h-[75%] lg:w-[calc(40%+80px)] lg:aspect-auto">
             <img
-              src="/assets/img/home/planta-tuberías-produccion.jpg"
+              src="/assets/img/home/planta-tuberias-produccion.jpg"
               alt="Planta de producción de tuberías Tuboplast"
               loading="lazy"
               decoding="async"

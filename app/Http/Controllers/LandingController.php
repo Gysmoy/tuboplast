@@ -65,7 +65,7 @@ class LandingController extends BasicController
                 'description' => Str::limit(strip_tags($post['description'] ?? $post['lead'] ?? ''), 180),
                 'image' => $postImage
                     ? (Str::startsWith($postImage, 'http') ? $postImage : url($postImage))
-                    : url('/assets/img/icons/og-image.jpg'),
+                    : url('/assets/img/icons/icon-512.png'),
                 'type' => 'article',
                 'url' => route('blog.post', ['slug' => $this->blogSlug]),
             ];
