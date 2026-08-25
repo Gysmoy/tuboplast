@@ -129,6 +129,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const skuRef = useRef()
   const priceRef = useRef()
   const imageRef = useRef()
+  const galleryImagesRef = useRef()
   const technicalSheetRef = useRef()
   const descriptionRef = useRef()
   const diametersRef = useRef()
@@ -138,7 +139,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const colorRef = useRef()
   const brandRef = useRef()
   const unitRef = useRef()
-  const másterpackRef = useRef()
+  const masterpackRef = useRef()
   const piecesRef = useRef()
   const originCountryRef = useRef()
   const nominalDiameterRef = useRef()
@@ -205,7 +206,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     set(colorRef, data?.color)
     set(brandRef, data?.brand)
     set(unitRef, data?.unit)
-    set(másterpackRef, data?.másterpack)
+    set(masterpackRef, data?.masterpack)
     set(piecesRef, data?.pieces)
     set(originCountryRef, data?.origin_country)
     set(nominalDiameterRef, data?.nominal_diameter || data?.diameter)
@@ -244,6 +245,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     })
 
     if (imageRef.current) imageRef.current.value = ''
+    if (galleryImagesRef.current) galleryImagesRef.current.value = ''
     if (imageRef.current?.image) {
       imageRef.current.image.src = itemImageUrl(data)
     }
@@ -325,7 +327,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     setter(file)
   }
 
-  const selectImagesZip = (file) => selectArchive(file, setImportImagesZip, 'las imagenes')
+  const selectImagesZip = (file) => selectArchive(file, setImportImagesZip, 'las imágenes')
 
   const selectSheetsZip = (file) => selectArchive(file, setImportSheetsZip, 'las fichas técnicas')
 
@@ -378,7 +380,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       color: colorRef.current.value,
       brand: brandRef.current.value,
       unit: unitRef.current.value,
-      másterpack: másterpackRef.current.value,
+      masterpack: masterpackRef.current.value,
       pieces: piecesRef.current.value,
       origin_country: originCountryRef.current.value,
       price: priceRef.current.value,
@@ -406,6 +408,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       usage_warning: usageWarningRef.current.value,
       status: true,
       image: imageRef.current.files?.[0] ?? null,
+      gallery_images: Array.from(galleryImagesRef.current?.files || []),
       technical_sheet: technicalSheetRef.current.files?.[0] ?? null
     }
 
@@ -552,6 +555,11 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                   <div className='col-md-6'>
                     <ImageFormGroup eRef={imageRef} label='Imagen' required={!dataLoaded} aspect='4/3' fit='cover' onError={ITEM_FALLBACK_IMAGE} />
                     <div className='form-group mb-2'>
+                      <label className='form-label'>Galería de imágenes</label>
+                      <input ref={galleryImagesRef} type='file' className='form-control' accept='image/*' multiple />
+                      <small className='text-muted'>Puedes seleccionar varias fotos. La primera quedará como imagen principal.</small>
+                    </div>
+                    <div className='form-group mb-2'>
                       <label className='form-label'>Ficha técnica PDF</label>
                       <input ref={technicalSheetRef} type='file' className='form-control' accept='application/pdf' />
                       {dataLoaded?.technical_sheet && (
@@ -576,7 +584,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 </div>
                 <div className='row'>
                   <InputFormGroup col='col-md-3' eRef={unitRef} label='Unidad de medida' placeholder='UN' />
-                  <InputFormGroup col='col-md-3' eRef={másterpackRef} label='Másterpack' type='number' />
+                  <InputFormGroup col='col-md-3' eRef={masterpackRef} label='Masterpack' type='number' />
                   <InputFormGroup col='col-md-3' eRef={piecesRef} label='N° de piezas' />
                   <InputFormGroup col='col-md-3' eRef={originCountryRef} label='País de origen' placeholder='Perú' />
                 </div>
@@ -689,7 +697,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 <div>
                   <i className='mdi mdi-cloud-upload-outline'></i>
                   <strong>Arrastra tu Excel aquí o haz clic para seleccionarlo</strong>
-                  <span>Formatos soportados: .xlsx y .csv. Usa Codigo Producto y, opcionalmente, CODIGO IMAGEN.</span>
+                  <span>Formatos soportados: .xlsx y .csv. Usa Código Producto y, opcionalmente, CÓDIGO IMAGEN.</span>
                   {importFile && (
                     <div className='wfi-file-pill'>
                       <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
@@ -715,8 +723,8 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                 >
                   <div>
                     <i className='mdi mdi-folder-zip-outline'></i>
-                    <strong>Comprimido de imagenes opcional</strong>
-                    <span>.zip o .rar hasta {ARCHIVE_MAX_MB} MB. Nombres esperados: CODIGO.png o CODIGO-1.jpg. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
+                    <strong>Comprimido de imágenes opcional</strong>
+                    <span>.zip o .rar hasta {ARCHIVE_MAX_MB} MB. Nombres esperados: CODIGO.png o CODIGO-1.jpg. CODIGO puede ser Código Producto o CÓDIGO IMAGEN.</span>
                     {importImagesZip && (
                       <div className='wfi-file-pill'>
                         <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>
@@ -742,7 +750,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                   <div>
                     <i className='mdi mdi-file-pdf-box'></i>
                     <strong>Comprimido de fichas técnicas opcional</strong>
-                    <span>.zip o .rar hasta {ARCHIVE_MAX_MB} MB. Nombres esperados: CODIGO.pdf. CODIGO puede ser Codigo Producto o CODIGO IMAGEN.</span>
+                    <span>.zip o .rar hasta {ARCHIVE_MAX_MB} MB. Nombres esperados: CODIGO.pdf. CODIGO puede ser Código Producto o CÓDIGO IMAGEN.</span>
                     {importSheetsZip && (
                       <div className='wfi-file-pill'>
                         <i className='mdi mdi-file-check-outline' style={{ color: '#16a34a' }}></i>

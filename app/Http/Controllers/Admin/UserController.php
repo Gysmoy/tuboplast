@@ -112,7 +112,7 @@ class UserController extends BasicController
             $user->save();
 
             $response->status = 200;
-            $response->message = 'Operacion correcta';
+            $response->message = 'Operación correcta';
         } catch (\Throwable $th) {
             $response->status = 400;
             $response->message = $th->getMessage();
@@ -137,7 +137,7 @@ class UserController extends BasicController
             $user->save();
 
             $response->status = 200;
-            $response->message = 'Operacion correcta';
+            $response->message = 'Operación correcta';
         } catch (\Throwable $th) {
             $response->status = 400;
             $response->message = $th->getMessage();

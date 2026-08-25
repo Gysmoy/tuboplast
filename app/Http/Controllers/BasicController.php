@@ -374,7 +374,7 @@ class BasicController extends Controller
       }
 
       $response->status = 200;
-      $response->message = 'Operacion correcta';
+      $response->message = 'Operación correcta';
     } catch (\Throwable $th) {
       $response->status = 400;
       $response->message = $th->getMessage();
@@ -406,7 +406,7 @@ class BasicController extends Controller
 
       $response->data = ['status' => $newStatus];
       $response->status = 200;
-      $response->message = 'Operacion correcta';
+      $response->message = 'Operación correcta';
     } catch (\Throwable $th) {
       $response->status = 400;
       $response->message = $th->getMessage();
@@ -429,7 +429,7 @@ class BasicController extends Controller
         ->update($data);
 
       $response->status = 200;
-      $response->message = 'Operacion correcta';
+      $response->message = 'Operación correcta';
     } catch (\Throwable $th) {
       $response->status = 400;
       $response->message = $th->getMessage();
@@ -451,10 +451,10 @@ class BasicController extends Controller
         : $this->model::where($this->identifier, $id)
         ->delete();
 
-      if (!$deleted) throw new Exception('No se ha eliminado ningun registro');
+      if (!$deleted) throw new Exception('No se ha eliminado ningún registro');
 
       $response->status = 200;
-      $response->message = 'Operacion correcta';
+      $response->message = 'Operación correcta';
     } catch (\Throwable $th) {
       $response->status = 400;
       $response->message = $th->getMessage();

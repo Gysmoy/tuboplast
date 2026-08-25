@@ -124,7 +124,7 @@ const ProductTaxonomyPage = ({ path, title, singular, icon = 'ti ti-list-details
         headerActions={<button type='button' className='wtx-btn' onClick={() => onModalOpen(null)}><i className='mdi mdi-plus'></i> Nuevo</button>}
         columns={[
           { key: 'name', header: 'Nombre', field: 'name', nowrap: true, render: (d) => <span className='fw-semibold'>{d.name}</span> },
-          { key: 'description', header: 'Descripcion', field: 'description', render: (d) => <span style={{ color: '#5b6577' }}>{d.description || '-'}</span> },
+          { key: 'description', header: 'Descripción', field: 'description', render: (d) => <span style={{ color: '#5b6577' }}>{d.description || '-'}</span> },
           {
             key: 'active_items_count', header: 'Items activos', field: 'active_items_count', align: 'center', width: 120, filterable: false,
             render: (d) => {
@@ -172,7 +172,7 @@ const ProductTaxonomyPage = ({ path, title, singular, icon = 'ti ti-list-details
               <div className='wtx-sec'>
                 <h4><i className='mdi mdi-shape-outline me-1' style={{ color: '#004991' }}></i>Datos</h4>
                 <InputFormGroup eRef={nameRef} label='Nombre' required />
-                <TextareaFormGroup eRef={descriptionRef} label='Descripcion' rows={4} />
+                <TextareaFormGroup eRef={descriptionRef} label='Descripción' rows={4} />
               </div>
             </div>
 

@@ -1,47 +1,28 @@
-import ProductTaxonomyRest from './ProductTaxonomyRest'
+import BasicRest from '../BasicRest'
 import { Cookies } from 'sode-extend-react'
 import { toast } from 'sonner'
 
-class ProductSegmentsRest extends ProductTaxonomyRest {
-  constructor() {
-    super('product-segments')
-  }
+class ProductSegmentsRest extends BasicRest {
+  path = 'product-segments'
 
-  save = async (segment) => {
+  boolean = async ({ id, field, value }, showNotification = true) => {
     try {
-      const formData = new FormData()
-      if (segment.id) formData.append('id', segment.id)
-
-      ;['name', 'description', 'featured_order'].forEach((field) => {
-        formData.append(field, segment[field] ?? '')
-      })
-
-      formData.append('featured', segment.featured ? '1' : '0')
-      formData.append('status', segment.status ? '1' : '0')
-
-      if (segment.image) {
-        formData.append('image', segment.image)
-      }
-
-      const res = await fetch(`/api/${this.path}`, {
-        method: 'POST',
+      const res = await fetch(`/api/${this.path}/boolean`, {
+        method: 'PATCH',
         headers: {
           Accept: 'application/json',
+          'Content-Type': 'application/json',
           'X-Xsrf-Token': decodeURIComponent(Cookies.get('XSRF-TOKEN'))
         },
-        body: formData
+        body: JSON.stringify({ id, field, value })
       })
-
       const result = await res.json()
-      if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrio un error inesperado')
-      }
-
-      toast.success('Correcto', { description: result.message })
-      return result
+      if (!res.ok || result?.status !== 200) throw new Error(result?.message || 'Ocurrió un error inesperado')
+      if (showNotification) toast.success('Correcto', { description: result.message })
+      return true
     } catch (error) {
       toast.error('Error', { description: error.message })
-      return null
+      return false
     }
   }
 }

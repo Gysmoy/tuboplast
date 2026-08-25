@@ -540,7 +540,7 @@ const ClubScreen = ({ banners = {} }) => {
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#897f00]">{testimonial.role}</p>
                 </div>
               </div>
-              <p className="mt-5 text-sm leading-relaxed text-darkmuted">â€œ{testimonial.quote}â€</p>
+              <p className="mt-5 text-sm leading-relaxed text-darkmuted">“{testimonial.quote}”</p>
             </article>
           ))}
         </div>

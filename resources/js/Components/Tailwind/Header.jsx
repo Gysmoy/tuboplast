@@ -161,15 +161,6 @@ const Header = ({ title }) => {
                   al cliente
                 </HeaderAction>
               </div>
-
-              <div className="hidden lg:block">
-                <HeaderAction href="/login" icon="mdi-account">
-                  Entre o
-                  <br />
-                  regístrese
-                </HeaderAction>
-              </div>
-
               <button
                 type="button"
                 onClick={openQuote}
@@ -259,14 +250,7 @@ const Header = ({ title }) => {
               ))}
             </ul>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <a
-                href="/login"
-                className="flex items-center justify-center gap-2 rounded-full border border-primary px-5 py-3 text-sm font-bold text-primary transition hover:bg-silver"
-              >
-                <i className="mdi mdi-account-outline text-lg"></i>
-                Entre o regístrese
-              </a>
+            <div className="mt-5 grid gap-3">
               <button
                 type="button"
                 onClick={openQuote}

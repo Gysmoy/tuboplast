@@ -147,7 +147,7 @@ const defaultBlogPosts = [
   {
     category: 'Industria',
     title: 'Infraestructura hídrica en el Perú: los retos del sector construcción en 2025',
-    description: 'Analizamos el pañorama actual del sector, las normativas vigentes y cómo Tuboplast lidera la respuesta...',
+    description: 'Analizamos el panorama actual del sector, las normativas vigentes y cómo Tuboplast lidera la respuesta...',
     image:
       'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80',
   },
@@ -211,11 +211,13 @@ const heroOverlayStyle = (slide) => {
   const opacity = clampOverlayOpacity(slide.overlay_opacity);
   const usesBakedOverlay = (slide.image_path || slide.image_url || '').includes('hero-obras-alto-rendimiento');
   const alpha = (multiplier) => Math.min(1, opacity * multiplier).toFixed(2);
+  const solidAlpha = Math.min(0.96, 0.18 + opacity * 0.78).toFixed(2);
+  const softAlpha = Math.min(0.88, 0.1 + opacity * 0.78).toFixed(2);
 
   return {
     background: usesBakedOverlay
-      ? `línear-gradient(100deg, rgba(247,251,255,${alpha(1)}) 0%, rgba(247,251,255,${alpha(0.78)}) 34%, rgba(247,251,255,${alpha(0.42)}) 56%, rgba(247,251,255,${alpha(0.1)}) 78%)`
-      : `línear-gradient(100deg, rgba(247,251,255,${alpha(1.12)}) 0%, rgba(247,251,255,${alpha(1.1)}) 34%, rgba(247,251,255,${alpha(0.85)}) 50%, rgba(247,251,255,${alpha(0.45)}) 66%, rgba(247,251,255,${alpha(0.14)}) 84%)`,
+      ? `linear-gradient(100deg, rgba(247,251,255,${solidAlpha}) 0%, rgba(247,251,255,${softAlpha}) 36%, rgba(247,251,255,${alpha(0.5)}) 58%, rgba(247,251,255,${alpha(0.14)}) 78%, rgba(247,251,255,0) 100%)`
+      : `linear-gradient(100deg, rgba(247,251,255,${solidAlpha}) 0%, rgba(247,251,255,${solidAlpha}) 32%, rgba(247,251,255,${softAlpha}) 48%, rgba(247,251,255,${alpha(0.5)}) 66%, rgba(247,251,255,${alpha(0.18)}) 84%, rgba(247,251,255,0) 100%)`,
   };
 };
 

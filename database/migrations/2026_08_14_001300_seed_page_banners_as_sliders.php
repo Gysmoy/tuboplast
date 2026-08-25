@@ -9,9 +9,9 @@ return new class extends Migration
     private array $banners = [
         [
             'placement' => 'blog',
-            'title' => 'Realiza tus cotizaciónes con facilidad',
-            'description' => 'Ultimás actualizaciones del blog Tuboplast.',
-            'image' => 'blog/blog-cotizaciónes-banner.png',
+            'title' => 'Realiza tus cotizaciones con facilidad',
+            'description' => 'Últimas actualizaciones del blog Tuboplast.',
+            'image' => 'blog/blog-cotizaciones-banner.png',
             'display_mode' => 'image_only',
             'sort_order' => 1,
         ],

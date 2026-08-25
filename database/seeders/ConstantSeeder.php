@@ -17,7 +17,7 @@ class ConstantSeeder extends Seeder
         Constant::updateOrCreate([
             'correlative' => 'terms',
         ], [
-            'name' => 'Terminos y condiciones',
+            'name' => 'Términos y condiciones',
             'value' => File::get('storage/app/utils/terms.html'),
             'type' => 'html'
         ]);
@@ -33,7 +33,7 @@ class ConstantSeeder extends Seeder
         Constant::updateOrCreate([
             'correlative' => 'accept-invitation',
         ], [
-            'name' => 'Aceptar invitacion',
+            'name' => 'Aceptar invitación',
             'value' => File::get('storage/app/utils/invitation.html'),
             'type' => 'html'
         ]);

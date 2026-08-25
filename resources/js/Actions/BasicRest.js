@@ -20,7 +20,7 @@ class BasicRest {
       const { status, result } = await Fetch(url, params);
       if (!status)
         throw new Error(
-          result?.message || "Ocurrio un error inesperado"
+          result?.message || "Ocurrió un error inesperado"
         );
       return result.data ?? true;
     } catch (error) {
@@ -58,7 +58,7 @@ class BasicRest {
         body: JSON.stringify(client)
       })
 
-      if (!status) throw new Error(result?.message || 'Ocurrio un error inesperado')
+      if (!status) throw new Error(result?.message || 'Ocurrió un error inesperado')
 
       notify({
         icon: '/assets/img/icon.svg',
@@ -84,7 +84,7 @@ class BasicRest {
         method: 'PATCH',
         body: JSON.stringify({ id, status })
       })
-      if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrio un error inesperado')
+      if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrió un error inesperado')
 
       notify({
         icon: '/assets/img/icon.svg',
@@ -112,7 +112,7 @@ class BasicRest {
         method: 'PATCH',
         body: JSON.stringify({ id, field, value })
       })
-      if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrio un error inesperado')
+      if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrió un error inesperado')
 
       if (showNotification) notify({
         icon: '/assets/img/icon.svg',
@@ -139,7 +139,7 @@ class BasicRest {
       const { status: fetchStatus, result } = await Fetch(`/api/${this.path}/${id}`, {
         method: 'DELETE'
       })
-      if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrio un error inesperado')
+      if (!fetchStatus) throw new Error(result?.message ?? 'Ocurrió un error inesperado')
 
       notify({
         icon: '/assets/img/icon.svg',

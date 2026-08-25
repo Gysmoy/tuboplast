@@ -63,7 +63,7 @@ class RoleController extends BasicController
                 ->count();
 
             if ($validCount !== count($permissionIds)) {
-                throw new \Exception('Uno o mas permisos no son válidos');
+                throw new \Exception('Uno o más permisos no son válidos');
             }
         }
 
@@ -114,7 +114,7 @@ class RoleController extends BasicController
 
         return response([
             'status' => 200,
-            'message' => 'Operacion correcta',
+            'message' => 'Operación correcta',
             'data' => $roles,
         ], 200);
     }
@@ -129,7 +129,7 @@ class RoleController extends BasicController
 
         return response([
             'status' => 200,
-            'message' => 'Operacion correcta',
+            'message' => 'Operación correcta',
             'data' => $permissions,
         ], 200);
     }
@@ -152,7 +152,7 @@ class RoleController extends BasicController
 
             DB::commit();
             $response->status = 200;
-            $response->message = 'Operacion correcta';
+            $response->message = 'Operación correcta';
         } catch (\Throwable $th) {
             DB::rollBack();
             $response->status = 400;

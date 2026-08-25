@@ -158,7 +158,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadDis
 
       <ul className="side-nav">
         <MenuItem href="/admin/home" icon='ti ti-home'>Dashboard</MenuItem>
-        <MenuItem href="/admin/quotes" icon='ti ti-receipt-2' badge={quotesBadge}>Cotizaciónes</MenuItem>
+        <MenuItem href="/admin/quotes" icon='ti ti-receipt-2' badge={quotesBadge}>Cotizaciones</MenuItem>
         <MenuItem href="/admin/club" icon='ti ti-users-group' badge={clubBadge}>Club experto</MenuItem>
         <MenuItem href="/admin/distributor-requests" icon='ti ti-truck-delivery' badge={distributorRequestsBadge}>Solicitudes distribuidor</MenuItem>
         <MenuItem href="/admin/messages" icon='ti ti-message-dots' badge={messagesBadge}>Mensajes</MenuItem>

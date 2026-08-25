@@ -11,7 +11,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 const services = [
   {
     title: 'Software a Medida',
-    copy: 'Desarrollamos plataformás alíneadas a tus procesos para resolver cuellos de botella y escalar operaciónes.',
+    copy: 'Desarrollamos plataformas alineadas a tus procesos para resolver cuellos de botella y escalar operaciones.',
     icon: Code2,
   },
   {
@@ -26,7 +26,7 @@ const services = [
   },
   {
     title: 'Integraciones con IA',
-    copy: 'Integramos asistentes inteligentes y analitica para acelerar soporte, ventas y decisiónes.',
+    copy: 'Integramos asistentes inteligentes y analitica para acelerar soporte, ventas y decisiones.',
     icon: Bot,
   },
   {
@@ -65,7 +65,7 @@ const fallbackWorkSlides = [
 const statsSlides = [
   {
     value: '85%',
-    text: 'de las interacciónes con clientes seran gestionadas sin intervencion humana.',
+    text: 'de las interacciones con clientes serán gestionadas sin intervención humana.',
     strong: 'Listo para liderar tu industria?',
   },
   {
@@ -367,7 +367,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
                 <article
                   data-service-card
                   key={service.title}
-                  className="rounded-xl border border-white/20 bg-[línear-gradient(145deg,rgba(255,255,255,0.14),rgba(5,9,18,0.82)_45%)] p-5 opacity-100 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
+                  className="rounded-xl border border-white/20 bg-[linear-gradient(145deg,rgba(255,255,255,0.14),rgba(5,9,18,0.82)_45%)] p-5 opacity-100 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
                 >
                   <div className="ml-auto flex h-9 w-9 items-center justify-center rounded-md border border-[#ff0a78]/50 bg-[#ff0a78]/20 text-[#ff4fa5]">
                     <Icon size={18} strokeWidth={2} />
@@ -530,7 +530,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
             {impact.map((card) => (
               <article
                 key={card.title}
-                className="rounded-2xl border border-white/20 bg-[línear-gradient(150deg,rgba(255,255,255,0.12),rgba(7,12,22,0.82)_52%)] p-4 transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
+                className="rounded-2xl border border-white/20 bg-[linear-gradient(150deg,rgba(255,255,255,0.12),rgba(7,12,22,0.82)_52%)] p-4 transition duration-300 hover:-translate-y-1 hover:border-[#ff0a78]/60"
               >
                 <img className="h-40 w-full rounded-lg object-cover" src={card.image} alt={card.title} />
                 <div className="pt-4">
@@ -690,7 +690,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
           role="presentation"
         >
           <div
-            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/25 bg-[línear-gradient(160deg,rgba(255,255,255,0.15),rgba(7,12,22,0.92)_60%)] p-6 text-center shadow-[0_0_55px_rgba(255,10,120,0.2)]"
+            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/25 bg-[linear-gradient(160deg,rgba(255,255,255,0.15),rgba(7,12,22,0.92)_60%)] p-6 text-center shadow-[0_0_55px_rgba(255,10,120,0.2)]"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"

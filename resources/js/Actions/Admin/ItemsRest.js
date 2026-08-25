@@ -17,13 +17,13 @@ const parseJsonResponse = async (res) => {
   }
 
   if (text.trim().startsWith('<')) {
-    throw new Error('El servidor devolvio HTML en vez de JSON. Revisa si el archivo supera el limite de carga, si la sesion vencio o si ocurrio un error 500.')
+    throw new Error('El servidor devolvió HTML en vez de JSON. Revisa si el archivo supera el límite de carga, si la sesión venció o si ocurrió un error 500.')
   }
 
   try {
     return JSON.parse(text)
   } catch {
-    throw new Error(text || 'El servidor devolvio una respuesta invalida.')
+    throw new Error(text || 'El servidor devolvió una respuesta inválida.')
   }
 }
 
@@ -49,7 +49,7 @@ class ItemsRest extends BasicRest {
 
       const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrio un error inesperado')
+        throw new Error(result?.message || 'Ocurrió un error inesperado')
       }
 
       const data = result.data || {}
@@ -57,8 +57,8 @@ class ItemsRest extends BasicRest {
         `${data.created ?? 0} creados`,
         `${data.updated ?? 0} actualizados`,
         `${data.skipped ?? 0} omitidos`,
-        `${data.images_associated ?? 0} imagenes asociadas`,
-        `${data.images_ignored ?? 0} imagenes ignoradas`,
+        `${data.images_associated ?? 0} imágenes asociadas`,
+        `${data.images_ignored ?? 0} imágenes ignoradas`,
         `${data.sheets_associated ?? 0} fichas asociadas`,
         `${data.sheets_ignored ?? 0} fichas ignoradas`,
       ].join(' - ')
@@ -87,7 +87,7 @@ class ItemsRest extends BasicRest {
 
       const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrio un error inesperado')
+        throw new Error(result?.message || 'Ocurrió un error inesperado')
       }
 
       const data = result.data || {}
@@ -123,19 +123,19 @@ class ItemsRest extends BasicRest {
 
       const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrio un error inesperado')
+        throw new Error(result?.message || 'Ocurrió un error inesperado')
       }
 
       const data = result.data || {}
       const body = [
         `${data.matched_items ?? 0} productos con coincidencia`,
-        `${data.images_associated ?? 0} imagenes asociadas`,
-        `${data.images_ignored ?? 0} imagenes ignoradas`,
+        `${data.images_associated ?? 0} imágenes asociadas`,
+        `${data.images_ignored ?? 0} imágenes ignoradas`,
         `${data.not_found ?? 0} codigos sin producto`,
         `${data.ambiguous ?? 0} codigos ambiguos`,
       ].join(' - ')
 
-      notify({ title: 'Carga de imagenes completada', body, type: 'success' })
+      notify({ title: 'Carga de imágenes completada', body, type: 'success' })
       return result
     } catch (error) {
       notify({ title: 'Error', body: error.message, type: 'danger' })
@@ -166,6 +166,7 @@ class ItemsRest extends BasicRest {
       if (item.image) {
         formData.append('image', item.image)
       }
+      ;(item.gallery_images || []).forEach((image) => formData.append('gallery_images[]', image))
       if (item.technical_sheet) {
         formData.append('technical_sheet', item.technical_sheet)
       }
@@ -181,7 +182,7 @@ class ItemsRest extends BasicRest {
 
       const result = await parseJsonResponse(res)
       if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrio un error inesperado')
+        throw new Error(result?.message || 'Ocurrió un error inesperado')
       }
 
       notify({ title: 'Correcto', body: result.message, type: 'success' })

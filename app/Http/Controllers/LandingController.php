@@ -923,7 +923,7 @@ class LandingController extends BasicController
         return parent::reactView($request);
     }
 
-    public function aboutPolíticaView(Request $request)
+    public function aboutPoliticaView(Request $request)
     {
         $this->reactView = 'AboutPolitica';
 
@@ -1203,7 +1203,7 @@ class LandingController extends BasicController
         if (preg_match('/[\d.]+\s*bar/i', $pressure, $m)) return $m[0];
         if (preg_match('/Sn\d[\w.-]*/i', $pressure, $m)) return strtoupper($m[0]);
 
-        return mb_strlen($pressure) > 16 ? (mb_substr($pressure, 0, 14) . 'â€¦') : $pressure;
+        return mb_strlen($pressure) > 16 ? (mb_substr($pressure, 0, 14) . '…') : $pressure;
     }
 
     private function diameterLabel(array $diameters): string
@@ -1216,7 +1216,7 @@ class LandingController extends BasicController
             return $diameters[0];
         }
 
-        return $diameters[0] . ' â€“ ' . end($diameters);
+        return $diameters[0] . ' – ' . end($diameters);
     }
 
     private function hasValidUbigeo(array $data): bool

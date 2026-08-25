@@ -122,7 +122,7 @@ class ItemController extends BasicController
             'color' => 'nullable|string|max:60',
             'brand' => 'nullable|string|max:120',
             'unit' => 'nullable|string|max:20',
-            'másterpack' => 'nullable|integer|min:0',
+            'masterpack' => 'nullable|integer|min:0',
             'pieces' => 'nullable|string|max:20',
             'origin_country' => 'nullable|string|max:120',
             'description' => 'nullable|string|max:2000',
@@ -148,6 +148,8 @@ class ItemController extends BasicController
             'usage_recommendations' => 'nullable|string|max:2000',
             'observations' => 'nullable|string|max:2000',
             'usage_warning' => 'nullable|string|max:2000',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'file|image|max:10240',
             'technical_sheet' => 'nullable|file|mimes:pdf|max:51200',
             'status' => 'nullable',
         ]);
@@ -167,6 +169,7 @@ class ItemController extends BasicController
         $primarySegmentId = $segmentIds[0] ?? ($validated['product_segment_id'] ?? null);
 
         unset($validated['product_segment_ids']);
+        unset($validated['gallery_images']);
 
         $validated['currency'] = $validated['currency'] ?? 'PEN';
         $validated['product_segment_id'] = $primarySegmentId ?: null;
@@ -261,7 +264,7 @@ class ItemController extends BasicController
             Cache::forget('tuboplast.catalog.facets');
 
             $response->status = 200;
-            $response->message = 'Carga másiva completada';
+            $response->message = 'Carga masiva completada';
             $response->data = $result;
         } catch (\Throwable $th) {
             $response->status = 400;
@@ -281,14 +284,14 @@ class ItemController extends BasicController
             ]);
 
             if (!Schema::hasTable('item_images')) {
-                throw new Exception('La tabla de galeria de imagenes aun no existe. Ejecuta las migraciones antes de cargar imagenes.');
+                throw new Exception('La tabla de galeria de imágenes aun no existe. Ejecuta las migraciones antes de cargar imágenes.');
             }
 
             $imagePackage = $this->readImagePackage($request->file('images_zip')->getRealPath());
             $imageGroups = $imagePackage['groups'] ?? [];
 
             if (!count($imageGroups)) {
-                throw new Exception('No se encontraron imagenes validas dentro del comprimido.');
+                throw new Exception('No se encontraron imágenes válidas dentro del comprimido.');
             }
 
             $this->filesPendingDeletion = [];
@@ -298,7 +301,7 @@ class ItemController extends BasicController
             Cache::forget('tuboplast.catalog.facets');
 
             $response->status = 200;
-            $response->message = 'Carga de imagenes completada';
+            $response->message = 'Carga de imágenes completada';
             $response->data = $result;
         } catch (\Throwable $th) {
             $response->status = 400;
@@ -322,7 +325,7 @@ class ItemController extends BasicController
             $sheetGroups = $sheetPackage['groups'] ?? [];
 
             if (!count($sheetGroups)) {
-                throw new Exception('No se encontraron fichas técnicas PDF validas dentro del comprimido.');
+                throw new Exception('No se encontraron fichas técnicas PDF válidas dentro del comprimido.');
             }
 
             $this->filesPendingDeletion = [];
@@ -373,11 +376,11 @@ class ItemController extends BasicController
         foreach ($rows as $index => $raw) {
             $rowNumber = $index + 2;
             $norm = $this->normalizeRow($raw);
-            $sku = $this->stringOrNull($this->getImportValue($norm, 'Codigo Producto'));
+            $sku = $this->stringOrNull($this->getImportValue($norm, 'Código Producto'));
 
             if (!$sku) {
                 $skipped++;
-                $this->pushImportError($errors, "Fila {$rowNumber}: falta Codigo Producto.");
+                $this->pushImportError($errors, "Fila {$rowNumber}: falta Código Producto.");
                 continue;
             }
 
@@ -419,7 +422,7 @@ class ItemController extends BasicController
         }
 
         if (($created + $updated) === 0) {
-            throw new Exception('No se importo ningun item. Revisa que el archivo tenga la columna Codigo Producto.');
+            throw new Exception('No se importó ningún item. Revisa que el archivo tenga la columna Código Producto.');
         }
 
         foreach ($imageGroups as $skuKey => $images) {
@@ -487,14 +490,14 @@ class ItemController extends BasicController
             if ($candidates->isEmpty()) {
                 $notFound++;
                 $imagesIgnored += count($images);
-                $this->pushImportError($errors, "No existe producto para el codigo de imagen {$skuKey}.");
+                $this->pushImportError($errors, "No existe producto para el código de imagen {$skuKey}.");
                 continue;
             }
 
             if ($candidates->count() > 1) {
                 $ambiguous++;
                 $imagesIgnored += count($images);
-                $this->pushImportError($errors, "Codigo de imagen {$skuKey} coincide con más de un producto.");
+                $this->pushImportError($errors, "Código de imagen {$skuKey} coincide con más de un producto.");
                 continue;
             }
 
@@ -510,7 +513,7 @@ class ItemController extends BasicController
         }
 
         if ($matched === 0) {
-            throw new Exception('No se cargo ninguna imagen: ningun nombre de archivo coincide claramente con un SKU existente.');
+            throw new Exception('No se cargó ninguna imagen: ningún nombre de archivo coincide claramente con un SKU existente.');
         }
 
         return [
@@ -530,12 +533,12 @@ class ItemController extends BasicController
 
         foreach ($rows as $index => $raw) {
             $norm = $this->normalizeRow($raw);
-            $sku = $this->stringOrNull($this->getImportValue($norm, 'Codigo Producto'));
+            $sku = $this->stringOrNull($this->getImportValue($norm, 'Código Producto'));
 
             if (!$sku) {
                 $skipped++;
                 $rowNumber = $index + 2;
-                $this->pushImportError($errors, "Fila {$rowNumber}: falta Codigo Producto.");
+                $this->pushImportError($errors, "Fila {$rowNumber}: falta Código Producto.");
             }
         }
 
@@ -595,7 +598,7 @@ class ItemController extends BasicController
             'color' => $this->stringOrNull($this->getImportValue($norm, 'Color')),
             'brand' => $this->stringOrNull($this->getImportValue($norm, 'Marca')),
             'unit' => $this->stringOrNull($this->getImportValue($norm, 'Unidad de Medida')),
-            'másterpack' => $this->intOrNull($this->getImportValue($norm, 'Másterpack')),
+            'masterpack' => $this->intOrNull($this->getImportValue($norm, 'Masterpack')),
             'pieces' => $this->stringOrNull($this->getImportValue($norm, 'Numero de piezas')),
             'origin_country' => $this->stringOrNull($this->getImportValue($norm, 'Pais de origen')),
             'sku' => $sku,
@@ -823,7 +826,7 @@ class ItemController extends BasicController
             $sheetXml = $zip->getFromName($sheetPath);
 
             if ($sheetXml === false) {
-                throw new Exception('No se encontró una hoja valida dentro del Excel.');
+                throw new Exception('No se encontró una hoja válida dentro del Excel.');
             }
 
             $xml = simplexml_load_string($sheetXml);
@@ -831,11 +834,11 @@ class ItemController extends BasicController
                 throw new Exception('No se pudo leer la hoja del Excel.');
             }
 
-            $xml->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
+            $xml->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
             $rows = [];
 
             foreach ($xml->xpath('//s:sheetData/s:row') ?: [] as $row) {
-                $row->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
+                $row->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
                 $values = [];
                 $nextColumn = 0;
 
@@ -889,7 +892,7 @@ class ItemController extends BasicController
             return [];
         }
 
-        $xml->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
+        $xml->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
         $strings = [];
 
         foreach ($xml->xpath('//s:si') ?: [] as $node) {
@@ -915,19 +918,19 @@ class ItemController extends BasicController
             return 'xl/worksheets/sheet1.xml';
         }
 
-        $workbook->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
+        $workbook->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
         $firstSheet = ($workbook->xpath('//s:sheets/s:sheet') ?: [])[0] ?? null;
         if ($firstSheet === null) {
             return 'xl/worksheets/sheet1.xml';
         }
 
         $relationId = (string) $firstSheet
-            ->attributes('http://schemás.openxmlformats.org/officeDocument/2006/relationships')['id'];
+            ->attributes('http://schemas.openxmlformats.org/officeDocument/2006/relationships')['id'];
         if (!$relationId) {
             return 'xl/worksheets/sheet1.xml';
         }
 
-        $rels->registerXPathNamespace('r', 'http://schemás.openxmlformats.org/package/2006/relationships');
+        $rels->registerXPathNamespace('r', 'http://schemas.openxmlformats.org/package/2006/relationships');
         foreach ($rels->xpath('//r:Relationship') ?: [] as $relationship) {
             if ((string) $relationship['Id'] !== $relationId) {
                 continue;
@@ -955,7 +958,7 @@ class ItemController extends BasicController
             return null;
         }
 
-        $workbook->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
+        $workbook->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
         $targetRelationId = null;
 
         foreach ($workbook->xpath('//s:sheets/s:sheet') ?: [] as $sheet) {
@@ -964,7 +967,7 @@ class ItemController extends BasicController
             }
 
             $targetRelationId = (string) $sheet
-                ->attributes('http://schemás.openxmlformats.org/officeDocument/2006/relationships')['id'];
+                ->attributes('http://schemas.openxmlformats.org/officeDocument/2006/relationships')['id'];
             break;
         }
 
@@ -972,7 +975,7 @@ class ItemController extends BasicController
             return null;
         }
 
-        $rels->registerXPathNamespace('r', 'http://schemás.openxmlformats.org/package/2006/relationships');
+        $rels->registerXPathNamespace('r', 'http://schemas.openxmlformats.org/package/2006/relationships');
         foreach ($rels->xpath('//r:Relationship') ?: [] as $relationship) {
             if ((string) $relationship['Id'] === $targetRelationId) {
                 return $this->resolveXlsxPath((string) $relationship['Target']);
@@ -1000,7 +1003,7 @@ class ItemController extends BasicController
     private function readXlsxCellValue(\SimpleXMLElement $cell, array $sharedStrings)
     {
         $type = (string) $cell['t'];
-        $cell->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
+        $cell->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
 
         if ($type === 'inlineStr') {
             return $this->xmlText($cell);
@@ -1026,7 +1029,7 @@ class ItemController extends BasicController
 
     private function xmlText(\SimpleXMLElement $node): string
     {
-        $node->registerXPathNamespace('s', 'http://schemás.openxmlformats.org/spreadsheetml/2006/main');
+        $node->registerXPathNamespace('s', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
         $parts = [];
 
         foreach ($node->xpath('.//s:t') ?: [] as $textNode) {
@@ -1214,7 +1217,7 @@ class ItemController extends BasicController
 
     private function readImagePackage(string $path): array
     {
-        return $this->readArchivePackage($path, 'imagenes', ['jpg', 'jpeg', 'png', 'webp']);
+        return $this->readArchivePackage($path, 'imágenes', ['jpg', 'jpeg', 'png', 'webp']);
     }
 
     private function readSheetPackage(string $path): array
@@ -1309,7 +1312,7 @@ class ItemController extends BasicController
             return $this->zipEntries($path, $label);
         }
 
-        throw new Exception("El paquete de {$label} debe ser un archivo .zip o .rar valido.");
+        throw new Exception("El paquete de {$label} debe ser un archivo .zip o .rar válido.");
     }
 
     private function zipEntries(string $path, string $label): iterable
@@ -1508,7 +1511,7 @@ class ItemController extends BasicController
         }
 
         if ($matched === 0) {
-            throw new Exception('No se cargo ninguna ficha técnica: ningun nombre de archivo coincide claramente con un SKU existente.');
+            throw new Exception('No se cargó ninguna ficha técnica: ningún nombre de archivo coincide claramente con un SKU existente.');
         }
 
         return [
@@ -1536,7 +1539,38 @@ class ItemController extends BasicController
 
     private function syncManualImageGallery(Request $request, Item $item): void
     {
-        if (!$request->hasFile('image') || !$item->image || !Schema::hasTable('item_images')) {
+        if (!Schema::hasTable('item_images')) {
+            return;
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            $item->loadMissing('images');
+            foreach ($item->images as $image) {
+                $this->queueFileForDeletion($image->path);
+            }
+            $item->images()->delete();
+
+            $primaryPath = null;
+            foreach (array_values($request->file('gallery_images')) as $index => $file) {
+                $path = $file->store('items', 'public');
+                $item->images()->create([
+                    'path' => $path,
+                    'sort_order' => $index,
+                ]);
+                $primaryPath ??= $path;
+            }
+
+            if ($primaryPath && $primaryPath !== $item->image) {
+                if ($item->image) {
+                    $this->queueFileForDeletion($item->image);
+                }
+                $item->forceFill(['image' => $primaryPath])->save();
+            }
+
+            return;
+        }
+
+        if (!$request->hasFile('image') || !$item->image) {
             return;
         }
 

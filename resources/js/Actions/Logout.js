@@ -17,10 +17,10 @@ const Logout = async () => {
         'Accept': 'application/json'
       }
     })
-    if (!status) throw new Error(result?.message || 'Ocurrio un error al cerrar sesion')
+    if (!status) throw new Error(result?.message || 'Ocurrió un error al cerrar sesión')
     notify({
       icon: '/assets/img/icon.svg',
-      title: 'Cierre de sesion exitoso',
+      title: 'Cierre de sesión exitoso',
       body: 'Sera enviado a la pantalla de autenticacion',
       type: 'success'
     })

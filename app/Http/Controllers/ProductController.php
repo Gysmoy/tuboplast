@@ -191,7 +191,7 @@ class ProductController extends BasicController
 
         $logisticItems = array_values(array_filter([
             $this->spec('Unidad de medida', $item->unit),
-            $item->másterpack ? $this->spec('Másterpack', (string) $item->másterpack) : null,
+            $item->masterpack ? $this->spec('Masterpack', (string) $item->masterpack) : null,
             $this->spec('N° de piezas', $item->pieces),
             $this->spec('Tipo de empaque', $item->package_type),
             $this->spec('País de origen', $item->origin_country),
@@ -252,12 +252,20 @@ class ProductController extends BasicController
 
     private function relatedProducts(Item $current): array
     {
-        return Item::query()
+        $query = Item::query()
             ->where('status', true)
-            ->where('id', '!=', $current->id)
+            ->where('id', '!=', $current->id);
+
+        if ($current->product_line_id) {
+            $query->where('product_line_id', $current->product_line_id);
+        } elseif ($current->category_id) {
+            $query->where('category_id', $current->category_id);
+        }
+
+        return $query
             ->with('category', 'productLine')
             ->latest()
-            ->take(4)
+            ->take(8)
             ->get()
             ->map(function ($item) {
                 $price = $item->price !== null ? (float) $item->price : null;

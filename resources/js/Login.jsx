@@ -37,7 +37,7 @@ const Login = ({ token, message }) => {
       const result = await response.json()
 
       if (!response.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'No se pudo iniciar sesion')
+        throw new Error(result?.message || 'No se pudo iniciar sesión')
       }
 
       window.location.href = '/admin/'
@@ -45,7 +45,7 @@ const Login = ({ token, message }) => {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: error.message || 'No se pudo iniciar sesion'
+        text: error.message || 'No se pudo iniciar sesión'
       })
     } finally {
       setLoading(false)

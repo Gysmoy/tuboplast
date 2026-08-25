@@ -163,7 +163,7 @@ export const buildTechnicalSheetText = (product, quantity = 1) => {
     `Categoría: ${product.categoryLabel ?? product.category ?? '-'}`,
     `Precio unitario: ${formatProductPrice(product)}`,
     '',
-    'Descripcion',
+    'Descripción',
     product.description ?? '-',
     '',
     'Resumen',
@@ -263,7 +263,7 @@ export const downloadTechnicalSheet = (product, quantity = 1) => {
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(4, 53, 110);
   doc.setFontSize(12);
-  doc.text('Descripcion', left, cursorY + 2);
+  doc.text('Descripción', left, cursorY + 2);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(51, 65, 85);
   const descriptionLines = doc.splitTextToSize(product.description ?? '-', pageWidth - left * 2);
@@ -306,7 +306,7 @@ export const downloadTechnicalSheet = (product, quantity = 1) => {
       doc.setTextColor(100, 116, 139);
       doc.text(`Documento generado para ${product.title ?? 'producto'}`, left, pageHeight - 9);
       doc.text(
-        `Pagina ${doc.getNumberOfPages()}`,
+        `Página ${doc.getNumberOfPages()}`,
         pageWidth - left,
         pageHeight - 9,
         { align: 'right' },
@@ -379,6 +379,7 @@ const TEXT_RGB = [51, 65, 85];
 const MUTED_RGB = [115, 120, 130];
 const CARD_RGB = [241, 245, 249];
 const INK_RGB = [15, 23, 42];
+const QUOTE_FOLLOW_UP_MESSAGE = 'Nuestro equipo comercial se pondrá en contacto contigo a la brevedad.';
 
 // Same typefaces as the web: Manrope (body) + Space Grotesk (titles).
 const FONT_FILES = [
@@ -724,6 +725,28 @@ const buildQuotePdf = async (customer, items, meta = {}) => {
   doc.setTextColor(...SECONDARY_RGB);
   doc.setFontSize(9);
   doc.text('TUBOPLAST S.A.', pageWidth - left - 7, summaryY + 9.5, { align: 'right' });
+
+  let messageY = summaryY + summaryH + 8;
+  const messageLines = doc.splitTextToSize(QUOTE_FOLLOW_UP_MESSAGE, contentWidth - 14);
+  const messageH = 13 + messageLines.length * 4.8;
+  if (messageY + messageH > pageHeight - 24) {
+    doc.addPage();
+    messageY = 24;
+  }
+
+  doc.setFillColor(255, 252, 214);
+  doc.roundedRect(left, messageY, contentWidth, messageH, 3, 3, 'F');
+  doc.setDrawColor(244, 227, 0);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(left, messageY, contentWidth, messageH, 3, 3, 'S');
+  doc.setFont(BODY, 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...PRIMARY_RGB);
+  doc.text('SIGUIENTE PASO', left + 7, messageY + 6);
+  doc.setFont(BODY, 'normal');
+  doc.setFontSize(9.5);
+  doc.setTextColor(...TEXT_RGB);
+  doc.text(messageLines, left + 7, messageY + 12);
 
   return doc;
 };

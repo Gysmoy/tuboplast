@@ -382,7 +382,7 @@ const Sliders = ({ items = [] }) => {
                         <small className='text-muted'>0% muestra más imagen, 100% aclara más el lado del texto.</small>
                       </div>
                     )}
-                    <TextareaFormGroup eRef={descriptionRef} label='Descripcion' rows={4} />
+                    <TextareaFormGroup eRef={descriptionRef} label='Descripción' rows={4} />
                     <div className='d-flex align-items-center gap-2 mt-1'>
                       <SwitchFormGroup id='slider-form-status' checked={status} noMargin onChange={() => setStatus((current) => !current)} />
                       <span className='text-muted' style={{ fontSize: 13 }}>Activo en la web</span>

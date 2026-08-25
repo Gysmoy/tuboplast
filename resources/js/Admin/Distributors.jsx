@@ -13,6 +13,7 @@ import { loadGoogleMapsApi } from '../Utils/googleMaps.js'
 
 const distribuidoresRest = new DistribuidoresRest()
 const DEFAULT_CENTER = { lat: -12.046374, lng: -77.042793 }
+const IMPORT_PATTERN = /\.(xlsx|csv)$/i
 
 const PLACE_CSS = `
 .wfd-act{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:0;font-size:13px;transition:filter .15s;}
@@ -78,6 +79,7 @@ const ReadOnlyField = ({ col = 'col-md-4', label, value }) => (
 
 const Distributors = ({ gmapsApiKey }) => {
   const tableRef = useRef(null)
+  const importInputRef = useRef(null)
   const mapRef = useRef()
   const mapInstanceRef = useRef(null)
   const markerRef = useRef(null)
@@ -107,6 +109,10 @@ const Distributors = ({ gmapsApiKey }) => {
   const [formError, setFormError] = useState('')
   const [confirmTarget, setConfirmTarget] = useState(null)
   const [deleting, setDeleting] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
+  const [importFile, setImportFile] = useState(null)
+  const [importLoading, setImportLoading] = useState(false)
+  const [importError, setImportError] = useState('')
 
   const departments = useMemo(() => getDepartments(ubigeoRows), [ubigeoRows])
   const provinces = useMemo(() => getProvinces(ubigeoRows, department), [ubigeoRows, department])
@@ -129,9 +135,9 @@ const Distributors = ({ gmapsApiKey }) => {
   }, [])
 
   useEffect(() => {
-    document.body.style.overflow = isModalOpen ? 'hidden' : ''
+    document.body.style.overflow = (isModalOpen || importOpen) ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [isModalOpen])
+  }, [isModalOpen, importOpen])
 
   const updatePoint = React.useCallback((lat, lng, pan = true) => {
     const normalizedLat = formatCoordinate(lat)
@@ -256,6 +262,46 @@ const Distributors = ({ gmapsApiKey }) => {
     setFormError('')
     setIsModalOpen(true)
     setTimeout(() => setFormValues(data), 30)
+  }
+
+  const openImport = () => {
+    setImportFile(null)
+    setImportError('')
+    setImportOpen(true)
+    if (importInputRef.current) importInputRef.current.value = ''
+  }
+
+  const closeImport = () => {
+    if (importLoading) return
+    setImportOpen(false)
+    setImportError('')
+  }
+
+  const selectImportFile = (file) => {
+    if (!file) return
+    if (!IMPORT_PATTERN.test(file.name || '')) {
+      setImportFile(null)
+      setImportError('Selecciona un archivo .xlsx o .csv.')
+      return
+    }
+    setImportError('')
+    setImportFile(file)
+  }
+
+  const onImportSubmit = async (event) => {
+    event.preventDefault()
+    if (importLoading) return
+    if (!importFile) {
+      setImportError('Selecciona o arrastra un archivo antes de importar.')
+      return
+    }
+
+    setImportLoading(true)
+    const result = await distribuidoresRest.import({ file: importFile })
+    setImportLoading(false)
+    if (!result) return
+    setImportOpen(false)
+    tableRef.current?.reload()
   }
 
   const askDelete = (row, event) => { if (event) event.stopPropagation(); setConfirmTarget(row) }
@@ -394,9 +440,62 @@ const Distributors = ({ gmapsApiKey }) => {
         countSuffix='distribuidores'
         defaultSort={[{ selector: 'department', desc: false }]}
         minWidth={1100}
-        headerActions={<button type='button' className='wfd-btn' onClick={() => onModalOpen(null)}><i className='mdi mdi-plus'></i> Nuevo distribuidor</button>}
+        headerActions={(
+          <>
+            <button type='button' className='wfd-btn outline' onClick={openImport}><i className='mdi mdi-upload'></i> Carga masiva</button>
+            <button type='button' className='wfd-btn' onClick={() => onModalOpen(null)}><i className='mdi mdi-plus'></i> Nuevo distribuidor</button>
+          </>
+        )}
         columns={columns}
       />
+
+      <div className='wfd-modal-ovl' style={{ display: importOpen ? 'flex' : 'none' }} onMouseDown={closeImport}>
+        <div className='wfd-modal' style={{ width: 'min(680px,96vw)' }} onMouseDown={(e) => e.stopPropagation()}>
+          <form onSubmit={onImportSubmit}>
+            <div className='wfd-modal-head'>
+              <h3 className='wfd-h2' style={{ fontSize: 16 }}>
+                <i className='mdi mdi-file-excel-outline me-1' style={{ color: '#004991' }}></i>
+                Carga masiva de distribuidores
+              </h3>
+              <button type='button' className='wfd-close' onClick={closeImport}><i className='mdi mdi-close'></i></button>
+            </div>
+            <div className='wfd-modal-body'>
+              {importError && <div className='wfd-err'><i className='mdi mdi-alert-circle-outline'></i>{importError}</div>}
+              <input
+                ref={importInputRef}
+                type='file'
+                accept='.xlsx,.csv'
+                hidden
+                onChange={(e) => selectImportFile(e.target.files?.[0])}
+              />
+              <button
+                type='button'
+                className='wfd-sec'
+                style={{ minHeight: 150, background: '#f8fbff', borderStyle: 'dashed', textAlign: 'center' }}
+                onClick={() => importInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  selectImportFile(e.dataTransfer.files?.[0])
+                }}
+              >
+                <i className='mdi mdi-cloud-upload-outline d-block mb-2' style={{ fontSize: 34, color: '#004991' }}></i>
+                <strong>Arrastra tu Excel aquí o haz clic para seleccionarlo</strong>
+                <span className='d-block text-muted mt-1'>Columnas mínimas: Nombre, Dirección, Latitud, Longitud y Ubigeo.</span>
+                {importFile && <span className='badge bg-light text-dark border mt-3'>{importFile.name}</span>}
+              </button>
+            </div>
+            <div className='wfd-modal-foot'>
+              <button type='button' className='wfd-btn outline foot' onClick={closeImport} disabled={importLoading}>Cancelar</button>
+              <button type='submit' className='wfd-btn foot' disabled={importLoading}>
+                {importLoading
+                  ? <><span className='spinner-border spinner-border-sm'></span> Importando...</>
+                  : <><i className='mdi mdi-upload'></i> Importar distribuidores</>}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
       <div className='wfd-modal-ovl' style={{ display: isModalOpen ? 'flex' : 'none' }} onMouseDown={closeForm}>
         <div className='wfd-modal' onMouseDown={(e) => e.stopPropagation()}>

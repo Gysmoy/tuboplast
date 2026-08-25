@@ -17,7 +17,7 @@ const defaultAbout = {
   policy_description:
     'En TUBOPLAST nos dedicamos a la fabricación de tuberías, accesorios de PVC y polietileno, y estamos comprometidos con la satisfacción de nuestros clientes para lo cual ponemos a su disposición nuestros recursos humanos y materiales, ofrecemos un excelente trato personalizado; garantizamos y aseguramos que todo producto brindado cumplirá con los requisitos acordados con el cliente.',
   policy_bullets: [
-    'Fomentar y ejecutar acciónes para garantizar que sus operaciones se realicen aplicando estándares de seguridad apropiados, para el control y mitigación de los riesgos.',
+    'Fomentar y ejecutar acciones para garantizar que sus operaciones se realicen aplicando estándares de seguridad apropiados, para el control y mitigación de los riesgos.',
     'Controlar y mitigar nuestros aspectos ambientales significativos.',
     'Mejorar continuamente nuestros procesos, desempeño ambiental y nuestro sistema de gestión integrado.',
     'Sensibilizar, capacitar y entrenar a nuestros colaboradores, a fin de desarrollar una cultura preventiva y promover el cumplimiento de las normas, reglamentos y procedimientos.',

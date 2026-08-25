@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    {{-- Preconnect a origenes remotos de imagenes/scripts para acelerar LCP --}}
+    {{-- Preconnect a orígenes remotos de imágenes/scripts para acelerar LCP --}}
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     @php
@@ -125,7 +125,7 @@
 
     <script src="/lte/assets/js/vendor.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js" defer></script>
-    {{-- moment removido: ninguna pagina publica lo usa (ahorra ~840KB) --}}
+    {{-- moment removido: ninguna página pública lo usa (ahorra ~840KB) --}}
     <script src="/lte/assets/libs/tippy.js/tippy.all.min.js" defer></script>
 
     <script>

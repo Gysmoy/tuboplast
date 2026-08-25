@@ -87,7 +87,7 @@ class AccountController extends BasicController
         if (!Hash::check($currentPassword, $user->password)) {
             return response([
                 'status' => 422,
-                'message' => 'La contrasena actual no es valida',
+                'message' => 'La contrasena actual no es válida',
             ], 422);
         }
 
@@ -96,7 +96,7 @@ class AccountController extends BasicController
 
         return response([
             'status' => 200,
-            'message' => 'Contrasena actualizada correctamente',
+            'message' => 'Contraseña actualizada correctamente',
         ], 200);
     }
 

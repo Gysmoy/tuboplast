@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('users/{id}', [UserController::class, 'delete']);
 
     Route::post('distribuidores/paginate', [DistribuidorController::class, 'paginate']);
+    Route::post('distribuidores/import', [DistribuidorController::class, 'import']);
     Route::post('distribuidores', [DistribuidorController::class, 'save']);
     Route::get('distribuidores/{id}', [DistribuidorController::class, 'get']);
     Route::patch('distribuidores/status', [DistribuidorController::class, 'status']);

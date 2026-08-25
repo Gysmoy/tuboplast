@@ -130,7 +130,7 @@ const FallbackMap = () => (
     <div className="absolute -left-10 top-[45%] h-16 w-[95%] rotate-[12deg] bg-white/70 shadow-sm" />
     <div className="absolute left-[28%] top-0 h-[130%] w-8 rotate-[9deg] bg-white/75 shadow-sm" />
     <div className="absolute left-[64%] top-0 h-[130%] w-7 -rotate-[11deg] bg-white/70 shadow-sm" />
-    <div className="absolute inset-0 opacity-45 [background-image:repeating-línear-gradient(0deg,transparent,transparent_31px,#94a3b8_32px,#94a3b8_33px),repeating-línear-gradient(90deg,transparent,transparent_46px,#94a3b8_47px,#94a3b8_48px)]" />
+    <div className="absolute inset-0 opacity-45 [background-image:repeating-linear-gradient(0deg,transparent,transparent_31px,#94a3b8_32px,#94a3b8_33px),repeating-linear-gradient(90deg,transparent,transparent_46px,#94a3b8_47px,#94a3b8_48px)]" />
     <span className="absolute left-[42%] top-[35%] text-base font-bold uppercase tracking-[0.12em] text-slate-500/80">
       Ate
     </span>

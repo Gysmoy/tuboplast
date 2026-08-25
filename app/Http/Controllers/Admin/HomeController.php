@@ -154,7 +154,7 @@ class HomeController extends BasicController
             'month_label' => $label,
             'kpis' => [
                 [
-                    'title' => 'Cotizaciónes ' . $word,
+                    'title' => 'Cotizaciones ' . $word,
                     'value' => number_format($quotesNow),
                     'icon' => 'ti ti-file-invoice',
                     ...$this->delta($quotesNow, $quotesPrev),
@@ -181,13 +181,13 @@ class HomeController extends BasicController
             'metrics' => [
                 ['label' => 'Monto cotizado ' . $word, 'value' => $amountLabel],
                 ['label' => 'Ticket promedio (S/)', 'value' => 'S/ ' . number_format($ticket, 2)],
-                ['label' => 'Cotizaciónes sin leer', 'value' => number_format($unreadQuotes)],
+                ['label' => 'Cotizaciones sin leer', 'value' => number_format($unreadQuotes)],
                 ['label' => 'Items activos en catálogo', 'value' => number_format($itemsActive)],
             ],
             'funnel' => [
-                ['stage' => 'Cotizaciónes pendientes', 'value' => $pendiente, 'color' => 'warning'],
-                ['stage' => 'Cotizaciónes atendidas', 'value' => $contactado, 'color' => 'success'],
-                ['stage' => 'Cotizaciónes ganadas', 'value' => $convertido, 'color' => 'primary'],
+                ['stage' => 'Cotizaciones pendientes', 'value' => $pendiente, 'color' => 'warning'],
+                ['stage' => 'Cotizaciones atendidas', 'value' => $contactado, 'color' => 'success'],
+                ['stage' => 'Cotizaciones ganadas', 'value' => $convertido, 'color' => 'primary'],
             ],
             'funnel_max' => $funnelMax,
             'chart' => [
@@ -200,7 +200,7 @@ class HomeController extends BasicController
         ];
     }
 
-    /** Últimas cotizaciónes del periodo para la tabla del dashboard. */
+    /** Últimas cotizaciones del periodo para la tabla del dashboard. */
     private function latestQuotes(Carbon $start, Carbon $end): array
     {
         return Quote::whereBetween('created_at', [$start, $end])

@@ -18,7 +18,7 @@
         // que desaparecen en refresh normal y solo salen con Ctrl+Shift+R).
         $v = fn ($p) => '/' . ltrim($p, '/') . '?v=' . (is_file(public_path($p)) ? filemtime(public_path($p)) : '1');
 
-        // Carga condicional de librerias pesadas por pagina (evita bajar ~6MB en
+        // Carga condicional de librerías pesadas por página (evita bajar ~6MB en
         // cada ruta del panel). DataGrid (DevExtreme ~5.3MB) solo en paginas con
         // tabla; ApexCharts (~563KB) solo en el dashboard.
         $current = $component ?? '';

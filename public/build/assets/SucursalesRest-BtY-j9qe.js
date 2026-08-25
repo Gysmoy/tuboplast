@@ -1,1 +1,0 @@
-var t=Object.defineProperty;var o=(e,s,a)=>s in e?t(e,s,{enumerable:!0,configurable:!0,writable:!0,value:a}):e[s]=a;var i=(e,s,a)=>o(e,typeof s!="symbol"?s+"":s,a);import{B as p}from"./BasicRest-C1ptku5E.js";class r extends p{constructor(){super(...arguments);i(this,"path","sucursales");i(this,"ubigeoOptions",async()=>await this.simpleGet("/api/ubigeo/inei"))}}export{r as S};

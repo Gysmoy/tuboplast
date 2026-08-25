@@ -16,7 +16,7 @@ if (!moment.tz.zone('UTC')) {
 moment.tz.setDefault('UTC');
 moment.locale('es');
 
-// Compatibilidad: gran parte del codigo usa `moment` como global (sin import),
+// Compatibilidad: gran parte del código usa `moment` como global (sin import),
 // porque historicamente venia de un <script>. Lo exponemos para no romper nada.
 if (typeof window !== 'undefined') {
   window.moment = moment;

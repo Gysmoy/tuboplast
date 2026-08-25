@@ -141,7 +141,7 @@ class BlogController extends BasicController
             $jpa = BlogPage::query()->updateOrCreate(['id' => $body['id']], $body);
 
             $response->status = 200;
-            $response->message = 'Operacion correcta';
+            $response->message = 'Operación correcta';
             $response->data = $this->normalizeBlogPage($jpa);
         } catch (\Throwable $th) {
             $response->status = 400;

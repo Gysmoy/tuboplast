@@ -120,7 +120,7 @@ const Blog = ({ blog: initialBlog = {} }) => {
     hero_badge: initialBlog.hero_badge || 'Blog Tuboplast',
     hero_title: initialBlog.hero_title || 'Construyendo el futuro',
     hero_description: initialBlog.hero_description || '',
-    section_title: initialBlog.section_title || 'Ultimás actualizaciones',
+    section_title: initialBlog.section_title || 'Últimas actualizaciones',
     newsletter_eyebrow: initialBlog.newsletter_eyebrow || 'Newsletter',
     newsletter_title: initialBlog.newsletter_title || 'Se el primero en saber',
     newsletter_description: initialBlog.newsletter_description || '',

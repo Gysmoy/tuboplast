@@ -1,9 +1,9 @@
 {
-  "_AboutRest-amTsFlW0.js": {
-    "file": "assets/AboutRest-amTsFlW0.js",
+  "_AboutRest-IIjIS0Y8.js": {
+    "file": "assets/AboutRest-IIjIS0Y8.js",
     "name": "AboutRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
@@ -15,50 +15,50 @@
       "_main-CG630k06.js"
     ]
   },
-  "_BasicRest-C1ptku5E.js": {
-    "file": "assets/BasicRest-C1ptku5E.js",
+  "_BasicRest-CQ9ozS1c.js": {
+    "file": "assets/BasicRest-CQ9ozS1c.js",
     "name": "BasicRest",
     "imports": [
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
   },
-  "_BlogRest-BZheyQ8-.js": {
-    "file": "assets/BlogRest-BZheyQ8-.js",
+  "_BlogRest-DcbcLcSi.js": {
+    "file": "assets/BlogRest-DcbcLcSi.js",
     "name": "BlogRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
   },
-  "_CategoriesRest-DCRlLt7h.js": {
-    "file": "assets/CategoriesRest-DCRlLt7h.js",
+  "_CategoriesRest-DQSZPIKB.js": {
+    "file": "assets/CategoriesRest-DQSZPIKB.js",
     "name": "CategoriesRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
   },
-  "_ClubRest-D0qBzI_K.js": {
-    "file": "assets/ClubRest-D0qBzI_K.js",
+  "_ClubRest-CA5ats2N.js": {
+    "file": "assets/ClubRest-CA5ats2N.js",
     "name": "ClubRest",
     "imports": [
       "_main-CG630k06.js",
       "_index-C53OKbh3.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ]
   },
-  "_ContactsRest-d4Tn1hJI.js": {
-    "file": "assets/ContactsRest-d4Tn1hJI.js",
+  "_ContactsRest-B17tHTc3.js": {
+    "file": "assets/ContactsRest-B17tHTc3.js",
     "name": "ContactsRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ]
   },
-  "_CreateReactScript-B1Ki8eTY.js": {
-    "file": "assets/CreateReactScript-B1Ki8eTY.js",
+  "_CreateReactScript-_AQnAp4p.js": {
+    "file": "assets/CreateReactScript-_AQnAp4p.js",
     "name": "CreateReactScript",
     "imports": [
       "_preload-helper-DPi8upcZ.js",
@@ -147,18 +147,20 @@
       "tippy.css"
     ]
   },
-  "_DistribuidoresRest-DIM1cHY2.js": {
-    "file": "assets/DistribuidoresRest-DIM1cHY2.js",
+  "_DistribuidoresRest-Bp2DHTHM.js": {
+    "file": "assets/DistribuidoresRest-Bp2DHTHM.js",
     "name": "DistribuidoresRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js",
+      "_main-CG630k06.js",
+      "_index-C53OKbh3.js"
     ]
   },
-  "_ItemsRest-CwqypbaS.js": {
-    "file": "assets/ItemsRest-CwqypbaS.js",
+  "_ItemsRest-PIRO1LPE.js": {
+    "file": "assets/ItemsRest-PIRO1LPE.js",
     "name": "ItemsRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
@@ -167,81 +169,74 @@
     "file": "assets/LaravelSession-CYcN0AKE.js",
     "name": "LaravelSession"
   },
-  "_Logout-BEHS1qoq.js": {
-    "file": "assets/Logout-BEHS1qoq.js",
+  "_Logout-CQ6EYe4W.js": {
+    "file": "assets/Logout-CQ6EYe4W.js",
     "name": "Logout",
     "imports": [
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
   },
-  "_MessagesRest-BUzAf0Yz.js": {
-    "file": "assets/MessagesRest-BUzAf0Yz.js",
+  "_MessagesRest-zYNe-Fnj.js": {
+    "file": "assets/MessagesRest-zYNe-Fnj.js",
     "name": "MessagesRest",
     "imports": [
       "_main-CG630k06.js",
       "_index-C53OKbh3.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ]
   },
-  "_ProductSegmentsRest-Dg722bS4.js": {
-    "file": "assets/ProductSegmentsRest-Dg722bS4.js",
+  "_ProductSegmentsRest-B0fekoz9.js": {
+    "file": "assets/ProductSegmentsRest-B0fekoz9.js",
     "name": "ProductSegmentsRest",
     "imports": [
-      "_ProductTaxonomyRest-DrZTTt0J.js",
+      "_BasicRest-CQ9ozS1c.js",
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
   },
-  "_ProductTaxonomyRest-DrZTTt0J.js": {
-    "file": "assets/ProductTaxonomyRest-DrZTTt0J.js",
-    "name": "ProductTaxonomyRest",
-    "imports": [
-      "_BasicRest-C1ptku5E.js"
-    ]
-  },
-  "_QuotesRest-BsAT-_Cb.js": {
-    "file": "assets/QuotesRest-BsAT-_Cb.js",
+  "_QuotesRest-BdtH2Sxq.js": {
+    "file": "assets/QuotesRest-BdtH2Sxq.js",
     "name": "QuotesRest",
     "imports": [
       "_main-CG630k06.js",
       "_index-C53OKbh3.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ]
   },
-  "_RolesRest-CjMdJyhO.js": {
-    "file": "assets/RolesRest-CjMdJyhO.js",
+  "_RolesRest-YAB-TqRM.js": {
+    "file": "assets/RolesRest-YAB-TqRM.js",
     "name": "RolesRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ]
   },
   "_ScrollTrigger-CezCZ8EY.js": {
     "file": "assets/ScrollTrigger-CezCZ8EY.js",
     "name": "ScrollTrigger"
   },
-  "_SlidersRest-CKWjAgEY.js": {
-    "file": "assets/SlidersRest-CKWjAgEY.js",
+  "_SlidersRest-PodKhX7t.js": {
+    "file": "assets/SlidersRest-PodKhX7t.js",
     "name": "SlidersRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "_main-CG630k06.js",
       "_index-C53OKbh3.js"
     ]
   },
-  "_SucursalesRest-BtY-j9qe.js": {
-    "file": "assets/SucursalesRest-BtY-j9qe.js",
+  "_SucursalesRest-D2BPEekw.js": {
+    "file": "assets/SucursalesRest-D2BPEekw.js",
     "name": "SucursalesRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ]
   },
-  "_UsersRest-DFA6aFCJ.js": {
-    "file": "assets/UsersRest-DFA6aFCJ.js",
+  "_UsersRest-CdNsbJqU.js": {
+    "file": "assets/UsersRest-CdNsbJqU.js",
     "name": "UsersRest",
     "imports": [
-      "_BasicRest-C1ptku5E.js",
-      "_RolesRest-CjMdJyhO.js"
+      "_BasicRest-CQ9ozS1c.js",
+      "_RolesRest-YAB-TqRM.js"
     ]
   },
   "_autoplay-DkEx_m1R.js": {
@@ -304,8 +299,8 @@
     "file": "assets/preload-helper-DPi8upcZ.js",
     "name": "preload-helper"
   },
-  "_quoteStorage-B4oibim8.js": {
-    "file": "assets/quoteStorage-B4oibim8.js",
+  "_quoteStorage-CIJXEaA_.js": {
+    "file": "assets/quoteStorage-CIJXEaA_.js",
     "name": "quoteStorage",
     "imports": [
       "resources/js/Components/Items/ItemCard.jsx"
@@ -368,7 +363,7 @@
     "isEntry": true
   },
   "resources/js/AboutFamilia.jsx": {
-    "file": "assets/AboutFamilia-Db1yp1zN.js",
+    "file": "assets/AboutFamilia-68UJdpnZ.js",
     "name": "AboutFamilia",
     "src": "resources/js/AboutFamilia.jsx",
     "isDynamicEntry": true,
@@ -382,12 +377,12 @@
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/AboutNav.jsx",
       "resources/js/Components/Tailwind/EditableHeroBanner.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "_ubigeo-DdaSjaYO.js",
@@ -403,7 +398,7 @@
     ]
   },
   "resources/js/AboutPolitica.jsx": {
-    "file": "assets/AboutPolitica-BTS3IeWS.js",
+    "file": "assets/AboutPolitica-zO5vzAAa.js",
     "name": "AboutPolitica",
     "src": "resources/js/AboutPolitica.jsx",
     "isDynamicEntry": true,
@@ -413,13 +408,13 @@
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/AboutNav.jsx",
       "resources/js/Components/Tailwind/EditableHeroBanner.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "_ubigeo-DdaSjaYO.js",
@@ -435,7 +430,7 @@
     ]
   },
   "resources/js/Admin/About.jsx": {
-    "file": "assets/About-DvwlKBX7.js",
+    "file": "assets/About-ZaT0Uz9A.js",
     "name": "About",
     "src": "resources/js/Admin/About.jsx",
     "isDynamicEntry": true,
@@ -443,9 +438,9 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
-      "_AboutRest-amTsFlW0.js",
+      "_AboutRest-IIjIS0Y8.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -455,20 +450,20 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
       "resources/js/Components/MenuItemContainer.jsx",
       "resources/js/Components/Footer.jsx",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Account.jsx": {
-    "file": "assets/Account-a-4gzDqM.js",
+    "file": "assets/Account-Cj31oU2-.js",
     "name": "Account",
     "src": "resources/js/Admin/Account.jsx",
     "isDynamicEntry": true,
@@ -479,9 +474,9 @@
       "_index-C53OKbh3.js",
       "_AccountRest-CMl3Lt8W.js",
       "resources/js/Components/Adminto.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_LaravelSession-CYcN0AKE.js",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "_index-DJSEUtJE.js",
       "_main-CG630k06.js",
       "resources/js/Components/Adminto.jsx",
@@ -500,7 +495,7 @@
     ]
   },
   "resources/js/Admin/Blog.jsx": {
-    "file": "assets/Blog-PYRjt213.js",
+    "file": "assets/Blog-_6WUpXRG.js",
     "name": "Blog",
     "src": "resources/js/Admin/Blog.jsx",
     "isDynamicEntry": true,
@@ -508,10 +503,10 @@
       "resources/js/Components/DataGrid.jsx",
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Components/ConfirmModal.jsx",
-      "_BlogRest-BZheyQ8-.js",
+      "_BlogRest-DcbcLcSi.js",
       "resources/js/Components/Form/QuillFormGroup.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -522,20 +517,20 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
       "resources/js/Components/MenuItemContainer.jsx",
       "resources/js/Components/Footer.jsx",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Branches.jsx": {
-    "file": "assets/Branches-DVzoCxVD.js",
+    "file": "assets/Branches-2xD01kCr.js",
     "name": "Branches",
     "src": "resources/js/Admin/Branches.jsx",
     "isDynamicEntry": true,
@@ -543,14 +538,14 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/Form/InputFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
-      "_SucursalesRest-BtY-j9qe.js",
+      "_SucursalesRest-D2BPEekw.js",
       "_ubigeo-DdaSjaYO.js",
       "_googleMaps-DrvRtn5X.js",
       "_index-DJSEUtJE.js",
@@ -562,7 +557,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -570,14 +565,14 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Categories.jsx": {
-    "file": "assets/Categories-BAaTB2UM.js",
+    "file": "assets/Categories-joAxbwJa.js",
     "name": "Categories",
     "src": "resources/js/Admin/Categories.jsx",
     "isDynamicEntry": true,
@@ -585,7 +580,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -593,7 +588,7 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/ImageFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
-      "_CategoriesRest-DCRlLt7h.js",
+      "_CategoriesRest-DQSZPIKB.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -603,7 +598,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -612,14 +607,14 @@
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Club.jsx": {
-    "file": "assets/Club-wSXIKoxC.js",
+    "file": "assets/Club-Bk_Awxu9.js",
     "name": "Club",
     "src": "resources/js/Admin/Club.jsx",
     "isDynamicEntry": true,
@@ -627,11 +622,11 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
-      "_ClubRest-D0qBzI_K.js",
+      "_ClubRest-CA5ats2N.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -641,7 +636,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -649,14 +644,14 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Contacts.jsx": {
-    "file": "assets/Contacts-B3SuaekF.js",
+    "file": "assets/Contacts-Bh7IgwFd.js",
     "name": "Contacts",
     "src": "resources/js/Admin/Contacts.jsx",
     "isDynamicEntry": true,
@@ -664,13 +659,13 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Components/Modal.jsx",
       "resources/js/Components/Table.jsx",
       "resources/js/Components/Form/TippyButton.jsx",
-      "_ContactsRest-d4Tn1hJI.js",
+      "_ContactsRest-B17tHTc3.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -680,7 +675,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -688,14 +683,14 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/DataGrid.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/DistributorRequests.jsx": {
-    "file": "assets/DistributorRequests-CXKAjY9_.js",
+    "file": "assets/DistributorRequests-CXWROlRh.js",
     "name": "DistributorRequests",
     "src": "resources/js/Admin/DistributorRequests.jsx",
     "isDynamicEntry": true,
@@ -703,9 +698,9 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
-      "_MessagesRest-BUzAf0Yz.js",
+      "_MessagesRest-zYNe-Fnj.js",
       "resources/js/Admin/MessageInbox.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -716,13 +711,13 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
       "resources/js/Components/MenuItemContainer.jsx",
       "resources/js/Components/Footer.jsx",
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
@@ -733,7 +728,7 @@
     ]
   },
   "resources/js/Admin/Distributors.jsx": {
-    "file": "assets/Distributors-C5s2ev1L.js",
+    "file": "assets/Distributors-C14xRRRC.js",
     "name": "Distributors",
     "src": "resources/js/Admin/Distributors.jsx",
     "isDynamicEntry": true,
@@ -741,14 +736,14 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/Form/InputFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
-      "_DistribuidoresRest-DIM1cHY2.js",
+      "_DistribuidoresRest-Bp2DHTHM.js",
       "_ubigeo-DdaSjaYO.js",
       "_googleMaps-DrvRtn5X.js",
       "_index-DJSEUtJE.js",
@@ -760,7 +755,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -768,14 +763,14 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Home.jsx": {
-    "file": "assets/Home-DzxCSCDY.js",
+    "file": "assets/Home-Di1hmHYA.js",
     "name": "Home",
     "src": "resources/js/Admin/Home.jsx",
     "isDynamicEntry": true,
@@ -783,7 +778,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -794,7 +789,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -806,7 +801,7 @@
     ]
   },
   "resources/js/Admin/Items.jsx": {
-    "file": "assets/Items-Bxd0KHvK.js",
+    "file": "assets/Items-BQrSu29f.js",
     "name": "Items",
     "src": "resources/js/Admin/Items.jsx",
     "isDynamicEntry": true,
@@ -814,7 +809,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -823,7 +818,7 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/ImageFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
-      "_ItemsRest-CwqypbaS.js",
+      "_ItemsRest-PIRO1LPE.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -833,7 +828,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -841,7 +836,7 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
@@ -862,7 +857,7 @@
     ]
   },
   "resources/js/Admin/Messages.jsx": {
-    "file": "assets/Messages-D8ArCkwY.js",
+    "file": "assets/Messages-SM3OspRM.js",
     "name": "Messages",
     "src": "resources/js/Admin/Messages.jsx",
     "isDynamicEntry": true,
@@ -870,9 +865,9 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
-      "_MessagesRest-BUzAf0Yz.js",
+      "_MessagesRest-zYNe-Fnj.js",
       "resources/js/Admin/MessageInbox.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -883,13 +878,13 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
       "resources/js/Components/MenuItemContainer.jsx",
       "resources/js/Components/Footer.jsx",
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
@@ -900,7 +895,7 @@
     ]
   },
   "resources/js/Admin/ProductClassifications.jsx": {
-    "file": "assets/ProductClassifications-cftukpSL.js",
+    "file": "assets/ProductClassifications-Ca4Iok0B.js",
     "name": "ProductClassifications",
     "src": "resources/js/Admin/ProductClassifications.jsx",
     "isDynamicEntry": true,
@@ -908,7 +903,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -920,7 +915,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -934,15 +929,14 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_ProductTaxonomyRest-DrZTTt0J.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/ProductFamilies.jsx": {
-    "file": "assets/ProductFamilies-DC8H4h2i.js",
+    "file": "assets/ProductFamilies-CLjmmrPn.js",
     "name": "ProductFamilies",
     "src": "resources/js/Admin/ProductFamilies.jsx",
     "isDynamicEntry": true,
@@ -950,7 +944,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -962,7 +956,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -976,15 +970,14 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_ProductTaxonomyRest-DrZTTt0J.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/ProductLines.jsx": {
-    "file": "assets/ProductLines-DMMPyFFt.js",
+    "file": "assets/ProductLines-Dy_bY9iF.js",
     "name": "ProductLines",
     "src": "resources/js/Admin/ProductLines.jsx",
     "isDynamicEntry": true,
@@ -992,7 +985,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -1004,7 +997,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -1018,15 +1011,14 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_ProductTaxonomyRest-DrZTTt0J.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/ProductSegments.jsx": {
-    "file": "assets/ProductSegments-DPAPxWqF.js",
+    "file": "assets/ProductSegments-5Faoooa1.js",
     "name": "ProductSegments",
     "src": "resources/js/Admin/ProductSegments.jsx",
     "isDynamicEntry": true,
@@ -1034,7 +1026,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -1042,7 +1034,7 @@
       "resources/js/Components/Form/InputFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
       "resources/js/Components/Form/TextareaFormGroup.jsx",
-      "_ProductSegmentsRest-Dg722bS4.js",
+      "_ProductSegmentsRest-B0fekoz9.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1052,7 +1044,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -1061,15 +1053,14 @@
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_ProductTaxonomyRest-DrZTTt0J.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/ProductTaxonomyPage.jsx": {
-    "file": "assets/ProductTaxonomyPage-4Z-sE8zi.js",
+    "file": "assets/ProductTaxonomyPage-D3aaVOVi.js",
     "name": "ProductTaxonomyPage",
     "src": "resources/js/Admin/ProductTaxonomyPage.jsx",
     "isDynamicEntry": true,
@@ -1082,7 +1073,7 @@
       "resources/js/Components/Form/InputFormGroup.jsx",
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
-      "_ProductTaxonomyRest-DrZTTt0J.js",
+      "_BasicRest-CQ9ozS1c.js",
       "resources/js/Components/Adminto.jsx",
       "_main-CG630k06.js",
       "_index-C53OKbh3.js",
@@ -1090,8 +1081,8 @@
       "_LaravelSession-CYcN0AKE.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_Logout-CQ6EYe4W.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
       "resources/js/Utils/Number2Currency.jsx",
@@ -1101,15 +1092,14 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
-      "_tippy-react.esm-CgiMgDJd.js",
-      "_BasicRest-C1ptku5E.js"
+      "_tippy-react.esm-CgiMgDJd.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/ProductTypes.jsx": {
-    "file": "assets/ProductTypes-iY7YdGks.js",
+    "file": "assets/ProductTypes-DiFpvb2Y.js",
     "name": "ProductTypes",
     "src": "resources/js/Admin/ProductTypes.jsx",
     "isDynamicEntry": true,
@@ -1117,7 +1107,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Admin/ProductTaxonomyPage.jsx",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -1129,7 +1119,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -1143,15 +1133,14 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_ProductTaxonomyRest-DrZTTt0J.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Profile.jsx": {
-    "file": "assets/Profile-ClGQ9fI2.js",
+    "file": "assets/Profile-613XDtN7.js",
     "name": "Profile",
     "src": "resources/js/Admin/Profile.jsx",
     "isDynamicEntry": true,
@@ -1160,7 +1149,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Components/Adminto.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Adminto.jsx",
       "_main-CG630k06.js",
@@ -1168,7 +1157,7 @@
       "_LaravelSession-CYcN0AKE.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1182,7 +1171,7 @@
     ]
   },
   "resources/js/Admin/Quotes.jsx": {
-    "file": "assets/Quotes-CUArAQuo.js",
+    "file": "assets/Quotes-B1QYYBF8.js",
     "name": "Quotes",
     "src": "resources/js/Admin/Quotes.jsx",
     "isDynamicEntry": true,
@@ -1190,12 +1179,12 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
-      "_QuotesRest-BsAT-_Cb.js",
-      "_quoteStorage-B4oibim8.js",
+      "_QuotesRest-BdtH2Sxq.js",
+      "_quoteStorage-CIJXEaA_.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1205,7 +1194,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -1213,7 +1202,7 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
-      "_BasicRest-C1ptku5E.js",
+      "_BasicRest-CQ9ozS1c.js",
       "resources/js/Components/Items/ItemCard.jsx"
     ],
     "css": [
@@ -1221,7 +1210,7 @@
     ]
   },
   "resources/js/Admin/Roles.jsx": {
-    "file": "assets/Roles-CZX-7XKc.js",
+    "file": "assets/Roles-pns-s7QX.js",
     "name": "Roles",
     "src": "resources/js/Admin/Roles.jsx",
     "isDynamicEntry": true,
@@ -1229,12 +1218,12 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
       "resources/js/Components/Form/InputFormGroup.jsx",
-      "_RolesRest-CjMdJyhO.js",
+      "_RolesRest-YAB-TqRM.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1244,7 +1233,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -1252,14 +1241,14 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Sliders.jsx": {
-    "file": "assets/Sliders-BuCZDHZq.js",
+    "file": "assets/Sliders-BuwPzHR2.js",
     "name": "Sliders",
     "src": "resources/js/Admin/Sliders.jsx",
     "isDynamicEntry": true,
@@ -1267,7 +1256,7 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
@@ -1276,7 +1265,7 @@
       "resources/js/Components/Form/TextareaFormGroup.jsx",
       "resources/js/Components/Form/ImageFormGroup.jsx",
       "resources/js/Components/Form/SwitchFormGroup.jsx",
-      "_SlidersRest-CKWjAgEY.js",
+      "_SlidersRest-PodKhX7t.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1286,7 +1275,7 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
@@ -1294,14 +1283,14 @@
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
       "_tippy-react.esm-CgiMgDJd.js",
-      "_BasicRest-C1ptku5E.js"
+      "_BasicRest-CQ9ozS1c.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Admin/Users.jsx": {
-    "file": "assets/Users-CUl8FMLf.js",
+    "file": "assets/Users-Mp_TIPhK.js",
     "name": "Users",
     "src": "resources/js/Admin/Users.jsx",
     "isDynamicEntry": true,
@@ -1309,14 +1298,14 @@
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Adminto.jsx",
       "resources/js/Admin/MessageInbox.jsx",
       "resources/js/Components/ConfirmModal.jsx",
       "resources/js/Components/CustomDropdown.jsx",
       "resources/js/Components/Form/InputFormGroup.jsx",
       "resources/js/Components/Form/PasswordFormGroup.jsx",
-      "_UsersRest-DFA6aFCJ.js",
+      "_UsersRest-CdNsbJqU.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -1326,22 +1315,22 @@
       "_index-C53OKbh3.js",
       "resources/js/Components/AdmintoContext.jsx",
       "resources/js/Components/NavBar.jsx",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Utils/Number2Currency.jsx",
       "resources/js/Components/Menu.jsx",
       "resources/js/Components/MenuItem.jsx",
       "resources/js/Components/MenuItemContainer.jsx",
       "resources/js/Components/Footer.jsx",
       "resources/js/Components/DateRangeFilter.jsx",
-      "_BasicRest-C1ptku5E.js",
-      "_RolesRest-CjMdJyhO.js"
+      "_BasicRest-CQ9ozS1c.js",
+      "_RolesRest-YAB-TqRM.js"
     ],
     "css": [
       "tippy.css"
     ]
   },
   "resources/js/Blog.jsx": {
-    "file": "assets/Blog-B2_a45Ek.js",
+    "file": "assets/Blog-CuE02Xpt.js",
     "name": "Blog",
     "src": "resources/js/Blog.jsx",
     "isDynamicEntry": true,
@@ -1350,13 +1339,13 @@
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Tailwind/EditableHeroBanner.jsx",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "_ubigeo-DdaSjaYO.js",
@@ -1372,7 +1361,7 @@
     ]
   },
   "resources/js/BlogPost.jsx": {
-    "file": "assets/BlogPost-8Bt9i-y7.js",
+    "file": "assets/BlogPost-S8wCQOS-.js",
     "name": "BlogPost",
     "src": "resources/js/BlogPost.jsx",
     "isDynamicEntry": true,
@@ -1381,13 +1370,13 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Utils/HtmlContent.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_index-RYns6xqu.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "_ubigeo-DdaSjaYO.js",
@@ -1403,7 +1392,7 @@
     ]
   },
   "resources/js/Catalog.jsx": {
-    "file": "assets/Catalog-1Iii40eh.js",
+    "file": "assets/Catalog-BFxdDfk5.js",
     "name": "Catalog",
     "src": "resources/js/Catalog.jsx",
     "isDynamicEntry": true,
@@ -1413,10 +1402,10 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_index-DJSEUtJE.js",
       "_index-SFc2wnMY.js",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
@@ -1435,7 +1424,7 @@
     ]
   },
   "resources/js/Club.jsx": {
-    "file": "assets/Club-BAu1kizA.js",
+    "file": "assets/Club-Bw5fho9h.js",
     "name": "Club",
     "src": "resources/js/Club.jsx",
     "isDynamicEntry": true,
@@ -1446,13 +1435,13 @@
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/EditableHeroBanner.jsx",
       "resources/js/Components/Tailwind/ThankYouModal.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_ubigeo-DdaSjaYO.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Components/Tailwind/SearchModal.jsx",
@@ -1691,14 +1680,14 @@
     ]
   },
   "resources/js/Components/Menu.jsx": {
-    "file": "assets/Menu-Hudyfvna.js",
+    "file": "assets/Menu-zmSX5mg1.js",
     "name": "Menu",
     "src": "resources/js/Components/Menu.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/Components/DataGrid.jsx",
       "_index-RYns6xqu.js",
-      "_Logout-BEHS1qoq.js",
+      "_Logout-CQ6EYe4W.js",
       "resources/js/Components/MenuItem.jsx",
       "resources/js/Components/MenuItemContainer.jsx",
       "_LaravelSession-CYcN0AKE.js",
@@ -1858,7 +1847,7 @@
     ]
   },
   "resources/js/Contact.jsx": {
-    "file": "assets/Contact-3M8EvYuH.js",
+    "file": "assets/Contact-C3uYZyd2.js",
     "name": "Contact",
     "src": "resources/js/Contact.jsx",
     "isDynamicEntry": true,
@@ -1868,13 +1857,13 @@
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Tailwind/ThankYouModal.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_googleMaps-DrvRtn5X.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "_ubigeo-DdaSjaYO.js",
@@ -1889,7 +1878,7 @@
     ]
   },
   "resources/js/Distributors.jsx": {
-    "file": "assets/Distributors-BOHlmoM_.js",
+    "file": "assets/Distributors-BvWCxWHn.js",
     "name": "Distributors",
     "src": "resources/js/Distributors.jsx",
     "isDynamicEntry": true,
@@ -1898,7 +1887,7 @@
       "_index-RYns6xqu.js",
       "resources/js/Utils/ReactAppend.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "resources/js/Components/Tailwind/EditableHeroBanner.jsx",
       "_googleMaps-DrvRtn5X.js",
       "resources/js/Components/Tailwind/ThankYouModal.jsx",
@@ -1907,7 +1896,7 @@
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Components/Tailwind/SearchModal.jsx",
@@ -1921,7 +1910,7 @@
     ]
   },
   "resources/js/Home.jsx": {
-    "file": "assets/Home-DeYWIcLM.js",
+    "file": "assets/Home-LV7ZFQmd.js",
     "name": "Home",
     "src": "resources/js/Home.jsx",
     "isDynamicEntry": true,
@@ -1933,12 +1922,12 @@
       "_pagination-oXwx6O_U.js",
       "resources/js/Components/Tailwind/Base.jsx",
       "resources/js/Components/Items/ItemCard.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Tailwind/TopBar.jsx",
       "resources/js/Components/Tailwind/Header.jsx",
       "resources/js/Components/Tailwind/QuoteRequestModal.jsx",
-      "_quoteStorage-B4oibim8.js",
+      "_quoteStorage-CIJXEaA_.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
       "_ubigeo-DdaSjaYO.js",
@@ -1955,7 +1944,7 @@
     ]
   },
   "resources/js/Landing.jsx": {
-    "file": "assets/Landing-DMbr7ILt.js",
+    "file": "assets/Landing-DPAk0Dzh.js",
     "name": "Landing",
     "src": "resources/js/Landing.jsx",
     "isDynamicEntry": true,
@@ -1966,7 +1955,7 @@
       "_index-SFc2wnMY.js",
       "_index-CD7kv5lB.js",
       "_ScrollTrigger-CezCZ8EY.js",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_x-Bj3XmLKB.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
@@ -1979,7 +1968,7 @@
     ]
   },
   "resources/js/Login.jsx": {
-    "file": "assets/Login-g2IA6-an.js",
+    "file": "assets/Login-DXNcbMuH.js",
     "name": "Login",
     "src": "resources/js/Login.jsx",
     "isDynamicEntry": true,
@@ -1988,7 +1977,7 @@
       "resources/js/Utils/ReactAppend.jsx",
       "_index-RYns6xqu.js",
       "_sweetalert2.esm.all-C80wueXW.js",
-      "_CreateReactScript-B1Ki8eTY.js",
+      "_CreateReactScript-_AQnAp4p.js",
       "_index-DJSEUtJE.js",
       "_preload-helper-DPi8upcZ.js",
       "resources/js/Utils/CreateReactScript.jsx",
@@ -2000,7 +1989,7 @@
     ]
   },
   "resources/js/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-DtMSceGU.js",
+    "file": "assets/ProductDetail-eXZRYD8L.js",
     "name": "ProductDetail",
     "src": "resources/js/ProductDetail.jsx",
     "isDynamicEntry": true,
@@ -2013,8 +2002,8 @@
       "_autoplay-DkEx_m1R.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "resources/js/Components/Tailwind/Base.jsx",
-      "_CreateReactScript-B1Ki8eTY.js",
-      "_quoteStorage-B4oibim8.js",
+      "_CreateReactScript-_AQnAp4p.js",
+      "_quoteStorage-CIJXEaA_.js",
       "_index-DJSEUtJE.js",
       "resources/js/Components/Items/ItemCard.jsx",
       "_preload-helper-DPi8upcZ.js",
@@ -2034,7 +2023,7 @@
     ]
   },
   "resources/js/Utils/CreateReactScript.jsx": {
-    "file": "assets/CreateReactScript-C2_I88wL.js",
+    "file": "assets/CreateReactScript-CpDBSkCq.js",
     "name": "CreateReactScript",
     "src": "resources/js/Utils/CreateReactScript.jsx",
     "isEntry": true,

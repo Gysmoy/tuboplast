@@ -8,7 +8,7 @@ const defaultPosts = [
   {
     slug: 'tubería-pvc-u-vs-hdpe-cual-elegir-según-el-tipo-de-proyecto-1',
     category: 'Productos',
-    title: 'Tubería PVC-U vs HDPE: cual elegir según el tipo de proyecto?',
+    title: 'Tubería PVC-U vs HDPE: cuál elegir según el tipo de proyecto?',
     description:
       'Comparamos resistencia, costo y aplicación para que tomes la mejor decisión técnica en cada obra.',
     image: '/assets/img/categories/category-1.webp',
@@ -16,9 +16,9 @@ const defaultPosts = [
   {
     slug: 'como-instalar-tuberías-cpvc-en-proyectos-de-agua-caliente-sin-errores-2',
     category: 'Etiqueta',
-    title: 'Como instalar tuberías CPVC en proyectos de agua caliente sin errores',
+    title: 'Cómo instalar tuberías CPVC en proyectos de agua caliente sin errores',
     description:
-      'Guia paso a paso para una instalación segura, duradera y certificada. Todo lo que el maestro necesita saber.',
+      'Guía paso a paso para una instalación segura, duradera y certificada. Todo lo que el maestro necesita saber.',
     image: '/assets/img/categories/category-2.webp',
   },
   {
@@ -26,13 +26,13 @@ const defaultPosts = [
     category: 'Industria',
     title: 'Infraestructura hídrica en el Perú: los retos del sector construcción en 2025',
     description:
-      'Analizamos el pañorama actual del sector, las normativas vigentes y como Tuboplast responde a la demanda.',
+      'Analizamos el panorama actual del sector, las normativas vigentes y cómo Tuboplast responde a la demanda.',
     image: '/assets/img/categories/category-3.webp',
   },
   {
     slug: 'tubería-pvc-u-vs-hdpe-cual-elegir-según-el-tipo-de-proyecto-4',
     category: 'Productos',
-    title: 'Tubería PVC-U vs HDPE: cual elegir según el tipo de proyecto?',
+    title: 'Tubería PVC-U vs HDPE: cuál elegir según el tipo de proyecto?',
     description:
       'Comparamos resistencia, costo y aplicación para que tomes la mejor decisión técnica en cada obra.',
     image: '/assets/img/categories/category-1.webp',
@@ -40,9 +40,9 @@ const defaultPosts = [
   {
     slug: 'como-instalar-tuberías-cpvc-en-proyectos-de-agua-caliente-sin-errores-5',
     category: 'Etiqueta',
-    title: 'Como instalar tuberías CPVC en proyectos de agua caliente sin errores',
+    title: 'Cómo instalar tuberías CPVC en proyectos de agua caliente sin errores',
     description:
-      'Guia paso a paso para una instalación segura, duradera y certificada. Todo lo que el maestro necesita saber.',
+      'Guía paso a paso para una instalación segura, duradera y certificada. Todo lo que el maestro necesita saber.',
     image: '/assets/img/categories/category-2.webp',
   },
   {
@@ -50,7 +50,7 @@ const defaultPosts = [
     category: 'Industria',
     title: 'Infraestructura hídrica en el Perú: los retos del sector construcción en 2025',
     description:
-      'Analizamos el pañorama actual del sector, las normativas vigentes y como Tuboplast responde a la demanda.',
+      'Analizamos el panorama actual del sector, las normativas vigentes y cómo Tuboplast responde a la demanda.',
     image: '/assets/img/categories/category-3.webp',
   },
 ];
@@ -64,7 +64,7 @@ const slugify = (value, index) => {
   const base = String(value || 'post')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
@@ -158,13 +158,13 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
     category: post.category,
     detail_url: postUrl(post, index),
   }));
-  const heroImage = heroBanner.image_url || blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/blog/blog-cotizaciónes-banner.png');
+  const heroImage = heroBanner.image_url || blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/blog/blog-cotizaciones-banner.png');
   const heroBadge = blog.hero_badge || 'Blog Tuboplast';
   const heroTitle = heroBanner.title || blog.hero_title || 'Construyendo el futuro';
   const heroDescription = heroBanner.description || blog.hero_description || 'Explora las últimas innovaciones técnicas, proyectos emblemáticos y consejos de ingeniería para el mercado peruano.';
   const heroDisplayMode = heroBanner.display_mode || blog.hero_display_mode || heroDisplayModes.imageOnly;
   const isHeroImageOnly = heroDisplayMode === heroDisplayModes.imageOnly;
-  const sectionTitle = blog.section_title || 'Ultimás actualizaciones';
+  const sectionTitle = blog.section_title || 'Últimas actualizaciones';
   const newsletter = {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
     title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
@@ -277,7 +277,7 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
                 <button
                   type="button"
                   className="grid h-9 w-9 place-items-center rounded-full border border-transparent transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                  aria-label="Pagina anterior"
+                  aria-label="Página anterior"
                   onClick={() => goToPage(currentPage - 1)}
                   disabled={currentPage <= 1}
                 >
@@ -300,7 +300,7 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
                 <button
                   type="button"
                   className="grid h-9 w-9 place-items-center rounded-full border border-transparent transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                  aria-label="Pagina siguiente"
+                  aria-label="Página siguiente"
                   onClick={() => goToPage(currentPage + 1)}
                   disabled={currentPage >= totalPages}
                 >
@@ -333,7 +333,7 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
             </div>
 
             <article className="overflow-hidden rounded-2xl bg-primary text-white shadow-[0_10px_30px_rgba(0,59,122,0.22)]">
-              <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),línear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6 sm:px-6 sm:py-7">
+              <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6 sm:px-6 sm:py-7">
                 <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-secondary">{newsletter.eyebrow}</p>
                 <h3 className="max-w-[14ch] font-title text-xl font-medium leading-tight sm:text-2xl">
                   {newsletter.title}

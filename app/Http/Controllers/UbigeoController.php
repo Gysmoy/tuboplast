@@ -34,7 +34,7 @@ class UbigeoController extends Controller
 
         return response([
             'status' => 200,
-            'message' => 'Operacion correcta',
+            'message' => 'Operación correcta',
             'data' => $data,
         ], 200);
     }

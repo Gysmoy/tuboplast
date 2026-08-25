@@ -262,7 +262,7 @@ class AboutController extends BasicController
             }, is_array($data['certifications'] ?? null) ? $data['certifications'] : []);
 
             $response->status = 200;
-            $response->message = 'Operacion correcta';
+            $response->message = 'Operación correcta';
             $response->data = $data;
         } catch (\Throwable $th) {
             $response->status = 400;

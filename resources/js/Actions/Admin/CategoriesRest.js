@@ -34,7 +34,7 @@ class CategoriesRest extends BasicRest {
 
       const result = await res.json()
       if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrio un error inesperado')
+        throw new Error(result?.message || 'Ocurrió un error inesperado')
       }
 
       notify({

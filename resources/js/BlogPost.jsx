@@ -22,28 +22,28 @@ const detailTemplates = [
   {
     eyebrow: 'Innovación técnica',
     author: 'Ing. Roberto Sanchez',
-    role: 'Director Tecnico',
+    role: 'Director Técnico',
     published: '15 de Octubre, 2026',
     readTime: '12 min de lectura',
     lead:
-      'La industria de conducción hídrica en el Perú esta entrando en una nueva etapa, marcada por eficiencia, control de calidad y soluciones de mayor vida útil.',
+      'La industria de conducción hídrica en el Perú está entrando en una nueva etapa, marcada por eficiencia, control de calidad y soluciones de mayor vida útil.',
     sections: [
       {
-        title: 'Nuevos Estandares de Manufactura',
+        title: 'Nuevos Estándares de Manufactura',
         paragraphs: [
           'La implementación de tecnologías de extrusión y control dimensional más precisas permite alcanzar tuberías más consistentes, con mejor respuesta mecánica y mejor comportamiento frente a la presión interna.',
-          'En Tuboplast, estos avances se traducen en piezas pensadas para obras exigentes, donde la confiabilidad operativa no puede dejar espacio a la improvisacion.',
+          'En Tuboplast, estos avances se traducen en piezas pensadas para obras exigentes, donde la confiabilidad operativa no puede dejar espacio a la improvisación.',
         ],
       },
       {
-        title: 'Sustentabilidad y Economia Circular',
+        title: 'Sustentabilidad y Economía Circular',
         paragraphs: [
-          'El desarrollo industrial moderno ya no solo busca rendimiento. Tambien exige eficiencia energetica, menor desperdicio de material y procesos responsables con el entorno.',
+          'El desarrollo industrial moderno ya no solo busca rendimiento. También exige eficiencia energética, menor desperdicio de material y procesos responsables con el entorno.',
           'La circularidad aplicada al PVC permite avanzar hacia sistemas más sostenibles sin comprometer la integridad estructural del producto final.',
         ],
       },
       {
-        title: 'Contribucion a la Infraestructura Nacional',
+        title: 'Contribución a la Infraestructura Nacional',
         paragraphs: [
           'Desde proyectos de saneamiento hasta redes de distribución industrial, la precisión del material influye directamente en la continuidad del servicio y en el costo total de operación.',
           'Por eso, cada mejora de manufactura impacta de forma real en el desarrollo de la infraestructura peruana y en la durabilidad de las obras ejecutadas.',
@@ -56,31 +56,31 @@ const detailTemplates = [
   {
     eyebrow: 'Capacitación técnica',
     author: 'Equipo de Soporte',
-    role: 'Asesoria de Aplicacion',
+    role: 'Asesoría de Aplicación',
     published: '03 de Septiembre, 2026',
     readTime: '9 min de lectura',
     lead:
       'Instalar correctamente es tan importante como fabricar bien. Una unión bien ejecutada puede marcar la diferencia entre una obra segura y un problema futuro.',
     sections: [
       {
-        title: 'Preparacion y Corte',
+        title: 'Preparación y Corte',
         paragraphs: [
-          'La limpieza del corte, la calibracion de la herramienta y la verificacion de tolerancias son pasos básicos que evitan fugas y desalíneaciones.',
+          'La limpieza del corte, la calibración de la herramienta y la verificación de tolerancias son pasos básicos que evitan fugas y desalíneaciones.',
           'Un proceso cuidadoso mejora la continuidad del flujo y reduce tiempos de mantenimiento posterior.',
         ],
       },
       {
         title: 'Pegado y Tiempos de Curado',
         paragraphs: [
-          'Respetar los tiempos de secado y curado no es un detalle menor. Es una condicion necesaria para asegurar una unión resistente y durable.',
-          'La capacitacion técnica debe reforzar estas prácticas en cada obra para estandarizar la calidad de instalación.',
+          'Respetar los tiempos de secado y curado no es un detalle menor. Es una condición necesaria para asegurar una unión resistente y durable.',
+          'La capacitación técnica debe reforzar estas prácticas en cada obra para estandarizar la calidad de instalación.',
         ],
       },
       {
         title: 'Control en Obra',
         paragraphs: [
           'Supervisar cada unión, cada accesorio y cada tramo instalado ayuda a prevenir retrabajos y garantiza que el sistema opere con el comportamiento esperado.',
-          'La supervisión técnica es una inversion que protege el proyecto a largo plazo.',
+          'La supervisión técnica es una inversión que protege el proyecto a largo plazo.',
         ],
       },
     ],
@@ -89,7 +89,7 @@ const detailTemplates = [
   },
   {
     eyebrow: 'Industria',
-    author: 'Area Comercial',
+    author: 'Área Comercial',
     role: 'Mercado y Proyectos',
     published: '18 de Julio, 2026',
     readTime: '7 min de lectura',
@@ -104,14 +104,14 @@ const detailTemplates = [
         ],
       },
       {
-        title: 'Respaldo Tecnico para Proyectos',
+        title: 'Respaldo Técnico para Proyectos',
         paragraphs: [
           'La asesoría técnica permite escoger la solución adecuada según el tipo de obra, el caudal requerido y las condiciones de instalación.',
-          'Ese acompanamiento reduce riesgos y mejora la eficiencia en la toma de decisiónes del cliente.',
+          'Ese acompañamiento reduce riesgos y mejora la eficiencia en la toma de decisiones del cliente.',
         ],
       },
       {
-        title: 'Una Industria en Evolucion',
+        title: 'Una Industria en Evolución',
         paragraphs: [
           'La modernización del sector construcción en 2026 exige empresas que no solo vendan producto, sino que aporten conocimiento y continuidad operativa.',
           'La industria avanza cuando la calidad del material acompaña a la calidad del proyecto.',
@@ -119,7 +119,7 @@ const detailTemplates = [
       },
     ],
     highlight:
-      'El crecimiento de la infraestructura peruana depende tanto del producto como del soporte que lo acompana.',
+      'El crecimiento de la infraestructura peruana depende tanto del producto como del soporte que lo acompaña.',
   },
 ];
 
@@ -132,7 +132,7 @@ const buildFallbackDetail = (post) => ({
   lead: post.description || 'Contenido editorial de Tuboplast.',
   sections: [
     {
-      title: post.title || 'Articulo',
+      title: post.title || 'Artículo',
       paragraphs: [
         post.description || 'Este artículo comparte información técnica y contexto útil para proyectos de infraestructura y conducción hídrica.',
         'Mantendremos este contenido alíneado al estilo editorial del blog para ofrecer una lectura clara, cercana y útil para el sector.',
@@ -249,7 +249,7 @@ const renderCustomContent = (content) =>
 
 const NewsletterCard = ({ newsletter = {} }) => (
   <aside className="overflow-hidden rounded-2xl bg-primary text-white shadow-[0_10px_30px_rgba(0,59,122,0.22)]">
-    <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),línear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6">
+    <div className="bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),linear-gradient(135deg,rgba(0,59,122,1),rgba(0,78,155,1))] px-5 py-6">
       {newsletter.eyebrow ? <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-secondary">{newsletter.eyebrow}</p> : null}
       <h3 className="max-w-[14ch] font-title text-2xl leading-tight">
         {newsletter.title}
@@ -295,7 +295,7 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
   const published = selectedPost.published || template.published || 'Actualizado recientemente';
   const readTime = selectedPost.read_time || template.readTime || '6 min de lectura';
   const lead = selectedPost.lead || template.lead || selectedPost.description || '';
-  const highlightLabel = selectedPost.highlight_label || 'Nota Tecnica';
+  const highlightLabel = selectedPost.highlight_label || 'Nota Técnica';
   const highlightText = selectedPost.highlight || template.highlight || '';
   const newsletter = {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
@@ -314,7 +314,7 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
           </p>
 
           <h1 className="mt-4 max-w-4xl font-title text-3xl font-medium leading-tight tracking-tight text-primary sm:text-4xl lg:text-5xl">
-            {selectedPost.title || 'Articulo del blog'}
+            {selectedPost.title || 'Artículo del blog'}
           </h1>
 
           <div className="mt-10 flex flex-wrap items-start gap-x-12 gap-y-4 border-b border-slate-200 pb-8">

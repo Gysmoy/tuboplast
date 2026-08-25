@@ -148,17 +148,17 @@ const ProductSegments = (properties) => {
         columns={[
           { key: 'image', header: 'Imagen', filterable: false, sortable: false, width: 96, render: (d) => <img src={imageUrl(d.image)} alt={d.name} className='wseg-thumb' /> },
           { key: 'name', header: 'Nombre', field: 'name', nowrap: true, render: (d) => <span className='fw-semibold'>{d.name}</span> },
-          { key: 'description', header: 'Descripcion', field: 'description', render: (d) => <span style={{ color: '#5b6577' }}>{d.description || '-'}</span> },
+          { key: 'description', header: 'Descripción', field: 'description', render: (d) => <span style={{ color: '#5b6577' }}>{d.description || '-'}</span> },
           {
             key: 'active_items_count', header: 'Items activos', field: 'active_items_count', align: 'center', width: 120, filterable: false,
             render: (d) => {
               const count = activeItemsCount(d)
-              return <span className={`wseg-count ${count ? '' : 'empty'}`} title={count ? 'Puede mostrarse en home si esta destacado y activo' : 'No se mostrara en home porque no tiene items activos'}>{count}</span>
+              return <span className={`wseg-count ${count ? '' : 'empty'}`} title={count ? 'Puede mostrarse en home si está destacado y activo' : 'No se mostrará en home porque no tiene items activos'}>{count}</span>
             },
           },
           {
             key: 'featured', header: 'Destacado home', field: 'featured', align: 'center', width: 140,
-            filterOptions: [{ value: '1', label: 'Si' }, { value: '0', label: 'No' }],
+            filterOptions: [{ value: '1', label: 'Sí' }, { value: '0', label: 'No' }],
             render: (d) => {
               const isFeatured = boolOf(d.featured)
               return <SwitchFormGroup id={`switch-featured-segment-${d.id}`} checked={isFeatured} refreshable={isFeatured} noMargin onChange={async (event) => { await rest.boolean({ id: d.id, field: 'featured', value: event.currentTarget.checked }); tableRef.current?.reload() }} />
@@ -203,7 +203,7 @@ const ProductSegments = (properties) => {
                   <div className='wseg-sec'>
                     <h4><i className='mdi mdi-shape-outline me-1' style={{ color: '#004991' }}></i>Datos</h4>
                     <InputFormGroup eRef={nameRef} label='Nombre' required />
-                    <TextareaFormGroup eRef={descriptionRef} label='Descripcion' rows={4} />
+                    <TextareaFormGroup eRef={descriptionRef} label='Descripción' rows={4} />
                     <InputFormGroup eRef={featuredOrderRef} label='Orden home' type='number' min='0' />
                     <div className='d-flex align-items-center gap-4 flex-wrap'>
                       <SwitchFormGroup label='Destacado home' checked={featured} onChange={() => setFeatured((current) => !current)} refreshable={featured} />

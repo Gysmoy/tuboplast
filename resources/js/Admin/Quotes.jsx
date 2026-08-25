@@ -221,9 +221,9 @@ const Quotes = () => {
       <AdminTable
         ref={tableRef}
         rest={quotesRest}
-        title='Lista de cotizaciónes'
+        title='Lista de cotizaciones'
         icon='ti ti-receipt-2'
-        countSuffix='cotizaciónes'
+        countSuffix='cotizaciones'
         defaultSort={[{ selector: 'code', desc: true }]}
         minWidth={1040}
         columns={columns}
@@ -416,7 +416,7 @@ const Quotes = () => {
 
 CreateReactScript((el, properties) => {
   createRoot(el).render(
-    <Adminto {...properties} title='Cotizaciónes'>
+    <Adminto {...properties} title='Cotizaciones'>
       <Quotes />
     </Adminto>
   )

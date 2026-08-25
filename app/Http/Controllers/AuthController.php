@@ -48,7 +48,7 @@ class AuthController extends BasicController
                 'email' => $email,
                 'password' => $password,
             ])) {
-                throw new Exception('Credenciales invalidas');
+                throw new Exception('Credenciales inválidas');
             }
 
             $request->session()->regenerate();
@@ -73,7 +73,7 @@ class AuthController extends BasicController
             $request->session()->regenerateToken();
 
             $response->status = 200;
-            $response->message = 'Cierre de sesion exitoso';
+            $response->message = 'Cierre de sesión exitoso';
         } catch (\Throwable $th) {
             $response->status = 400;
             $response->message = $th->getMessage();

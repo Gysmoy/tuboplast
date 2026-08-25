@@ -171,7 +171,7 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
   const pageRef = useRef(null);
   const addButtonRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [quantity, setQuantity] = useState(2);
+  const [quantity, setQuantity] = useState(1);
   const { contextSafe } = useGSAP(() => {}, { scope: pageRef });
 
   const triggerAddAnimation = contextSafe(() => {
@@ -357,7 +357,7 @@ const ProductDetailScreen = ({ product, relatedProducts }) => {
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-sm font-bold text-primary">Garantia Tuboplast</p>
+                  <p className="text-sm font-bold text-primary">Garantía Tuboplast</p>
                   <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] font-bold uppercase text-primary">
                     Premium
                   </span>

@@ -62,7 +62,7 @@ class MessageController extends BasicController
                 ->update(['status' => null]);
 
             $response->status = 200;
-            $response->message = 'Operacion correcta';
+            $response->message = 'Operación correcta';
         } catch (\Throwable $th) {
             $response->status = 400;
             $response->message = $th->getMessage();
