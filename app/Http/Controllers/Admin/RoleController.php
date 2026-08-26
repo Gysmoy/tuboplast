@@ -37,7 +37,7 @@ class RoleController extends BasicController
             if ($id) {
                 throw new \Exception('El rol Root es intocable');
             }
-            throw new \Exception('No se permite crear el rol Root desde este modulo');
+            throw new \Exception('No se permite crear el rol Root desde este módulo');
         }
 
         $duplicate = Role::query()

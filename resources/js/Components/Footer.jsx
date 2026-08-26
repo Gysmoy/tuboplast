@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="col-md-6 text-center text-md-start">
           {fullYear} © Panel {Global.APP_NAME}
           <span className='visually-hidden'>
-            • Powered by <a href='//devex.pe' target='_blank' className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">DevEx Consultinh</a>
+            • Powered by <a href='//devex.pe' target='_blank' className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">DevEx Consulting</a>
             </span>
         </div>
         <div className="col-md-6">

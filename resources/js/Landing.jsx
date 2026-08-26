@@ -394,7 +394,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
             Mira nuestro <span className="text-[#ff0a78]">trabajo</span>
           </h2>
           <p className="mt-2 text-sm text-slate-300 md:text-base">
-            Descubre nuestros casos de exito y como ayudamos a empresas a escalar con soluciones digitales a medida.
+            Descubre nuestros casos de éxito y cómo ayudamos a empresas a escalar con soluciones digitales a medida.
           </p>
 
           <div className="mt-6 flex items-center gap-3">
@@ -454,7 +454,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
 
         <section id="about" data-reveal className="mt-14">
           <h2 className="text-3xl font-black md:text-5xl">
-            Sabias este <span className="text-[#ff0a78]">dato?</span>
+            ¿Sabías este <span className="text-[#ff0a78]">dato?</span>
           </h2>
 
           <div className="mt-6 flex items-center gap-3">
@@ -723,7 +723,7 @@ const LandingScreen = ({ projects = [], token = '' }) => {
               {contactFeedback.message || 'Gracias por escribirnos.'}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-slate-300">
-              En breve un asesor se comunicara contigo para evaluar tu proyecto.
+              En breve un asesor se comunicará contigo para evaluar tu proyecto.
             </p>
 
             <button

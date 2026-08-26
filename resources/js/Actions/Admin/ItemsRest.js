@@ -95,8 +95,8 @@ class ItemsRest extends BasicRest {
         `${data.matched_items ?? 0} productos con coincidencia`,
         `${data.sheets_associated ?? 0} fichas asociadas`,
         `${data.sheets_ignored ?? 0} fichas ignoradas`,
-        `${data.not_found ?? 0} codigos sin producto`,
-        `${data.ambiguous ?? 0} codigos ambiguos`,
+        `${data.not_found ?? 0} códigos sin producto`,
+        `${data.ambiguous ?? 0} códigos ambiguos`,
       ].join(' - ')
 
       notify({ title: 'Carga de fichas completada', body, type: 'success' })
@@ -131,8 +131,8 @@ class ItemsRest extends BasicRest {
         `${data.matched_items ?? 0} productos con coincidencia`,
         `${data.images_associated ?? 0} imágenes asociadas`,
         `${data.images_ignored ?? 0} imágenes ignoradas`,
-        `${data.not_found ?? 0} codigos sin producto`,
-        `${data.ambiguous ?? 0} codigos ambiguos`,
+        `${data.not_found ?? 0} códigos sin producto`,
+        `${data.ambiguous ?? 0} códigos ambiguos`,
       ].join(' - ')
 
       notify({ title: 'Carga de imágenes completada', body, type: 'success' })

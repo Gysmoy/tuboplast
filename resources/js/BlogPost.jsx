@@ -135,7 +135,7 @@ const buildFallbackDetail = (post) => ({
       title: post.title || 'Artículo',
       paragraphs: [
         post.description || 'Este artículo comparte información técnica y contexto útil para proyectos de infraestructura y conducción hídrica.',
-        'Mantendremos este contenido alíneado al estilo editorial del blog para ofrecer una lectura clara, cercana y útil para el sector.',
+        'Mantendremos este contenido alineado al estilo editorial del blog para ofrecer una lectura clara, cercana y útil para el sector.',
       ],
     },
   ],
@@ -299,7 +299,7 @@ const BlogPostScreen = ({ blog = {}, postSlug = '' }) => {
   const highlightText = selectedPost.highlight || template.highlight || '';
   const newsletter = {
     eyebrow: blog.newsletter_eyebrow || 'Newsletter',
-    title: blog.newsletter_title || 'SE EL PRIMERO EN SABER',
+    title: blog.newsletter_title || 'SÉ EL PRIMERO EN SABER',
     description: blog.newsletter_description || 'Tips de instalación, nuevos productos y actualizaciones exclusivas para profesionales.',
     placeholder: blog.newsletter_placeholder || 'Correo electrónico',
     buttonLabel: blog.newsletter_button_label || 'Suscribirme ahora',

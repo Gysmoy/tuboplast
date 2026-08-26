@@ -155,11 +155,11 @@ class ProductTaxonomyController extends BasicController
                 'Minería',
             ],
             ProductLine::class => [
-                'Agua Fria',
+                'Agua Fría',
                 'Agua Potable',
                 'Alcantarillado',
-                'Desague',
-                'Electrico',
+                'Desagüe',
+                'Eléctrico',
                 'PE (HDPE)',
                 'Conduccion de agua a Presión',
             ],
@@ -171,7 +171,7 @@ class ProductTaxonomyController extends BasicController
                 'SEL',
                 'SAP',
                 'Sistema Unión Flexible (UF)',
-                'Sistema Termofusion',
+                'Sistema Termofusión',
             ],
             ProductFamily::class => Item::query()
                 ->whereNotNull('family')
@@ -333,7 +333,7 @@ class ProductTaxonomyController extends BasicController
     {
         $value = trim((string) $value);
         $aliases = [
-            'aguafria' => 'Agua Fria',
+            'aguafria' => 'Agua Fría',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
             'desague' => 'Desagüe',
@@ -347,7 +347,7 @@ class ProductTaxonomyController extends BasicController
             'sistemasimplepresion' => 'Sistema Simple Presión',
             'sistemauniónflexible' => 'Sistema Unión Flexible (UF)',
             'sistemauniónflexibleuf' => 'Sistema Unión Flexible (UF)',
-            'sistematermofusion' => 'Sistema Termofusion',
+            'sistematermofusion' => 'Sistema Termofusión',
             'tubo' => 'Tubos',
             'tubos' => 'Tubos',
             'conexion' => 'Conexiones',
@@ -363,11 +363,11 @@ class ProductTaxonomyController extends BasicController
         }
 
         if ($this->model === ProductLine::class) {
-            if (str_contains($key, 'aguafria')) return 'Agua Fria';
+            if (str_contains($key, 'aguafria')) return 'Agua Fría';
             if (str_contains($key, 'aguapotable')) return 'Agua Potable';
             if (str_contains($key, 'alcantarillado')) return 'Alcantarillado';
-            if (str_contains($key, 'desagüe')) return 'Desague';
-            if (str_contains($key, 'eléctrico') || str_contains($key, 'elctrico')) return 'Electrico';
+            if (str_contains($key, 'desagüe')) return 'Desagüe';
+            if (str_contains($key, 'eléctrico') || str_contains($key, 'elctrico')) return 'Eléctrico';
             if (str_contains($key, 'hdpe')) return 'PE (HDPE)';
             if (str_contains($key, 'conduccióndeaguaapresión')) return 'Conduccion de agua a Presión';
         }
@@ -376,7 +376,7 @@ class ProductTaxonomyController extends BasicController
             if (str_contains($key, 'sistemaroscado') || preg_match('/(^|pvc)r(aguafria)?$/', $key)) return 'Sistema Roscado';
             if (str_contains($key, 'sistemasimplepresion') || str_contains($key, 'sp')) return 'Sistema Simple Presión';
             if (str_contains($key, 'sistemauniónflexible') || str_contains($key, 'uf')) return 'Sistema Unión Flexible (UF)';
-            if (str_contains($key, 'sistematermofusion') || str_contains($key, 'termofusion')) return 'Sistema Termofusion';
+            if (str_contains($key, 'sistematermofusion') || str_contains($key, 'termofusion')) return 'Sistema Termofusión';
             if (str_contains($key, 'claseliviana') || str_contains($key, 'clasel') || str_contains($key, 'salcl')) return 'Clase Liviana';
             if (str_contains($key, 'clasepesada') || str_contains($key, 'clasep') || str_contains($key, 'salcp')) return 'Clase Pesada';
             if (str_contains($key, 'sel')) return 'SEL';

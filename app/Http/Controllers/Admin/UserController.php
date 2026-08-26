@@ -55,7 +55,7 @@ class UserController extends BasicController
             ->exists();
 
         if ($hasRootRole) {
-            throw new \Exception('El rol Root no se puede asignar desde este modulo');
+            throw new \Exception('El rol Root no se puede asignar desde este módulo');
         }
 
         $this->pendingRoleIds = $roleIds;

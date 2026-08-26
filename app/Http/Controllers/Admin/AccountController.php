@@ -73,21 +73,21 @@ class AccountController extends BasicController
         if ($newPassword !== $newPasswordConfirmation) {
             return response([
                 'status' => 422,
-                'message' => 'La confirmacion de la nueva contrasena no coincide',
+                'message' => 'La confirmación de la nueva contraseña no coincide',
             ], 422);
         }
 
         if (mb_strlen($newPassword) < 8) {
             return response([
                 'status' => 422,
-                'message' => 'La nueva contrasena debe tener al menos 8 caracteres',
+                'message' => 'La nueva contraseña debe tener al menos 8 caracteres',
             ], 422);
         }
 
         if (!Hash::check($currentPassword, $user->password)) {
             return response([
                 'status' => 422,
-                'message' => 'La contrasena actual no es válida',
+                'message' => 'La contraseña actual no es válida',
             ], 422);
         }
 

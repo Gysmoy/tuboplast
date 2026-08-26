@@ -214,7 +214,7 @@ const Categories = () => {
 
 CreateReactScript((el, properties) => {
   createRoot(el).render(
-    <Adminto {...properties} title='Categorias'>
+      <Adminto {...properties} title='Categorías'>
       <Categories {...properties} />
     </Adminto>
   )

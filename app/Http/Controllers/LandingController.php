@@ -551,7 +551,7 @@ class LandingController extends BasicController
     {
         $value = trim((string) $value);
         $aliases = [
-            'aguafria' => 'Agua Fria',
+            'aguafria' => 'Agua Fría',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
             'desague' => 'Desagüe',

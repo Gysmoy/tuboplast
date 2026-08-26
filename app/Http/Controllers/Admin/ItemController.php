@@ -287,7 +287,7 @@ class ItemController extends BasicController
             ]);
 
             if (!Schema::hasTable('item_images')) {
-                throw new Exception('La tabla de galeria de imágenes aun no existe. Ejecuta las migraciones antes de cargar imágenes.');
+                throw new Exception('La tabla de galería de imágenes aún no existe. Ejecuta las migraciones antes de cargar imágenes.');
             }
 
             $imagePackage = $this->readImagePackage($request->file('images_zip')->getRealPath());
@@ -717,7 +717,7 @@ class ItemController extends BasicController
             'predialedificaciones' => 'Predial',
             'saneamientooinfraestructura' => 'Saneamiento',
             'saneamientoinfraestructura' => 'Saneamiento',
-            'aguafria' => 'Agua Fria',
+            'aguafria' => 'Agua Fría',
             'aguapotable' => 'Agua Potable',
             'alcantarillado' => 'Alcantarillado',
             'desague' => 'Desagüe',

@@ -122,7 +122,7 @@ const Blog = ({ blog: initialBlog = {} }) => {
     hero_description: initialBlog.hero_description || '',
     section_title: initialBlog.section_title || 'Últimas actualizaciones',
     newsletter_eyebrow: initialBlog.newsletter_eyebrow || 'Newsletter',
-    newsletter_title: initialBlog.newsletter_title || 'Se el primero en saber',
+    newsletter_title: initialBlog.newsletter_title || 'Sé el primero en saber',
     newsletter_description: initialBlog.newsletter_description || '',
     newsletter_placeholder: initialBlog.newsletter_placeholder || 'Correo electrónico',
     newsletter_button_label: initialBlog.newsletter_button_label || 'Suscribirme ahora',

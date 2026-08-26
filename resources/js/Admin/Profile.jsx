@@ -11,7 +11,7 @@ const Profile = () => {
   return (
     <div className='card border-0 shadow-sm'>
       <div className='card-body p-4 text-center'>
-        <h5 className='mb-2'>Redireccionando...</h5>
+        <h5 className='mb-2'>Redirigiendo...</h5>
         <p className='text-muted mb-0'>Te estamos llevando a Mi cuenta.</p>
       </div>
     </div>

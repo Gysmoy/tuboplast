@@ -248,7 +248,7 @@ const Sliders = ({ items = [] }) => {
       render: (d) => (
         <>
           <span className='fw-semibold d-block'>{d.title}</span>
-          <small className='text-muted d-block line-clamp-2'>{d.description || 'Sin descripcion'}</small>
+          <small className='text-muted d-block line-clamp-2'>{d.description || 'Sin descripción'}</small>
         </>
       ),
     },
@@ -279,7 +279,7 @@ const Sliders = ({ items = [] }) => {
       ),
     },
     {
-      key: 'metrics', header: 'Metricas', filterable: false, sortable: false, width: 180,
+      key: 'metrics', header: 'Métricas', filterable: false, sortable: false, width: 180,
       render: (d) => (
         <div className='d-flex flex-column gap-1'>
           <small className='wfs-muted'>{d.metric_one_value || '-'} <span className='text-muted'>{d.metric_one_label || ''}</span></small>
@@ -359,7 +359,7 @@ const Sliders = ({ items = [] }) => {
                   </div>
                   <div className='col-md-7'>
                     <div className='row'>
-                      <InputFormGroup col='col-md-3' eRef={titleRef} label='Titulo' required />
+                      <InputFormGroup col='col-md-3' eRef={titleRef} label='Título' required />
                       <FieldSelect col='col-md-3' label='Ubicación' value={placement} options={PLACEMENT_OPTIONS} onChange={setPlacement} />
                       <FieldSelect col='col-md-3' label='Modo' value={displayMode} options={DISPLAY_MODE_OPTIONS} onChange={setDisplayMode} />
                       <InputFormGroup col='col-md-3' eRef={sortOrderRef} label='Orden' type='number' />
@@ -402,12 +402,12 @@ const Sliders = ({ items = [] }) => {
               </div>
 
               <div className='wfs-sec'>
-                <h4><i className='mdi mdi-chart-box-outline me-1' style={{ color: '#004991' }}></i>Metricas</h4>
+                <h4><i className='mdi mdi-chart-box-outline me-1' style={{ color: '#004991' }}></i>Métricas</h4>
                 <div className='row'>
-                  <InputFormGroup col='col-md-3' eRef={metricOneValueRef} label='Valor metrica 1' placeholder='60+' />
-                  <InputFormGroup col='col-md-3' eRef={metricOneLabelRef} label='Texto metrica 1' placeholder='Anos de trayectoria' />
-                  <InputFormGroup col='col-md-3' eRef={metricTwoValueRef} label='Valor metrica 2' placeholder='ISO' />
-                  <InputFormGroup col='col-md-3' eRef={metricTwoLabelRef} label='Texto metrica 2' placeholder='Calidad certificada' />
+                  <InputFormGroup col='col-md-3' eRef={metricOneValueRef} label='Valor métrica 1' placeholder='60+' />
+                  <InputFormGroup col='col-md-3' eRef={metricOneLabelRef} label='Texto métrica 1' placeholder='Años de trayectoria' />
+                  <InputFormGroup col='col-md-3' eRef={metricTwoValueRef} label='Valor métrica 2' placeholder='ISO' />
+                  <InputFormGroup col='col-md-3' eRef={metricTwoLabelRef} label='Texto métrica 2' placeholder='Calidad certificada' />
                 </div>
               </div>
 
