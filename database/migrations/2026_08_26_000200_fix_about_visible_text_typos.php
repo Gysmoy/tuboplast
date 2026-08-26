@@ -75,6 +75,14 @@ return new class extends Migration
             'alta presion' => 'alta presión',
             'conduccion de agua' => 'conducción de agua',
             'Conduccion de agua' => 'Conducción de agua',
+            'Politica' => 'Política',
+            'politica' => 'política',
+            'Certificaciónes' => 'Certificaciones',
+            'certificaciónes' => 'certificaciones',
+            'ISO 9 001' => 'ISO 9001',
+            'ISO 14 001' => 'ISO 14001',
+            'ISO 45 001' => 'ISO 45001',
+            'normás' => 'normas',
         ];
 
         $this->replaceText('about_pages', [

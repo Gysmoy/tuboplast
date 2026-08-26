@@ -52,7 +52,7 @@ const displayModes = {
 const AboutPoliticaScreen = ({ about = defaultAbout, banners = {} }) => {
   const heroBanner = banners.about_policy || {}
   const policyEyebrow = about.policy_eyebrow || defaultAbout.policy_eyebrow
-  const policyTitle = heroBanner.title || about.policy_title || defaultAbout.policy_title
+  const policyTitle = about.policy_title || heroBanner.title || defaultAbout.policy_title
   const policyBullets = Array.isArray(about.policy_bullets) && about.policy_bullets.length
     ? about.policy_bullets
     : defaultAbout.policy_bullets
@@ -75,7 +75,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout, banners = {} }) => {
   const policyScopeTitle = about.policy_scope_title || defaultAbout.policy_scope_title
   const policyScopeParagraph1 = about.policy_scope_paragraph_1 || defaultAbout.policy_scope_paragraph_1
   const policyScopeParagraph2 = about.policy_scope_paragraph_2 || defaultAbout.policy_scope_paragraph_2
-  const policyCommitmentText = heroBanner.description || about.policy_commitment_text || defaultAbout.policy_commitment_text
+  const policyCommitmentText = about.policy_commitment_text || heroBanner.description || defaultAbout.policy_commitment_text
   const policyStatement = about.policy_description || defaultAbout.policy_description
   const policyCertificationsTitle = about.policy_certifications_title || defaultAbout.policy_certifications_title
 
