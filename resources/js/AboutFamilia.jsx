@@ -273,7 +273,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
             </div>
             <img
               src={familyImage}
-              alt='Tuboplast en produccion'
+              alt='Tuboplast en producción'
               className='h-[360px] w-full rounded-2xl object-cover shadow-[0_22px_45px_rgba(15,23,42,0.18)] sm:h-[500px] lg:h-[440px] xl:h-[500px]'
             />
           </div>

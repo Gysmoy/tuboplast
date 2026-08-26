@@ -94,7 +94,7 @@ const detailTemplates = [
     published: '18 de Julio, 2026',
     readTime: '7 min de lectura',
     lead:
-      'Los retos de la infraestructura hídrica exigen materiales consistentes, soporte técnico cercaño y capacidad de respuesta en proyectos de gran escala.',
+      'Los retos de la infraestructura hídrica exigen materiales consistentes, soporte técnico cercano y capacidad de respuesta en proyectos de gran escala.',
     sections: [
       {
         title: 'Demanda y Cobertura Nacional',

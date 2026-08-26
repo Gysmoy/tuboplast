@@ -18,7 +18,7 @@ const specialtyOptions = [
 const benefits = [
   {
     icon: 'mdi-school-outline',
-    title: 'Capacitaciónes certificadas',
+    title: 'Capacitaciones certificadas',
     description: 'Acceso gratuito a seminarios técnicos y certificaciones con validez oficial para potenciar tu CV.',
   },
   {

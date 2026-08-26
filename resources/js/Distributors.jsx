@@ -424,7 +424,7 @@ const DistributorCard = ({ distributor, isSelected, onSelect }) => {
 const DistributorsScreen = ({ distributors = [], banners = {} }) => {
   const heroBanner = banners.distributors || {};
   const heroImage = heroBanner.image_url || '/assets/img/distributors/banner-distribuidores.png';
-  const heroTitle = heroBanner.title || 'Encuentra tu distribuidor más cercaño';
+  const heroTitle = heroBanner.title || 'Encuentra tu distribuidor más cercano';
   const heroDescription = heroBanner.description || 'Localiza puntos de venta autorizados Tuboplast en todo el Perú y asegura la calidad técnica de tus proyectos.';
   const isHeroImageOnly = (heroBanner.display_mode || 'image_only') === 'image_only';
   const mapSectionRef = useRef(null);

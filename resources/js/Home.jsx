@@ -520,7 +520,7 @@ const HomeScreen = ({ blog = {}, sliders = [], expertCategories = [] }) => {
         <div className={'mx-auto w-full max-w-site px-4'}>
           <div className="mb-8 flex items-end justify-between gap-4 sm:mb-10">
             <div>
-              <p className="font-title text-3xl font-medium leading-tight text-primary sm:text-4xl">Nuestras Recomendaciones</p>
+              <p className="font-title text-3xl font-medium leading-tight text-primary sm:text-4xl">Nuestras recomendaciones</p>
               <span className="mt-2 block h-1 w-12 bg-secondary" />
             </div>
             <a className="font-medium text-primary" href="/catalog">
