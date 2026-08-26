@@ -150,6 +150,8 @@ class ItemController extends BasicController
             'usage_warning' => 'nullable|string|max:2000',
             'gallery_images' => 'nullable|array',
             'gallery_images.*' => 'file|image|max:10240',
+            'gallery_order' => 'nullable|array',
+            'gallery_order.*' => 'string|max:80',
             'technical_sheet' => 'nullable|file|mimes:pdf|max:51200',
             'status' => 'nullable',
         ]);
@@ -170,6 +172,7 @@ class ItemController extends BasicController
 
         unset($validated['product_segment_ids']);
         unset($validated['gallery_images']);
+        unset($validated['gallery_order']);
 
         $validated['currency'] = $validated['currency'] ?? 'PEN';
         $validated['product_segment_id'] = $primarySegmentId ?: null;
@@ -1540,6 +1543,67 @@ class ItemController extends BasicController
     private function syncManualImageGallery(Request $request, Item $item): void
     {
         if (!Schema::hasTable('item_images')) {
+            return;
+        }
+
+        if ($request->has('gallery_order')) {
+            $item->loadMissing('images');
+
+            $newFiles = array_values($request->file('gallery_images', []));
+            $existingImages = $item->images->keyBy(fn ($image) => (string) $image->id);
+            $keptExistingIds = [];
+            $finalPaths = [];
+            $primaryPath = null;
+            $sortOrder = 0;
+
+            foreach ($request->input('gallery_order', []) as $token) {
+                if (Str::startsWith($token, 'existing:')) {
+                    $id = Str::after($token, 'existing:');
+                    $image = $existingImages->get((string) $id);
+                    if (!$image) {
+                        continue;
+                    }
+
+                    $image->forceFill(['sort_order' => $sortOrder])->save();
+                    $keptExistingIds[] = (int) $image->id;
+                    $finalPaths[] = $image->path;
+                    $primaryPath ??= $image->path;
+                    $sortOrder++;
+                    continue;
+                }
+
+                if (Str::startsWith($token, 'new:')) {
+                    $index = (int) Str::after($token, 'new:');
+                    $file = $newFiles[$index] ?? null;
+                    if (!$file) {
+                        continue;
+                    }
+
+                    $path = $file->store('items', 'public');
+                    $item->images()->create([
+                        'path' => $path,
+                        'sort_order' => $sortOrder,
+                    ]);
+                    $finalPaths[] = $path;
+                    $primaryPath ??= $path;
+                    $sortOrder++;
+                }
+            }
+
+            $item->images
+                ->filter(fn ($image) => !in_array((int) $image->id, $keptExistingIds, true))
+                ->each(function ($image) {
+                    $this->queueFileForDeletion($image->path);
+                    $image->delete();
+                });
+
+            if ($primaryPath && $primaryPath !== $item->image) {
+                if ($item->image && !in_array($item->image, $finalPaths, true)) {
+                    $this->queueFileForDeletion($item->image);
+                }
+                $item->forceFill(['image' => $primaryPath])->save();
+            }
+
             return;
         }
 

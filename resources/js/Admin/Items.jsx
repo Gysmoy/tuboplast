@@ -61,6 +61,20 @@ const ITEMS_CSS = `
 .wfi-multi label{display:flex;align-items:center;gap:7px;margin:0;padding:5px 6px;border-radius:7px;color:#0f2540;font-size:12.5px;font-weight:600;cursor:pointer;}
 .wfi-multi label:hover{background:#f4f8fd;}
 .wfi-multi input{accent-color:#004991;}
+.wfi-gallery-drop{border:1.5px dashed #c6d1df;border-radius:10px;background:#f8fbff;min-height:54px;padding:10px 12px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;color:#586477;font-size:12.5px;}
+.wfi-gallery-drop.drag{border-color:#004991;background:#eef6ff;}
+.wfi-gallery-drop i{font-size:18px;color:#004991;margin-right:6px;}
+.wfi-gallery-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;margin-top:6px;color:#8a93a6;}
+.wfi-gallery-meta b{color:#00a650;font-weight:700;}
+.wfi-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;max-height:188px;overflow-y:auto;margin-top:8px;padding-right:2px;}
+.wfi-gallery-card{position:relative;border:1px solid #dfe7f1;border-radius:8px;background:#fff;padding:6px;min-width:0;}
+.wfi-gallery-card img{width:100%;height:58px;object-fit:cover;border-radius:6px;background:#f4f8fd;display:block;}
+.wfi-gallery-index{position:absolute;top:3px;left:3px;min-width:18px;height:18px;border-radius:5px;background:#004991;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.wfi-gallery-remove{position:absolute;top:3px;right:3px;width:20px;height:20px;border:0;border-radius:6px;background:rgba(255,255,255,.92);color:#e24b4a;display:flex;align-items:center;justify-content:center;}
+.wfi-gallery-label{font-size:11px;color:#8a93a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:5px 0 4px;}
+.wfi-gallery-actions{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.wfi-gallery-actions button{height:24px;border:0;border-radius:6px;background:#f4f8fd;color:#004991;}
+.wfi-gallery-actions button:disabled{opacity:.35;color:#8a93a6;}
 `
 
 const ARCHIVE_PATTERN = /\.(zip|rar)$/i
@@ -75,6 +89,11 @@ const itemImageUrl = (item) => {
   if (!image) return ITEM_FALLBACK_IMAGE
   if (/^(https?:)?\/\//.test(image) || image.startsWith('/')) return image
   return `/storage/${image}`
+}
+const storageImageUrl = (path) => {
+  if (!path) return ITEM_FALLBACK_IMAGE
+  if (/^(https?:)?\/\//.test(path) || path.startsWith('/')) return path
+  return `/storage/${path}`
 }
 const onItemImageError = (event) => {
   if (!event.target.src.endsWith(ITEM_FALLBACK_IMAGE)) event.target.src = ITEM_FALLBACK_IMAGE
@@ -180,6 +199,8 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const [importDragging, setImportDragging] = useState(null)
   const [importLoading, setImportLoading] = useState(false)
   const [importError, setImportError] = useState('')
+  const [galleryItems, setGalleryItems] = useState([])
+  const [galleryDragging, setGalleryDragging] = useState(false)
   const [selects, setSelects] = useState({
     category_id: '',
     product_segment_id: '',
@@ -194,6 +215,61 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
 
   const setSelect = (key, value) => setSelects((cur) => ({ ...cur, [key]: value }))
   const refreshGrid = () => tableRef.current?.reload()
+
+  const cleanupNewGalleryItems = (items) => {
+    items.filter((item) => item.type === 'new' && item.preview).forEach((item) => URL.revokeObjectURL(item.preview))
+  }
+
+  const existingGalleryFromItem = (data = null) => {
+    if (!data) return []
+    const rows = Array.isArray(data.images) && data.images.length
+      ? data.images
+      : (data.image ? [{ id: null, path: data.image }] : [])
+
+    return rows
+      .filter((row) => row?.path)
+      .map((row, index) => ({
+        key: `existing-${row.id || row.path}-${index}`,
+        type: 'existing',
+        id: row.id ? String(row.id) : '',
+        path: row.path,
+        preview: storageImageUrl(row.path),
+      }))
+  }
+
+  const appendGalleryFiles = (files) => {
+    const images = Array.from(files || []).filter((file) => file?.type?.startsWith('image/'))
+    if (!images.length) return
+    setGalleryItems((current) => [
+      ...current,
+      ...images.map((file, index) => ({
+        key: `new-${Date.now()}-${index}-${file.name}`,
+        type: 'new',
+        file,
+        preview: URL.createObjectURL(file),
+      })),
+    ])
+  }
+
+  const removeGalleryItem = (key) => {
+    setGalleryItems((current) => {
+      const target = current.find((item) => item.key === key)
+      if (target?.type === 'new' && target.preview) URL.revokeObjectURL(target.preview)
+      return current.filter((item) => item.key !== key)
+    })
+  }
+
+  const moveGalleryItem = (key, direction) => {
+    setGalleryItems((current) => {
+      const index = current.findIndex((item) => item.key === key)
+      const nextIndex = index + direction
+      if (index < 0 || nextIndex < 0 || nextIndex >= current.length) return current
+      const next = [...current]
+      const [moved] = next.splice(index, 1)
+      next.splice(nextIndex, 0, moved)
+      return next
+    })
+  }
 
   const setFormValues = (data = null) => {
     const set = (ref, value) => { if (ref.current) ref.current.value = value ?? '' }
@@ -249,6 +325,10 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     if (imageRef.current?.image) {
       imageRef.current.image.src = itemImageUrl(data)
     }
+    setGalleryItems((current) => {
+      cleanupNewGalleryItems(current)
+      return existingGalleryFromItem(data)
+    })
   }
 
   const onModalOpen = (data = null) => {
@@ -258,12 +338,23 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     setTimeout(() => setFormValues(data), 30)
   }
 
-  const closeForm = () => { if (loading) return; setFormOpen(false); setDataLoaded(null); setFormError('') }
+  const closeForm = () => {
+    if (loading) return
+    setFormOpen(false)
+    setDataLoaded(null)
+    setFormError('')
+    setGalleryItems((current) => {
+      cleanupNewGalleryItems(current)
+      return []
+    })
+  }
 
   useEffect(() => {
     document.body.style.overflow = (formOpen || importOpen) ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [formOpen, importOpen])
+
+  useEffect(() => () => cleanupNewGalleryItems(galleryItems), [])
 
   const askDelete = (item, event) => { if (event) event.stopPropagation(); setConfirmTarget(item) }
 
@@ -408,7 +499,10 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       usage_warning: usageWarningRef.current.value,
       status: true,
       image: imageRef.current.files?.[0] ?? null,
-      gallery_images: Array.from(galleryImagesRef.current?.files || []),
+      gallery_images: galleryItems.filter((image) => image.type === 'new').map((image) => image.file),
+      gallery_order: galleryItems.map((image) => image.type === 'existing'
+        ? `existing:${image.id}`
+        : `new:${galleryItems.filter((row) => row.type === 'new').findIndex((row) => row.key === image.key)}`),
       technical_sheet: technicalSheetRef.current.files?.[0] ?? null
     }
 
@@ -556,8 +650,60 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                     <ImageFormGroup eRef={imageRef} label='Imagen' required={!dataLoaded} aspect='4/3' fit='cover' onError={ITEM_FALLBACK_IMAGE} />
                     <div className='form-group mb-2'>
                       <label className='form-label'>Galería de imágenes</label>
-                      <input ref={galleryImagesRef} type='file' className='form-control' accept='image/*' multiple />
-                      <small className='text-muted'>Puedes seleccionar varias fotos. La primera quedará como imagen principal.</small>
+                      <input
+                        ref={galleryImagesRef}
+                        type='file'
+                        className='d-none'
+                        accept='image/*'
+                        multiple
+                        onChange={(e) => {
+                          appendGalleryFiles(e.target.files)
+                          e.target.value = ''
+                        }}
+                      />
+                      <div
+                        className={`wfi-gallery-drop ${galleryDragging ? 'drag' : ''}`}
+                        role='button'
+                        tabIndex={0}
+                        onClick={() => galleryImagesRef.current?.click()}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') galleryImagesRef.current?.click() }}
+                        onDragOver={(e) => { e.preventDefault(); setGalleryDragging(true) }}
+                        onDragLeave={() => setGalleryDragging(false)}
+                        onDrop={(e) => {
+                          e.preventDefault()
+                          setGalleryDragging(false)
+                          appendGalleryFiles(e.dataTransfer.files)
+                        }}
+                      >
+                        <i className='mdi mdi-image-plus'></i>
+                        <span>Arrastra imágenes aquí o haz clic para seleccionar</span>
+                      </div>
+                      <div className='wfi-gallery-meta'>
+                        <span>La primera imagen será la principal.</span>
+                        <b>{galleryItems.length} imagen(es)</b>
+                      </div>
+                      {galleryItems.length > 0 && (
+                        <div className='wfi-gallery-grid'>
+                          {galleryItems.map((image, index) => (
+                            <div className='wfi-gallery-card' key={image.key}>
+                              <img src={image.preview} alt={`Imagen ${index + 1}`} onError={onItemImageError} />
+                              <span className='wfi-gallery-index'>{index + 1}</span>
+                              <button type='button' className='wfi-gallery-remove' title='Quitar imagen' onClick={() => removeGalleryItem(image.key)}>
+                                <i className='mdi mdi-close'></i>
+                              </button>
+                              <div className='wfi-gallery-label'>{image.type === 'new' ? 'Nueva' : 'Actual'}</div>
+                              <div className='wfi-gallery-actions'>
+                                <button type='button' title='Mover a la izquierda' disabled={index === 0} onClick={() => moveGalleryItem(image.key, -1)}>
+                                  <i className='mdi mdi-chevron-left'></i>
+                                </button>
+                                <button type='button' title='Mover a la derecha' disabled={index === galleryItems.length - 1} onClick={() => moveGalleryItem(image.key, 1)}>
+                                  <i className='mdi mdi-chevron-right'></i>
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className='form-group mb-2'>
                       <label className='form-label'>Ficha técnica PDF</label>

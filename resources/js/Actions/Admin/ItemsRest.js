@@ -167,6 +167,7 @@ class ItemsRest extends BasicRest {
         formData.append('image', item.image)
       }
       ;(item.gallery_images || []).forEach((image) => formData.append('gallery_images[]', image))
+      ;(item.gallery_order || []).forEach((token) => formData.append('gallery_order[]', token))
       if (item.technical_sheet) {
         formData.append('technical_sheet', item.technical_sheet)
       }
