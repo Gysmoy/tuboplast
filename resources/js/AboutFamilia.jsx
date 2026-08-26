@@ -231,7 +231,7 @@ const AboutFamiliaScreen = ({ about = defaultAbout, banners = {} }) => {
   const familyValues = Array.isArray(about.family_values) && about.family_values.length ? about.family_values : defaultAbout.family_values
   const milestones = Array.isArray(about.milestones) && about.milestones.length > 3 ? about.milestones : timelineMilestones
   const familyImage = about.family_image_url || (about.family_image ? `/about/media/${about.family_image}` : '/assets/img/landing/club-expert.webp')
-  const familyHeroImage = about.family_image_url || (about.family_image ? `/about/media/${about.family_image}` : '') || heroBanner.image_url || '/assets/img/about/red-distribucion-banner.png'
+  const familyHeroImage = heroBanner.image_url || '/assets/img/about/red-distribucion-banner.png'
   const familyHeroTitle = heroBanner.title || 'Estamos presentes desde 1966'
   const familyHeroDescription = heroBanner.description || 'Líderes en soluciones para edificaciones, infraestructura, minería, agricultura y más.'
   const heroDisplayMode = about.family_hero_display_mode || heroBanner.display_mode || displayModes.imageWithText

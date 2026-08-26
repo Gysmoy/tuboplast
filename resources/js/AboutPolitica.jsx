@@ -68,7 +68,7 @@ const AboutPoliticaScreen = ({ about = defaultAbout, banners = {} }) => {
     }
   })
   const policyImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '/assets/img/about/control-calidad-sgi.png')
-  const policyHeroImage = about.policy_image_url || (about.policy_image ? `/about/media/${about.policy_image}` : '') || heroBanner.image_url || '/assets/img/landing/bg-main.webp'
+  const policyHeroImage = heroBanner.image_url || '/assets/img/landing/bg-main.webp'
   const heroDisplayMode = about.policy_hero_display_mode || heroBanner.display_mode || displayModes.imageWithText
   const isHeroImageOnly = heroDisplayMode === displayModes.imageOnly
   const policyScopeEyebrow = about.policy_scope_eyebrow || defaultAbout.policy_scope_eyebrow
