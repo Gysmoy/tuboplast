@@ -158,11 +158,11 @@ const BlogScreen = ({ blog = {}, banners = {} }) => {
     category: post.category,
     detail_url: postUrl(post, index),
   }));
-  const heroImage = heroBanner.image_url || blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '/assets/img/blog/blog-cotizaciones-banner.png');
+  const heroImage = blog.hero_image_url || (blog.hero_image ? `/storage/${blog.hero_image}` : '') || heroBanner.image_url || '/assets/img/blog/blog-cotizaciones-banner.png';
   const heroBadge = blog.hero_badge || 'Blog Tuboplast';
-  const heroTitle = heroBanner.title || blog.hero_title || 'Construyendo el futuro';
-  const heroDescription = heroBanner.description || blog.hero_description || 'Explora las últimas innovaciones técnicas, proyectos emblemáticos y consejos de ingeniería para el mercado peruano.';
-  const heroDisplayMode = heroBanner.display_mode || blog.hero_display_mode || heroDisplayModes.imageOnly;
+  const heroTitle = blog.hero_title || heroBanner.title || 'Construyendo el futuro';
+  const heroDescription = blog.hero_description || heroBanner.description || 'Explora las últimas innovaciones técnicas, proyectos emblemáticos y consejos de ingeniería para el mercado peruano.';
+  const heroDisplayMode = blog.hero_display_mode || heroBanner.display_mode || heroDisplayModes.imageOnly;
   const isHeroImageOnly = heroDisplayMode === heroDisplayModes.imageOnly;
   const sectionTitle = blog.section_title || 'Últimas actualizaciones';
   const newsletter = {
@@ -371,4 +371,3 @@ CreateReactScript((el, properties) => {
     </Base>,
   );
 });
-
