@@ -16,9 +16,13 @@ use App\Models\ProductFamily;
 use App\Models\ProductLine;
 use App\Models\ProductSegment;
 use App\Models\ProductType;
+use App\Mail\QuoteReceived;
+use App\Mail\SubmissionReceived;
 use App\Models\Quote;
 use App\Models\Slider;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -1006,6 +1010,21 @@ class LandingController extends BasicController
             'status' => true,
         ]);
 
+        try {
+            Mail::to($validated['email'])->send(new SubmissionReceived(
+                name: $validated['name'],
+                subjectLine: 'Hemos recibido tu mensaje',
+                intro: 'Gracias por escribirnos. Hemos recibido tu mensaje y queremos ayudarte lo antes posible.',
+                quotedMessage: $validated['message'],
+                closing: 'En breve un encargado se pondrá en contacto contigo para atender tu consulta.',
+            ));
+        } catch (\Throwable $e) {
+            Log::error('No se pudo enviar el correo de confirmación de contacto', [
+                'email' => $validated['email'],
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return response()->json([
             'status' => 200,
             'message' => 'Gracias. Tu mensaje fue enviado correctamente.',
@@ -1048,6 +1067,21 @@ class LandingController extends BasicController
             'seen' => false,
             'status' => true,
         ]);
+
+        try {
+            Mail::to($validated['email'])->send(new SubmissionReceived(
+                name: $validated['name'],
+                subjectLine: 'Hemos recibido tu solicitud al Club Experto',
+                intro: '¡Gracias por tu interés en unirte al Club Experto Tuboplast! Hemos recibido tu solicitud de inscripción como parte de nuestra comunidad de maestros y profesionales.',
+                details: ['Especialidad' => $validated['specialty']],
+                closing: 'Como miembro del Club Experto accederás a capacitaciones certificadas, descuentos exclusivos y soporte prioritario. En breve un asesor se pondrá en contacto contigo para completar tu registro.',
+            ));
+        } catch (\Throwable $e) {
+            Log::error('No se pudo enviar el correo de confirmación de Club Experto', [
+                'email' => $validated['email'],
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'status' => 200,
@@ -1093,6 +1127,25 @@ class LandingController extends BasicController
             'seen' => false,
             'status' => true,
         ]);
+
+        try {
+            Mail::to($validated['email'])->send(new SubmissionReceived(
+                name: $validated['name'],
+                subjectLine: 'Hemos recibido tu solicitud de distribuidor',
+                intro: 'Gracias por tu interés en ser distribuidor autorizado de Tuboplast. Hemos recibido la solicitud de tu empresa para evaluar una alianza comercial.',
+                quotedMessage: $validated['message'] ?? null,
+                details: [
+                    'Empresa' => $validated['business'],
+                    'Servicio de interés' => $validated['service'],
+                ],
+                closing: 'En breve un encargado se pondrá en contacto contigo para evaluar tu solicitud y coordinar los siguientes pasos.',
+            ));
+        } catch (\Throwable $e) {
+            Log::error('No se pudo enviar el correo de confirmación de distribuidor', [
+                'email' => $validated['email'],
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'status' => 200,
@@ -1176,6 +1229,15 @@ class LandingController extends BasicController
         $quote->update([
             'code' => 'COT-' . now()->format('Y') . '-' . str_pad((string) $quote->id, 5, '0', STR_PAD_LEFT),
         ]);
+
+        try {
+            Mail::to($quote->email)->send(new QuoteReceived($quote));
+        } catch (\Throwable $e) {
+            Log::error('No se pudo enviar el correo de cotización', [
+                'quote_id' => $quote->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'status' => 200,
