@@ -231,6 +231,7 @@ class ItemController extends BasicController
     public function import(Request $request): HttpResponse|ResponseFactory
     {
         $response = new Response();
+        set_time_limit(600);
 
         try {
             $request->validate([
@@ -280,6 +281,7 @@ class ItemController extends BasicController
     public function importImages(Request $request): HttpResponse|ResponseFactory
     {
         $response = new Response();
+        set_time_limit(600);
 
         try {
             $request->validate([
@@ -318,6 +320,7 @@ class ItemController extends BasicController
     public function importSheets(Request $request): HttpResponse|ResponseFactory
     {
         $response = new Response();
+        set_time_limit(600);
 
         try {
             $request->validate([
