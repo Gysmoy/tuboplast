@@ -32,7 +32,7 @@ const SwitchFormGroup = ({ id, col, eRef, label, specification, required = false
           </label>
         </>
       }
-      <input ref={eRef} id={id} type="checkbox" data-plugin="switchery" required={required} disabled={disabled} defaultChecked={checked} />
+      <input ref={eRef} id={id} type="checkbox" data-plugin="switchery" required={required} disabled={disabled} checked={checked} onChange={() => { }} />
     </div>
   </>
 }
