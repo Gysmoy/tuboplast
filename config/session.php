@@ -2,20 +2,10 @@
 
 use Illuminate\Support\Str;
 
-$storage_path_parts = explode(DIRECTORY_SEPARATOR, base_path());
-array_pop($storage_path_parts);
-// $storage_path = implode(DIRECTORY_SEPARATOR, $storage_path_parts) . DIRECTORY_SEPARATOR . 'sode_sessions';
-$storage_path = '/shareddata';
 $session_domain = env('SESSION_DOMAIN');
 
 if (in_array($session_domain, ['localhost', '.localhost'], true)) {
     $session_domain = null;
-}
-
-
-// Validar si la ruta no existe y crear la carpeta
-if (!file_exists($storage_path)) {
-    mkdir($storage_path, 0755, true);
 }
 
 return [
@@ -76,7 +66,6 @@ return [
     */
 
     'files' => storage_path('framework/sessions'),
-    // 'files' => $storage_path,
 
     /*
     |--------------------------------------------------------------------------
