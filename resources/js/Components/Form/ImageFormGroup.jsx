@@ -8,10 +8,10 @@ const ImageFormGroup = ({ id, col, label, eRef, required = false, onChange = () 
   const inputRef = eRef || fallbackRef
   const imageRef = useRef()
 
-  const onImageChange = async (e) => {
+  const onImageChange = (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const url = await File.toURL(file)
+    const url = URL.createObjectURL(file)
     imageRef.current.src = url
     onChange(e)
   }
