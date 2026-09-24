@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\DistributorRequestController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\WhatsappNumberController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ProductClassificationController;
@@ -85,6 +86,13 @@ Route::middleware('auth')->group(function () {
     Route::get('sliders/{id}', [SliderController::class, 'get']);
     Route::patch('sliders/status', [SliderController::class, 'status']);
     Route::delete('sliders/{id}', [SliderController::class, 'delete']);
+
+    Route::post('whatsapp-numbers/paginate', [WhatsappNumberController::class, 'paginate']);
+    Route::post('whatsapp-numbers', [WhatsappNumberController::class, 'save']);
+    Route::get('whatsapp-numbers/{id}', [WhatsappNumberController::class, 'get']);
+    Route::patch('whatsapp-numbers/status', [WhatsappNumberController::class, 'status']);
+    Route::patch('whatsapp-numbers/primary', [WhatsappNumberController::class, 'setPrimary']);
+    Route::delete('whatsapp-numbers/{id}', [WhatsappNumberController::class, 'delete']);
 
     Route::post('categories/paginate', [CategoryController::class, 'paginate']);
     Route::post('categories', [CategoryController::class, 'save']);

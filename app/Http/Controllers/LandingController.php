@@ -20,6 +20,7 @@ use App\Mail\QuoteReceived;
 use App\Mail\SubmissionReceived;
 use App\Models\Quote;
 use App\Models\Slider;
+use App\Models\WhatsappNumber;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -132,6 +133,21 @@ class LandingController extends BasicController
                     'reference' => $row->reference,
                     'latitude' => $row->latitude !== null ? (float) $row->latitude : null,
                     'longitude' => $row->longitude !== null ? (float) $row->longitude : null,
+                ])
+                ->values();
+
+            $properties['whatsappNumbers'] = WhatsappNumber::query()
+                ->whereNotNull('status')
+                ->orderByDesc('is_primary')
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get()
+                ->map(fn ($row) => [
+                    'id' => $row->id,
+                    'tag' => $row->tag,
+                    'title' => $row->title,
+                    'phone' => $row->phone,
+                    'is_primary' => (bool) $row->is_primary,
                 ])
                 ->values();
         }

@@ -177,6 +177,7 @@ const Menu = ({ session, unreadMessagesCount = 0, unreadClubCount = 0, unreadDis
         <MenuItem href="/admin/sliders" icon='ti ti-slideshow'>Sliders</MenuItem>
         <MenuItem href="/admin/distributors" icon='ti ti-truck-delivery'>Distribuidores</MenuItem>
         <MenuItem href="/admin/branches" icon='ti ti-building-store'>Sucursales</MenuItem>
+        <MenuItem href="/admin/whatsapp-numbers" icon='ti ti-brand-whatsapp'>WhatsApp</MenuItem>
 
         <li className="side-nav-title mt-2">Contenido web</li>
         <MenuItem href="/admin/blog" icon='ti ti-news'>Blog</MenuItem>

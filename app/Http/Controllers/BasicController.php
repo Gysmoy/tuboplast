@@ -9,6 +9,7 @@ use App\Models\DistributorRequest;
 use App\Models\Message;
 use App\Models\Quote;
 use App\Models\User;
+use App\Models\WhatsappNumber;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -171,6 +172,18 @@ class BasicController extends Controller
       }
     }
 
+    $waUrl = env('WA_URL');
+    if (Schema::hasTable('whatsapp_numbers')) {
+      $primaryWhatsapp = WhatsappNumber::query()
+        ->whereNotNull('status')
+        ->where('is_primary', true)
+        ->first();
+
+      if ($primaryWhatsapp && $primaryWhatsapp->phone) {
+        $waUrl = 'https://wa.me/' . preg_replace('/\D/', '', $primaryWhatsapp->phone);
+      }
+    }
+
     $properties = [
       'session' => $userJpa,
       'unreadMessagesCount' => $unreadMessagesCount,
@@ -183,7 +196,7 @@ class BasicController extends Controller
         'APP_BY' => env('APP_BY'),
         'APP_ENV' => env('APP_ENV'),
         'APP_URL' => env('APP_URL'),
-        'WA_URL' => env('WA_URL'),
+        'WA_URL' => $waUrl,
         'APP_CORRELATIVE' => env('APP_CORRELATIVE'),
         'EVOAPI_URL' => env('EVOAPI_URL'),
         'EVOAPI_APIKEY' => env('EVOAPI_APIKEY'),

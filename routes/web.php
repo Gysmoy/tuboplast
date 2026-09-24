@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DistribuidorController;
 use App\Http\Controllers\Admin\DistributorRequestController;
 use App\Http\Controllers\Admin\SucursalController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\WhatsappNumberController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ProductClassificationController;
@@ -107,6 +108,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/distributors', [DistribuidorController::class, 'reactView'])->name('admin.distributors');
     Route::get('/admin/branches', [SucursalController::class, 'reactView'])->name('admin.branches');
     Route::get('/admin/sliders', [SliderController::class, 'reactView'])->name('admin.sliders');
+    Route::get('/admin/whatsapp-numbers', [WhatsappNumberController::class, 'reactView'])->name('admin.whatsapp-numbers');
     Route::get('/admin/categories', [CategoryController::class, 'reactView'])->name('admin.categories');
     Route::get('/admin/product-segments', [ProductSegmentController::class, 'reactView'])->name('admin.product-segments');
     Route::get('/admin/product-lines', [ProductLineController::class, 'reactView'])->name('admin.product-lines');

@@ -21,7 +21,7 @@ const serviceOptions = [
 
 const SEDE_FALLBACK_ADDRESS = 'Calle María Curie 313, Ate, Lima';
 
-// Canales fijos (teléfono/WhatsApp). La sede se arma dinámicamente desde la BD.
+// Canal fijo (teléfono). La sede y los WhatsApp se arman dinámicamente desde la BD.
 const phoneChannels = [
   {
     icon: 'mdi-phone-outline',
@@ -29,13 +29,23 @@ const phoneChannels = [
     value: '(01) 326-1146',
     href: 'tel:+5113261146',
   },
-  {
-    icon: 'mdi-whatsapp',
-    label: 'WhatsApp corporativo',
-    value: '+51 947 389 121',
-    href: 'https://wa.me/51947389121',
-  },
 ];
+
+const formatWhatsappValue = (phone) => {
+  const digits = String(phone || '').replace(/\D/g, '');
+  if (!digits) return '';
+  const country = digits.slice(0, 2);
+  const rest = digits.slice(2);
+  return `+${country} ${rest.replace(/(\d{3})(?=\d)/g, '$1 ').trim()}`;
+};
+
+const buildWhatsappChannels = (whatsappNumbers = []) =>
+  whatsappNumbers.map((entry) => ({
+    icon: 'mdi-whatsapp',
+    label: entry.title,
+    value: formatWhatsappValue(entry.phone),
+    href: `https://wa.me/${String(entry.phone || '').replace(/\D/g, '')}`,
+  }));
 
 const directionsTo = (location) => `https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`;
 
@@ -428,7 +438,7 @@ const ContactForm = () => {
   );
 };
 
-const ContactScreen = ({ branches = [] }) => {
+const ContactScreen = ({ branches = [], whatsappNumbers = [] }) => {
   const primary = branches.find((branch) => branch.latitude != null && branch.longitude != null) || branches[0];
   const location = primary && primary.latitude != null && primary.longitude != null
     ? { lat: Number(primary.latitude), lng: Number(primary.longitude) }
@@ -442,6 +452,7 @@ const ContactScreen = ({ branches = [] }) => {
       href: directionsTo(location),
     },
     ...phoneChannels,
+    ...buildWhatsappChannels(whatsappNumbers),
   ];
 
   return (
@@ -479,7 +490,7 @@ const ContactScreen = ({ branches = [] }) => {
 CreateReactScript((el, properties) => {
   createRoot(el).render(
     <Base title="Contacto">
-      <ContactScreen branches={properties?.branches} />
+      <ContactScreen branches={properties?.branches} whatsappNumbers={properties?.whatsappNumbers} />
     </Base>,
   );
 });
