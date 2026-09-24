@@ -133,6 +133,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('items/paginate', [ItemController::class, 'paginate']);
     Route::post('items/import', [ItemController::class, 'import']);
+    Route::get('items/import/{id}', [ItemController::class, 'importStatus']);
     Route::post('items/import-images', [ItemController::class, 'importImages']);
     Route::post('items/import-sheets', [ItemController::class, 'importSheets']);
     Route::post('items', [ItemController::class, 'save']);

@@ -30,7 +30,7 @@ const parseJsonResponse = async (res) => {
 class ItemsRest extends BasicRest {
   path = 'items'
 
-  import = async ({ file, mode, imagesZip = null, sheetsZip = null }) => {
+  import = async ({ file, mode, imagesZip = null, sheetsZip = null }, onStatusChange = () => { }) => {
     try {
       const formData = new FormData()
       formData.append('file', file)
@@ -47,12 +47,20 @@ class ItemsRest extends BasicRest {
         body: formData
       })
 
-      const result = await parseJsonResponse(res)
-      if (!res.ok || result?.status !== 200) {
-        throw new Error(result?.message || 'Ocurrió un error inesperado')
+      const queued = await parseJsonResponse(res)
+      if (!res.ok || queued?.status !== 200) {
+        throw new Error(queued?.message || 'Ocurrió un error inesperado')
       }
 
-      const data = result.data || {}
+      const importId = queued.data?.id
+      if (!importId) {
+        throw new Error('El servidor no devolvió un identificador de la carga.')
+      }
+
+      onStatusChange('processing')
+      const result = await this.waitForImport(importId)
+
+      const data = result.data?.result || {}
       const body = [
         `${data.created ?? 0} creados`,
         `${data.updated ?? 0} actualizados`,
@@ -68,6 +76,34 @@ class ItemsRest extends BasicRest {
     } catch (error) {
       notify({ title: 'Error', body: error.message, type: 'danger' })
       return null
+    }
+  }
+
+  waitForImport = async (importId, { intervalMs = 3000, maxWaitMs = 15 * 60 * 1000 } = {}) => {
+    const startedAt = Date.now()
+
+    while (true) {
+      await new Promise((resolve) => setTimeout(resolve, intervalMs))
+
+      const res = await fetch(`/api/${this.path}/import/${importId}`, {
+        headers: {
+          Accept: 'application/json',
+          'X-Xsrf-Token': decodeURIComponent(Cookies.get('XSRF-TOKEN'))
+        }
+      })
+      const result = await parseJsonResponse(res)
+
+      if (!res.ok || result?.status !== 200) {
+        throw new Error(result?.message || 'No se pudo consultar el estado de la carga.')
+      }
+
+      const status = result.data?.status
+      if (status === 'done') return result
+      if (status === 'failed') throw new Error(result.data?.message || 'La carga masiva falló.')
+
+      if (Date.now() - startedAt > maxWaitMs) {
+        throw new Error('La carga está tardando más de lo esperado. Sigue procesándose en segundo plano, revisa el catálogo en unos minutos.')
+      }
     }
   }
 

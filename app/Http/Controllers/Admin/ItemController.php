@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BasicController;
+use App\Jobs\ProcessItemsImport;
+use App\Models\BulkImport;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\ProductClassification;
@@ -231,7 +233,6 @@ class ItemController extends BasicController
     public function import(Request $request): HttpResponse|ResponseFactory
     {
         $response = new Response();
-        set_time_limit(600);
 
         try {
             $request->validate([
@@ -243,16 +244,77 @@ class ItemController extends BasicController
 
             $file = $request->file('file');
             $extension = mb_strtolower($file->getClientOriginalExtension());
-            $imagePackage = $request->hasFile('images_zip')
-                ? $this->readImagePackage($request->file('images_zip')->getRealPath())
+
+            if (!in_array($extension, ['xlsx', 'csv'], true)) {
+                throw new Exception('El archivo debe estar en formato .xlsx o .csv.');
+            }
+
+            $bulkImport = BulkImport::create([
+                'type' => 'items',
+                'mode' => (string) $request->input('mode'),
+                'status' => 'pending',
+                'file_path' => $file->store('bulk-imports'),
+                'images_zip_path' => $request->hasFile('images_zip') ? $request->file('images_zip')->store('bulk-imports') : null,
+                'sheets_zip_path' => $request->hasFile('sheets_zip') ? $request->file('sheets_zip')->store('bulk-imports') : null,
+            ]);
+
+            ProcessItemsImport::dispatch($bulkImport->id);
+
+            $response->status = 200;
+            $response->message = 'Carga en proceso';
+            $response->data = ['id' => $bulkImport->id, 'status' => 'pending'];
+        } catch (\Throwable $th) {
+            $response->status = 400;
+            $response->message = $th->getMessage();
+        } finally {
+            return response($response->toArray(), $response->status);
+        }
+    }
+
+    public function importStatus(Request $request, $id): HttpResponse|ResponseFactory
+    {
+        $response = new Response();
+
+        try {
+            $bulkImport = BulkImport::findOrFail($id);
+
+            $response->status = 200;
+            $response->message = 'Operación correcta';
+            $response->data = [
+                'id' => $bulkImport->id,
+                'status' => $bulkImport->status,
+                'message' => $bulkImport->message,
+                'result' => $bulkImport->result,
+            ];
+        } catch (\Throwable $th) {
+            $response->status = 400;
+            $response->message = $th->getMessage();
+        } finally {
+            return response($response->toArray(), $response->status);
+        }
+    }
+
+    /**
+     * Ejecutado por ProcessItemsImport en segundo plano (fuera del ciclo de vida del HTTP request).
+     */
+    public function runImport(BulkImport $bulkImport): void
+    {
+        $bulkImport->update(['status' => 'processing']);
+
+        try {
+            $extension = mb_strtolower(pathinfo($bulkImport->file_path, PATHINFO_EXTENSION));
+            $filePath = Storage::path($bulkImport->file_path);
+
+            $imagePackage = $bulkImport->images_zip_path
+                ? $this->readImagePackage(Storage::path($bulkImport->images_zip_path))
                 : ['groups' => [], 'ignored' => 0, 'errors' => []];
-            $sheetPackage = $request->hasFile('sheets_zip')
-                ? $this->readSheetPackage($request->file('sheets_zip')->getRealPath())
+            $sheetPackage = $bulkImport->sheets_zip_path
+                ? $this->readSheetPackage(Storage::path($bulkImport->sheets_zip_path))
                 : ['groups' => [], 'ignored' => 0, 'errors' => []];
 
             $rows = match ($extension) {
-                'xlsx' => $this->readXlsxRows($file->getRealPath()),
-                'csv' => $this->readCsvRows($file->getRealPath()),
+                'xlsx' => $this->readXlsxRows($filePath),
+                'csv' => $this->readCsvRows($filePath),
                 default => throw new Exception('El archivo debe estar en formato .xlsx o .csv.'),
             };
 
@@ -260,21 +322,33 @@ class ItemController extends BasicController
                 throw new Exception('No se encontraron filas para importar.');
             }
 
-            $mode = (string) $request->input('mode');
             $this->filesPendingDeletion = [];
-            $result = DB::transaction(fn () => $this->importRows($rows, $mode, $imagePackage, $sheetPackage), 3);
+            $result = DB::transaction(fn () => $this->importRows($rows, (string) $bulkImport->mode, $imagePackage, $sheetPackage), 3);
             $this->deletePendingFiles();
 
             Cache::forget('tuboplast.catalog.facets');
 
-            $response->status = 200;
-            $response->message = 'Carga masiva completada';
-            $response->data = $result;
+            $bulkImport->update([
+                'status' => 'done',
+                'message' => 'Carga masiva completada',
+                'result' => $result,
+            ]);
         } catch (\Throwable $th) {
-            $response->status = 400;
-            $response->message = $th->getMessage();
+            $bulkImport->update([
+                'status' => 'failed',
+                'message' => $th->getMessage(),
+            ]);
         } finally {
-            return response($response->toArray(), $response->status);
+            $this->cleanupBulkImportFiles($bulkImport);
+        }
+    }
+
+    private function cleanupBulkImportFiles(BulkImport $bulkImport): void
+    {
+        foreach ([$bulkImport->file_path, $bulkImport->images_zip_path, $bulkImport->sheets_zip_path] as $path) {
+            if ($path) {
+                Storage::delete($path);
+            }
         }
     }
 
