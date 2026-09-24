@@ -186,6 +186,7 @@ class ProductController extends BasicController
             $this->spec('Color', $item->color),
             $this->spec('Marca', $item->brand),
             $item->pressure ? $this->spec('Presión', $this->shortPressure($item->pressure)) : null,
+            $this->spec('Norma técnica', $item->technical_standard),
             $this->spec('Diámetro nominal', $diameterLabel !== '-' ? $diameterLabel : null),
         ]));
 

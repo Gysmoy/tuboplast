@@ -38,6 +38,7 @@ class Item extends Model
         'price',
         'currency',
         'pressure',
+        'technical_standard',
         'diameter',
         'nominal_diameter',
         'diameters',

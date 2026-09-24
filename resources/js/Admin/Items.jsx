@@ -163,6 +163,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
   const originCountryRef = useRef()
   const nominalDiameterRef = useRef()
   const pressureRef = useRef()
+  const technicalStandardRef = useRef()
   const famconsRef = useRef()
 
   // Logística
@@ -278,6 +279,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
     set(skuRef, data?.sku)
     set(priceRef, data?.price)
     set(pressureRef, data?.pressure)
+    set(technicalStandardRef, data?.technical_standard)
     set(materialRef, data?.material)
     set(colorRef, data?.color)
     set(brandRef, data?.brand)
@@ -477,6 +479,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
       price: priceRef.current.value,
       currency: selects.currency || 'PEN',
       pressure: pressureRef.current.value,
+      technical_standard: technicalStandardRef.current.value,
       diameter: nominal,
       nominal_diameter: nominal,
       diameters: diametersRef.current.value,
@@ -740,6 +743,7 @@ const Items = ({ categories = [], segments = [], lines = [], classifications = [
                     options={[{ value: '', label: 'Sin familia' }, ...families.map((c) => ({ value: String(c.id), label: c.name }))]}
                     onChange={(v) => setSelect('product_family_id', v)} />
                   <InputFormGroup col='col-md-4' eRef={pressureRef} label='Presión (opcional)' placeholder='Ej. PN-10' />
+                  <InputFormGroup col='col-md-4' eRef={technicalStandardRef} label='Norma técnica (opcional)' placeholder='Ej. NTP ISO 1452-2' />
                 </div>
               </div>
 
