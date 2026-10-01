@@ -57,7 +57,17 @@ const CustomDropdown = ({ value, options = [], onChange, placeholder = 'Seleccio
 
   const place = () => {
     const r = btnRef.current?.getBoundingClientRect()
-    if (r) setPos({ left: r.left, top: r.bottom + 4, width: r.width })
+    if (!r) return
+
+    const menuHeight = menuRef.current?.offsetHeight || 260
+    const spaceBelow = window.innerHeight - r.bottom
+    const spaceAbove = r.top
+    const openUpward = spaceBelow < menuHeight + 8 && spaceAbove > spaceBelow
+    const top = openUpward
+      ? Math.max(8, r.top - menuHeight - 4)
+      : r.bottom + 4
+
+    setPos({ left: r.left, top, width: r.width })
   }
 
   useLayoutEffect(() => { if (open) place() }, [open])
