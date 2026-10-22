@@ -60,7 +60,7 @@ services:
     # depends_on:
     #   - db
     ports:
-      - "8110:80"
+      - "127.0.0.1:8110:80"
     volumes:
       - storage:/var/www/html/storage
       - cache:/var/www/html/bootstrap/cache
