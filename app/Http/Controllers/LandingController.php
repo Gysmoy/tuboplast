@@ -166,7 +166,128 @@ class LandingController extends BasicController
             $this->seo['title'] = $sectionTitles[$this->reactView] . ' | ' . env('APP_NAME', 'Tuboplast');
         }
 
+        $this->seo = array_merge($this->pageSeo($properties), array_filter($this->seo));
+
         return $properties;
+    }
+
+    /**
+     * SEO por página pública (descripción, canonical y datos estructurados).
+     * Los valores ya definidos en $this->seo (blog post, catálogo) tienen prioridad.
+     */
+    private function pageSeo(array $properties): array
+    {
+        $base = rtrim(url('/'), '/');
+        $name = env('APP_NAME', 'Tuboplast');
+
+        $pages = [
+            'Home' => ['/', 'Inicio', null, 'Tuboplast es el fabricante peruano de tuberías y conexiones de PVC y HDPE para agua, desagüe, saneamiento, instalaciones eléctricas e infraestructura. Calidad certificada y asesoría técnica a nivel nacional.'],
+            'Catalog' => ['/catalog', 'Catálogo', null, null],
+            'Blog' => ['/blog', 'Blog', null, 'Guías prácticas, criterios de instalación y recomendaciones técnicas para trabajar con tuberías PVC en proyectos residenciales, comerciales e industriales.'],
+            'BlogPost' => ['/blog', 'Blog', null, null],
+            'Distributors' => ['/distributors', 'Distribuidores', null, 'Encuentra distribuidores autorizados de Tuboplast en todo el Perú: tuberías y conexiones de PVC cerca de ti, con dirección, teléfono y horario de atención.'],
+            'AboutFamilia' => ['/about', 'Nosotros', null, 'Tuboplast es una empresa peruana especializada en tuberías y conexiones de PVC y HDPE, con foco en calidad, respaldo técnico y soluciones duraderas.'],
+            'AboutPolitica' => ['/sgi-policy', 'Política SGI', null, 'Política del Sistema de Gestión Integrado de Tuboplast: calidad, medio ambiente y seguridad y salud en el trabajo.'],
+            'Contact' => ['/contact', 'Contacto', 'ContactPage', 'Contacta a Tuboplast: cotizaciones, asesoría técnica y atención comercial para tuberías y conexiones de PVC. Sede central en Ate, Lima.'],
+            'Club' => ['/club', 'Club Experto', null, 'Únete al Club Experto Tuboplast: beneficios, capacitación y novedades para instaladores y profesionales de la construcción.'],
+        ];
+
+        $entry = $pages[$this->reactView] ?? null;
+        if (!$entry) {
+            return [];
+        }
+
+        [$path, $label, $pageType, $description] = $entry;
+        $url = $base . $path;
+
+        $graph = [];
+
+        if ($this->reactView === 'Home') {
+            $graph[] = [
+                '@type' => 'Organization',
+                '@id' => $base . '/#organization',
+                'name' => $name,
+                'url' => $base . '/',
+                'logo' => url('/assets/img/icons/icon-512.png'),
+                'email' => 'informes@tuboplastperu.com',
+                'areaServed' => 'PE',
+            ];
+            $graph[] = [
+                '@type' => 'WebSite',
+                '@id' => $base . '/#website',
+                'url' => $base . '/',
+                'name' => $name,
+                'inLanguage' => 'es-PE',
+                'publisher' => ['@id' => $base . '/#organization'],
+            ];
+        } else {
+            $graph[] = [
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Inicio', 'item' => $base . '/'],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => $label, 'item' => $url],
+                ],
+            ];
+        }
+
+        if ($pageType === 'ContactPage') {
+            $branch = ($properties['branches'] ?? collect())->first();
+            $graph[] = array_filter([
+                '@type' => 'ContactPage',
+                'url' => $url,
+                'name' => 'Contacto | ' . $name,
+                'about' => array_filter([
+                    '@type' => 'LocalBusiness',
+                    'name' => $name,
+                    'url' => $base . '/',
+                    'email' => 'informes@tuboplastperu.com',
+                    'address' => $branch ? array_filter([
+                        '@type' => 'PostalAddress',
+                        'streetAddress' => $branch['address'] ?? null,
+                        'addressLocality' => $branch['district'] ?? null,
+                        'addressRegion' => $branch['department'] ?? null,
+                        'addressCountry' => 'PE',
+                    ]) : null,
+                    'geo' => ($branch['latitude'] ?? null) !== null && ($branch['longitude'] ?? null) !== null
+                        ? ['@type' => 'GeoCoordinates', 'latitude' => $branch['latitude'], 'longitude' => $branch['longitude']]
+                        : null,
+                ]),
+            ]);
+        }
+
+        if ($this->reactView === 'Distributors') {
+            $graph[] = [
+                '@type' => 'CollectionPage',
+                'url' => $url,
+                'name' => 'Distribuidores autorizados | ' . $name,
+                'about' => ['@id' => $base . '/#organization'],
+            ];
+        }
+
+        if ($this->reactView === 'BlogPost') {
+            $post = $properties['post'] ?? [];
+            $graph[0]['itemListElement'][] = [
+                '@type' => 'ListItem',
+                'position' => 3,
+                'name' => $post['title'] ?? 'Artículo',
+                'item' => $this->seo['url'] ?? $url,
+            ];
+            $graph[] = array_filter([
+                '@type' => 'BlogPosting',
+                'headline' => $post['title'] ?? null,
+                'description' => $this->seo['description'] ?? null,
+                'image' => $this->seo['image'] ?? null,
+                'mainEntityOfPage' => $this->seo['url'] ?? null,
+                'inLanguage' => 'es-PE',
+                'publisher' => ['@type' => 'Organization', 'name' => $name, 'url' => $base . '/'],
+            ]);
+        }
+
+        return array_filter([
+            'description' => $description,
+            'url' => $this->reactView === 'BlogPost' ? null : $url,
+            'schema' => ['@context' => 'https://schema.org', '@graph' => $graph],
+        ]);
     }
 
     public function catalogItems(Request $request)

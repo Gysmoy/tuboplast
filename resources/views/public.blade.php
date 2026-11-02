@@ -29,6 +29,8 @@
     <meta name="title" content="{{ $seoTitle }}" />
     <meta name="description" content="{{ $seoDescription }}" />
     <meta name="keywords" content="{{ $seoKeywords }}" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="alternate" hreflang="es-PE" href="{{ $seoUrl }}" />
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ $seoUrl }}" />
 
@@ -53,6 +55,9 @@
     <meta name="twitter:image" content="{{ $seoImage }}" />
     <meta name="twitter:image:alt" content="{{ $seoTitle }}" />
 
+    @if (!empty($seo['schema']))
+        <script type="application/ld+json">{!! json_encode($seo['schema'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+    @endif
 
     <link rel="icon" type="image/png" href="/assets/img/icons/icon-96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg" />

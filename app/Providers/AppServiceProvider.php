@@ -28,5 +28,12 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
             $this->app['request']->server->set('HTTPS', 'on');
         }
+
+        // Dominio canónico: canonical, og:url, sitemap y robots salen siempre
+        // de APP_URL (tuboplastperu.com) aunque entren por otro host.
+        $appUrl = (string) config('app.url');
+        if (str_starts_with($appUrl, 'https://')) {
+            URL::forceRootUrl(rtrim($appUrl, '/'));
+        }
     }
 }

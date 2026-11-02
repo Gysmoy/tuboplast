@@ -10,6 +10,7 @@
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Auth | {{ env('APP_NAME') }}</title>
+    <meta name="robots" content="noindex, nofollow" />
     <link rel="shortcut icon" href="/assets/img/icon.svg" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="En DevEx Consulting ayudamos a las empresas a optimizar y escalar sus operaciones mediante tecnología, especializándonos en desarrollo de software a medida y consultoría tecnológica con enfoque en automatización de procesos clave y toma de decisiones basada en datos." name="description" />
